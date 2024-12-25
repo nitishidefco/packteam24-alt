@@ -5,8 +5,6 @@ import {StyleSheet, Text, View} from 'react-native';
 const NetworkStatusComponent = () => {
   const isConnected = useSelector(state => state?.Network?.isConnected);
 
-  console.log('isConnected', isConnected);
-
   return (
     <View style={styles.NetworkView}>
       <Text>Network Status: {isConnected ? 'Online' : 'Offline'}</Text>

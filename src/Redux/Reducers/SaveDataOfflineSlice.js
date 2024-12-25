@@ -12,11 +12,6 @@ const SaveDataOfflineSlice = createSlice({
   initialState,
   reducers: {
     addDataToOfflineStorage: (state, action) => {
-      console.log(
-        '-------------------action.payload---------------',
-        action.payload,
-      );
-
       const {sessionId, time, tagId} = action.payload;
       if (!state.sessions[sessionId]) {
         state.sessions[sessionId] = {sessionId, items: []};
@@ -25,16 +20,12 @@ const SaveDataOfflineSlice = createSlice({
     },
 
     clearOfflineStorage: state => {
-      console.log(
-        '-------------------clearOfflineStorage---------------',
-        state,
-      );
-
       state.sessions = {};
     },
   },
 });
 
-export const {addDataToOfflineStorage} = SaveDataOfflineSlice.actions;
+export const {addDataToOfflineStorage, clearOfflineStorage} =
+  SaveDataOfflineSlice.actions;
 const SaveDataOfflineReducer = SaveDataOfflineSlice.reducer;
 export default SaveDataOfflineReducer;
