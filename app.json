@@ -1,4 +1,7 @@
 {
   "name": "packteam",
-  "displayName": "packteam"
+  "displayName": "packteam",
+  "react-native": {
+    "enableHermes": true
+  }
 }
