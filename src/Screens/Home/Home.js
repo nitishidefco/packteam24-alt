@@ -202,12 +202,14 @@ const Home = ({navigation, route}) => {
   if (!hasNfc) {
     return (
       <DrawerSceneWrapper>
-        <CustomHeader />
         <SafeAreaView style={styles.centeredContainer}>
+        <CustomHeader />
+        <View style={styles.centeredContainer}>
           <Text style={styles.errorText}>
             Your device does not support NFC! If your device supports NFC turn
             it on from settings and restart the App
           </Text>
+          </View>
         </SafeAreaView>
       </DrawerSceneWrapper>
     );
