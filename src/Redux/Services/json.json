@@ -1,0 +1,467 @@
+[
+    {
+        "Description": "Collection of axolotl pictures and facts",
+        "Link": "https://theaxolotlapi.netlify.app/",
+        "Category": "Animals"
+    },
+    {
+        "Description": "Daily cat facts",
+        "Link": "https://alexwohlbruck.github.io/cat-facts/",
+        "Category": "Animals"
+    },
+    {
+        "Description": "Cat as a service (cats pictures and gifs)",
+        "Link": "https://cataas.com/",
+        "Category": "Animals"
+    },
+    {
+        "Description": "Random pictures of cats",
+        "Link": "https://github.com/ThatCopy/catAPI/wiki/Usage",
+        "Category": "Animals"
+    },
+    {
+        "Description": "Pictures of cats from Tumblr",
+        "Link": "https://docs.thecatapi.com/",
+        "Category": "Animals"
+    },
+    {
+        "Description": "Random dog facts",
+        "Link": "https://dukengn.github.io/Dog-facts-API/",
+        "Category": "Animals"
+    },
+    {
+        "Description": "Based on the Stanford Dogs Dataset",
+        "Link": "https://dog.ceo/dog-api/",
+        "Category": "Animals"
+    },
+    {
+        "Description": "A free API to feature awesome elephants in your next project",
+        "Link": "https://elephant-api.herokuapp.com/",
+        "Category": "Animals"
+    },
+    {
+        "Description": "Cat for every HTTP Status",
+        "Link": "https://http.cat/",
+        "Category": "Animals"
+    },
+    {
+        "Description": "IUCN Red List of Threatened Species",
+        "Link": "http://apiv3.iucnredlist.org/api/v3/docs",
+        "Category": "Animals"
+    },
+    {
+        "Description": "Movement and Migration data of animals",
+        "Link": "https://github.com/movebank/movebank-api-doc",
+        "Category": "Animals"
+    },
+    {
+        "Description": "Placeholder bear pictures",
+        "Link": "https://placebear.com/",
+        "Category": "Animals"
+    },
+    {
+        "Description": "Placeholder Dog pictures",
+        "Link": "https://place.dog",
+        "Category": "Animals"
+    },
+    {
+        "Description": "Random pictures of cats",
+        "Link": "https://aws.random.cat/meow",
+        "Category": "Animals"
+    },
+    {
+        "Description": "Random pictures of dogs",
+        "Link": "https://random.dog/woof.json",
+        "Category": "Animals"
+    },
+    {
+        "Description": "Random pictures of ducks",
+        "Link": "https://random-d.uk/api",
+        "Category": "Animals"
+    },
+    {
+        "Description": "Random pictures of foxes",
+        "Link": "https://randomfox.ca/floof/",
+        "Category": "Animals"
+    },
+    {
+        "Description": "Adoption",
+        "Link": "https://userguide.rescuegroups.org/display/APIDG/API+Developers+Guide+Home",
+        "Category": "Animals"
+    },
+    {
+        "Description": "Random pictures of Shiba Inu, cats or birds",
+        "Link": "http://shibe.online/",
+        "Category": "Animals"
+    },
+    {
+        "Description": "A public service all about Dogs, free to use when making your fancy new App, Website or Service",
+        "Link": "https://thedogapi.com/",
+        "Category": "Animals"
+    },
+    {
+        "Description": "Anime discovery, streaming \u0026 syncing with trackers",
+        "Link": "https://github.com/AniAPI-Team/AniAPI",
+        "Category": "Anime"
+    },
+    {
+        "Description": "Anime Database",
+        "Link": "https://wiki.anidb.net/HTTP_API_Definition",
+        "Category": "Anime"
+    },
+    {
+        "Description": "Anime discovery \u0026 tracking",
+        "Link": "https://github.com/AniList/ApiV2-GraphQL-Docs",
+        "Category": "Anime"
+    },
+    {
+        "Description": "Anime quotes (over 10k+)",
+        "Link": "https://github.com/RocktimSaikia/anime-chan",
+        "Category": "Anime"
+    },
+    {
+        "Description": "Anime Facts (over 100+)",
+        "Link": "https://chandan-02.github.io/anime-facts-rest-api/",
+        "Category": "Anime"
+    },
+    {
+        "Description": "Anime industry news",
+        "Link": "https://www.animenewsnetwork.com/encyclopedia/api.php",
+        "Category": "Anime"
+    },
+    {
+        "Description": "Thousands of anime artist database to find good anime art",
+        "Link": "https://danbooru.donmai.us/wiki_pages/help:api",
+        "Category": "Anime"
+    },
+    {
+        "Description": "Unofficial MyAnimeList API",
+        "Link": "https://jikan.moe",
+        "Category": "Anime"
+    },
+    {
+        "Description": "Anime discovery platform",
+        "Link": "https://kitsu.docs.apiary.io/",
+        "Category": "Anime"
+    },
+    {
+        "Description": "Manga Database and Community",
+        "Link": "https://api.mangadex.org/docs.html",
+        "Category": "Anime"
+    },
+    {
+        "Description": "Anime and Manga Database and Community",
+        "Link": "https://myanimelist.net/clubs.php?cid=13727",
+        "Category": "Anime"
+    },
+    {
+        "Description": "Neko Images \u0026 Anime roleplaying GIFs",
+        "Link": "https://docs.nekos.best",
+        "Category": "Anime"
+    },
+    {
+        "Description": "Anime discovery, tracking, forum, rates",
+        "Link": "https://shikimori.one/api/doc",
+        "Category": "Anime"
+    },
+    {
+        "Description": "Resources from Studio Ghibli films",
+        "Link": "https://ghibliapi.herokuapp.com",
+        "Category": "Anime"
+    },
+    {
+        "Description": "Image sharing platform for anime images",
+        "Link": "https://waifu.pics/docs",
+        "Category": "Anime"
+    },
+    {
+        "Description": "IP/domain/URL reputation",
+        "Link": "https://docs.abuseipdb.com/",
+        "Category": "Anti-Malware"
+    },
+    {
+        "Description": "IP/domain/URL reputation",
+        "Link": "https://otx.alienvault.com/api",
+        "Category": "Anti-Malware"
+    },
+    {
+        "Description": "Google Link/Domain Flagging",
+        "Link": "https://developers.google.com/safe-browsing/",
+        "Category": "Anti-Malware"
+    },
+    {
+        "Description": "Malware Archive / file sourcing",
+        "Link": "https://malshare.com/doc.php",
+        "Category": "Anti-Malware"
+    },
+    {
+        "Description": "Metacert Link Flagging",
+        "Link": "https://metacert.com/",
+        "Category": "Anti-Malware"
+    },
+    {
+        "Description": "Bulk queries and Download Malware Samples",
+        "Link": "https://urlhaus-api.abuse.ch/",
+        "Category": "Anti-Malware"
+    },
+    {
+        "Description": "Scan and Analyse URLs",
+        "Link": "https://urlscan.io/about-api/",
+        "Category": "Anti-Malware"
+    },
+    {
+        "Description": "VirusTotal File/URL Analysis",
+        "Link": "https://www.virustotal.com/en/documentation/public-api/",
+        "Category": "Anti-Malware"
+    },
+    {
+        "Description": "IP/domain/URL reputation",
+        "Link": "https://support.mywot.com/hc/en-us/sections/360004477734-API-",
+        "Category": "Anti-Malware"
+    },
+    {
+        "Description": "Generate images for Discord users",
+        "Link": "https://api.amethyste.moe/",
+        "Category": "Art \u0026 Design"
+    },
+    {
+        "Description": "Art",
+        "Link": "https://api.artic.edu/docs/",
+        "Category": "Art \u0026 Design"
+    },
+    {
+        "Description": "Color scheme generator",
+        "Link": "http://colormind.io/api-access/",
+        "Category": "Art \u0026 Design"
+    },
+    {
+        "Description": "Get various patterns, palettes and images",
+        "Link": "http://www.colourlovers.com/api",
+        "Category": "Art \u0026 Design"
+    },
+    {
+        "Description": "Smithsonian Design Museum",
+        "Link": "https://collection.cooperhewitt.org/api",
+        "Category": "Art \u0026 Design"
+    },
+    {
+        "Description": "Discover the world’s top designers \u0026 creatives",
+        "Link": "https://developer.dribbble.com",
+        "Category": "Art \u0026 Design"
+    },
+    {
+        "Description": "European Museum and Galleries content",
+        "Link": "https://pro.europeana.eu/resources/apis/search",
+        "Category": "Art \u0026 Design"
+    },
+    {
+        "Description": "Art",
+        "Link": "https://github.com/harvardartmuseums/api-docs",
+        "Category": "Art \u0026 Design"
+    },
+    {
+        "Description": "Favicons for any website, with fallbacks",
+        "Link": "https://icon.horse",
+        "Category": "Art \u0026 Design"
+    },
+    {
+        "Description": "Icons",
+        "Link": "https://developer.iconfinder.com",
+        "Category": "Art \u0026 Design"
+    },
+    {
+        "Description": "Icons",
+        "Link": "http://docs.icons8.apiary.io/#reference/0/meta",
+        "Category": "Art \u0026 Design"
+    },
+    {
+        "Description": "Met Museum of Art",
+        "Link": "https://metmuseum.github.io/",
+        "Category": "Art \u0026 Design"
+    },
+    {
+        "Description": "Icons",
+        "Link": "http://api.thenounproject.com/index.html",
+        "Category": "Art \u0026 Design"
+    },
+    {
+        "Description": "Noise Background Image Generator",
+        "Link": "https://php-noise.com/",
+        "Category": "Art \u0026 Design"
+    },
+    {
+        "Description": "SVG Icon Generator",
+        "Link": "https://pixelencounter.com/api",
+        "Category": "Art \u0026 Design"
+    },
+    {
+        "Description": "Art",
+        "Link": "https://www.rijksmuseum.nl/en/api",
+        "Category": "Art \u0026 Design"
+    },
+    {
+        "Description": "Easy to implement, adaptable authentication and authorization platform",
+        "Link": "https://auth0.com",
+        "Category": "Authentication"
+    },
+    {
+        "Description": "User management and authentication",
+        "Link": "https://m3o.com/user",
+        "Category": "Authentication"
+    },
+    {
+        "Description": "Secure and modern passwordless authentication platform",
+        "Link": "https://mojoauth.com",
+        "Category": "Authentication"
+    },
+    {
+        "Description": "Simplify login and improve user experience by integrating passwordless authentication in your app",
+        "Link": "https://sawolabs.com",
+        "Category": "Authentication"
+    },
+    {
+        "Description": "User infrastructure for modern applications",
+        "Link": "https://stytch.com/",
+        "Category": "Authentication"
+    },
+    {
+        "Description": "Onchain GraphQL APIs \u0026 DEX APIs",
+        "Link": "https://graphql.bitquery.io/ide",
+        "Category": "Blockchain"
+    },
+    {
+        "Description": "Build hybrid smart contracts with Chainlink",
+        "Link": "https://chain.link/developer-resources",
+        "Category": "Blockchain"
+    },
+    {
+        "Description": "Multi-blockchain data aggregator platform",
+        "Link": "https://www.covalenthq.com/docs/api/",
+        "Category": "Blockchain"
+    },
+    {
+        "Description": "Blockchain-as-a-service solution that provides high-quality connection via API",
+        "Link": "https://nownodes.io/",
+        "Category": "Blockchain"
+    },
+    {
+        "Description": "Open Source Shrimad Bhagavad Gita API including 21+ authors translation in Sanskrit/English/Hindi",
+        "Link": "https://docs.bhagavadgitaapi.in",
+        "Category": "Books"
+    },
+    {
+        "Description": "Bhagavad Gita text",
+        "Link": "https://bhagavadgita.io/api",
+        "Category": "Books"
+    },
+    {
+        "Description": "Books",
+        "Link": "http://bnb.data.bl.uk/",
+        "Category": "Books"
+    },
+    {
+        "Description": "Books \u0026 Articles Metadata",
+        "Link": "https://github.com/CrossRef/rest-api-doc",
+        "Category": "Books"
+    },
+    {
+        "Description": "Books",
+        "Link": "https://developers.google.com/books/",
+        "Category": "Books"
+    },
+    {
+        "Description": "Library Genesis search engine",
+        "Link": "https://garbage.world/posts/libgen/",
+        "Category": "Books"
+    },
+    {
+        "Description": "Book reviews and The New York Times Best Sellers lists",
+        "Link": "https://developer.nytimes.com/docs/books-product/1/overview",
+        "Category": "Books"
+    },
+    {
+        "Description": "Books, book covers and related data",
+        "Link": "https://openlibrary.org/developers/api",
+        "Category": "Books"
+    },
+    {
+        "Description": "Books, book covers and related data",
+        "Link": "http://www.penguinrandomhouse.biz/webservices/rest/",
+        "Category": "Books"
+    },
+    {
+        "Description": "RESTful Quran API with multiple languages",
+        "Link": "https://quran.api-docs.io/",
+        "Category": "Books"
+    },
+    {
+        "Description": "A RESTful Quran API to retrieve an Ayah, Surah, Juz or the entire Holy Quran",
+        "Link": "https://alquran.cloud/api",
+        "Category": "Books"
+    },
+    {
+        "Description": "Free Quran API Service with 90+ different languages and 400+ translations",
+        "Link": "https://github.com/fawazahmed0/quran-api#readme",
+        "Category": "Books"
+    },
+    {
+        "Description": "Gods and poets, their categories, and the verse meters, with the mandal and sukta number",
+        "Link": "https://aninditabasu.github.io/indica/html/rv.html",
+        "Category": "Books"
+    },
+    {
+        "Description": "Everything you need from the Bible in one discoverable place",
+        "Link": "https://docs.api.bible",
+        "Category": "Books"
+    },
+    {
+        "Description": "1330 Thirukkural poems and explanation in Tamil and English",
+        "Link": "https://api-thirukkural.web.app/",
+        "Category": "Books"
+    },
+    {
+        "Description": "Descriptions of all nouns (names, places, animals, things) from vedic literature",
+        "Link": "https://aninditabasu.github.io/indica/html/vs.html",
+        "Category": "Books"
+    },
+    {
+        "Description": "API for obtaining information about e-books available on the WolneLektury.pl website",
+        "Link": "https://wolnelektury.pl/api/",
+        "Category": "Books"
+    },
+    {
+        "Description": "Non-profit charity data",
+        "Link": "http://charityapi.orghunter.com/",
+        "Category": "Business"
+    },
+    {
+        "Description": "Search for company logos and embed them in your projects",
+        "Link": "https://clearbit.com/docs#logo-api",
+        "Category": "Business"
+    },
+    {
+        "Description": "Registered Domain Names Search",
+        "Link": "https://domainsdb.info/",
+        "Category": "Business"
+    },
+    {
+        "Description": "Hire freelancers to get work done",
+        "Link": "https://developers.freelancer.com",
+        "Category": "Business"
+    },
+    {
+        "Description": "Flexible, RESTful access to the user's inbox",
+        "Link": "https://developers.google.com/gmail/api/",
+        "Category": "Business"
+    },
+    {
+        "Description": "Collect, configure and analyze your data to reach the right audience",
+        "Link": "https://developers.google.com/analytics/",
+        "Category": "Business"
+    },
+    {
+        "Description": "Temporary Email Service",
+        "Link": "https://docs.mail.tm",
+        "Category": "Business"
+    }
+]

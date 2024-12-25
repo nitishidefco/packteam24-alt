@@ -1,0 +1,45 @@
+export default {
+  LOGIN_LOGO: require('../Assets/Icons/loginlogo3x.png'),
+  EMAIL: require('../Assets/Icons/emailfieldicon3x.png'),
+  PASSWORD: require('../Assets/Icons/passwordfieldicon3x.png'),
+  HEADER_LOGO: require('../Assets/Icons/Headerlogo.png'),
+  USER: require('../Assets/Icons/Rectangle80563x.png'),
+  SIDEMENU: require('../Assets/Icons/sidemenuicon3x.png'),
+  Message: require('../Assets/Icons/messagesicon3x.png'),
+  SPLASH_ICON: require('../Assets/Icons/splashlogo3x.png'),
+  LOGOUT_ICON: require('../Assets/Icons/logouticon3x.png'),
+  SEPRATOR: require('../Assets/Icons/seprator.png'),
+  CHANGE_PASSWORD: require('../Assets/Icons/changepassword3x.png'),
+  DASHBOARD: require('../Assets/Icons/dashboardicon3x.png'),
+  DAILY_LIST: require('../Assets/Icons/dailylists3x.png'),
+  ADVANCES: require('../Assets/Icons/advances3x.png'),
+  MESSAGES_ICON: require('../Assets/Icons/messagesicon.png'),
+  CALENDER_ICON: require('../Assets/Icons/calendar3x.png'),
+  SUPERVISION: require('../Assets/Icons/supervisoricon3x.png'),
+  //=======>>> NFC ICONS <<<========//
+  NFC: require('../Assets/Icons/nfc3x.png'),
+  //=======>>> DAILY ICONS <<<========//
+  ADD: require('../Assets/Icons/add2x.png'),
+  MENU: require('../Assets/Icons/menu.png'),
+  DELETE: require('../Assets/Icons/delete.png'),
+  EDIT: require('../Assets/Icons/edit.png'),
+  LEFT: require('../Assets/Icons/left.png'),
+  RIGHT: require('../Assets/Icons/rightarrow.png'),
+  CANCELFILL: require('../Assets/Icons/cancelfil.png'),
+  DOWNARROW: require('../Assets/Icons/downarrow.png'),
+  BACKICON: require('../Assets/Icons/Back.png'),
+
+  //===========CREATE DAILY LIST  ===========
+  UPLOAD: require('../Assets/Icons/Upload.png'),
+  PLUS: require('../Assets/Icons/plus.png'),
+  MINUS: require('../Assets/Icons/Minus.png'),
+  ADDCREATE: require('../Assets/Icons/ADDCRATE.png'),
+  TIMER: require('../Assets/Icons/timer.png'),
+  DELETEUP: require('../Assets/Icons/deleteUpload.png'),
+  //===========CREATE DAILY LIST  ===========
+
+  PDF: require('../Assets/Icons/pdf.png'),
+  ARCHIVE: require('../Assets/Icons/archive.png'),
+  CLOSE: require('../Assets/Icons/close.png'),
+  EYE: require('../Assets/Icons/eye.png'),
+};
