@@ -11,8 +11,7 @@ import moment from 'moment';
 
 const OfflineDataDisplay = () => {
   const {sessions} = useSelector(state => state.OfflineData);
-  const [sortOrder, setSortOrder] = useState('desc'); // 'asc' or 'desc'
-
+  const [sortOrder, setSortOrder] = useState('desc'); 
   // Process and sort the data
   const processedData = useMemo(() => {
     const allData = [];

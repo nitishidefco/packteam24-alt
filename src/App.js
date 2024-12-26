@@ -28,7 +28,7 @@ const App = () => {
   // check network status
   useEffect(() => {
     const unsubscribe = monitorNetworkStatus(Store.dispatch);
-    console.log('unsubscribe', unsubscribe);
+    // console.log('unsubscribe', unsubscribe);
 
     return () => unsubscribe(); // Cleanup listener on unmount
   }, []);

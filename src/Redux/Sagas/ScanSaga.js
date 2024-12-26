@@ -13,7 +13,7 @@ import {SCAN_REDUCER} from '../SliceKey';
 import {Alert} from 'react-native';
 
 const scanSaga = function* scanSaga({payload}) {
-  console.log('scansagapaykliad', payload);
+  // console.log('scansagapaykliad', payload);
 
   try {
     const response = yield call(API.ScanTag, payload);

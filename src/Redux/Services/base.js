@@ -10,7 +10,7 @@ const DELETE = 'delete';
 
 const handleResponse = response => {
   const contentType = response.headers.get('Content-Type');
-  console.log('responseseesss', response);
+  // console.log('responseseesss', response);
   console.log('CT', contentType);
 
   if (response.status !== 200) {
@@ -27,7 +27,7 @@ const handleResponse = response => {
 
   if (contentType && contentType.indexOf('application/json') !== -1) {
     return response.json().then(jsonData => {
-      console.log('inside json block', jsonData);
+      // console.log('inside json block', jsonData);
 
       // Alert.alert(
       //   'Request Success',

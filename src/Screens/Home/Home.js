@@ -19,6 +19,7 @@ import {
   clearOfflineStorage,
   addDataToOfflineStorage,
 } from '../../Redux/Reducers/SaveDataOfflineSlice';
+import {showNotificationAboutTagScannedWhileOffline} from '../../Utlis/NotificationsWhileOffline';
 import {useDispatch, useSelector} from 'react-redux';
 import moment from 'moment';
 import OfflineDataDisplay from '../../Components/OfflineDataSee';
@@ -41,6 +42,7 @@ const Home = ({navigation, route}) => {
   const [appState, setAppState] = useState(AppState.currentState);
 
   // Function to handle NFC tag detection
+  // Tag id is set here
   const handleNfcTag = async tag => {
     if (tag?.id) {
       const id = addColons(tag.id);
@@ -150,7 +152,6 @@ const Home = ({navigation, route}) => {
       formdata.append('session_id', SessionId);
       formdata.append('device_id', '13213211');
       formdata.append('nfc_key', uid);
-
       await scanCall(formdata);
     } catch (error) {
       console.error('Error processing UID:', error);
@@ -158,31 +159,40 @@ const Home = ({navigation, route}) => {
       setLoading(false);
     }
   };
+  console.log('*************isConnected**************', isConnected);
   useEffect(() => {
     const processTag = async () => {
       if (isConnected) {
         try {
-          if (tagId !== '') {
-            await getUid(tagId); 
-            setTagId(''); 
+          // check if internt is connected
+          if (isConnected) {
+            // TODO: add the api to send offline data to server
             dispatch(clearOfflineStorage());
+            if (tagId !== '') {
+              await getUid(tagId);
+              setTagId('');
+            }
           }
         } catch (error) {
           console.error('Error processing the tag:', error);
         }
       } else {
-        dispatch(
-          addDataToOfflineStorage({
-            sessionId: SessionId,
-            time: moment().format('YYYY-MM-DD HH:mm:ss'),
-            tagId: tagId,
-          }),
-        ); 
+        if (tagId !== '') {
+          showNotificationAboutTagScannedWhileOffline(tagId);
+          dispatch(
+            addDataToOfflineStorage({
+              sessionId: SessionId,
+              time: moment().format('YYYY-MM-DD HH:mm:ss'),
+              tagId: tagId,
+            }),
+          );
+          setTagId('');
+        }
       }
     };
 
-    processTag(); 
-  }, [tagDetected]); 
+    processTag();
+  }, [tagDetected, isConnected]);
 
   function dashboardApi() {
     setLoading(true);
@@ -203,12 +213,12 @@ const Home = ({navigation, route}) => {
     return (
       <DrawerSceneWrapper>
         <SafeAreaView style={styles.centeredContainer}>
-        <CustomHeader />
-        <View style={styles.centeredContainer}>
-          <Text style={styles.errorText}>
-            Your device does not support NFC! If your device supports NFC turn
-            it on from settings and restart the App
-          </Text>
+          <CustomHeader />
+          <View style={styles.centeredContainer}>
+            <Text style={styles.errorText}>
+              Your device does not support NFC! If your device supports NFC turn
+              it on from settings and restart the App
+            </Text>
           </View>
         </SafeAreaView>
       </DrawerSceneWrapper>
