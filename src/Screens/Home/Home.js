@@ -7,6 +7,7 @@ import {
   StyleSheet,
   Platform,
   AppState,
+  TouchableOpacity,
 } from 'react-native';
 import {useHomeActions} from '../../Redux/Hooks';
 import DrawerSceneWrapper from '../../Components/Common/DrawerSceneWrapper';
@@ -23,13 +24,13 @@ import {showNotificationAboutTagScannedWhileOffline} from '../../Utlis/Notificat
 import {useDispatch, useSelector} from 'react-redux';
 import moment from 'moment';
 import OfflineDataDisplay from '../../Components/OfflineDataSee';
+
 const Home = ({navigation, route}) => {
   const dispatch = useDispatch();
   const sessions = useSelector(state => state?.OfflineData?.sessions);
   const isConnected = useSelector(state => state?.Network?.isConnected);
   const [tagDetected, setTagDetected] = useState();
   const [tagId, setTagId] = useState('');
-
   const [loading, setLoading] = useState(false);
   const [hasNfc, setHasNfc] = useState(false);
   const [List, setList] = useState([]);
@@ -41,59 +42,44 @@ const Home = ({navigation, route}) => {
   const CurrentMode = states?.data?.data[1];
   const [appState, setAppState] = useState(AppState.currentState);
 
-  // Function to handle NFC tag detection
-  // Tag id is set here
+  // Handles the scanned NFC tag and extracts its ID
   const handleNfcTag = async tag => {
     if (tag?.id) {
-      const id = addColons(tag.id);
+      const id = addColons(tag.id); // Format the tag ID with colons
       setTagDetected(tag);
       setTagId(id);
-      // await getUid(id);
     }
   };
 
-  // Initialize NFC scanning based on platform
+  // Initializes NFC scanning for iOS
   const initNfcScan = useCallback(async () => {
     try {
       if (Platform.OS === 'ios') {
-        // iOS implementation
-        await NfcManager.requestTechnology(NfcTech.MifareIOS);
-        const tag = await NfcManager.getTag();
-        await handleNfcTag(tag);
-        await NfcManager.cancelTechnologyRequest();
-        // Restart scanning after a short delay
-        setTimeout(() => {
-          initNfcScan();
-        }, 1000);
+        await NfcManager.requestTechnology(NfcTech.MifareIOS); // Request NFC technology
+        const tag = await NfcManager.getTag(); // Get the NFC tag
+        await handleNfcTag(tag); // Process the scanned tag
+        await NfcManager.cancelTechnologyRequest(); // Cancel the request after processing
       }
     } catch (error) {
-      // Restart scanning on error after a delay
-      if (Platform.OS === 'ios') {
-        setTimeout(() => {
-          initNfcScan();
-        }, 1000);
-      }
+      console.warn('Error initializing iOS NFC:', error);
     }
   }, []);
 
-  // Initialize Android NFC scanning
+  // Initializes NFC for Android and sets up event listeners
   const initAndroidNfc = useCallback(async () => {
     try {
-      await NfcManager.registerTagEvent();
-      NfcManager.setEventListener(NfcEvents.DiscoverTag, handleNfcTag);
+      await NfcManager.registerTagEvent(); // Register for NFC tag events
+      NfcManager.setEventListener(NfcEvents.DiscoverTag, handleNfcTag); // Handle tag discovery
     } catch (error) {
       console.warn('Error initializing Android NFC:', error);
     }
   }, []);
 
-  // Handle app state changes
+  // Monitors app state changes to reinitialize NFC when returning to the app
   useEffect(() => {
     const subscription = AppState.addEventListener('change', nextAppState => {
       if (appState !== 'active' && nextAppState === 'active') {
-        // App came to foreground
-        if (Platform.OS === 'ios') {
-          initNfcScan();
-        } else {
+        if (Platform.OS === 'android') {
           initAndroidNfc();
         }
       }
@@ -103,22 +89,18 @@ const Home = ({navigation, route}) => {
     return () => {
       subscription.remove();
     };
-  }, [appState, initNfcScan, initAndroidNfc]);
+  }, [appState, initAndroidNfc]);
 
-  // Initialize NFC when component mounts
+  // Sets up NFC on component mount and cleans up on unmount
   useEffect(() => {
     const setupNfc = async () => {
       try {
-        await NfcManager.start();
-        const isSupported = await NfcManager.isSupported();
+        await NfcManager.start(); // Start NFC manager
+        const isSupported = await NfcManager.isSupported(); // Check NFC support
         setHasNfc(isSupported);
 
-        if (isSupported) {
-          if (Platform.OS === 'android') {
-            await initAndroidNfc();
-          } else {
-            await initNfcScan();
-          }
+        if (isSupported && Platform.OS === 'android') {
+          await initAndroidNfc();
         }
       } catch (error) {
         console.warn('Error setting up NFC:', error);
@@ -127,24 +109,26 @@ const Home = ({navigation, route}) => {
 
     setupNfc();
 
-    // Cleanup
     return () => {
-      NfcManager.setEventListener(NfcEvents.DiscoverTag, null);
-      NfcManager.unregisterTagEvent().catch(() => 0);
+      NfcManager.setEventListener(NfcEvents.DiscoverTag, null); // Remove event listener
+      NfcManager.unregisterTagEvent().catch(() => 0); // Unregister tag events
       if (Platform.OS === 'ios') {
-        NfcManager.cancelTechnologyRequest().catch(() => 0);
+        NfcManager.cancelTechnologyRequest().catch(() => 0); // Cancel iOS tech request
       }
     };
-  }, []);
+  }, [initAndroidNfc]);
 
+  // Fetch dashboard data when the component is mounted
   useEffect(() => {
     dashboardApi();
   }, []);
 
+  // Adds colons to a string for better readability
   function addColons(number) {
     return number.replace(/(.{2})(?=.)/g, '$1:');
   }
 
+  // Processes the NFC tag ID by sending it to the server
   const getUid = async uid => {
     try {
       setLoading(true);
@@ -159,26 +143,23 @@ const Home = ({navigation, route}) => {
       setLoading(false);
     }
   };
-  console.log('*************isConnected**************', isConnected);
+
+  // Processes scanned tags based on network connectivity
   useEffect(() => {
     const processTag = async () => {
       if (isConnected) {
         try {
-          // check if internt is connected
-          if (isConnected) {
-            // TODO: add the api to send offline data to server
-            dispatch(clearOfflineStorage());
-            if (tagId !== '') {
-              await getUid(tagId);
-              setTagId('');
-            }
+          dispatch(clearOfflineStorage()); // Clear offline storage if connected
+          if (tagId !== '') {
+            await getUid(tagId); // Send tag ID to server
+            setTagId('');
           }
         } catch (error) {
           console.error('Error processing the tag:', error);
         }
       } else {
         if (tagId !== '') {
-          showNotificationAboutTagScannedWhileOffline(tagId);
+          showNotificationAboutTagScannedWhileOffline(tagId); // Notify user
           dispatch(
             addDataToOfflineStorage({
               sessionId: SessionId,
@@ -194,6 +175,7 @@ const Home = ({navigation, route}) => {
     processTag();
   }, [tagDetected, isConnected]);
 
+  // Fetches dashboard data from the server
   function dashboardApi() {
     setLoading(true);
     let formdata = new FormData();
@@ -202,6 +184,7 @@ const Home = ({navigation, route}) => {
     homecall(formdata);
   }
 
+  // Updates the list of data when the home state changes
   useEffect(() => {
     if (Home.data?.data) {
       setList(Home.data.data);
@@ -209,6 +192,7 @@ const Home = ({navigation, route}) => {
     setLoading(false);
   }, [Home]);
 
+  // Render fallback UI if the device does not support NFC
   if (!hasNfc) {
     return (
       <DrawerSceneWrapper>
@@ -225,6 +209,7 @@ const Home = ({navigation, route}) => {
     );
   }
 
+  // Main render for the Home component
   return (
     <DrawerSceneWrapper>
       <SafeAreaView style={{flex: 1, backgroundColor: '#EBF0FA'}}>
@@ -238,11 +223,22 @@ const Home = ({navigation, route}) => {
           <View style={styles.nfcPromptContainer}>
             <Image source={Images.NFC} style={styles.userIcon} />
             <Text style={styles.nfcPromptText}>Ready to Scan NFC Tags</Text>
-            <Text style={styles.nfcPromptSubtext}>
-              {Platform.OS === 'ios'
-                ? 'When prompted, hold your device near an NFC tag'
-                : 'Hold your device near an NFC tag'}
-            </Text>
+            {Platform.OS === 'ios' && (
+              <TouchableOpacity
+                style={styles.scanButton}
+                onPress={()=>initNfcScan()}>
+                <Text style={styles.buttonText}>Start NFC Scan</Text>
+              </TouchableOpacity>
+            )}
+            {
+              Platform.OS === 'android' && (
+                <Text style={styles.nfcPromptSubtext}>
+                Hold your device near an NFC tag
+              </Text>
+              )
+            }
+  
+
           </View>
         </View>
       </SafeAreaView>
@@ -267,29 +263,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     flex: 1,
   },
-  modeContainer: {
-    padding: 5,
-    display: 'flex',
-  },
-  modeLabel: {
-    fontSize: 25,
-  },
-  modeText: {
-    fontSize: 19,
-  },
-  scanButton: {
-    backgroundColor: '#0A1931',
-    width: '60%',
-    alignItems: 'center',
-    justifyContent: 'center',
-    height: 40,
-    marginTop: 15,
-  },
-  buttonText: {
-    color: '#fff',
-  },
-
-  // NFC Tag styles
   nfcPromptContainer: {
     flexDirection: 'column',
     alignItems: 'center',
@@ -314,6 +287,18 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: '#6B7280',
     marginTop: 5,
+  },
+  scanButton: {
+    backgroundColor: '#0A1931',
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    borderRadius: 5,
+    marginTop: 10,
+  },
+  buttonText: {
+    color: '#fff',
+    fontSize: 16,
+    fontWeight: 'bold',
   },
 });
 
