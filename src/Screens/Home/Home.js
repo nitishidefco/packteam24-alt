@@ -28,6 +28,8 @@ import OfflineDataDisplay from '../../Components/OfflineDataSee';
 const Home = ({navigation, route}) => {
   const dispatch = useDispatch();
   const sessions = useSelector(state => state?.OfflineData?.sessions);
+  const statess = useSelector(state => state);
+  console.log('Full Redux State:', statess);
   const isConnected = useSelector(state => state?.Network?.isConnected);
   const [tagDetected, setTagDetected] = useState();
   const [tagId, setTagId] = useState('');
@@ -148,6 +150,7 @@ const Home = ({navigation, route}) => {
   useEffect(() => {
     const processTag = async () => {
       if (isConnected) {
+
         try {
           dispatch(clearOfflineStorage()); // Clear offline storage if connected
           if (tagId !== '') {
@@ -158,8 +161,14 @@ const Home = ({navigation, route}) => {
           console.error('Error processing the tag:', error);
         }
       } else {
+        // console.log('**********************sessions*************', sessions);
+
         if (tagId !== '') {
-          showNotificationAboutTagScannedWhileOffline(tagId); // Notify user
+          showNotificationAboutTagScannedWhileOffline(
+            tagId,
+            sessions,
+            SessionId,
+          ); // Notify user
           dispatch(
             addDataToOfflineStorage({
               sessionId: SessionId,
@@ -214,8 +223,8 @@ const Home = ({navigation, route}) => {
     <DrawerSceneWrapper>
       <SafeAreaView style={{flex: 1, backgroundColor: '#EBF0FA'}}>
         <CustomHeader />
+        {/* TODO:Remove this later */}
         <OfflineDataDisplay />
-
         <View style={styles.container}>
           <View>
             <NetworkStatusComponent />
@@ -226,19 +235,15 @@ const Home = ({navigation, route}) => {
             {Platform.OS === 'ios' && (
               <TouchableOpacity
                 style={styles.scanButton}
-                onPress={()=>initNfcScan()}>
+                onPress={() => initNfcScan()}>
                 <Text style={styles.buttonText}>Start NFC Scan</Text>
               </TouchableOpacity>
             )}
-            {
-              Platform.OS === 'android' && (
-                <Text style={styles.nfcPromptSubtext}>
+            {Platform.OS === 'android' && (
+              <Text style={styles.nfcPromptSubtext}>
                 Hold your device near an NFC tag
               </Text>
-              )
-            }
-  
-
+            )}
           </View>
         </View>
       </SafeAreaView>
