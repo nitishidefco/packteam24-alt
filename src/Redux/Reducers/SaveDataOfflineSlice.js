@@ -1,5 +1,6 @@
 import {createSlice} from '@reduxjs/toolkit';
 import {OFFLINE_REDUCER} from '../SliceKey';
+import {ValidateTagAction} from '../../Helpers';
 
 const initialState = {
   sessions: {},
@@ -13,28 +14,38 @@ const SaveDataOfflineSlice = createSlice({
   reducers: {
     addDataToOfflineStorage: (state, action) => {
       const {sessionId, time, tagId} = action.payload;
+      console.log('State sessions', state.sessions);
 
-      // Check if the session doesn't exist, and create it if necessary
+      // Step 1: Validate the tag action first
+      const sessionItems = state.sessions[sessionId]?.items || [];
+      const validationResult = ValidateTagAction(tagId, sessionItems);
+
+      if (!validationResult.valid) {
+        console.warn('Validation failed:', validationResult.message);
+        return; // Early exit if validation fails
+      }
+
+      // Step 2: Ensure the session exists or create it
       if (!state.sessions[sessionId]) {
         state.sessions[sessionId] = {sessionId, items: []};
       }
 
-      // Check if the tagId already exists in the session's items array
-      const tagExists = state.sessions[sessionId].items.some(
-        item => item.tagId === tagId,
-      );
-
-      // If the tagId already exists, do not add it again
-      if (tagExists) {
-        return; // Exit without modifying the state
+      // Step 3: Check only the most recent tag to prevent accidental double-scans
+      const items = state.sessions[sessionId].items;
+      if (items.length > 0) {
+        const mostRecentTag = items[items.length - 1];
+        if (mostRecentTag.tagId === tagId) {
+          console.warn('Preventing duplicate consecutive scan');
+          return; // Prevent consecutive duplicate scans
+        }
       }
 
-      // If the tagId does not exist, add the new item to the session
+      // Step 4: Add valid tag to offline storage
       state.sessions[sessionId].items.push({time, tagId});
     },
 
     clearOfflineStorage: state => {
-      state.sessions = {};
+      state.sessions = {}; // Reset session storage
     },
   },
 });

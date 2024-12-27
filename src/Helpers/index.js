@@ -7,7 +7,7 @@ import GlobalFunctions from './GlobalFunctions';
 import Storage from './Storage';
 import AlertDialogHelper from './AlertDialogHelper';
 import toastMessage, {toastConfig} from './ToastMessage';
-
+import {ValidateTagAction} from './ValidateTagActions';
 export {
   Navigation,
   Permissions,
@@ -19,4 +19,5 @@ export {
   AlertDialogHelper,
   toastMessage,
   toastConfig,
+  ValidateTagAction,
 };

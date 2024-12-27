@@ -28,8 +28,6 @@ import OfflineDataDisplay from '../../Components/OfflineDataSee';
 const Home = ({navigation, route}) => {
   const dispatch = useDispatch();
   const sessions = useSelector(state => state?.OfflineData?.sessions);
-  const statess = useSelector(state => state);
-  console.log('Full Redux State:', statess);
   const isConnected = useSelector(state => state?.Network?.isConnected);
   const [tagDetected, setTagDetected] = useState();
   const [tagId, setTagId] = useState('');
@@ -148,40 +146,86 @@ const Home = ({navigation, route}) => {
 
   // Processes scanned tags based on network connectivity
   useEffect(() => {
-    const processTag = async () => {
-      if (isConnected) {
+    if (SessionId) {
+      const processTag = async () => {
+        if (isConnected) {
+          try {
+            // Get stored sessions before clearing
+            const storedSessions = sessions[SessionId]?.items || [];
 
-        try {
-          dispatch(clearOfflineStorage()); // Clear offline storage if connected
+            if (tagId !== '') {
+              // Process the current tag first
+              await getUid(tagId);
+              setTagId('');
+            }
+
+            // If there are stored offline tags, process them sequentially
+            if (storedSessions.length > 0) {
+              console.log('Processing stored offline tags...');
+
+              // Process each stored tag one by one with delay
+              for (const item of storedSessions) {
+                try {
+                  console.log(`Processing tag: ${item.tagId}`);
+                  await getUid(item.tagId);
+                  console.log(
+                    `Successfully processed stored tag: ${item.tagId}`,
+                  );
+
+                  // Add 6-second delay before processing next tag
+                  // Skip delay for the last item
+                  if (
+                    storedSessions.indexOf(item) <
+                    storedSessions.length - 1
+                  ) {
+                    console.log(
+                      'Waiting 6 seconds before processing next tag...',
+                    );
+                    await new Promise(resolve => setTimeout(resolve, 6000));
+                  }
+                } catch (error) {
+                  console.error(
+                    `Error processing stored tag ${item.tagId}:`,
+                    error,
+                  );
+                  // Still wait 6 seconds before trying next tag even if there's an error
+                  if (
+                    storedSessions.indexOf(item) <
+                    storedSessions.length - 1
+                  ) {
+                    await new Promise(resolve => setTimeout(resolve, 6000));
+                  }
+                }
+              }
+            }
+
+            // Clear storage after all tags are processed
+            dispatch(clearOfflineStorage());
+          } catch (error) {
+            console.error('Error processing tags:', error);
+          }
+        } else {
+          // Offline mode - store the tag
           if (tagId !== '') {
-            await getUid(tagId); // Send tag ID to server
+            dispatch(
+              addDataToOfflineStorage({
+                sessionId: SessionId,
+                time: moment().format('YYYY-MM-DD HH:mm:ss'),
+                tagId: tagId,
+              }),
+            );
+            showNotificationAboutTagScannedWhileOffline(
+              tagId,
+              sessions,
+              SessionId,
+            );
             setTagId('');
           }
-        } catch (error) {
-          console.error('Error processing the tag:', error);
         }
-      } else {
-        // console.log('**********************sessions*************', sessions);
+      };
 
-        if (tagId !== '') {
-          showNotificationAboutTagScannedWhileOffline(
-            tagId,
-            sessions,
-            SessionId,
-          ); // Notify user
-          dispatch(
-            addDataToOfflineStorage({
-              sessionId: SessionId,
-              time: moment().format('YYYY-MM-DD HH:mm:ss'),
-              tagId: tagId,
-            }),
-          );
-          setTagId('');
-        }
-      }
-    };
-
-    processTag();
+      processTag();
+    }
   }, [tagDetected, isConnected]);
 
   // Fetches dashboard data from the server

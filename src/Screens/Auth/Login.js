@@ -36,7 +36,7 @@ const Login = ({route}) => {
   // biuro@mhcode.pl  das4you123
 
   const {dark, theme, toggle} = useContext(ThemeContext);
-
+  const isConnected = useSelector(state => state?.Network?.isConnected);
   const [errortext, setErrortext] = useState('');
   const passwordInputRef = createRef();
   const dispatch = useDispatch();
@@ -96,9 +96,12 @@ const Login = ({route}) => {
 
   const onLoginPress = () => {
     console.log('Loginpressed');
-
-    if (validateInputs('Enter Email')) {
-      loginAPI();
+    if (!isConnected) {
+      toastMessage.error('Please check your internet connection');
+    } else {
+      if (validateInputs('Enter Email')) {
+        loginAPI();
+      }
     }
   };
 
@@ -108,101 +111,107 @@ const Login = ({route}) => {
 
   return (
     <FullScreenSpinner>
-      <View style={styles.mainBody(theme)}>
-        <KeyboardAvoidingView
-          style={styles.keyboardAvoidingView}
-          behavior={Platform.OS === 'android' ? '' : 'padding'}
-          enabled>
-          <View
-            style={[
-              styles.loginlogoContainer,
-              Platform.OS === 'ios' && styles.androidLogoConatiner,
-            ]}>
-            <Image
-              source={Images.LOGIN_LOGO}
-              style={{
-                resizeMode: 'contain',
-                alignSelf: 'center',
-                height: Matrics.ms(68),
-                width: Matrics.ms(290),
-              }}
-            />
-          </View>
-          <Text style={styles.loginText}>Login to your account</Text>
-          <Text style={styles.loginText2}>
-            Enter your email & password to login
-          </Text>
-          <View style={styles.SectionStyle}>
-            <Text
-              style={{
-                position: 'absolute',
-                bottom: Matrics.ms(50),
-                fontFamily: typography.fontFamily.Montserrat.Regular,
-                color: '#555555',
-              }}>
-              Email ID
+      <ScrollView
+        contentContainerStyle={{ flexGrow: 1 }}
+        keyboardShouldPersistTaps="handled"
+        showsVerticalScrollIndicator={false}
+      >
+        <View style={styles.mainBody(theme)}>
+          <KeyboardAvoidingView
+            style={styles.keyboardAvoidingView}
+            behavior={Platform.OS === 'android' ? 'height' : 'padding'}
+            enabled>
+            <View
+              style={[
+                styles.loginlogoContainer,
+                Platform.OS === 'ios' && styles.androidLogoConatiner,
+              ]}>
+              <Image
+                source={Images.LOGIN_LOGO}
+                style={{
+                  resizeMode: 'contain',
+                  alignSelf: 'center',
+                  height: Matrics.ms(68),
+                  width: Matrics.ms(290),
+                }}
+              />
+            </View>
+            <Text style={styles.loginText}>Login to your account</Text>
+            <Text style={styles.loginText2}>
+              Enter your email & password to login
             </Text>
-            <Image
-              source={Images.EMAIL}
-              resizeMode={'center'}
-              style={styles.loginInputIconStyle}
-            />
-            <TextInput
-              style={styles.inputStyle}
-              onChangeText={UserEmail => setUserEmail(UserEmail)}
-              value={userEmail}
-              placeholder={'Email'}
-              placeholderTextColor={'gray'}
-              autoCapitalize="none"
-              keyboardType="email-address"
-              returnKeyType="next"
-              onSubmitEditing={() =>
-                passwordInputRef.current && passwordInputRef.current.focus()
-              }
-              underlineColorAndroid="#f000"
-              blurOnSubmit={false}
-            />
-          </View>
-          <View style={styles.SectionStyle}>
-            <Text
-              style={{
-                position: 'absolute',
-                bottom: Matrics.ms(50),
-                fontFamily: typography.fontFamily.Montserrat.Regular,
-                color: '#555555',
-              }}>
-              Password
-            </Text>
+            <View style={styles.SectionStyle}>
+              <Text
+                style={{
+                  position: 'absolute',
+                  bottom: Matrics.ms(50),
+                  fontFamily: typography.fontFamily.Montserrat.Regular,
+                  color: '#555555',
+                }}>
+                Email ID
+              </Text>
+              <Image
+                source={Images.EMAIL}
+                resizeMode={'center'}
+                style={styles.loginInputIconStyle}
+              />
+              <TextInput
+                style={styles.inputStyle}
+                onChangeText={UserEmail => setUserEmail(UserEmail)}
+                value={userEmail}
+                placeholder={'Email'}
+                placeholderTextColor={'gray'}
+                autoCapitalize="none"
+                keyboardType="email-address"
+                returnKeyType="next"
+                onSubmitEditing={() =>
+                  passwordInputRef.current && passwordInputRef.current.focus()
+                }
+                underlineColorAndroid="#f000"
+                blurOnSubmit={false}
+              />
+            </View>
+            <View style={styles.SectionStyle}>
+              <Text
+                style={{
+                  position: 'absolute',
+                  bottom: Matrics.ms(50),
+                  fontFamily: typography.fontFamily.Montserrat.Regular,
+                  color: '#555555',
+                }}>
+                Password
+              </Text>
 
-            <Image
-              source={Images.PASSWORD}
-              resizeMode={'contain'}
-              style={styles.loginInputIconStyle}
-            />
-            <TextInput
-              style={styles.inputStyle}
-              onChangeText={userPassword => setUserPassword(userPassword)}
-              placeholder={'Password'}
-              placeholderTextColor={'gray'}
-              keyboardType="default"
-              ref={passwordInputRef}
-              onSubmitEditing={Keyboard.dismiss}
-              blurOnSubmit={false}
-              secureTextEntry={true}
-              underlineColorAndroid="#f000"
-              returnKeyType="next"
-              value={userPassword}
-            />
-          </View>
+              <Image
+                source={Images.PASSWORD}
+                resizeMode={'contain'}
+                style={styles.loginInputIconStyle}
+              />
+              <TextInput
+                style={styles.inputStyle}
+                onChangeText={userPassword => setUserPassword(userPassword)}
+                placeholder={'Password'}
+                placeholderTextColor={'gray'}
+                keyboardType="default"
+                ref={passwordInputRef}
+                onSubmitEditing={Keyboard.dismiss}
+                blurOnSubmit={false}
+                secureTextEntry={true}
+                underlineColorAndroid="#f000"
+                returnKeyType="next"
+                value={userPassword}
+              />
+            </View>
 
-          <TouchableOpacity
-            style={styles.buttonStyle}
-            activeOpacity={0.5}
-            onPress={onLoginPress}>
-            <Text style={styles.buttonTextStyle}>Login</Text>
-          </TouchableOpacity>
-        </KeyboardAvoidingView>
-      </View>
+            <TouchableOpacity
+              style={styles.buttonStyle}
+              activeOpacity={0.5}
+              onPress={onLoginPress}>
+              <Text style={styles.buttonTextStyle}>Login</Text>
+            </TouchableOpacity>
+          </KeyboardAvoidingView>
+        </View>
+      </ScrollView>
       <Loader visible={loading} />
       <DropdownAlert ref={ref => setDropdownAlert(ref)} />
     </FullScreenSpinner>

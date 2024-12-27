@@ -11,7 +11,7 @@ import moment from 'moment';
 
 const OfflineDataDisplay = () => {
   const {sessions} = useSelector(state => state.OfflineData);
-  const [sortOrder, setSortOrder] = useState('desc'); 
+  const [sortOrder, setSortOrder] = useState('desc');
   // Process and sort the data
   const processedData = useMemo(() => {
     const allData = [];
@@ -39,6 +39,7 @@ const OfflineDataDisplay = () => {
   const toggleSortOrder = () => {
     setSortOrder(current => (current === 'desc' ? 'asc' : 'desc'));
   };
+  console.log('Sessoin lenght', Object.keys(sessions).length === 0);
 
   if (!sessions || Object.keys(sessions).length === 0) {
     return (
