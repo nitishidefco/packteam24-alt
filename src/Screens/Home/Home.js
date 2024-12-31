@@ -246,7 +246,7 @@ const Home = ({navigation, route}) => {
     setLoading(true);
     let formdata = new FormData();
     formdata.append('session_id', SessionId);
-    formdata.append('device_id', deviceId);
+    formdata.append('device_id', '13213211');
     homecall(formdata);
   }
 
@@ -307,7 +307,7 @@ const Home = ({navigation, route}) => {
       <SafeAreaView style={{flex: 1, backgroundColor: '#EBF0FA'}}>
         <CustomHeader />
         {/* TODO:Remove this later */}
-        <OfflineDataDisplay />
+        {/* <OfflineDataDisplay /> */}
         <View style={styles.container}>
           <View>
             <NetworkStatusComponent />

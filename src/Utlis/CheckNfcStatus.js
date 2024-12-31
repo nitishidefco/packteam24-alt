@@ -9,11 +9,15 @@ export const useNfcStatus = () => {
   useEffect(() => {
     // Initialize NFC Manager
     NfcManager.start();
-
+    const initialCheck = async () => {
+      const isEnblaed = await NfcManager.isEnabled();
+      console.log('isEnabled', isEnblaed);
+      dispatch(setNfcStatus(isEnblaed));
+    };
+    initialCheck();
     // Add event listener for NFC state changes on Android
     if (Platform.OS === 'android') {
       NfcManager.setEventListener(NfcEvents.StateChanged, ({state} = {}) => {
-
         if (state === 'on') {
           dispatch(setNfcStatus(true));
         } else if (state === 'off') {
@@ -21,7 +25,6 @@ export const useNfcStatus = () => {
         }
       });
     }
-
 
     // Cleanup listener on unmount
     return () => {

@@ -85,7 +85,7 @@ const Login = ({route}) => {
       let formdata = new FormData();
       formdata.append('email', userEmail);
       formdata.append('password', userPassword);
-      formdata.append('device_id', deviceId);
+      formdata.append('device_id', '13213211');
       loginCall(formdata);
     } finally {
       // setLoading(false);
