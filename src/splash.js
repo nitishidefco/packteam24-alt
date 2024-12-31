@@ -5,9 +5,11 @@ import {View, StyleSheet, Image} from 'react-native';
 import {useNavigation} from '@react-navigation/native';
 import Images from './Config/Images';
 import {reduxStorage} from './Redux/Storage';
+
+import {useDispatch, useSelector} from 'react-redux';
 const Splash = () => {
   const [userToken, setuserToken] = useState(null);
-
+  const dispatch = useDispatch();
   // fetch user token initally
   useEffect(() => {
     async function getToken() {
@@ -16,6 +18,9 @@ const Splash = () => {
     }
     getToken();
   }, [userToken]);
+  // fetch device info
+ 
+
   const navigation = useNavigation();
 
   useEffect(() => {

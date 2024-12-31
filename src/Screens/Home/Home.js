@@ -24,11 +24,17 @@ import {showNotificationAboutTagScannedWhileOffline} from '../../Utlis/Notificat
 import {useDispatch, useSelector} from 'react-redux';
 import moment from 'moment';
 import OfflineDataDisplay from '../../Components/OfflineDataSee';
+import {setDeviceInfo} from '../../Redux/Reducers/NetworkSlice';
+import DeviceInfo from 'react-native-device-info';
+import {useNfcStatus} from '../../Utlis/CheckNfcStatus';
 
 const Home = ({navigation, route}) => {
   const dispatch = useDispatch();
+  useNfcStatus();
   const sessions = useSelector(state => state?.OfflineData?.sessions);
   const isConnected = useSelector(state => state?.Network?.isConnected);
+  const isNfcEnabled = useSelector(state => state?.Network?.isNfcEnabled);
+
   const [tagDetected, setTagDetected] = useState();
   const [tagId, setTagId] = useState('');
   const [loading, setLoading] = useState(false);
@@ -41,6 +47,7 @@ const Home = ({navigation, route}) => {
   const [refreshing, setRefreshing] = useState(false);
   const CurrentMode = states?.data?.data[1];
   const [appState, setAppState] = useState(AppState.currentState);
+  const {deviceId, manufacturer} = useSelector(state => state?.Network);
 
   // Handles the scanned NFC tag and extracts its ID
   const handleNfcTag = async tag => {
@@ -50,6 +57,22 @@ const Home = ({navigation, route}) => {
       setTagId(id);
     }
   };
+  useEffect(() => {
+    const getDeviceInfo = async () => {
+      const deviceId = await DeviceInfo.getUniqueId();
+      const manufacturer = await DeviceInfo.getManufacturer();
+
+      console.log('devialsdfkj', deviceId);
+
+      dispatch(
+        setDeviceInfo({
+          deviceId: deviceId,
+          manufacturer: manufacturer,
+        }),
+      );
+    };
+    getDeviceInfo();
+  }, []);
 
   // Initializes NFC scanning for iOS
   const initNfcScan = useCallback(async () => {
@@ -143,7 +166,6 @@ const Home = ({navigation, route}) => {
       setLoading(false);
     }
   };
-
   // Processes scanned tags based on network connectivity
   useEffect(() => {
     if (SessionId) {
@@ -166,21 +188,13 @@ const Home = ({navigation, route}) => {
               // Process each stored tag one by one with delay
               for (const item of storedSessions) {
                 try {
-                  console.log(`Processing tag: ${item.tagId}`);
                   await getUid(item.tagId);
-                  console.log(
-                    `Successfully processed stored tag: ${item.tagId}`,
-                  );
-
                   // Add 6-second delay before processing next tag
                   // Skip delay for the last item
                   if (
                     storedSessions.indexOf(item) <
                     storedSessions.length - 1
                   ) {
-                    console.log(
-                      'Waiting 6 seconds before processing next tag...',
-                    );
                     await new Promise(resolve => setTimeout(resolve, 6000));
                   }
                 } catch (error) {
@@ -227,13 +241,12 @@ const Home = ({navigation, route}) => {
       processTag();
     }
   }, [tagDetected, isConnected]);
-
   // Fetches dashboard data from the server
   function dashboardApi() {
     setLoading(true);
     let formdata = new FormData();
     formdata.append('session_id', SessionId);
-    formdata.append('device_id', '13213211');
+    formdata.append('device_id', deviceId);
     homecall(formdata);
   }
 
@@ -261,8 +274,34 @@ const Home = ({navigation, route}) => {
       </DrawerSceneWrapper>
     );
   }
+  if (Platform.OS === 'android') {
+    if (!isNfcEnabled) {
+      return (
+        <DrawerSceneWrapper>
+          <CustomHeader />
 
-  // Main render for the Home component
+          <View style={styles.container}>
+            <Text style={styles.title}>NFC is Required</Text>
+            <Text style={styles.description}>
+              Near Field Communication (NFC) allows your phone to communicate
+              with nearby devices. You'll need to enable it to use this feature.
+            </Text>
+
+            <TouchableOpacity
+              style={styles.scanButton}
+              onPress={() => NfcManager.goToNfcSetting()}>
+              <Text style={styles.buttonText}>Open NFC Settings</Text>
+            </TouchableOpacity>
+
+            <Text style={styles.hint}>
+              After enabling NFC, return to this screen to continue
+            </Text>
+          </View>
+        </DrawerSceneWrapper>
+      );
+    }
+  }
+
   return (
     <DrawerSceneWrapper>
       <SafeAreaView style={{flex: 1, backgroundColor: '#EBF0FA'}}>
@@ -276,6 +315,7 @@ const Home = ({navigation, route}) => {
           <View style={styles.nfcPromptContainer}>
             <Image source={Images.NFC} style={styles.userIcon} />
             <Text style={styles.nfcPromptText}>Ready to Scan NFC Tags</Text>
+
             {Platform.OS === 'ios' && (
               <TouchableOpacity
                 style={styles.scanButton}
@@ -348,6 +388,29 @@ const styles = StyleSheet.create({
     color: '#fff',
     fontSize: 16,
     fontWeight: 'bold',
+  },
+  title: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    marginBottom: 16,
+  },
+  description: {
+    fontSize: 16,
+    textAlign: 'center',
+    marginBottom: 24,
+    color: '#666',
+  },
+  button: {
+    backgroundColor: '#007AFF',
+    paddingVertical: 12,
+    paddingHorizontal: 24,
+    borderRadius: 8,
+    marginBottom: 16,
+  },
+  hint: {
+    fontSize: 14,
+    color: '#666',
+    textAlign: 'center',
   },
 });
 

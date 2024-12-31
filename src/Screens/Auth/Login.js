@@ -25,7 +25,8 @@ import DropdownAlert from 'react-native-dropdownalert';
 import {useAuthActions, useHomeActions} from '../../Redux/Hooks';
 import {Loader} from '../../Components/Common';
 import {Popup, Validator, toastMessage} from '../../Helpers';
-
+import {setDeviceInfo} from '../../Redux/Reducers/NetworkSlice';
+import DeviceInfo from 'react-native-device-info';
 const Login = ({route}) => {
   // --------------- FUNCTION DECLARATION ---------------
   const navigation = useNavigation();
@@ -37,6 +38,7 @@ const Login = ({route}) => {
 
   const {dark, theme, toggle} = useContext(ThemeContext);
   const isConnected = useSelector(state => state?.Network?.isConnected);
+  const {deviceId, manufacturer} = useSelector(state => state?.Network);
   const [errortext, setErrortext] = useState('');
   const passwordInputRef = createRef();
   const dispatch = useDispatch();
@@ -60,7 +62,20 @@ const Login = ({route}) => {
       toastMessage.error('Login Unsuccessful');
     }
   }, [Auth?.isLoginSuccess]);
-
+  // ---------------Getting Device info---------------
+  useEffect(() => {
+    const getDeviceInfo = async () => {
+      const deviceId = await DeviceInfo.getUniqueId();
+      const manufacturer = await DeviceInfo.getManufacturer();
+      dispatch(
+        setDeviceInfo({
+          deviceId: deviceId,
+          manufacturer: manufacturer,
+        }),
+      );
+    };
+    getDeviceInfo();
+  }, []);
   // --------------- METHODS ---------------
   const loginAPI = () => {
     console.log(userEmail, userPassword);
@@ -70,7 +85,7 @@ const Login = ({route}) => {
       let formdata = new FormData();
       formdata.append('email', userEmail);
       formdata.append('password', userPassword);
-      formdata.append('device_id', '13213211');
+      formdata.append('device_id', deviceId);
       loginCall(formdata);
     } finally {
       // setLoading(false);
@@ -112,10 +127,9 @@ const Login = ({route}) => {
   return (
     <FullScreenSpinner>
       <ScrollView
-        contentContainerStyle={{ flexGrow: 1 }}
+        contentContainerStyle={{flexGrow: 1}}
         keyboardShouldPersistTaps="handled"
-        showsVerticalScrollIndicator={false}
-      >
+        showsVerticalScrollIndicator={false}>
         <View style={styles.mainBody(theme)}>
           <KeyboardAvoidingView
             style={styles.keyboardAvoidingView}

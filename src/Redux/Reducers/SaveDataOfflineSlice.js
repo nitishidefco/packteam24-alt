@@ -14,7 +14,6 @@ const SaveDataOfflineSlice = createSlice({
   reducers: {
     addDataToOfflineStorage: (state, action) => {
       const {sessionId, time, tagId} = action.payload;
-      console.log('State sessions', state.sessions);
 
       // Step 1: Validate the tag action first
       const sessionItems = state.sessions[sessionId]?.items || [];

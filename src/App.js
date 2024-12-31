@@ -8,7 +8,6 @@ import Splash from './splash';
 
 import HomeDrawer from './Components/Common/HomeDrawer';
 import {Provider} from 'react-redux';
-// import {Store} from './Redux/Store';
 import {Store} from './Redux/Store';
 import Login from './Screens/Auth/Login';
 import Toast from 'react-native-toast-message';
