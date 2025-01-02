@@ -306,7 +306,6 @@ const Home = ({navigation, route}) => {
     <DrawerSceneWrapper>
       <SafeAreaView style={{flex: 1, backgroundColor: '#EBF0FA'}}>
         <CustomHeader />
-        {/* TODO:Remove this later */}
         {/* <OfflineDataDisplay /> */}
         <View style={styles.container}>
           <View>
