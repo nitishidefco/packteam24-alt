@@ -5,6 +5,7 @@ import DailyListReducer from './DailyListSlice';
 import ScanReducer from './ScanSlice';
 import NetworkReducer from './NetworkSlice';
 import SaveDataOfflineReducer from './SaveDataOfflineSlice';
+import WorkStateReducer from './WorkStateSlice';
 let appReducer = combineReducers({
   Auth: AuthReducer,
   Home: HomeReducer,
@@ -12,6 +13,7 @@ let appReducer = combineReducers({
   Scan: ScanReducer,
   Network: NetworkReducer,
   OfflineData: SaveDataOfflineReducer,
+  WorkState: WorkStateReducer,
 });
 
 const rootReducer = (state, action) => {

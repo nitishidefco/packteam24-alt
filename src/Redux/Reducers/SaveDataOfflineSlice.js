@@ -6,6 +6,7 @@ const initialState = {
   sessions: {},
   isConnected: true,
   isSyncing: false,
+  validationResult: {},
 };
 
 const SaveDataOfflineSlice = createSlice({
@@ -13,12 +14,21 @@ const SaveDataOfflineSlice = createSlice({
   initialState,
   reducers: {
     addDataToOfflineStorage: (state, action) => {
-      const {sessionId, time, tagId} = action.payload;
+      const {sessionId, time, tagId, lastOnlineMode} = action.payload;
+      console.log('insdie offline', time);
 
       // Step 1: Validate the tag action first
       const sessionItems = state.sessions[sessionId]?.items || [];
-      const validationResult = ValidateTagAction(tagId, sessionItems);
 
+      const validationResult = ValidateTagAction(
+        tagId,
+        sessionItems,
+        lastOnlineMode,
+      );
+
+      console.log('last online mode insdie the offline scan', lastOnlineMode);
+
+      state.validationResult = validationResult;
       if (!validationResult.valid) {
         console.warn('Validation failed:', validationResult.message);
         return; // Early exit if validation fails
