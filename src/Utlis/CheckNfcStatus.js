@@ -11,7 +11,6 @@ export const useNfcStatus = () => {
     NfcManager.start();
     const initialCheck = async () => {
       const isEnblaed = await NfcManager.isEnabled();
-      console.log('isEnabled', isEnblaed);
       dispatch(setNfcStatus(isEnblaed));
     };
     initialCheck();

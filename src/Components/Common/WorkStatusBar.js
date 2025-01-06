@@ -2,30 +2,30 @@ import {View, Text, StyleSheet} from 'react-native';
 import React, {useEffect, useState, useMemo} from 'react';
 import {House, Coffee, Hammer} from 'lucide-react-native';
 import {useScanTagActions} from '../../Redux/Hooks/useScanTagActions';
-import {useSelector} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
+import {setLastOnlineMode} from '../../Redux/Reducers/WorkStateSlice';
+import useValidateTag from '../Hooks/useValidateTag';
 
-const WorkStatusBar = ({tagId}) => {
+const WorkStatusBar = ({validationResult}) => {
+  const dispatch = useDispatch();
+
   const {state: states} = useScanTagActions();
   const onlineMode = states?.data?.data?.mode;
-  const lastOnlineMode = useSelector(state => state?.WorkState?.lastOnlineMode);
   const [workMode, setWorkMode] = useState();
   const isConnected = useSelector(state => state?.Network?.isConnected);
-  const validationResult = useSelector(
-    state => state?.OfflineData?.validationResult,
-  );
 
-  // console.log('validatoin result', validationResult);
-  // console.log('lastOnlineMode', lastOnlineMode);
-  // console.log('onlinemode', onlineMode);
-  
+  console.log('validatoin result', validationResult);
 
   useEffect(() => {
     if (isConnected) {
       if (onlineMode === 'work_start') {
+        dispatch(setLastOnlineMode('work_start'));
         setWorkMode('Work Started');
       } else if (onlineMode === 'break_start') {
+        dispatch(setLastOnlineMode('break_start'));
         setWorkMode('Break Started');
       } else if (onlineMode === 'work_end') {
+        dispatch(setLastOnlineMode('work_end'));
         setWorkMode('Work Ended');
       }
     } else {
@@ -48,7 +48,7 @@ const WorkStatusBar = ({tagId}) => {
         }
       }
     }
-  }, [isConnected, tagId, onlineMode, validationResult]);
+  }, [isConnected, onlineMode, validationResult]);
 
   const getStatusIcon = () => {
     switch (workMode) {

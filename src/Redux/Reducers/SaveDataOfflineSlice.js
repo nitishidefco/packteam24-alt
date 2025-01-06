@@ -15,24 +15,6 @@ const SaveDataOfflineSlice = createSlice({
   reducers: {
     addDataToOfflineStorage: (state, action) => {
       const {sessionId, time, tagId, lastOnlineMode} = action.payload;
-      console.log('insdie offline', time);
-
-      // Step 1: Validate the tag action first
-      const sessionItems = state.sessions[sessionId]?.items || [];
-
-      const validationResult = ValidateTagAction(
-        tagId,
-        sessionItems,
-        lastOnlineMode,
-      );
-
-      console.log('last online mode insdie the offline scan', lastOnlineMode);
-
-      state.validationResult = validationResult;
-      if (!validationResult.valid) {
-        console.warn('Validation failed:', validationResult.message);
-        return; // Early exit if validation fails
-      }
 
       // Step 2: Ensure the session exists or create it
       if (!state.sessions[sessionId]) {
@@ -40,7 +22,7 @@ const SaveDataOfflineSlice = createSlice({
       }
 
       // Step 3: Check only the most recent tag to prevent accidental double-scans
-      const items = state.sessions[sessionId].items;
+      const items = state.sessions[sessionId]?.items;
       if (items.length > 0) {
         const mostRecentTag = items[items.length - 1];
         if (mostRecentTag.tagId === tagId) {

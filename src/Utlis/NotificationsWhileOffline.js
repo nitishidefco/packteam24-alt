@@ -1,4 +1,6 @@
+import useValidateTag from '../Components/Hooks/useValidateTag';
 import {toastMessage, ValidateTagAction} from '../Helpers';
+
 export const showNotificationAboutTagScannedWhileOffline = (
   tagId,
   sessions,
@@ -7,7 +9,7 @@ export const showNotificationAboutTagScannedWhileOffline = (
 ) => {
   const session = sessions[sessionId];
   const sessionItems = session?.items || [];
-  const validationResult = ValidateTagAction(tagId, sessionItems, lastOnlineMode);
+ const validationResult = useValidateTag(tagId, sessionItems, lastOnlineMode);
   if (validationResult.valid) {
     toastMessage.success(validationResult.message);
   } else {

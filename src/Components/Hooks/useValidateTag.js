@@ -1,11 +1,12 @@
+import {useSelector} from 'react-redux';
 import moment from 'moment';
-export const ValidateTagAction = (tagId, sessionItems, lastOnlineMode) => {
+
+const useValidateTag = (tagId, sessionItems, lastOnlineMode) => {
   const TAGS = {
     work_start: ['53:AE:E6:BB:40:00:01', '53:71:D8:BB:40:00:01'],
     break_start: ['53:1E:3D:BC:40:00:01', '53:30:85:BB:40:00:01'],
     work_end: ['53:88:66:BC:40:00:01', '53:8B:07:BC:40:00:01'],
   };
-  console.log('Inside validate lastOnlineMode', lastOnlineMode);
 
   const lastTag =
     sessionItems.length > 0 ? sessionItems[sessionItems.length - 1] : null;
@@ -13,7 +14,6 @@ export const ValidateTagAction = (tagId, sessionItems, lastOnlineMode) => {
     lastOnlineMode || (lastTag ? getTagType(lastTag.tagId) : null);
   const currentDate = moment().format('YYYY-MM-DD');
 
-  // Helper function to get tag type
   function getTagType(tagId) {
     if (TAGS.work_start.includes(tagId)) return 'work_start';
     if (TAGS.break_start.includes(tagId)) return 'break_start';
@@ -21,7 +21,6 @@ export const ValidateTagAction = (tagId, sessionItems, lastOnlineMode) => {
     return null;
   }
 
-  // Check if work has been ended today
   const isWorkEndedToday = sessionItems.some(
     item =>
       TAGS.work_end.includes(item.tagId) &&
@@ -64,7 +63,6 @@ export const ValidateTagAction = (tagId, sessionItems, lastOnlineMode) => {
     }
 
     if (effectiveLastState === 'work_start') {
-      console.log('inside the correct case');
       return {valid: true, message: 'Break started'};
     }
 
@@ -96,3 +94,5 @@ export const ValidateTagAction = (tagId, sessionItems, lastOnlineMode) => {
 
   return {valid: false, message: 'Unknown tag scanned'};
 };
+
+export default useValidateTag;

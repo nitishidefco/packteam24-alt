@@ -9,7 +9,6 @@ const workStateSlice = createSlice({
   reducers: {
     setLastOnlineMode: (state, action) => {
       console.log('action inside the workstate', action.payload);
-
       state.lastOnlineMode = action.payload;
     },
   },

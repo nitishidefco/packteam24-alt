@@ -39,7 +39,6 @@ const OfflineDataDisplay = () => {
   const toggleSortOrder = () => {
     setSortOrder(current => (current === 'desc' ? 'asc' : 'desc'));
   };
-  console.log('Sessoin lenght', Object.keys(sessions).length === 0);
 
   if (!sessions || Object.keys(sessions).length === 0) {
     return (

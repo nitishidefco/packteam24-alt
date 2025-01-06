@@ -29,6 +29,7 @@ import DeviceInfo from 'react-native-device-info';
 import {useNfcStatus} from '../../Utlis/CheckNfcStatus';
 import WorkStatusBar from '../../Components/Common/WorkStatusBar';
 import {setLastOnlineMode} from '../../Redux/Reducers/WorkStateSlice';
+import useValidateTag from '../../Components/Hooks/useValidateTag';
 
 const Home = ({navigation, route}) => {
   const dispatch = useDispatch();
@@ -50,8 +51,7 @@ const Home = ({navigation, route}) => {
   const [refreshing, setRefreshing] = useState(false);
   const CurrentMode = states?.data?.data?.mode;
   const [appState, setAppState] = useState(AppState.currentState);
-  const {deviceId, manufacturer} = useSelector(state => state?.Network);
-  const [isFirstOfflineScan, setFirstOfflineScan] = useState(true);
+  const [validationResult, setValidationResult] = useState(null);
   // Handles the scanned NFC tag and extracts its ID
   const handleNfcTag = async tag => {
     if (tag?.id) {
@@ -64,9 +64,6 @@ const Home = ({navigation, route}) => {
     const getDeviceInfo = async () => {
       const deviceId = await DeviceInfo.getUniqueId();
       const manufacturer = await DeviceInfo.getManufacturer();
-
-      console.log('devialsdfkj', deviceId);
-
       dispatch(
         setDeviceInfo({
           deviceId: deviceId,
@@ -175,8 +172,6 @@ const Home = ({navigation, route}) => {
       const processTag = async () => {
         if (isConnected) {
           try {
-            // Get stored sessions before clearing
-            dispatch(setLastOnlineMode(CurrentMode)); // Update lastOnlineMode with CurrentMode when online
             const storedSessions = sessions[SessionId]?.items || [];
 
             if (tagId !== '') {
@@ -184,7 +179,6 @@ const Home = ({navigation, route}) => {
               await getUid(tagId);
               setTagId('');
             }
-
             // If there are stored offline tags, process them sequentially
             if (storedSessions.length > 0) {
               console.log('Processing stored offline tags...');
@@ -245,46 +239,49 @@ const Home = ({navigation, route}) => {
             ) {
               tagMode = 'work_end';
             }
+            const sessionItems = sessions[SessionId]?.items || [];
 
-            // If this is the first offline scan, do not update lastOnlineMode
-            if (isFirstOfflineScan) {
-              // Just store the data without updating lastOnlineMode
-              dispatch(
-                addDataToOfflineStorage({
-                  sessionId: SessionId,
-                  time: moment().format('YYYY-MM-DD HH:mm:ss'),
-                  tagId: tagId,
-                  lastOnlineMode: lastOnlineMode, // lastOnlineMode remains the same
-                }),
+            const validationResult = useValidateTag(
+              tagId,
+              sessionItems,
+              lastOnlineMode,
+            );
+
+            if (!validationResult.valid) {
+              console.warn('Validation failed:', validationResult.message);
+              showNotificationAboutTagScannedWhileOffline(
+                tagId,
+                sessions,
+                SessionId,
+                lastOnlineMode,
               );
-              setFirstOfflineScan(false); // Mark that the first offline scan has occurred
-            } else {
-              // After the first offline scan, update lastOnlineMode
-              dispatch(setLastOnlineMode(tagMode)); // Update lastOnlineMode based on the first offline scan
-              dispatch(
-                addDataToOfflineStorage({
-                  sessionId: SessionId,
-                  time: moment().format('YYYY-MM-DD HH:mm:ss'),
-                  tagId: tagId,
-                  lastOnlineMode: tagMode, // Use the new lastOnlineMode after the first offline scan
-                }),
-              );
+              return;
             }
-
+            setValidationResult(validationResult);
+            // Just store the data without updating lastOnlineMode
+            dispatch(
+              addDataToOfflineStorage({
+                sessionId: SessionId,
+                time: moment().format('YYYY-MM-DD HH:mm:ss'),
+                tagId: tagId,
+                lastOnlineMode: lastOnlineMode,
+              }),
+            );
             showNotificationAboutTagScannedWhileOffline(
               tagId,
               sessions,
               SessionId,
               lastOnlineMode,
             );
+            dispatch(setLastOnlineMode(tagMode));
             setTagId('');
           }
         }
       };
-
       processTag();
     }
   }, [tagDetected, isConnected]);
+
   // Fetches dashboard data from the server
   function dashboardApi() {
     setLoading(true);
@@ -354,7 +351,7 @@ const Home = ({navigation, route}) => {
         <View style={styles.container}>
           <View>
             {/* <NetworkStatusComponent /> */}
-            <WorkStatusBar tagId={duplicateTagId} sessionId={SessionId} />
+            <WorkStatusBar validationResult={validationResult} />
           </View>
           <View style={styles.nfcPromptContainer}>
             <Image source={Images.NFC} style={styles.userIcon} />
