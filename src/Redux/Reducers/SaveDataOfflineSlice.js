@@ -14,7 +14,7 @@ const SaveDataOfflineSlice = createSlice({
   initialState,
   reducers: {
     addDataToOfflineStorage: (state, action) => {
-      const {sessionId, time, tagId, lastOnlineMode} = action.payload;
+      const {sessionId, time, tagId} = action.payload;
 
       // Step 2: Ensure the session exists or create it
       if (!state.sessions[sessionId]) {

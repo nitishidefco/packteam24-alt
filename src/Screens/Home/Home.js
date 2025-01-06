@@ -30,7 +30,7 @@ import {useNfcStatus} from '../../Utlis/CheckNfcStatus';
 import WorkStatusBar from '../../Components/Common/WorkStatusBar';
 import {setLastOnlineMode} from '../../Redux/Reducers/WorkStateSlice';
 import useValidateTag from '../../Components/Hooks/useValidateTag';
-
+import AsyncStorage from '@react-native-async-storage/async-storage';
 const Home = ({navigation, route}) => {
   const dispatch = useDispatch();
   useNfcStatus();
@@ -166,7 +166,7 @@ const Home = ({navigation, route}) => {
       setLoading(false);
     }
   };
-  // Processes scanned tags based on network connectivity
+
   useEffect(() => {
     if (SessionId) {
       const processTag = async () => {
@@ -177,6 +177,23 @@ const Home = ({navigation, route}) => {
             if (tagId !== '') {
               // Process the current tag first when online
               await getUid(tagId);
+              const validationResult = useValidateTag(
+                tagId,
+                storedSessions,
+                lastOnlineMode,
+              );
+
+              if (!validationResult.valid) {
+                console.warn('Validation failed:', validationResult.message);
+                showNotificationAboutTagScannedWhileOffline(
+                  tagId,
+                  sessions,
+                  SessionId,
+                  lastOnlineMode,
+                );
+                return;
+              }
+              setValidationResult(validationResult);
               setTagId('');
             }
             // If there are stored offline tags, process them sequentially
@@ -212,6 +229,7 @@ const Home = ({navigation, route}) => {
             }
 
             // Clear storage after all tags are processed
+            dispatch(setLastOnlineMode(CurrentMode));
             dispatch(clearOfflineStorage());
           } catch (error) {
             console.error('Error processing tags:', error);
@@ -257,6 +275,8 @@ const Home = ({navigation, route}) => {
               );
               return;
             }
+            console.log('validation result in home', validationResult);
+
             setValidationResult(validationResult);
             // Just store the data without updating lastOnlineMode
             dispatch(
@@ -273,6 +293,8 @@ const Home = ({navigation, route}) => {
               SessionId,
               lastOnlineMode,
             );
+            console.log('tag mode in home', tagMode);
+
             dispatch(setLastOnlineMode(tagMode));
             setTagId('');
           }

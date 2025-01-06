@@ -4,17 +4,13 @@ import {House, Coffee, Hammer} from 'lucide-react-native';
 import {useScanTagActions} from '../../Redux/Hooks/useScanTagActions';
 import {useDispatch, useSelector} from 'react-redux';
 import {setLastOnlineMode} from '../../Redux/Reducers/WorkStateSlice';
-import useValidateTag from '../Hooks/useValidateTag';
-
 const WorkStatusBar = ({validationResult}) => {
   const dispatch = useDispatch();
 
-  const {state: states} = useScanTagActions();
+  const {state: states} = useScanTagActions(null);
   const onlineMode = states?.data?.data?.mode;
   const [workMode, setWorkMode] = useState();
   const isConnected = useSelector(state => state?.Network?.isConnected);
-
-  console.log('validatoin result', validationResult);
 
   useEffect(() => {
     if (isConnected) {
@@ -29,19 +25,30 @@ const WorkStatusBar = ({validationResult}) => {
         setWorkMode('Work Ended');
       }
     } else {
+      console.log('***********inside isConnected false**************');
+      console.log('Validation result in wsb', validationResult);
       if (validationResult?.valid) {
         switch (validationResult?.message) {
           case 'Work started':
             setWorkMode('Work Started');
+            dispatch(setLastOnlineMode('work_start'));
+
             break;
           case 'Break ended, work resumed':
             setWorkMode('Work Started');
+            dispatch(setLastOnlineMode('work_start'));
+
             break;
           case 'Break started':
             setWorkMode('Break Started');
+            dispatch(setLastOnlineMode('break_start'));
+
             break;
           case 'Work ended':
             setWorkMode('Work Ended');
+            console.log('offine work edn');
+            dispatch(setLastOnlineMode('work_end'));
+
             break;
           default:
             setWorkMode('Not Started');
