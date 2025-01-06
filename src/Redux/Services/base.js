@@ -11,7 +11,7 @@ const DELETE = 'delete';
 const handleResponse = response => {
   const contentType = response.headers.get('Content-Type');
   // console.log('responseseesss', response);
-  console.log('CT', contentType);
+  // console.log('CT', contentType);
 
   if (response.status !== 200) {
     return response.json().then(errorData => {

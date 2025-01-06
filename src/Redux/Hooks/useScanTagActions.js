@@ -5,7 +5,7 @@ export const useScanTagActions = () => {
   const dispatch = useDispatch();
   const state = useSelector(state => state?.Scan);
   const scanCall = params => {
-    console.log('paramsUseScanTagFromHome', params);
+    // console.log('paramsUseScanTagFromHome', params);
     dispatch(getScan(params));
   };
 

@@ -27,6 +27,9 @@ import OfflineDataDisplay from '../../Components/OfflineDataSee';
 import {setDeviceInfo} from '../../Redux/Reducers/NetworkSlice';
 import DeviceInfo from 'react-native-device-info';
 import {useNfcStatus} from '../../Utlis/CheckNfcStatus';
+import WorkStatusBar from '../../Components/Common/WorkStatusBar';
+import {setLastOnlineMode} from '../../Redux/Reducers/WorkStateSlice';
+import useValidateTag from '../../Components/Hooks/useValidateTag';
 
 const Home = ({navigation, route}) => {
   const dispatch = useDispatch();
@@ -34,7 +37,8 @@ const Home = ({navigation, route}) => {
   const sessions = useSelector(state => state?.OfflineData?.sessions);
   const isConnected = useSelector(state => state?.Network?.isConnected);
   const isNfcEnabled = useSelector(state => state?.Network?.isNfcEnabled);
-
+  const lastOnlineMode = useSelector(state => state?.WorkState?.lastOnlineMode);
+  const [duplicateTagId, setDuplicatTagId] = useState('');
   const [tagDetected, setTagDetected] = useState();
   const [tagId, setTagId] = useState('');
   const [loading, setLoading] = useState(false);
@@ -45,10 +49,9 @@ const Home = ({navigation, route}) => {
   const {Auth, Home} = state;
   const SessionId = Auth.data?.data?.sesssion_id;
   const [refreshing, setRefreshing] = useState(false);
-  const CurrentMode = states?.data?.data[1];
+  const CurrentMode = states?.data?.data?.mode;
   const [appState, setAppState] = useState(AppState.currentState);
-  const {deviceId, manufacturer} = useSelector(state => state?.Network);
-
+  const [validationResult, setValidationResult] = useState(null);
   // Handles the scanned NFC tag and extracts its ID
   const handleNfcTag = async tag => {
     if (tag?.id) {
@@ -61,9 +64,6 @@ const Home = ({navigation, route}) => {
     const getDeviceInfo = async () => {
       const deviceId = await DeviceInfo.getUniqueId();
       const manufacturer = await DeviceInfo.getManufacturer();
-
-      console.log('devialsdfkj', deviceId);
-
       dispatch(
         setDeviceInfo({
           deviceId: deviceId,
@@ -172,15 +172,13 @@ const Home = ({navigation, route}) => {
       const processTag = async () => {
         if (isConnected) {
           try {
-            // Get stored sessions before clearing
             const storedSessions = sessions[SessionId]?.items || [];
 
             if (tagId !== '') {
-              // Process the current tag first
+              // Process the current tag first when online
               await getUid(tagId);
               setTagId('');
             }
-
             // If there are stored offline tags, process them sequentially
             if (storedSessions.length > 0) {
               console.log('Processing stored offline tags...');
@@ -219,28 +217,71 @@ const Home = ({navigation, route}) => {
             console.error('Error processing tags:', error);
           }
         } else {
-          // Offline mode - store the tag
+          // Offline mode - store the tag and update lastOnlineMode for subsequent scans
           if (tagId !== '') {
+            setDuplicatTagId(tagId);
+
+            // Determine the mode based on the tagId scanned
+            let tagMode = '';
+            if (
+              tagId === '53:AE:E6:BB:40:00:01' ||
+              tagId === '53:71:D8:BB:40:00:01'
+            ) {
+              tagMode = 'work_start';
+            } else if (
+              tagId === '53:1E:3D:BC:40:00:01' ||
+              tagId === '53:30:85:BB:40:00:01'
+            ) {
+              tagMode = 'break_start';
+            } else if (
+              tagId === '53:88:66:BC:40:00:01' ||
+              tagId === '53:8B:07:BC:40:00:01'
+            ) {
+              tagMode = 'work_end';
+            }
+            const sessionItems = sessions[SessionId]?.items || [];
+
+            const validationResult = useValidateTag(
+              tagId,
+              sessionItems,
+              lastOnlineMode,
+            );
+
+            if (!validationResult.valid) {
+              console.warn('Validation failed:', validationResult.message);
+              showNotificationAboutTagScannedWhileOffline(
+                tagId,
+                sessions,
+                SessionId,
+                lastOnlineMode,
+              );
+              return;
+            }
+            setValidationResult(validationResult);
+            // Just store the data without updating lastOnlineMode
             dispatch(
               addDataToOfflineStorage({
                 sessionId: SessionId,
                 time: moment().format('YYYY-MM-DD HH:mm:ss'),
                 tagId: tagId,
+                lastOnlineMode: lastOnlineMode,
               }),
             );
             showNotificationAboutTagScannedWhileOffline(
               tagId,
               sessions,
               SessionId,
+              lastOnlineMode,
             );
+            dispatch(setLastOnlineMode(tagMode));
             setTagId('');
           }
         }
       };
-
       processTag();
     }
   }, [tagDetected, isConnected]);
+
   // Fetches dashboard data from the server
   function dashboardApi() {
     setLoading(true);
@@ -309,7 +350,8 @@ const Home = ({navigation, route}) => {
         {/* <OfflineDataDisplay /> */}
         <View style={styles.container}>
           <View>
-            <NetworkStatusComponent />
+            {/* <NetworkStatusComponent /> */}
+            <WorkStatusBar validationResult={validationResult} />
           </View>
           <View style={styles.nfcPromptContainer}>
             <Image source={Images.NFC} style={styles.userIcon} />
