@@ -1,4 +1,3 @@
-import {useSelector} from 'react-redux';
 import moment from 'moment';
 
 const useValidateTag = (tagId, sessionItems, lastOnlineMode) => {
@@ -13,6 +12,7 @@ const useValidateTag = (tagId, sessionItems, lastOnlineMode) => {
   const effectiveLastState =
     lastOnlineMode || (lastTag ? getTagType(lastTag.tagId) : null);
   const currentDate = moment().format('YYYY-MM-DD');
+  console.log('Effective last state', effectiveLastState);
 
   function getTagType(tagId) {
     if (TAGS.work_start.includes(tagId)) return 'work_start';
