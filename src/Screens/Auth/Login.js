@@ -27,6 +27,7 @@ import {Loader} from '../../Components/Common';
 import {Popup, Validator, toastMessage} from '../../Helpers';
 import {setDeviceInfo} from '../../Redux/Reducers/NetworkSlice';
 import DeviceInfo from 'react-native-device-info';
+
 const Login = ({route}) => {
   // --------------- FUNCTION DECLARATION ---------------
   const navigation = useNavigation();
@@ -46,6 +47,7 @@ const Login = ({route}) => {
   const [userEmail, setUserEmail] = useState(null);
   const [userPassword, setUserPassword] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [keyboardVisible, setKeyboardVisible] = useState(false);
   const [dropdownAlert, setDropdownAlert] = useState(null);
   const {state, loginCall} = useAuthActions();
   const {Auth} = useSelector(state => state);
@@ -124,17 +126,41 @@ const Login = ({route}) => {
     StatusBar.setHidden(true);
   };
 
+  useEffect(() => {
+    const keyboardDidShowListener = Keyboard.addListener(
+      'keyboardDidShow',
+      () => {
+        setKeyboardVisible(true);
+      },
+    );
+    const keyboardDidHideListener = Keyboard.addListener(
+      'keyboardDidHide',
+      () => {
+        setKeyboardVisible(false);
+      },
+    );
+
+    return () => {
+      keyboardDidShowListener.remove();
+      keyboardDidHideListener.remove();
+    };
+  }, []);
   return (
     <FullScreenSpinner>
-      <ScrollView
-        contentContainerStyle={{flexGrow: 1}}
-        keyboardShouldPersistTaps="handled"
-        showsVerticalScrollIndicator={false}>
-        <View style={styles.mainBody(theme)}>
-          <KeyboardAvoidingView
-            style={styles.keyboardAvoidingView}
-            behavior={Platform.OS === 'android' ? 'height' : 'padding'}
-            enabled>
+      <KeyboardAvoidingView
+        style={styles.keyboardAvoidingView}
+        behavior={Platform.OS === 'android' ? 'height' : 'padding'}
+        enabled
+        keyboardVerticalOffset={Platform.OS === 'ios' ? 64 : 0}>
+        <ScrollView
+          contentContainerStyle={{flexGrow: 1}}
+          keyboardShouldPersistTaps="handled"
+          showsVerticalScrollIndicator={false}>
+          <View
+            style={[
+              styles.mainBody(theme),
+              keyboardVisible && {paddingBottom: 80},
+            ]}>
             <View
               style={[
                 styles.loginlogoContainer,
@@ -154,7 +180,7 @@ const Login = ({route}) => {
             <Text style={styles.loginText2}>
               Enter your email & password to login
             </Text>
-            <View style={styles.SectionStyle}>
+            <View style={[styles.SectionStyle]}>
               <Text
                 style={{
                   position: 'absolute',
@@ -216,18 +242,15 @@ const Login = ({route}) => {
                 value={userPassword}
               />
             </View>
-
             <TouchableOpacity
               style={styles.buttonStyle}
               activeOpacity={0.5}
               onPress={onLoginPress}>
               <Text style={styles.buttonTextStyle}>Login</Text>
             </TouchableOpacity>
-          </KeyboardAvoidingView>
-        </View>
-      </ScrollView>
-      <Loader visible={loading} />
-      <DropdownAlert ref={ref => setDropdownAlert(ref)} />
+          </View>
+        </ScrollView>
+      </KeyboardAvoidingView>
     </FullScreenSpinner>
   );
 };
