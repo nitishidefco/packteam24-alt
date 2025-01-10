@@ -245,14 +245,14 @@ const styles = StyleSheet.create({
   homeIconStyle: {
     width: Matrics.ms(20),
     height: Matrics.ms(19),
-    marginRight: Matrics.ms(16),
-    paddingLeft: Matrics.ms(80),
+    marginRight: Matrics.ms(55),
+    // paddingLeft: Matrics.ms(80),
   },
   messageIconStyle: {
-    width: Matrics.ms(19),
-    height: Matrics.ms(20),
-    marginRight: Matrics.ms(16),
-    paddingLeft: Matrics.ms(80),
+    width: Matrics.ms(24),
+    height: Matrics.ms(22),
+    marginRight: Matrics.ms(45),
+    // paddingLeft: Matrics.ms(80),
     marginTop: Matrics.ms(10),
   },
   dashBoardIconIosStyle:{
@@ -262,17 +262,17 @@ const styles = StyleSheet.create({
    marginBottom: 10
   },
   dashBoardIconStyle: {
-    width: Matrics.ms(19),
+    width: Matrics.ms(22),
     height: Matrics.ms(20),
-    marginRight: Matrics.ms(16),
-    paddingLeft: Matrics.ms(80),
+    marginRight: Matrics.ms(45),
+    // paddingLeft: Matrics.ms(80),
     marginTop: Matrics.vs(-8),
   },
   logoutIconStyle: {
     width: Matrics.ms(24),
     height: Matrics.ms(24),
-    marginRight: Matrics.ms(10),
-    paddingLeft: Matrics.ms(80),
+    marginRight: Matrics.ms(45),
+    // paddingLeft: Matrics.ms(80),
     // tintColor: 'red',
     marginBottom: Matrics.ms(0),
   },

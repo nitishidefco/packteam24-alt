@@ -1,12 +1,10 @@
 import {createSlice} from '@reduxjs/toolkit';
 import {OFFLINE_REDUCER} from '../SliceKey';
-import {ValidateTagAction} from '../../Helpers';
 
 const initialState = {
   sessions: {},
   isConnected: true,
   isSyncing: false,
-  validationResult: {},
 };
 
 const SaveDataOfflineSlice = createSlice({

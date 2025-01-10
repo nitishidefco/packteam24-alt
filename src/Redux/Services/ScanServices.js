@@ -28,4 +28,18 @@ export default {
         return data;
       });
   },
+
+  WorkStatus: async params => {
+    return fetch(`${BASE_URL}api/my-status`, {
+      method: 'POST',
+      body: params,
+      headers: {
+        Accept: 'multipart/form-data',
+      },
+    })
+      .then(response => Ajax.handleResponse(response))
+      .then(data => {
+        return data;
+      });
+  },
 };
