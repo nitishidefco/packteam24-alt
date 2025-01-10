@@ -11,6 +11,7 @@ export const loginStyle = StyleSheet.create({
   },
   keyboardAvoidingView: {
     flex: 1,
+    backgroundColor: '#EBF0FA',
   },
   container: theme => {
     return [AppStyle.wrapper, { backgroundColor: theme.backgroundColor }];

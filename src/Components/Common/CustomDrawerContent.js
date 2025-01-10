@@ -1,5 +1,5 @@
 import React, {useState, useRef, useEffect} from 'react';
-import {View, StyleSheet, Image, Text, Animated, Alert} from 'react-native';
+import {View, StyleSheet, Image, Text, Animated, Alert, Platform} from 'react-native';
 import {DrawerContentScrollView, DrawerItem} from '@react-navigation/drawer';
 import {useNavigation} from '@react-navigation/native';
 import {Images} from '../../Config';
@@ -19,6 +19,13 @@ const CustomDrawerContent = props => {
   const {Auth} = state;
   const SessionId = Auth.data?.data?.sesssion_id;
   const [dropdownAlert, setDropdownAlert] = useState(null);
+const [isIos, setIsIos] = useState(false);
+useEffect(()=>{
+if(Platform.OS === 'ios'){
+  setIsIos(true);
+}
+},[])
+console.log(isIos);
 
   const goToHome = () => {
     navigation.replace('Home');
@@ -74,16 +81,16 @@ const CustomDrawerContent = props => {
             marginHorizontal: Matrics.ms(-45),
           }}
           onPress={goToHome}
-          style={styles.drawerItem}
+          style={[styles.drawerItem]}
           icon={() => (
             <Image
               source={Images.DASHBOARD}
               resizeMode="contain"
-              style={styles.homeIconStyle}
+              style={[isIos ? styles.homeIconIosStyle : styles.homeIconStyle]}
             />
           )}
         />
-        {/* <DrawerItem
+        <DrawerItem
           label="Messages"
           labelStyle={{
             fontFamily: typography.fontFamily.Montserrat.Regular,
@@ -98,7 +105,7 @@ const CustomDrawerContent = props => {
             <Image
               source={Images.MESSAGES_ICON}
               resizeMode="contain"
-              style={styles.messageIconStyle}
+              style={[isIos ? styles.messageIconIosStyle : styles.messageIconStyle]}
             />
           )}
         />
@@ -118,7 +125,7 @@ const CustomDrawerContent = props => {
             <Image
               source={Images.DAILY_LIST}
               resizeMode="contain"
-              style={styles.messageIconStyle}
+              style={[isIos ? styles.messageIconIosStyle : styles.messageIconStyle]}
             />
           )}
         />
@@ -137,7 +144,8 @@ const CustomDrawerContent = props => {
             <Image
               source={Images.CALENDER_ICON}
               resizeMode="contain"
-              style={styles.messageIconStyle}
+              style={[isIos ? styles.messageIconIosStyle : styles.messageIconStyle]}
+
             />
           )}
         />
@@ -157,13 +165,13 @@ const CustomDrawerContent = props => {
             <Image
               source={Images.ADVANCES}
               resizeMode="contain"
-              style={styles.dashBoardIconStyle}
+              style={[isIos? styles.dashBoardIconIosStyle:styles.dashBoardIconStyle]}
             />
           )}
-        /> */}
+        />
       </DrawerContentScrollView>
       {/* Logout */}
-      <View style={{justifyContent: 'flex-end', marginBottom: Matrics.ms(45)}}>
+      <View style={{justifyContent: 'flex-end', marginBottom: Matrics.ms(45), marginLeft: Matrics.ms(13)}}>
         <DrawerItem
           label="Logout"
           labelStyle={{
@@ -180,7 +188,7 @@ const CustomDrawerContent = props => {
             <Image
               source={Images.LOGOUT_ICON}
               resizeMode="contain"
-              style={styles.logoutIconStyle}
+              style={[isIos ? styles.logoutIconIosStyle:styles.logoutIconStyle]}
             />
           )}
         />
@@ -189,7 +197,7 @@ const CustomDrawerContent = props => {
         style={{
           color: 'white',
           textAlign: 'center',
-          left: Matrics.ms(80),
+          // left: Matrics.ms(80),
           marginBottom: Matrics.ms(30),
           fontFamily: typography.fontFamily.Montserrat.Medium,
           fontSize: typography.fontSizes.fs13,
@@ -222,6 +230,18 @@ const styles = StyleSheet.create({
   drawerItem: {
     marginLeft: 0,
   },
+  homeIconIosStyle:{
+    width: Matrics.ms(20),
+    height: Matrics.ms(19),
+   marginRight: 55,
+
+  },
+  messageIconIosStyle:{
+    width: Matrics.ms(24),
+    height: Matrics.ms(22),
+   marginRight: 45,
+   marginTop: 10,
+  },
   homeIconStyle: {
     width: Matrics.ms(20),
     height: Matrics.ms(19),
@@ -234,6 +254,12 @@ const styles = StyleSheet.create({
     marginRight: Matrics.ms(16),
     paddingLeft: Matrics.ms(80),
     marginTop: Matrics.ms(10),
+  },
+  dashBoardIconIosStyle:{
+    width: Matrics.ms(22),
+    height: Matrics.ms(19),
+   marginRight: 45,
+   marginBottom: 10
   },
   dashBoardIconStyle: {
     width: Matrics.ms(19),
@@ -250,6 +276,12 @@ const styles = StyleSheet.create({
     // tintColor: 'red',
     marginBottom: Matrics.ms(0),
   },
+  logoutIconIosStyle:{
+    width: Matrics.ms(24),
+    height: Matrics.ms(24),
+    marginRight: Matrics.ms(32),
+
+  }
 });
 
 export default CustomDrawerContent;
