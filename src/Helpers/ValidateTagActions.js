@@ -1,16 +1,14 @@
 import moment from 'moment';
-export const ValidateTagAction = (tagId, sessionItems, lastOnlineMode) => {
+export const ValidateTagAction = (tagId, sessionItems) => {
   const TAGS = {
     work_start: ['53:AE:E6:BB:40:00:01', '53:71:D8:BB:40:00:01'],
     break_start: ['53:1E:3D:BC:40:00:01', '53:30:85:BB:40:00:01'],
     work_end: ['53:88:66:BC:40:00:01', '53:8B:07:BC:40:00:01'],
   };
-  console.log('Inside validate lastOnlineMode', lastOnlineMode);
 
   const lastTag =
     sessionItems.length > 0 ? sessionItems[sessionItems.length - 1] : null;
-  const effectiveLastState =
-    lastOnlineMode || (lastTag ? getTagType(lastTag.tagId) : null);
+  const effectiveLastState = lastTag ? getTagType(lastTag.tagId) : null;
   const currentDate = moment().format('YYYY-MM-DD');
 
   // Helper function to get tag type

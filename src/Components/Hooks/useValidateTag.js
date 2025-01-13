@@ -1,6 +1,10 @@
 import moment from 'moment';
 
-const useValidateTag = (tagId, sessionItems, lastOnlineMode) => {
+const useValidateTag = (tagId, sessionItems) => {
+  console.log('Tag ID', tagId);
+
+  // Fetch all NFC tags when the component mounts (or hook is called)
+
   const TAGS = {
     work_start: ['53:AE:E6:BB:40:00:01', '53:71:D8:BB:40:00:01'],
     break_start: ['53:1E:3D:BC:40:00:01', '53:30:85:BB:40:00:01'],
@@ -9,8 +13,7 @@ const useValidateTag = (tagId, sessionItems, lastOnlineMode) => {
 
   const lastTag =
     sessionItems.length > 0 ? sessionItems[sessionItems.length - 1] : null;
-  const effectiveLastState =
-    lastOnlineMode || (lastTag ? getTagType(lastTag.tagId) : null);
+  const effectiveLastState = lastTag ? getTagType(lastTag.tagId) : null;
   const currentDate = moment().format('YYYY-MM-DD');
   console.log('Effective last state', effectiveLastState);
 

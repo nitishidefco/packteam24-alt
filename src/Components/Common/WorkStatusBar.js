@@ -3,59 +3,33 @@ import React, {useEffect, useState, useMemo} from 'react';
 import {House, Coffee, Hammer} from 'lucide-react-native';
 import {useScanTagActions} from '../../Redux/Hooks/useScanTagActions';
 import {useDispatch, useSelector} from 'react-redux';
-import {setLastOnlineMode} from '../../Redux/Reducers/WorkStateSlice';
+import {reduxStorage} from '../../Redux/Storage';
+import {useWorkStatusActions} from '../../Redux/Hooks/useWorkStatusActions';
 const WorkStatusBar = ({validationResult}) => {
-  const dispatch = useDispatch();
+  const {state: currentStatus} = useWorkStatusActions();
 
-  const {state: states} = useScanTagActions(null);
-  const onlineMode = states?.data?.data?.mode;
-  const [workMode, setWorkMode] = useState();
+  const workMode = currentStatus?.currentState?.work_status_to_display;
+  console.log(workMode,'<<--Work Mode');
+  
   const isConnected = useSelector(state => state?.Network?.isConnected);
 
   useEffect(() => {
-    if (isConnected) {
-      if (onlineMode === 'work_start') {
-        dispatch(setLastOnlineMode('work_start'));
-        setWorkMode('Work Started');
-      } else if (onlineMode === 'break_start') {
-        dispatch(setLastOnlineMode('break_start'));
-        setWorkMode('Break Started');
-      } else if (onlineMode === 'work_end') {
-        dispatch(setLastOnlineMode('work_end'));
-        setWorkMode('Work Ended');
+    console.log('***********inside useEffect**************');
+
+    const fetchNfcTags = async () => {
+      try {
+        const fetchedTags = await reduxStorage.getItem('nfcTags');
+        const parsedTags = JSON.parse(fetchedTags);
+        return parsedTags;
+      } catch (error) {
+        console.log('Error in useValidateTag', error);
       }
-    } else {
-      console.log('***********inside isConnected false**************');
-      console.log('Validation result in wsb', validationResult);
-      if (validationResult?.valid) {
-        switch (validationResult?.message) {
-          case 'Work started':
-            setWorkMode('Work Started');
-            dispatch(setLastOnlineMode('work_start'));
+    };
+  
 
-            break;
-          case 'Break ended, work resumed':
-            setWorkMode('Work Started');
-            dispatch(setLastOnlineMode('work_start'));
+    fetchNfcTags();
+  }, []);
 
-            break;
-          case 'Break started':
-            setWorkMode('Break Started');
-            dispatch(setLastOnlineMode('break_start'));
-
-            break;
-          case 'Work ended':
-            setWorkMode('Work Ended');
-            console.log('offine work edn');
-            dispatch(setLastOnlineMode('work_end'));
-
-            break;
-          default:
-            setWorkMode('Not Started');
-        }
-      }
-    }
-  }, [isConnected, onlineMode, validationResult]);
 
   const getStatusIcon = () => {
     switch (workMode) {

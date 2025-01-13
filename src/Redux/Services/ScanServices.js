@@ -24,7 +24,6 @@ export default {
       });
   },
 
-  // TODO: Its not completed yet
   WorkStatus: async params => {
     return fetch(`${BASE_URL}api/my-status`, {
       method: 'POST',

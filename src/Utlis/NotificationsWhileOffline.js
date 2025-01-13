@@ -5,11 +5,10 @@ export const showNotificationAboutTagScannedWhileOffline = (
   tagId,
   sessions,
   sessionId,
-  lastOnlineMode
 ) => {
   const session = sessions[sessionId];
   const sessionItems = session?.items || [];
- const validationResult = useValidateTag(tagId, sessionItems, lastOnlineMode);
+  const validationResult = useValidateTag(tagId, sessionItems);
   if (validationResult.valid) {
     toastMessage.success(validationResult.message);
   } else {

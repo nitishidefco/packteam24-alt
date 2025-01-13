@@ -15,6 +15,8 @@ import CustomHeader from '../../Components/Common/CustomHeader';
 import {Images} from '../../Config';
 import NfcManager, {NfcTech, NfcEvents} from 'react-native-nfc-manager';
 import {useScanTagActions} from '../../Redux/Hooks/useScanTagActions';
+import {useWorkStatusActions} from '../../Redux/Hooks/useWorkStatusActions';
+
 import NetworkStatusComponent from '../../Components/Common/NetworkStatus';
 import {
   clearOfflineStorage,
@@ -28,10 +30,9 @@ import {setDeviceInfo} from '../../Redux/Reducers/NetworkSlice';
 import DeviceInfo from 'react-native-device-info';
 import {useNfcStatus} from '../../Utlis/CheckNfcStatus';
 import WorkStatusBar from '../../Components/Common/WorkStatusBar';
-import {setLastOnlineMode} from '../../Redux/Reducers/WorkStateSlice';
 import useValidateTag from '../../Components/Hooks/useValidateTag';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { useFetchNfcTagsActions } from '../../Redux/Hooks/useFetchNfcTagsActions';
+import {useFetchNfcTagsActions} from '../../Redux/Hooks/useFetchNfcTagsActions';
 
 const Home = ({navigation, route}) => {
   const dispatch = useDispatch();
@@ -39,7 +40,6 @@ const Home = ({navigation, route}) => {
   const sessions = useSelector(state => state?.OfflineData?.sessions);
   const isConnected = useSelector(state => state?.Network?.isConnected);
   const isNfcEnabled = useSelector(state => state?.Network?.isNfcEnabled);
-  const lastOnlineMode = useSelector(state => state?.WorkState?.lastOnlineMode);
   const [duplicateTagId, setDuplicatTagId] = useState('');
   const [tagDetected, setTagDetected] = useState();
   const [tagId, setTagId] = useState('');
@@ -54,7 +54,9 @@ const Home = ({navigation, route}) => {
   const CurrentMode = states?.data?.data?.mode;
   const [appState, setAppState] = useState(AppState.currentState);
   const [validationResult, setValidationResult] = useState(null);
-  const {state: tags, fetchTagsCall} = useFetchNfcTagsActions();
+  const {fetchTagsCall} = useFetchNfcTagsActions();
+  const {fetchWorkStatusCall} = useWorkStatusActions();
+
   // Handles the scanned NFC tag and extracts its ID
   const handleNfcTag = async tag => {
     if (tag?.id) {
@@ -78,19 +80,21 @@ const Home = ({navigation, route}) => {
   }, []);
 
   // Get nfc from server
-    useEffect(() => {
-      const saveNfcTagToLocalStorage = async () => {
-        try {
-          let formData = new FormData();
-          formData.append('session_id', SessionId);
-          formData.append('device_id', '13213211');
-          await fetchTagsCall(formData);
-        } catch (error) {
-          console.error('Error saving nfc tags to local storage', error);
-        }
-      };
-      saveNfcTagToLocalStorage();
-    }, []);
+  useEffect(() => {
+    const saveNfcTagToLocalStorage = async () => {
+      console.log('called the savenfc');
+
+      try {
+        let formData = new FormData();
+        formData.append('session_id', SessionId);
+        formData.append('device_id', '13213211');
+        await fetchTagsCall(formData);
+      } catch (error) {
+        console.error('Error saving nfc tags to local storage', error);
+      }
+    };
+    saveNfcTagToLocalStorage();
+  }, []);
   // Initializes NFC scanning for iOS
   const initNfcScan = useCallback(async () => {
     try {
@@ -173,10 +177,14 @@ const Home = ({navigation, route}) => {
     try {
       setLoading(true);
       let formdata = new FormData();
+      let formdataforworkstatus = new FormData();
       formdata.append('session_id', SessionId);
       formdata.append('device_id', '13213211');
       formdata.append('nfc_key', uid);
-      await scanCall(formdata);
+      formdataforworkstatus.append('session_id', SessionId);
+      formdataforworkstatus.append('device_id', '13213211');
+      scanCall(formdata);
+      fetchWorkStatusCall(formdataforworkstatus);
     } catch (error) {
       console.error('Error processing UID:', error);
     } finally {
@@ -194,24 +202,13 @@ const Home = ({navigation, route}) => {
             if (tagId !== '') {
               // Process the current tag first when online
               await getUid(tagId);
-              const validationResult = useValidateTag(
-                tagId,
-                storedSessions,
-                lastOnlineMode,
-              );
-
+              const validationResult = useValidateTag(tagId, storedSessions);
+              setTagId('');
               if (!validationResult.valid) {
                 console.warn('Validation failed:', validationResult.message);
-                showNotificationAboutTagScannedWhileOffline(
-                  tagId,
-                  sessions,
-                  SessionId,
-                  lastOnlineMode,
-                );
                 return;
               }
               setValidationResult(validationResult);
-              setTagId('');
             }
             // If there are stored offline tags, process them sequentially
             if (storedSessions.length > 0) {
@@ -246,13 +243,11 @@ const Home = ({navigation, route}) => {
             }
 
             // Clear storage after all tags are processed
-            dispatch(setLastOnlineMode(CurrentMode));
             dispatch(clearOfflineStorage());
           } catch (error) {
             console.error('Error processing tags:', error);
           }
         } else {
-          // Offline mode - store the tag and update lastOnlineMode for subsequent scans
           if (tagId !== '') {
             setDuplicatTagId(tagId);
 
@@ -276,11 +271,7 @@ const Home = ({navigation, route}) => {
             }
             const sessionItems = sessions[SessionId]?.items || [];
 
-            const validationResult = useValidateTag(
-              tagId,
-              sessionItems,
-              lastOnlineMode,
-            );
+            const validationResult = useValidateTag(tagId, sessionItems);
 
             if (!validationResult.valid) {
               console.warn('Validation failed:', validationResult.message);
@@ -288,31 +279,25 @@ const Home = ({navigation, route}) => {
                 tagId,
                 sessions,
                 SessionId,
-                lastOnlineMode,
               );
               return;
             }
             console.log('validation result in home', validationResult);
 
             setValidationResult(validationResult);
-            // Just store the data without updating lastOnlineMode
             dispatch(
               addDataToOfflineStorage({
                 sessionId: SessionId,
                 time: moment().format('YYYY-MM-DD HH:mm:ss'),
                 tagId: tagId,
-                lastOnlineMode: lastOnlineMode,
               }),
             );
             showNotificationAboutTagScannedWhileOffline(
               tagId,
               sessions,
               SessionId,
-              lastOnlineMode,
             );
             console.log('tag mode in home', tagMode);
-
-            dispatch(setLastOnlineMode(tagMode));
             setTagId('');
           }
         }

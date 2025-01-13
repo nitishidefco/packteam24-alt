@@ -12,15 +12,9 @@ import {reduxStorage} from '../Storage';
 const fetchNfcTagSaga = function* fetchNfcTagSaga({payload}) {
   try {
     const response = yield call(API.AllNFCTags, payload);
-    console.log('Fetch nfc tag response', response);
-
-    if (response?.data) {
+    if (response) {
       yield put(FetchSuccess(response));
-      yield call(
-        reduxStorage.setItem,
-        'nfcTags',
-        JSON.stringify(response.data),
-      );
+      reduxStorage.setItem('nfcTags', JSON.stringify(response));
     } else if (response?.errors) {
       console.log('Fetch nfc tag response error', response);
       yield put(FetchFailure(response?.errors));
