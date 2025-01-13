@@ -31,6 +31,8 @@ import WorkStatusBar from '../../Components/Common/WorkStatusBar';
 import {setLastOnlineMode} from '../../Redux/Reducers/WorkStateSlice';
 import useValidateTag from '../../Components/Hooks/useValidateTag';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useFetchNfcTagsActions } from '../../Redux/Hooks/useFetchNfcTagsActions';
+
 const Home = ({navigation, route}) => {
   const dispatch = useDispatch();
   useNfcStatus();
@@ -52,6 +54,7 @@ const Home = ({navigation, route}) => {
   const CurrentMode = states?.data?.data?.mode;
   const [appState, setAppState] = useState(AppState.currentState);
   const [validationResult, setValidationResult] = useState(null);
+  const {state: tags, fetchTagsCall} = useFetchNfcTagsActions();
   // Handles the scanned NFC tag and extracts its ID
   const handleNfcTag = async tag => {
     if (tag?.id) {
@@ -74,6 +77,20 @@ const Home = ({navigation, route}) => {
     getDeviceInfo();
   }, []);
 
+  // Get nfc from server
+    useEffect(() => {
+      const saveNfcTagToLocalStorage = async () => {
+        try {
+          let formData = new FormData();
+          formData.append('session_id', SessionId);
+          formData.append('device_id', '13213211');
+          await fetchTagsCall(formData);
+        } catch (error) {
+          console.error('Error saving nfc tags to local storage', error);
+        }
+      };
+      saveNfcTagToLocalStorage();
+    }, []);
   // Initializes NFC scanning for iOS
   const initNfcScan = useCallback(async () => {
     try {

@@ -6,6 +6,8 @@ import ScanReducer from './ScanSlice';
 import NetworkReducer from './NetworkSlice';
 import SaveDataOfflineReducer from './SaveDataOfflineSlice';
 import WorkStateReducer from './WorkStateSlice';
+import GetNfcTagsFromServerReducer from './NFCTagsSlice';
+
 let appReducer = combineReducers({
   Auth: AuthReducer,
   Home: HomeReducer,
@@ -14,6 +16,7 @@ let appReducer = combineReducers({
   Network: NetworkReducer,
   OfflineData: SaveDataOfflineReducer,
   WorkState: WorkStateReducer,
+  FetchNfcTags: GetNfcTagsFromServerReducer,
 });
 
 const rootReducer = (state, action) => {
