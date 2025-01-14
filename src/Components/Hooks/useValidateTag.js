@@ -1,37 +1,53 @@
 import moment from 'moment';
+import {useState, useEffect} from 'react';
+import {reduxStorage} from '../../Redux/Storage';
 
 const useValidateTag = (tagId, sessionItems) => {
-  console.log('Tag ID', tagId);
+  const [tagsFromLocalStorage, setTagsFromLocalStorage] = useState([]);
+  const [tagForOfflineValidation, setTagForOfflineValidation] = useState(null);
 
-  // Fetch all NFC tags when the component mounts (or hook is called)
+  // Fetch tags from local storage
+  useEffect(() => {
+    const fetchTags = async () => {
+      try {
+        const tags = JSON.parse(await reduxStorage.getItem('nfcTags')) || [];
+        const tagForOfflineValidation = await reduxStorage.getItem(
+          'tagForOfflineValidation',
+        );
+        setTagForOfflineValidation(tagForOfflineValidation);
+        setTagsFromLocalStorage(tags);
+      } catch (error) {
+        console.error('Error fetching tags from local storage', error);
+      }
+    };
+    fetchTags();
+  }, []);
 
-  const TAGS = {
-    work_start: ['53:AE:E6:BB:40:00:01', '53:71:D8:BB:40:00:01'],
-    break_start: ['53:1E:3D:BC:40:00:01', '53:30:85:BB:40:00:01'],
-    work_end: ['53:88:66:BC:40:00:01', '53:8B:07:BC:40:00:01'],
-  };
+  console.log('Tags from local storage', tagsFromLocalStorage);
 
   const lastTag =
     sessionItems.length > 0 ? sessionItems[sessionItems.length - 1] : null;
-  const effectiveLastState = lastTag ? getTagType(lastTag.tagId) : null;
-  const currentDate = moment().format('YYYY-MM-DD');
+  const effectiveLastState = tagForOfflineValidation;
   console.log('Effective last state', effectiveLastState);
 
+  const currentDate = moment().format('YYYY-MM-DD');
+
+  // Helper function to get the tag type dynamically based on localStorage tags
   function getTagType(tagId) {
-    if (TAGS.work_start.includes(tagId)) return 'work_start';
-    if (TAGS.break_start.includes(tagId)) return 'break_start';
-    if (TAGS.work_end.includes(tagId)) return 'work_end';
-    return null;
+    const tag = tagsFromLocalStorage.find(tag => tag.key === tagId);
+    return tag ? tag.mode : null;
   }
 
   const isWorkEndedToday = sessionItems.some(
     item =>
-      TAGS.work_end.includes(item.tagId) &&
+      getTagType(item.tagId) === 'work_end' &&
       moment(item.timestamp).isSame(currentDate, 'day'),
   );
 
-  if (TAGS.work_start.includes(tagId)) {
-    if (!effectiveLastState) {
+  const tagMode = getTagType(tagId);
+
+  if (tagMode === 'work_start') {
+    if (!effectiveLastState || effectiveLastState === 'work_not_started') {
       return {valid: true, message: 'Work started'};
     }
 
@@ -42,18 +58,18 @@ const useValidateTag = (tagId, sessionItems) => {
       };
     }
 
-    if (effectiveLastState === 'work_start') {
+    if (effectiveLastState === 'work_in_progress') {
       return {valid: false, message: 'Work is already started'};
     }
 
-    if (effectiveLastState === 'break_start') {
+    if (effectiveLastState === 'break_in_progress') {
       return {valid: true, message: 'Break ended, work resumed'};
     }
 
     return {valid: true, message: 'Work started'};
   }
 
-  if (TAGS.break_start.includes(tagId)) {
+  if (tagMode === 'break_start') {
     if (!effectiveLastState || effectiveLastState === 'work_end') {
       return {
         valid: false,
@@ -72,12 +88,12 @@ const useValidateTag = (tagId, sessionItems) => {
     return {valid: false, message: 'Invalid state for break'};
   }
 
-  if (TAGS.work_end.includes(tagId)) {
+  if (tagMode === 'work_end') {
     if (!effectiveLastState) {
       return {valid: false, message: 'Cannot end work without starting it'};
     }
 
-    if (effectiveLastState === 'break_start') {
+    if (effectiveLastState === 'break_in_progress') {
       return {
         valid: false,
         message: 'Cannot end work while on a break. Resume work first.',
@@ -88,7 +104,7 @@ const useValidateTag = (tagId, sessionItems) => {
       return {valid: false, message: 'Work is already ended'};
     }
 
-    if (effectiveLastState === 'work_start') {
+    if (effectiveLastState === 'work_in_progress') {
       return {valid: true, message: 'Work ended'};
     }
 

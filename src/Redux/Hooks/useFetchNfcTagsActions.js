@@ -6,8 +6,6 @@ export const useFetchNfcTagsActions = () => {
   const state = useSelector(state => state?.FetchNfcTags);
 
   const fetchTagsCall = params => {
-    console.log('fetch nfc tag actions', params);
-
     dispatch(fetchNfcTags(params));
   };
 

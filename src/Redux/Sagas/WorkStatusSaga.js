@@ -10,13 +10,9 @@ import {
 const fetchWorkStatusSaga = function* fetchWorkStatusSaga({payload}) {
   try {
     const response = yield call(API.WorkStatus, payload);
-    console.log('Fetch work status response', response);
-
     if (response) {
       yield put(FetchSuccess(response));
-      console.log('Fetch work status response success', response);
     } else if (response?.errors) {
-      console.log('Fetch work status response error', response);
       yield put(FetchFailure(response?.errors));
     }
   } catch (error) {

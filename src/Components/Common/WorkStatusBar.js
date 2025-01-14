@@ -1,43 +1,91 @@
 import {View, Text, StyleSheet} from 'react-native';
 import React, {useEffect, useState, useMemo} from 'react';
 import {House, Coffee, Hammer} from 'lucide-react-native';
-import {useScanTagActions} from '../../Redux/Hooks/useScanTagActions';
-import {useDispatch, useSelector} from 'react-redux';
 import {reduxStorage} from '../../Redux/Storage';
 import {useWorkStatusActions} from '../../Redux/Hooks/useWorkStatusActions';
-const WorkStatusBar = ({validationResult}) => {
-  const {state: currentStatus} = useWorkStatusActions();
+import {useSelector} from 'react-redux';
 
-  const workMode = currentStatus?.currentState?.work_status_to_display;
-  console.log(workMode,'<<--Work Mode');
-  
+const WorkStatusBar = ({sessionId}) => {
+  const {state: currentStatus} = useWorkStatusActions();
+  const [workMode, setWorkMode] = useState('');
   const isConnected = useSelector(state => state?.Network?.isConnected);
+  const {sessions} = useSelector(state => state.OfflineData);
+  const getMostRecentTagId = sessionId => {
+    const sessionData = sessions[sessionId];
+
+    // Check if sessionData and items are present
+    if (sessionData && sessionData.items) {
+      // Sort the items by time in descending order (latest first)
+      const sortedItems = [...sessionData.items].sort((a, b) => {
+        const timeA = new Date(a.time);
+        const timeB = new Date(b.time);
+        return timeB - timeA; // Sort in descending order
+      });
+
+      return sortedItems[0]?.tagId;
+    }
+
+    return null; // If session data or items are not available
+  };
+  const mostRecentTagId = getMostRecentTagId(sessionId);
+
+  function findModeByTagId(tags, tagId) {
+    const matchingTag = tags.find(tag => tag.key === tagId);
+    return matchingTag ? matchingTag.mode : null;
+  }
 
   useEffect(() => {
-    console.log('***********inside useEffect**************');
+    const saveTagForOfflineValidation = async () => {
+      if (isConnected) {
+        try {
+          console.log(currentStatus?.currentState?.work_status_to_display);
+          
+          setWorkMode(currentStatus?.currentState?.work_status_to_display);
+          await reduxStorage.setItem(
+            'tagForOfflineValidation',
+            currentStatus?.currentState?.work_status,
+          );
+        } catch (error) {
+          console.error('Error saving tag for offline validation:', error);
+        }
+      } else {
+        console.log('Inside else');
 
-    const fetchNfcTags = async () => {
-      try {
-        const fetchedTags = await reduxStorage.getItem('nfcTags');
-        const parsedTags = JSON.parse(fetchedTags);
-        return parsedTags;
-      } catch (error) {
-        console.log('Error in useValidateTag', error);
+        const tagsFromLocalStorage = await reduxStorage.getItem('nfcTags');
+        const parsedTags = JSON.parse(tagsFromLocalStorage);
+
+        const tagMode = findModeByTagId(parsedTags, mostRecentTagId);
+        console.log('TagId:', tagMode); // Log the tag mode to confirm it is correct
+
+        switch (tagMode) {
+          case 'work_start':
+            setWorkMode('Work in progress');
+            break;
+          case 'break_start':
+            setWorkMode('Break in progress'); // Set work mode here
+            break;
+          case 'work_end':
+            setWorkMode('Work finished'); // Set work mode here
+            break;
+          default:
+            setWorkMode('Not Started'); // Set work mode here
+            break;
+        }
+console.log('TagId:', tagMode); // Log the tag mode to confirm it is correct
+
+        await reduxStorage.setItem('tagForOfflineValidation', tagMode); // Store the tag mode
       }
     };
-  
-
-    fetchNfcTags();
-  }, []);
-
+    saveTagForOfflineValidation();
+  }, [currentStatus, mostRecentTagId]);
 
   const getStatusIcon = () => {
     switch (workMode) {
-      case 'Work Started':
+      case 'Work in progress':
         return <Hammer size={30} color="#22c55e" />;
-      case 'Break Started':
+      case 'Break in progress':
         return <Coffee size={30} color="#ef4444" />;
-      case 'Work Ended':
+      case 'Work finished':
         return <House size={30} color="#3b82f6" />;
       default:
         return <House size={30} color="#6b7280" />;
@@ -47,11 +95,11 @@ const WorkStatusBar = ({validationResult}) => {
   // Memoizing background color to avoid unnecessary recalculations
   const borderColor = useMemo(() => {
     switch (workMode) {
-      case 'Work Started':
+      case 'Work in progress':
         return '#22c55e'; // Green for work mode
-      case 'Break Started':
+      case 'Break in progress':
         return '#ef4444'; // Red for break mode
-      case 'Work Ended':
+      case 'Work finished':
         return '#3b82f6'; // Blue for work ended
       default:
         return '#6b7280'; // Gray for default

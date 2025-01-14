@@ -16,7 +16,6 @@ const workStateSlice = createSlice({
   },
   reducers: {
     fetchWorkStatus: state => {
-      console.log('fetch work status reducer');
       state.isFetchSuccess = NULL;
       state.error = null;
       state.message = '';

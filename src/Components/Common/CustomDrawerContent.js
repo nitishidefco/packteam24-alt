@@ -25,7 +25,6 @@ if(Platform.OS === 'ios'){
   setIsIos(true);
 }
 },[])
-console.log(isIos);
 
   const goToHome = () => {
     navigation.replace('Home');
@@ -90,7 +89,7 @@ console.log(isIos);
             />
           )}
         />
-        <DrawerItem
+        {/* <DrawerItem
           label="Messages"
           labelStyle={{
             fontFamily: typography.fontFamily.Montserrat.Regular,
@@ -168,7 +167,7 @@ console.log(isIos);
               style={[isIos? styles.dashBoardIconIosStyle:styles.dashBoardIconStyle]}
             />
           )}
-        />
+        /> */}
       </DrawerContentScrollView>
       {/* Logout */}
       <View style={{justifyContent: 'flex-end', marginBottom: Matrics.ms(45), marginLeft: Matrics.ms(13)}}>

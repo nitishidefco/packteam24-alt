@@ -33,14 +33,14 @@ import WorkStatusBar from '../../Components/Common/WorkStatusBar';
 import useValidateTag from '../../Components/Hooks/useValidateTag';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {useFetchNfcTagsActions} from '../../Redux/Hooks/useFetchNfcTagsActions';
-
+import {reduxStorage} from '../../Redux/Storage';
 const Home = ({navigation, route}) => {
   const dispatch = useDispatch();
   useNfcStatus();
   const sessions = useSelector(state => state?.OfflineData?.sessions);
   const isConnected = useSelector(state => state?.Network?.isConnected);
   const isNfcEnabled = useSelector(state => state?.Network?.isNfcEnabled);
-  const [duplicateTagId, setDuplicatTagId] = useState('');
+  const [duplicateTagId, setDuplicateTagId] = useState('');
   const [tagDetected, setTagDetected] = useState();
   const [tagId, setTagId] = useState('');
   const [loading, setLoading] = useState(false);
@@ -56,13 +56,18 @@ const Home = ({navigation, route}) => {
   const [validationResult, setValidationResult] = useState(null);
   const {fetchTagsCall} = useFetchNfcTagsActions();
   const {fetchWorkStatusCall} = useWorkStatusActions();
+  const [tagsFromLocalStorage, setTagsFromLocalStorage] = useState([]);
 
+  const sessionItems = sessions[SessionId]?.items || [];
+  // on every refresh its showing notification
+  let validationResult1 = useValidateTag(tagId, sessionItems);
   // Handles the scanned NFC tag and extracts its ID
   const handleNfcTag = async tag => {
     if (tag?.id) {
       const id = addColons(tag.id); // Format the tag ID with colons
       setTagDetected(tag);
       setTagId(id);
+      setDuplicateTagId(id);
     }
   };
   useEffect(() => {
@@ -78,17 +83,40 @@ const Home = ({navigation, route}) => {
     };
     getDeviceInfo();
   }, []);
+  useEffect(() => {
+    const fetchNfcTags = async () => {
+      try {
+        const fetchedTags = await reduxStorage.getItem('nfcTags');
+        const parsedTags = JSON.parse(fetchedTags);
+        setTagsFromLocalStorage(parsedTags);
+      } catch (error) {
+        console.log('Error in fetching tags from mmkv storage', error);
+      }
+    };
+    const updateWorkStatus = async () => {
+      console.log('updating work status');
+      
+      try {
+        let formdata = new FormData();
+        formdata.append('session_id', SessionId);
+        formdata.append('device_id', '13213211');
+        fetchWorkStatusCall(formdata);
+      } catch (error) {
+        console.error('Error updating work status', error);
+      }
+    };
+    updateWorkStatus();
+    fetchNfcTags();
+  }, [tagDetected]);
 
   // Get nfc from server
   useEffect(() => {
     const saveNfcTagToLocalStorage = async () => {
-      console.log('called the savenfc');
-
       try {
         let formData = new FormData();
         formData.append('session_id', SessionId);
         formData.append('device_id', '13213211');
-        await fetchTagsCall(formData);
+        fetchTagsCall(formData);
       } catch (error) {
         console.error('Error saving nfc tags to local storage', error);
       }
@@ -177,14 +205,10 @@ const Home = ({navigation, route}) => {
     try {
       setLoading(true);
       let formdata = new FormData();
-      let formdataforworkstatus = new FormData();
       formdata.append('session_id', SessionId);
       formdata.append('device_id', '13213211');
       formdata.append('nfc_key', uid);
-      formdataforworkstatus.append('session_id', SessionId);
-      formdataforworkstatus.append('device_id', '13213211');
       scanCall(formdata);
-      fetchWorkStatusCall(formdataforworkstatus);
     } catch (error) {
       console.error('Error processing UID:', error);
     } finally {
@@ -193,117 +217,75 @@ const Home = ({navigation, route}) => {
   };
 
   useEffect(() => {
-    if (SessionId) {
-      const processTag = async () => {
-        if (isConnected) {
-          try {
-            const storedSessions = sessions[SessionId]?.items || [];
+    if (!SessionId) return;
 
-            if (tagId !== '') {
-              // Process the current tag first when online
-              await getUid(tagId);
-              const validationResult = useValidateTag(tagId, storedSessions);
-              setTagId('');
-              if (!validationResult.valid) {
-                console.warn('Validation failed:', validationResult.message);
-                return;
-              }
-              setValidationResult(validationResult);
-            }
-            // If there are stored offline tags, process them sequentially
-            if (storedSessions.length > 0) {
-              console.log('Processing stored offline tags...');
+    const processOnlineTags = async storedSessions => {
+      try {
+        if (tagId) {
+          // Process the current tag when online
+          await getUid(tagId);
+          setTagId('');
+        }
 
-              // Process each stored tag one by one with delay
-              for (const item of storedSessions) {
-                try {
-                  await getUid(item.tagId);
-                  // Add 6-second delay before processing next tag
-                  // Skip delay for the last item
-                  if (
-                    storedSessions.indexOf(item) <
-                    storedSessions.length - 1
-                  ) {
-                    await new Promise(resolve => setTimeout(resolve, 6000));
-                  }
-                } catch (error) {
-                  console.error(
-                    `Error processing stored tag ${item.tagId}:`,
-                    error,
-                  );
-                  // Still wait 6 seconds before trying next tag even if there's an error
-                  if (
-                    storedSessions.indexOf(item) <
-                    storedSessions.length - 1
-                  ) {
-                    await new Promise(resolve => setTimeout(resolve, 6000));
-                  }
-                }
-              }
-            }
-
-            // Clear storage after all tags are processed
-            dispatch(clearOfflineStorage());
-          } catch (error) {
-            console.error('Error processing tags:', error);
-          }
-        } else {
-          if (tagId !== '') {
-            setDuplicatTagId(tagId);
-
-            // Determine the mode based on the tagId scanned
-            let tagMode = '';
-            if (
-              tagId === '53:AE:E6:BB:40:00:01' ||
-              tagId === '53:71:D8:BB:40:00:01'
-            ) {
-              tagMode = 'work_start';
-            } else if (
-              tagId === '53:1E:3D:BC:40:00:01' ||
-              tagId === '53:30:85:BB:40:00:01'
-            ) {
-              tagMode = 'break_start';
-            } else if (
-              tagId === '53:88:66:BC:40:00:01' ||
-              tagId === '53:8B:07:BC:40:00:01'
-            ) {
-              tagMode = 'work_end';
-            }
-            const sessionItems = sessions[SessionId]?.items || [];
-
-            const validationResult = useValidateTag(tagId, sessionItems);
-
-            if (!validationResult.valid) {
-              console.warn('Validation failed:', validationResult.message);
-              showNotificationAboutTagScannedWhileOffline(
-                tagId,
-                sessions,
-                SessionId,
+        if (storedSessions.length > 0) {
+          console.log('Processing stored offline tags...');
+          for (const [index, item] of storedSessions.entries()) {
+            try {
+              await getUid(item.tagId);
+            } catch (error) {
+              console.error(
+                `Error processing stored tag ${item.tagId}:`,
+                error,
               );
-              return;
             }
-            console.log('validation result in home', validationResult);
 
-            setValidationResult(validationResult);
-            dispatch(
-              addDataToOfflineStorage({
-                sessionId: SessionId,
-                time: moment().format('YYYY-MM-DD HH:mm:ss'),
-                tagId: tagId,
-              }),
-            );
-            showNotificationAboutTagScannedWhileOffline(
-              tagId,
-              sessions,
-              SessionId,
-            );
-            console.log('tag mode in home', tagMode);
-            setTagId('');
+            // Add a delay of 6 seconds before the next item (except for the last one)
+            if (index < storedSessions.length - 1) {
+              await new Promise(resolve => setTimeout(resolve, 6000));
+            }
           }
         }
-      };
-      processTag();
-    }
+
+        // Clear offline storage after processing
+        dispatch(clearOfflineStorage());
+      } catch (error) {
+        console.error('Error processing online tags:', error);
+      }
+    };
+
+    const processOfflineTag = () => {
+      if (!tagId) return;
+      setDuplicateTagId(tagId);
+
+      if (!validationResult1.valid) {
+        showNotificationAboutTagScannedWhileOffline(validationResult1);
+        return;
+      }
+      setValidationResult(validationResult1);
+
+      dispatch(
+        addDataToOfflineStorage({
+          sessionId: SessionId,
+          time: moment().format('YYYY-MM-DD HH:mm:ss'),
+          tagId,
+        }),
+      );
+
+      showNotificationAboutTagScannedWhileOffline(validationResult1);
+      setTagId('');
+    };
+
+    const processTag = async () => {
+      const storedSessions = sessions[SessionId]?.items || [];
+
+      if (isConnected) {
+        await processOnlineTags(storedSessions);
+      } else {
+        processOfflineTag();
+      }
+    };
+
+    processTag();
   }, [tagDetected, isConnected]);
 
   // Fetches dashboard data from the server
@@ -375,7 +357,7 @@ const Home = ({navigation, route}) => {
         <View style={styles.container}>
           <View>
             {/* <NetworkStatusComponent /> */}
-            <WorkStatusBar validationResult={validationResult} />
+            <WorkStatusBar sessionId={SessionId} />
           </View>
           <View style={styles.nfcPromptContainer}>
             <Image source={Images.NFC} style={styles.userIcon} />
