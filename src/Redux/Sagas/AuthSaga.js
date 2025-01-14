@@ -7,10 +7,13 @@ import {
   loginSuccess,
   logoutFailure,
   logoutSuccess,
+  forgotPasswordFailure,
+  forgotPasswordSuccess,
 } from '../Reducers/AuthSlice';
 import API from '../Services/AuthServices';
 import {AUTH_REDUCER} from '../SliceKey';
 import {reduxStorage} from '../Storage/index';
+import ToastMessage, {success} from '../../Helpers/ToastMessage';
 const loginSaga = function* loginSaga({payload}) {
   try {
     const response = yield call(API.Login, payload);
@@ -30,6 +33,8 @@ const logoutSaga = function* logoutSaga({payload}) {
   try {
     const response = yield call(API.Logout, payload);
     if (response) {
+      console.log(response);
+
       yield put(logoutSuccess(response));
       reduxStorage.removeItem('token');
     } else {
@@ -40,9 +45,26 @@ const logoutSaga = function* logoutSaga({payload}) {
   }
 };
 
+const forgotPasswordSaga = function* forgotPasswordSaga({payload}) {
+  try {
+    const response = yield call(API.ForgotPassword, payload);
+    if (response) {
+      ToastMessage.success(response.message);
+      yield put(forgotPasswordSuccess(response));
+    } else {
+      yield put(forgotPasswordFailure(response));
+    }
+  } catch (error) {
+    yield put(forgotPasswordFailure(error));
+  }
+};
+
 function* authSaga() {
   yield all([yield takeEvery(`${AUTH_REDUCER}/getLogin`, loginSaga)]);
   yield all([yield takeEvery(`${AUTH_REDUCER}/getLogout`, logoutSaga)]);
+  yield all([
+    yield takeEvery(`${AUTH_REDUCER}/getForgotPassword`, forgotPasswordSaga),
+  ]);
 }
 
 export default authSaga;

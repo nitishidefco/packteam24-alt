@@ -10,6 +10,7 @@ import CreateDailyList from '../Screens/DailyList/CreateDailyList';
 import {useContext, useEffect, useState} from 'react';
 import {AuthContext} from '../../context/AuthContext';
 import {reduxStorage} from '../Redux/Storage';
+import ForgotPass from './Auth/ForgotPass';
 const Stack = createStackNavigator();
 LogBox.ignoreLogs(['Warning: ...']);
 LogBox.ignoreAllLogs();
@@ -26,6 +27,11 @@ function UnAuthRoutes() {
       <Stack.Screen
         name="Login"
         component={Login}
+        options={{headerShown: false}}
+      />
+      <Stack.Screen
+        name="ForgotPass"
+        component={ForgotPass}
         options={{headerShown: false}}
       />
     </Stack.Navigator>
@@ -78,7 +84,7 @@ export default function Navigator() {
       {userToken != null || userToken != null ? (
         <AfterAuthRoutes />
       ) : (
-        <AfterAuthRoutes />
+        <UnAuthRoutes />
       )}
     </NavigationContainer>
   );

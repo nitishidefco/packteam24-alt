@@ -1,17 +1,17 @@
-import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
-import { AUTH_REDUCER } from '../SliceKey';
+import {createAsyncThunk, createSlice} from '@reduxjs/toolkit';
+import {AUTH_REDUCER} from '../SliceKey';
+import {get} from 'react-native/Libraries/TurboModule/TurboModuleRegistry';
 
 const NULL = null;
 const SUCCESS = true;
 const FAIL = false;
-
 
 export const AuthSlice = createSlice({
   name: AUTH_REDUCER,
   initialState: [],
   reducers: {
     getLogin: state => {
-      return { ...state, isLoginSuccess: null, error: null, message: '' };
+      return {...state, isLoginSuccess: null, error: null, message: ''};
     },
     loginSuccess: (state, action) => {
       return {
@@ -47,7 +47,32 @@ export const AuthSlice = createSlice({
       };
     },
     logoutFailure: (state, action) => {
-      return { ...state, islogoutSuccess: FAIL, error: action.payload.message };
+      return {...state, islogoutSuccess: FAIL, error: action.payload.message};
+    },
+
+    getForgotPassword: state => {
+      return {
+        ...state,
+        isForgotPasswordSuccess: null,
+        error: null,
+        message: '',
+      };
+    },
+    forgotPasswordSuccess: (state, action) => {
+      return {
+        ...state,
+        isForgotPasswordSuccess: true,
+        message: 'Fetch successfully',
+        data: action.payload,
+      };
+    },
+    forgotPasswordFailure: (state, action) => {
+      return {
+        ...state,
+        isForgotPasswordSuccess: FAIL,
+        error: action.payload,
+        message: 'Something went wrong',
+      };
     },
   },
 });
@@ -59,6 +84,9 @@ export const {
   getLogout,
   logoutFailure,
   logoutSuccess,
+  getForgotPassword,
+  forgotPasswordFailure,
+  forgotPasswordSuccess,
 } = AuthSlice.actions;
 const AuthReducer = AuthSlice.reducer;
 export default AuthReducer;

@@ -13,6 +13,7 @@ import {
   Alert,
   StatusBar,
   ScrollView,
+  StyleSheet,
 } from 'react-native';
 import {loginStyle as styles} from './styles';
 import {FullScreenSpinner} from '../../Components/HOC';
@@ -28,8 +29,7 @@ import {Popup, Validator, toastMessage} from '../../Helpers';
 import {setDeviceInfo} from '../../Redux/Reducers/NetworkSlice';
 import DeviceInfo from 'react-native-device-info';
 
-const Login = ({route}) => {
-  // --------------- FUNCTION DECLARATION ---------------
+const ForgotPass = () => {
   const navigation = useNavigation();
 
   // --------------- STATE ---------------
@@ -121,16 +121,6 @@ const Login = ({route}) => {
     return true;
   }
 
-  const onLoginPress = () => {
-    console.log('Loginpressed');
-    if (!isConnected) {
-      toastMessage.error('Please check your internet connection');
-    } else {
-      if (validateInputs('Enter Email')) {
-        loginAPI();
-      }
-    }
-  };
   const onForgotPasswordPress = () => {
     if (!isConnected) {
       toastMessage.error('Please check your internet connection');
@@ -193,9 +183,10 @@ const Login = ({route}) => {
                 }}
               />
             </View>
-            <Text style={styles.loginText}>Login to your account</Text>
+            <Text style={styles.loginText}>Reset password</Text>
             <Text style={styles.loginText2}>
-              Enter your email & password to login
+              Provide the email address you use to log in to the application –
+              we will send instructions for resetting your password.
             </Text>
             <View style={[styles.SectionStyle]}>
               <Text
@@ -228,48 +219,17 @@ const Login = ({route}) => {
                 blurOnSubmit={false}
               />
             </View>
-            <View style={styles.SectionStyle}>
-              <Text
-                style={{
-                  position: 'absolute',
-                  bottom: Matrics.ms(50),
-                  fontFamily: typography.fontFamily.Montserrat.Regular,
-                  color: '#555555',
-                }}>
-                Password
-              </Text>
 
-              <Image
-                source={Images.PASSWORD}
-                resizeMode={'contain'}
-                style={styles.loginInputIconStyle}
-              />
-              <TextInput
-                style={styles.inputStyle}
-                onChangeText={userPassword => setUserPassword(userPassword)}
-                placeholder={'Password'}
-                placeholderTextColor={'gray'}
-                keyboardType="default"
-                ref={passwordInputRef}
-                onSubmitEditing={Keyboard.dismiss}
-                blurOnSubmit={false}
-                secureTextEntry={true}
-                underlineColorAndroid="#f000"
-                returnKeyType="next"
-                value={userPassword}
-              />
-            </View>
             <TouchableOpacity
               style={styles.buttonStyle}
               activeOpacity={0.5}
-              onPress={onLoginPress}>
-              <Text style={styles.buttonTextStyle}>Login</Text>
+              onPress={onForgotPasswordPress}>
+              <Text style={styles.buttonTextStyle}>
+                Send Password Reset Link
+              </Text>
             </TouchableOpacity>
-            <TouchableOpacity
-              style={styles.forgotPasswordStyle}
-              activeOpacity={0.5}
-              onPress={() => navigation.navigate('ForgotPass')}>
-              <Text style={styles.forgotPasswordText}>Forgot Password</Text>
+            <TouchableOpacity onPress={() => navigation.navigate('Login')}>
+              <Text style={inLineStyles.goBack}>Go Back</Text>
             </TouchableOpacity>
           </View>
         </ScrollView>
@@ -278,4 +238,12 @@ const Login = ({route}) => {
   );
 };
 
-export default Login;
+const inLineStyles = StyleSheet.create({
+  goBack: {
+    textAlign: 'center',
+    fontSize: typography.fontSizes.fs17,
+    fontWeight: 'bold',
+  },
+});
+
+export default ForgotPass;

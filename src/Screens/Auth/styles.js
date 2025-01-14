@@ -4,6 +4,16 @@ import colors from '../../Config/AppStyling/colors';
 import { moderateVerticalScale } from 'react-native-size-matters';
 
 export const loginStyle = StyleSheet.create({
+  forgotPasswordText: {
+    color: '#307ecc',
+    textAlign: 'right',
+    marginTop: 10,
+    fontSize: 18,
+    textDecorationLine: 'underline'
+  },
+  forgotPasswordStyle:{
+    marginRight:Matrics.ms(70),
+  },
   scrollViewStyle: {
     flex: 1,
     justifyContent: 'center',

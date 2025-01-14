@@ -1,6 +1,6 @@
 import {Alert} from 'react-native';
 import {Constants} from '../../Config';
-import {error, info} from '../../Helpers/ToastMessage';
+import ToastMessage, {error, info} from '../../Helpers/ToastMessage';
 
 const POST = 'post';
 const GET = 'get';
@@ -21,6 +21,7 @@ const handleResponse = response => {
       // );
       // error(errorData)
       console.log('Error response:', errorData);
+      ToastMessage.error(errorData.message);
       return Promise.reject(errorData);
     });
   }
