@@ -23,12 +23,8 @@ const useValidateTag = (tagId, sessionItems) => {
     fetchTags();
   }, []);
 
-  console.log('Tags from local storage', tagsFromLocalStorage);
-
-  const lastTag =
-    sessionItems.length > 0 ? sessionItems[sessionItems.length - 1] : null;
   const effectiveLastState = tagForOfflineValidation;
-  console.log('Effective last state', effectiveLastState);
+  console.log(effectiveLastState);
 
   const currentDate = moment().format('YYYY-MM-DD');
 
@@ -58,11 +54,11 @@ const useValidateTag = (tagId, sessionItems) => {
       };
     }
 
-    if (effectiveLastState === 'work_in_progress') {
+    if (effectiveLastState === 'work_start') {
       return {valid: false, message: 'Work is already started'};
     }
 
-    if (effectiveLastState === 'break_in_progress') {
+    if (effectiveLastState === 'break_start') {
       return {valid: true, message: 'Break ended, work resumed'};
     }
 
@@ -93,7 +89,7 @@ const useValidateTag = (tagId, sessionItems) => {
       return {valid: false, message: 'Cannot end work without starting it'};
     }
 
-    if (effectiveLastState === 'break_in_progress') {
+    if (effectiveLastState === 'break_start') {
       return {
         valid: false,
         message: 'Cannot end work while on a break. Resume work first.',
@@ -104,7 +100,7 @@ const useValidateTag = (tagId, sessionItems) => {
       return {valid: false, message: 'Work is already ended'};
     }
 
-    if (effectiveLastState === 'work_in_progress') {
+    if (effectiveLastState === 'work_start') {
       return {valid: true, message: 'Work ended'};
     }
 

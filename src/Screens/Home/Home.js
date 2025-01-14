@@ -59,8 +59,12 @@ const Home = ({navigation, route}) => {
   const [tagsFromLocalStorage, setTagsFromLocalStorage] = useState([]);
 
   const sessionItems = sessions[SessionId]?.items || [];
-  // on every refresh its showing notification
   let validationResult1 = useValidateTag(tagId, sessionItems);
+  useEffect(() => {
+    setValidationResult(validationResult1);
+  }, []);
+  //
+  // on every refresh its showing notification
   // Handles the scanned NFC tag and extracts its ID
   const handleNfcTag = async tag => {
     if (tag?.id) {
@@ -70,6 +74,7 @@ const Home = ({navigation, route}) => {
       setDuplicateTagId(id);
     }
   };
+
   useEffect(() => {
     const getDeviceInfo = async () => {
       const deviceId = await DeviceInfo.getUniqueId();
@@ -95,7 +100,7 @@ const Home = ({navigation, route}) => {
     };
     const updateWorkStatus = async () => {
       console.log('updating work status');
-      
+
       try {
         let formdata = new FormData();
         formdata.append('session_id', SessionId);
@@ -257,11 +262,10 @@ const Home = ({navigation, route}) => {
       if (!tagId) return;
       setDuplicateTagId(tagId);
 
-      if (!validationResult1.valid) {
-        showNotificationAboutTagScannedWhileOffline(validationResult1);
+      if (!validationResult.valid) {
+        showNotificationAboutTagScannedWhileOffline(validationResult);
         return;
       }
-      setValidationResult(validationResult1);
 
       dispatch(
         addDataToOfflineStorage({
@@ -271,7 +275,7 @@ const Home = ({navigation, route}) => {
         }),
       );
 
-      showNotificationAboutTagScannedWhileOffline(validationResult1);
+      showNotificationAboutTagScannedWhileOffline(validationResult);
       setTagId('');
     };
 

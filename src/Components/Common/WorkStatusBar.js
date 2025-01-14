@@ -28,6 +28,7 @@ const WorkStatusBar = ({sessionId}) => {
     return null; // If session data or items are not available
   };
   const mostRecentTagId = getMostRecentTagId(sessionId);
+console.log('MostRecentTagId:', mostRecentTagId);
 
   function findModeByTagId(tags, tagId) {
     const matchingTag = tags.find(tag => tag.key === tagId);
@@ -38,8 +39,6 @@ const WorkStatusBar = ({sessionId}) => {
     const saveTagForOfflineValidation = async () => {
       if (isConnected) {
         try {
-          console.log(currentStatus?.currentState?.work_status_to_display);
-          
           setWorkMode(currentStatus?.currentState?.work_status_to_display);
           await reduxStorage.setItem(
             'tagForOfflineValidation',
@@ -71,9 +70,10 @@ const WorkStatusBar = ({sessionId}) => {
             setWorkMode('Not Started'); // Set work mode here
             break;
         }
-console.log('TagId:', tagMode); // Log the tag mode to confirm it is correct
+        console.log('TagId:', tagMode); // Log the tag mode to confirm it is correct
+        console.log('Before saving tag for offline validation', tagMode);
 
-        await reduxStorage.setItem('tagForOfflineValidation', tagMode); // Store the tag mode
+        await reduxStorage.setItem('tagForOfflineValidation', tagMode);
       }
     };
     saveTagForOfflineValidation();
