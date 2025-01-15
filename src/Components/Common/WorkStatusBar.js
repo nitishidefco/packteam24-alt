@@ -5,39 +5,58 @@ import {reduxStorage} from '../../Redux/Storage';
 import {useWorkStatusActions} from '../../Redux/Hooks/useWorkStatusActions';
 import {useSelector} from 'react-redux';
 
-const WorkStatusBar = ({sessionId}) => {
+const WorkStatusBar = ({tagMode}) => {
   const {state: currentStatus} = useWorkStatusActions();
   const [workMode, setWorkMode] = useState('');
+  console.log('tagMode', tagMode);
+
+  useEffect(() => {
+    console.log('tagMode', tagMode);
+    switch (tagMode) {
+      case 'work_start':
+        setWorkMode('Work in progress');
+        break;
+      case 'break_start':
+        setWorkMode('Break in progress');
+        break;
+      case 'work_end':
+        setWorkMode('Work finished');
+        break;
+      default:
+        setWorkMode('Not Started');
+    }
+  }, [tagMode]);
   const isConnected = useSelector(state => state?.Network?.isConnected);
   const {sessions} = useSelector(state => state.OfflineData);
-  const getMostRecentTagId = sessionId => {
-    const sessionData = sessions[sessionId];
+  // const getMostRecentTagId = sessionId => {
+  //   const sessionData = sessions[sessionId];
 
-    // Check if sessionData and items are present
-    if (sessionData && sessionData.items) {
-      // Sort the items by time in descending order (latest first)
-      const sortedItems = [...sessionData.items].sort((a, b) => {
-        const timeA = new Date(a.time);
-        const timeB = new Date(b.time);
-        return timeB - timeA; // Sort in descending order
-      });
+  //   // Check if sessionData and items are present
+  //   if (sessionData && sessionData.items) {
+  //     // Sort the items by time in descending order (latest first)
+  //     const sortedItems = [...sessionData.items].sort((a, b) => {
+  //       const timeA = new Date(a.time);
+  //       const timeB = new Date(b.time);
+  //       return timeB - timeA; // Sort in descending order
+  //     });
 
-      return sortedItems[0]?.tagId;
-    }
+  //     return sortedItems[0]?.tagId;
+  //   }
 
-    return null; // If session data or items are not available
-  };
-  const mostRecentTagId = getMostRecentTagId(sessionId);
-console.log('MostRecentTagId:', mostRecentTagId);
+  //   return null; // If session data or items are not available
+  // };
+  // const mostRecentTagId = getMostRecentTagId(sessionId);
 
-  function findModeByTagId(tags, tagId) {
-    const matchingTag = tags.find(tag => tag.key === tagId);
-    return matchingTag ? matchingTag.mode : null;
-  }
+  // function findModeByTagId(tags, tagId) {
+  //   const matchingTag = tags.find(tag => tag.key === tagId);
+  //   return matchingTag ? matchingTag.mode : null;
+  // }
 
   useEffect(() => {
     const saveTagForOfflineValidation = async () => {
       if (isConnected) {
+        console.log('currentStatus', currentStatus);
+        
         try {
           setWorkMode(currentStatus?.currentState?.work_status_to_display);
           await reduxStorage.setItem(
@@ -47,37 +66,10 @@ console.log('MostRecentTagId:', mostRecentTagId);
         } catch (error) {
           console.error('Error saving tag for offline validation:', error);
         }
-      } else {
-        console.log('Inside else');
-
-        const tagsFromLocalStorage = await reduxStorage.getItem('nfcTags');
-        const parsedTags = JSON.parse(tagsFromLocalStorage);
-
-        const tagMode = findModeByTagId(parsedTags, mostRecentTagId);
-        console.log('TagId:', tagMode); // Log the tag mode to confirm it is correct
-
-        switch (tagMode) {
-          case 'work_start':
-            setWorkMode('Work in progress');
-            break;
-          case 'break_start':
-            setWorkMode('Break in progress'); // Set work mode here
-            break;
-          case 'work_end':
-            setWorkMode('Work finished'); // Set work mode here
-            break;
-          default:
-            setWorkMode('Not Started'); // Set work mode here
-            break;
-        }
-        console.log('TagId:', tagMode); // Log the tag mode to confirm it is correct
-        console.log('Before saving tag for offline validation', tagMode);
-
-        await reduxStorage.setItem('tagForOfflineValidation', tagMode);
       }
     };
     saveTagForOfflineValidation();
-  }, [currentStatus, mostRecentTagId]);
+  }, [currentStatus]);
 
   const getStatusIcon = () => {
     switch (workMode) {

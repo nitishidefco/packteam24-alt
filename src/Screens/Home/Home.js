@@ -59,10 +59,12 @@ const Home = ({navigation, route}) => {
   const [tagsFromLocalStorage, setTagsFromLocalStorage] = useState([]);
 
   const sessionItems = sessions[SessionId]?.items || [];
-  let validationResult1 = useValidateTag(tagId, sessionItems);
-  useEffect(() => {
-    setValidationResult(validationResult1);
-  }, []);
+  // let validationResult1 = useValidateTag(tagId, sessionItems);
+  // useEffect(() => {
+  //   setValidationResult(validationResult1);
+  // }, []);
+  // console.log('Validation result', validationResult);
+
   //
   // on every refresh its showing notification
   // Handles the scanned NFC tag and extracts its ID
@@ -75,6 +77,7 @@ const Home = ({navigation, route}) => {
     }
   };
 
+  /* ----------------------------- Get device info ---------------------------- */
   useEffect(() => {
     const getDeviceInfo = async () => {
       const deviceId = await DeviceInfo.getUniqueId();
@@ -88,6 +91,7 @@ const Home = ({navigation, route}) => {
     };
     getDeviceInfo();
   }, []);
+  // fetching nfc tags stored in local storage
   useEffect(() => {
     const fetchNfcTags = async () => {
       try {
@@ -99,8 +103,6 @@ const Home = ({navigation, route}) => {
       }
     };
     const updateWorkStatus = async () => {
-      console.log('updating work status');
-
       try {
         let formdata = new FormData();
         formdata.append('session_id', SessionId);
@@ -114,7 +116,7 @@ const Home = ({navigation, route}) => {
     fetchNfcTags();
   }, [tagDetected]);
 
-  // Get nfc from server
+  // Get nfc from server and save in local storage
   useEffect(() => {
     const saveNfcTagToLocalStorage = async () => {
       try {
@@ -221,6 +223,46 @@ const Home = ({navigation, route}) => {
     }
   };
 
+  /* --------------------------- most recent tag id --------------------------- */
+  const getMostRecentTagId = sessionId => {
+    const sessionData = sessions[sessionId];
+
+    // Check if sessionData and items are present
+    if (sessionData && sessionData.items) {
+      // Sort the items by time in descending order (latest first)
+      const sortedItems = [...sessionData.items].sort((a, b) => {
+        const timeA = new Date(a.time);
+        const timeB = new Date(b.time);
+        return timeB - timeA; // Sort in descending order
+      });
+
+      return sortedItems[0]?.tagId;
+    }
+
+    return null; // If session data or items are not available
+  };
+  const mostRecentTagId = getMostRecentTagId(SessionId);
+  /* -------------------------- get tag mode from id -------------------------- */
+
+  function findModeByTagId(tags, tagId) {
+    const matchingTag = tags.find(tag => tag.key === tagId);
+    return matchingTag ? matchingTag.mode : null;
+  }
+  const [tagMode, setTagMode] = useState(null);
+  const mode = findModeByTagId(tagsFromLocalStorage, mostRecentTagId);
+  useEffect(() => {
+    setTagMode(mode);
+  }, [mode]);
+
+  // const updateLastEffectiveTagMode = async (tagMode) => {
+  //   await reduxStorage.setItem('tagForOfflineValidation', tagMode);
+  // };
+
+  // useEffect(() => {
+  //   updateLastEffectiveTagMode();
+  // }, [tagMode]);
+
+  /* ------------------- Processing online and offline tags ------------------- */
   useEffect(() => {
     if (!SessionId) return;
 
@@ -262,10 +304,10 @@ const Home = ({navigation, route}) => {
       if (!tagId) return;
       setDuplicateTagId(tagId);
 
-      if (!validationResult.valid) {
-        showNotificationAboutTagScannedWhileOffline(validationResult);
-        return;
-      }
+      // if (!validationResult.valid) {
+      //   showNotificationAboutTagScannedWhileOffline(validationResult);
+      //   return;
+      // }
 
       dispatch(
         addDataToOfflineStorage({
@@ -275,7 +317,7 @@ const Home = ({navigation, route}) => {
         }),
       );
 
-      showNotificationAboutTagScannedWhileOffline(validationResult);
+      showNotificationAboutTagScannedWhileOffline(tagId, tagsFromLocalStorage);
       setTagId('');
     };
 
@@ -361,7 +403,7 @@ const Home = ({navigation, route}) => {
         <View style={styles.container}>
           <View>
             {/* <NetworkStatusComponent /> */}
-            <WorkStatusBar sessionId={SessionId} />
+            <WorkStatusBar tagMode={tagMode} />
           </View>
           <View style={styles.nfcPromptContainer}>
             <Image source={Images.NFC} style={styles.userIcon} />
