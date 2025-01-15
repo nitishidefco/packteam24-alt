@@ -14,6 +14,7 @@ import {
   StatusBar,
   ScrollView,
 } from 'react-native';
+import {useTranslation} from 'react-i18next';
 import {loginStyle as styles} from './styles';
 import {FullScreenSpinner} from '../../Components/HOC';
 import {useNavigation} from '@react-navigation/native';
@@ -27,10 +28,20 @@ import {Loader} from '../../Components/Common';
 import {Popup, Validator, toastMessage} from '../../Helpers';
 import {setDeviceInfo} from '../../Redux/Reducers/NetworkSlice';
 import DeviceInfo from 'react-native-device-info';
-
+import FlagComponent from '../../Components/Common/FlagComponent';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import * as RNLocalize from 'react-native-localize';
+const languages = {
+  UK: 'en', // English
+  GER: 'de', // German
+  POL: 'pl', // Polish
+  RUS: 'ru', // Russian
+  UKA: 'uk', // Ukrainian
+};
 const Login = ({route}) => {
   // --------------- FUNCTION DECLARATION ---------------
   const navigation = useNavigation();
+  const {t, i18n} = useTranslation();
 
   // --------------- STATE ---------------
 
@@ -51,6 +62,7 @@ const Login = ({route}) => {
   const [dropdownAlert, setDropdownAlert] = useState(null);
   const {state, loginCall, forgotPasswordCall} = useAuthActions();
   const {Auth} = useSelector(state => state);
+  const [activeLanguage, setActiveLanguage] = useState(null);
   // --------------- LIFECYCLE ---------------
   useEffect(() => {
     if (loading && Auth.isLoginSuccess === true) {
@@ -64,6 +76,38 @@ const Login = ({route}) => {
       toastMessage.error('Login Unsuccessful');
     }
   }, [Auth?.isLoginSuccess]);
+
+   useEffect(() => {
+     const setDefaultLanguage = async () => {
+       try {
+         const savedLang = await AsyncStorage.getItem('language');
+         if (savedLang) {
+           setActiveLanguage(savedLang);
+           i18n.changeLanguage(savedLang);
+         } else {
+           const deviceLanguage = RNLocalize.getLocales()[0]?.languageCode;
+           const defaultLang = Object.values(languages).includes(deviceLanguage)
+             ? deviceLanguage
+             : 'de'; // Fallback to German
+           setActiveLanguage(defaultLang);
+           i18n.changeLanguage(defaultLang);
+           await AsyncStorage.setItem('language', defaultLang);
+         }
+       } catch (error) {
+         console.error('Error setting default language:', error);
+       }
+     };
+
+     setDefaultLanguage();
+   }, []);
+
+    const handleLanguageChange = async country => {
+      const selectedLang = languages[country];
+      setActiveLanguage(selectedLang);
+      i18n.changeLanguage(selectedLang);
+      await AsyncStorage.setItem('language', selectedLang);
+      console.log(`Language set to ${selectedLang}`);
+    };
   // ---------------Getting Device info---------------
   useEffect(() => {
     const getDeviceInfo = async () => {
@@ -127,6 +171,7 @@ const Login = ({route}) => {
       toastMessage.error('Please check your internet connection');
     } else {
       if (validateInputs('Enter Email')) {
+        // changeLanguage('pl');
         loginAPI();
       }
     }
@@ -142,6 +187,11 @@ const Login = ({route}) => {
   };
   const hideStatusBar = () => {
     StatusBar.setHidden(true);
+  };
+
+  const handlePress = language => {
+    console.log(`${language} clicked`);
+    setActiveLanguage(language); // Set the active country
   };
 
   useEffect(() => {
@@ -184,7 +234,7 @@ const Login = ({route}) => {
                 Platform.OS === 'ios' && styles.androidLogoConatiner,
               ]}>
               <Image
-                source={Images.LOGIN_LOGO}
+                source={Images.NEW_APP_LOGO}
                 style={{
                   resizeMode: 'contain',
                   alignSelf: 'center',
@@ -193,10 +243,8 @@ const Login = ({route}) => {
                 }}
               />
             </View>
-            <Text style={styles.loginText}>Login to your account</Text>
-            <Text style={styles.loginText2}>
-              Enter your email & password to login
-            </Text>
+            <Text style={styles.loginText}>{t('Login.title')}</Text>
+            <Text style={styles.loginText2}>{t('Login.subtitle')}</Text>
             <View style={[styles.SectionStyle]}>
               <Text
                 style={{
@@ -205,7 +253,7 @@ const Login = ({route}) => {
                   fontFamily: typography.fontFamily.Montserrat.Regular,
                   color: '#555555',
                 }}>
-                Email ID
+                {t('Login.email')}
               </Text>
               <Image
                 source={Images.EMAIL}
@@ -216,7 +264,7 @@ const Login = ({route}) => {
                 style={styles.inputStyle}
                 onChangeText={UserEmail => setUserEmail(UserEmail)}
                 value={userEmail}
-                placeholder={'Email'}
+                placeholder={t('Login.emailPlaceHolder')}
                 placeholderTextColor={'gray'}
                 autoCapitalize="none"
                 keyboardType="email-address"
@@ -236,7 +284,7 @@ const Login = ({route}) => {
                   fontFamily: typography.fontFamily.Montserrat.Regular,
                   color: '#555555',
                 }}>
-                Password
+                {t('Login.password')}
               </Text>
 
               <Image
@@ -247,7 +295,7 @@ const Login = ({route}) => {
               <TextInput
                 style={styles.inputStyle}
                 onChangeText={userPassword => setUserPassword(userPassword)}
-                placeholder={'Password'}
+                placeholder={t('Login.passwordPlaceHolder')}
                 placeholderTextColor={'gray'}
                 keyboardType="default"
                 ref={passwordInputRef}
@@ -263,14 +311,33 @@ const Login = ({route}) => {
               style={styles.buttonStyle}
               activeOpacity={0.5}
               onPress={onLoginPress}>
-              <Text style={styles.buttonTextStyle}>Login</Text>
+              <Text style={styles.buttonTextStyle}>
+                {t('Login.loginButton')}
+              </Text>
             </TouchableOpacity>
             <TouchableOpacity
               style={styles.forgotPasswordStyle}
               activeOpacity={0.5}
               onPress={() => navigation.navigate('ForgotPass')}>
-              <Text style={styles.forgotPasswordText}>Forgot Password</Text>
+              <Text style={styles.forgotPasswordText}>
+                {t('Login.forgotPassword')}
+              </Text>
             </TouchableOpacity>
+            <View style={styles.FlagContainer}>
+              {Object.keys(languages).map(country => (
+                <TouchableOpacity
+                  key={country}
+                  onPress={() => handleLanguageChange(country)}
+                  style={[
+                    styles.touchable,
+                    activeLanguage &&
+                      activeLanguage !== languages[country] &&
+                      styles.inactive,
+                  ]}>
+                  <FlagComponent Country={country} />
+                </TouchableOpacity>
+              ))}
+            </View>
           </View>
         </ScrollView>
       </KeyboardAvoidingView>

@@ -1,0 +1,37 @@
+{
+    "Login": {
+        "title": "Вход в ваш аккаунт",
+        "subtitle": "Введите ваш email и пароль для входа",
+        "email": "Электронная почта",
+        "emailPlaceHolder": "Электронная почта",
+        "emptyEmailError": "Пожалуйста, введите адрес электронной почты!",
+  "invalidEmailError": "Пожалуйста, введите действительный адрес электронной почты!",
+        "password": "Пароль",
+        "passwordPlaceHolder": "Пароль",
+        "forgotPassword": "Забыли пароль?",
+        "loginButton": "Войти"
+    },
+    "ForgotPassword": {
+        "title": "Сброс пароля",
+        "subtitle": "Укажите адрес электронной почты, который вы используете для входа в приложение - мы отправим вам инструкции по сбросу пароля",
+        "email": "Электронная почта",
+        "emailPlaceHolder": "Электронная почта",
+        "resetButton": "Отправить ссылку для сброса пароля",
+        "backToLogin": "Назад ко входу"
+    },
+    "HomeScreen": {
+        "nfcCardTitle": "Готово к сканированию NFC-меток",
+        "nfcCardSubtitle": "Поднесите устройство к NFC-метке",
+         "nfcButtonText": "Начать сканирование NFC"
+    },
+    "WorkStatusCard": {
+        "workStart": "Работа в процессе",
+        "workEnd": "Работа завершена",
+        "breakStart": "Перерыв в процессе",
+        "workNotStarted": "Работа не начата"
+    },
+    "SideMenuBar": {
+        "dashboard": "Панель управления",
+        "Logout": "Выйти"
+    }
+}

@@ -1,0 +1,37 @@
+{
+    "Login": {
+        "title": "Zaloguj się do swojego konta",
+        "subtitle": "Wprowadź swój email i hasło, aby się zalogować",
+        "email": "Adres e-mail",
+        "emailPlaceHolder": "E-mail",
+        "emptyEmailError": "Proszę podać adres e-mail!",
+  "invalidEmailError": "Proszę podać prawidłowy adres e-mail!",
+        "password": "Hasło",
+        "passwordPlaceHolder": "Hasło",
+        "forgotPassword": "Zapomniałeś hasła?",
+        "loginButton": "Zaloguj się"
+    },
+    "ForgotPassword": {
+        "title": "Zresetuj hasło",
+        "subtitle": "Podaj adres e-mail, którego używasz do logowania w aplikacji - wyślemy Ci instrukcje dotyczące resetowania hasła",
+        "email": "Adres e-mail",
+        "emailPlaceHolder": "E-mail",
+        "resetButton": "Wyślij link do resetowania hasła",
+        "backToLogin": "Powrót do logowania"
+    },
+    "HomeScreen": {
+        "nfcCardTitle": "Gotowy do skanowania tagów NFC",
+        "nfcCardSubtitle": "Przyłóż urządzenie do tagu NFC",
+          "nfcButtonText": "Rozpocznij skanowanie NFC"
+    },
+    "WorkStatusCard": {
+        "workStart": "Praca w toku",
+        "workEnd": "Praca zakończona",
+        "breakStart": "Przerwa w toku",
+        "workNotStarted": "Praca nie rozpoczęta"
+    },
+    "SideMenuBar": {
+        "dashboard": "Panel sterowania",
+        "Logout": "Wyloguj się"
+    }
+}

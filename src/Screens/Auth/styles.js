@@ -4,15 +4,27 @@ import colors from '../../Config/AppStyling/colors';
 import { moderateVerticalScale } from 'react-native-size-matters';
 
 export const loginStyle = StyleSheet.create({
+  FlagContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    padding: 8,
+  },
+  touchable: {
+    opacity: 1, // Default opacity
+  },
+  inactive: {
+    opacity: 0.5, // Reduced opacity for inactive countries
+  },
   forgotPasswordText: {
     color: '#307ecc',
-    textAlign: 'right',
+    textAlign: 'center',
     marginTop: 10,
     fontSize: 18,
-    textDecorationLine: 'underline'
+    textDecorationLine: 'underline',
   },
-  forgotPasswordStyle:{
-    marginRight:Matrics.ms(70),
+  forgotPasswordStyle: {
+    // marginRight:Matrics.ms(10),
   },
   scrollViewStyle: {
     flex: 1,
@@ -24,7 +36,7 @@ export const loginStyle = StyleSheet.create({
     backgroundColor: '#EBF0FA',
   },
   container: theme => {
-    return [AppStyle.wrapper, { backgroundColor: theme.backgroundColor }];
+    return [AppStyle.wrapper, {backgroundColor: theme.backgroundColor}];
   },
   reactLogoContainer: {
     alignItems: 'center',
@@ -43,20 +55,20 @@ export const loginStyle = StyleSheet.create({
       alignContent: 'center',
     };
   },
-  loginlogoContainer:{
-    marginTop:Matrics.ms(50),
-    marginBottom:Matrics.ms(55)
+  loginlogoContainer: {
+    marginTop: Matrics.ms(50),
+    marginBottom: Matrics.ms(55),
   },
-  androidLogoConatiner:{
-    marginTop:Matrics.ms(100),
-    marginBottom:Matrics.ms(60)
+  androidLogoConatiner: {
+    marginTop: Matrics.ms(100),
+    marginBottom: Matrics.ms(60),
   },
   loginText: {
     fontSize: typography.fontSizes.fs21,
     marginBottom: Matrics.ms(9),
     textAlign: 'center',
-    color: "#091242",
-    fontFamily: typography.fontFamily.Montserrat.SemiBold
+    color: '#091242',
+    fontFamily: typography.fontFamily.Montserrat.SemiBold,
   },
   logo: {
     resizeMode: 'contain',
@@ -68,7 +80,7 @@ export const loginStyle = StyleSheet.create({
     marginBottom: Matrics.ms(38),
     textAlign: 'center',
     color: '#757575',
-    fontFamily: typography.fontFamily.Montserrat.Medium
+    fontFamily: typography.fontFamily.Montserrat.Medium,
   },
   SectionStyle: {
     flexDirection: 'row',
@@ -78,11 +90,11 @@ export const loginStyle = StyleSheet.create({
     marginHorizontal: Matrics.ms(25),
     margin: Matrics.ms(10),
     borderBottomWidth: 1.5,
-    borderBottomColor:'#DEDEDE',
+    borderBottomColor: '#DEDEDE',
   },
   buttonStyle: {
-    position:'relative',
-    backgroundColor: '#091242',
+    position: 'relative',
+    backgroundColor: '#061439',
     borderWidth: 0,
     color: COLOR.PRIMARY,
     borderColor: COLOR.PRIMARY,
@@ -102,9 +114,7 @@ export const loginStyle = StyleSheet.create({
     shadowOpacity: 0.5,
     shadowRadius: 10,
     elevation: 14,
-    bottom:15
-    
-
+    bottom: 15,
   },
 
   buttonTextStyle: {
@@ -119,7 +129,7 @@ export const loginStyle = StyleSheet.create({
     fontFamily: typography.fontFamily.Montserrat.Medium,
     paddingLeft: Matrics.ms(15),
     paddingRight: Matrics.ms(15),
-    fontSize :typography.fontSizes.fs15,
+    fontSize: typography.fontSizes.fs15,
   },
   registerTextStyle: {
     color: COLOR.GRAY,
@@ -155,7 +165,7 @@ export const loginStyle = StyleSheet.create({
     // tintColor: COLOR.LIGHT_GRAY,
     width: Matrics.ms(22),
     height: Matrics.ms(22),
-    resizeMode: 'contain'
+    resizeMode: 'contain',
   },
   loginContainerImage: {
     alignSelf: 'center',
@@ -164,7 +174,6 @@ export const loginStyle = StyleSheet.create({
     paddingBottom: Matrics.ms(25),
     alignItems: 'center',
     height: Matrics.ms(300),
-
   },
   socialIconsRow: {
     flexDirection: 'row',

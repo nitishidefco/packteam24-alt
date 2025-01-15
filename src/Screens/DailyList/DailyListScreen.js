@@ -260,7 +260,7 @@ const DailyListScreen = () => {
               top: 7,
               justifyContent: 'center',
               marginHorizontal: 70,
-              backgroundColor: '#091242',
+              backgroundColor: '#061439',
               borderRadius: Matrics.ms(14),
               paddingVertical: Matrics.ms(10),
             }}>
@@ -300,16 +300,17 @@ const DailyListScreen = () => {
           </Text>
           <View style={{flexDirection: 'row'}}>
             <TouchableOpacity onPress={navigateToAddDailyList}>
-            <Image
-              source={Images.ADD}
-              style={{
-                height: 25,
-                width: 25,
-                resizeMode: 'contain',
-                bottom: Matrics.ms(5),
-                marginRight: Matrics.ms(8),
-              }}
-            /></TouchableOpacity>
+              <Image
+                source={Images.ADD}
+                style={{
+                  height: 25,
+                  width: 25,
+                  resizeMode: 'contain',
+                  bottom: Matrics.ms(5),
+                  marginRight: Matrics.ms(8),
+                }}
+              />
+            </TouchableOpacity>
             <TouchableOpacity onPress={toggleCalendarModal}>
               <Image
                 source={Images.MENU}
@@ -339,7 +340,7 @@ const DailyListScreen = () => {
         />
         {loading && <ActivityIndicator style={styles.loader} />}
         <Modal
-          animationType='none'
+          animationType="none"
           transparent={true}
           visible={isCalendarModalVisible}
           onRequestClose={toggleCalendarModal}>
@@ -444,7 +445,7 @@ const DailyListScreen = () => {
                     color: '#091242',
                   },
                 }}
-                minDate={startDate} 
+                minDate={startDate}
                 onDayPress={handleDayPress}
                 renderArrow={renderArrow}
               />
@@ -489,7 +490,7 @@ const styles = StyleSheet.create({
     color: 'black',
     fontFamily: typography.fontFamily.Montserrat.Regular,
     paddingVertical: 3,
-    color: 'black'
+    color: 'black',
   },
   bold: {
     fontFamily: typography.fontFamily.Montserrat.SemiBold,
@@ -512,7 +513,7 @@ const styles = StyleSheet.create({
     paddingTop: 60,
   },
   buttonStyle: {
-    backgroundColor: '#091242',
+    backgroundColor: '#061439',
     borderWidth: 0,
     color: 'white',
     height: 49,

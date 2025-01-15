@@ -1,4 +1,6 @@
 import React, {useEffect, useState, useCallback} from 'react';
+import {useTranslation} from 'react-i18next';
+
 import {
   SafeAreaView,
   View,
@@ -37,6 +39,7 @@ import {reduxStorage} from '../../Redux/Storage';
 const Home = ({navigation, route}) => {
   const dispatch = useDispatch();
   useNfcStatus();
+  const {t, i18n} = useTranslation();
   const sessions = useSelector(state => state?.OfflineData?.sessions);
   const isConnected = useSelector(state => state?.Network?.isConnected);
   const isNfcEnabled = useSelector(state => state?.Network?.isNfcEnabled);
@@ -407,18 +410,20 @@ const Home = ({navigation, route}) => {
           </View>
           <View style={styles.nfcPromptContainer}>
             <Image source={Images.NFC} style={styles.userIcon} />
-            <Text style={styles.nfcPromptText}>Ready to Scan NFC Tags</Text>
+            <Text style={styles.nfcPromptText}>{t('HomeScreen.nfcCardTitle')}</Text>
 
             {Platform.OS === 'ios' && (
               <TouchableOpacity
                 style={styles.scanButton}
                 onPress={() => initNfcScan()}>
-                <Text style={styles.buttonText}>Start NFC Scan</Text>
+                <Text style={styles.buttonText}>
+                  {t('HomeScreen.nfcButtonText')}
+                </Text>
               </TouchableOpacity>
             )}
             {Platform.OS === 'android' && (
               <Text style={styles.nfcPromptSubtext}>
-                Hold your device near an NFC tag
+                {t('HomeScreen.nfcCardSubtitle')}
               </Text>
             )}
           </View>

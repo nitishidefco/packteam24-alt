@@ -79,7 +79,7 @@ const CustomHeader = ({onUserPress}) => {
           />
         </TouchableOpacity>
         <Image
-          source={Images.HEADER_LOGO}
+          source={Images.NEW_APP_LOGO}
           resizeMode={'contain'}
           style={styles.logoStyle}
         />
@@ -153,7 +153,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    backgroundColor: '#091242',
+    backgroundColor: '#061439',
   },
   drawerIconStyle: {
     tintColor: COLOR.WHITE,

@@ -3,6 +3,8 @@
 import React, {useState, useEffect} from 'react';
 import {NavigationContainer} from '@react-navigation/native';
 import {createStackNavigator} from '@react-navigation/stack';
+import {I18nextProvider} from 'react-i18next';
+import i18n from './i18n/i18n';
 
 import Splash from './splash';
 
@@ -36,51 +38,53 @@ const App = () => {
   return (
     <Provider store={Store}>
       <SafeAreaProvider>
-        <NavigationContainer>
-          <Stack.Navigator>
-            <Stack.Screen
-              name="Splash"
-              component={Splash}
-              options={{headerShown: false}}
-            />
-            <Stack.Screen
-              name="Login"
-              component={Login}
-              options={{headerShown: false}}
-            />
-            <Stack.Screen
-              name="ForgotPass"
-              component={ForgotPass}
-              options={{headerShown: false}}
-            />
-            <Stack.Screen
-              name="HomeDrawer"
-              component={HomeDrawer}
-              options={{headerShown: false}}
-            />
-            <Stack.Screen
-              name="AddDailyList"
-              component={AddDailyList}
-              options={{headerShown: false}}
-            />
-            <Stack.Screen
-              name="EditDailyList"
-              component={EditDailyList}
-              options={{headerShown: false}}
-            />
-            <Stack.Screen
-              name="CreateDailyList"
-              component={CreateDailyList}
-              options={{headerShown: false}}
-            />
-          </Stack.Navigator>
-        </NavigationContainer>
-        <Toast
-          config={toastConfig}
-          position="top"
-          topOffset={0}
-          autoHide={true}
-        />
+        <I18nextProvider i18n={i18n}>
+          <NavigationContainer>
+            <Stack.Navigator>
+              <Stack.Screen
+                name="Splash"
+                component={Splash}
+                options={{headerShown: false}}
+              />
+              <Stack.Screen
+                name="Login"
+                component={Login}
+                options={{headerShown: false}}
+              />
+              <Stack.Screen
+                name="ForgotPass"
+                component={ForgotPass}
+                options={{headerShown: false}}
+              />
+              <Stack.Screen
+                name="HomeDrawer"
+                component={HomeDrawer}
+                options={{headerShown: false}}
+              />
+              <Stack.Screen
+                name="AddDailyList"
+                component={AddDailyList}
+                options={{headerShown: false}}
+              />
+              <Stack.Screen
+                name="EditDailyList"
+                component={EditDailyList}
+                options={{headerShown: false}}
+              />
+              <Stack.Screen
+                name="CreateDailyList"
+                component={CreateDailyList}
+                options={{headerShown: false}}
+              />
+            </Stack.Navigator>
+          </NavigationContainer>
+          <Toast
+            config={toastConfig}
+            position="top"
+            topOffset={0}
+            autoHide={true}
+          />
+        </I18nextProvider>
       </SafeAreaProvider>
     </Provider>
   );

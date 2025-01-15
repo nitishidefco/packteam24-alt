@@ -9,9 +9,11 @@ import {useAuthActions} from '../../Redux/Hooks';
 import DropdownAlert from 'react-native-dropdownalert';
 import {toastMessage} from '../../Helpers';
 import {reduxStorage} from '../../Redux/Storage';
+import { useTranslation } from 'react-i18next';
 // import DailyListScreen from '../../screens/DailyList/DailyListScreen';
 
 const CustomDrawerContent = props => {
+  const {t, i18n} = useTranslation();
   const navigation = useNavigation();
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -65,14 +67,14 @@ if(Platform.OS === 'ios'){
         {/* Application Logo */}
         <View style={styles.logoContainer}>
           <Image
-            source={Images.HEADER_LOGO}
+            source={Images.NEW_APP_LOGO}
             resizeMode="contain"
             style={styles.logoStyle}
           />
         </View>
         {/* Drawer Items */}
         <DrawerItem
-          label="Dashboard"
+          label={t('SideMenuBar.dashboard')}
           labelStyle={{
             fontFamily: typography.fontFamily.Montserrat.Regular,
             fontSize: typography.fontSizes.fs15,
@@ -172,7 +174,7 @@ if(Platform.OS === 'ios'){
       {/* Logout */}
       <View style={{justifyContent: 'flex-end', marginBottom: Matrics.ms(45), marginLeft: Matrics.ms(13)}}>
         <DrawerItem
-          label="Logout"
+          label={t('SideMenuBar.Logout')}
           labelStyle={{
             fontFamily: typography.fontFamily.Montserrat.Regular,
             fontSize: typography.fontSizes.fs15,
@@ -211,10 +213,10 @@ if(Platform.OS === 'ios'){
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#091242',
+    backgroundColor: '#061439',
   },
   drawerContent: {
-    backgroundColor: '#091242',
+    backgroundColor: '#061439',
   },
   logoContainer: {
     alignItems: 'center',
@@ -229,17 +231,16 @@ const styles = StyleSheet.create({
   drawerItem: {
     marginLeft: 0,
   },
-  homeIconIosStyle:{
+  homeIconIosStyle: {
     width: Matrics.ms(20),
     height: Matrics.ms(19),
-   marginRight: 55,
-
+    marginRight: 55,
   },
-  messageIconIosStyle:{
+  messageIconIosStyle: {
     width: Matrics.ms(24),
     height: Matrics.ms(22),
-   marginRight: 45,
-   marginTop: 10,
+    marginRight: 45,
+    marginTop: 10,
   },
   homeIconStyle: {
     width: Matrics.ms(20),
@@ -254,11 +255,11 @@ const styles = StyleSheet.create({
     // paddingLeft: Matrics.ms(80),
     marginTop: Matrics.ms(10),
   },
-  dashBoardIconIosStyle:{
+  dashBoardIconIosStyle: {
     width: Matrics.ms(22),
     height: Matrics.ms(19),
-   marginRight: 45,
-   marginBottom: 10
+    marginRight: 45,
+    marginBottom: 10,
   },
   dashBoardIconStyle: {
     width: Matrics.ms(22),
@@ -275,12 +276,11 @@ const styles = StyleSheet.create({
     // tintColor: 'red',
     marginBottom: Matrics.ms(0),
   },
-  logoutIconIosStyle:{
+  logoutIconIosStyle: {
     width: Matrics.ms(24),
     height: Matrics.ms(24),
     marginRight: Matrics.ms(32),
-
-  }
+  },
 });
 
 export default CustomDrawerContent;

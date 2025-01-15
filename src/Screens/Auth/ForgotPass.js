@@ -1,5 +1,6 @@
 // --------------- LIBRARIES ---------------
 import React, {useState, createRef, useContext, useEffect} from 'react';
+import {useTranslation} from 'react-i18next';
 import {
   Image,
   View,
@@ -31,6 +32,7 @@ import DeviceInfo from 'react-native-device-info';
 
 const ForgotPass = () => {
   const navigation = useNavigation();
+  const {t, i18n} = useTranslation();
 
   // --------------- STATE ---------------
 
@@ -174,7 +176,7 @@ const ForgotPass = () => {
                 Platform.OS === 'ios' && styles.androidLogoConatiner,
               ]}>
               <Image
-                source={Images.LOGIN_LOGO}
+                source={Images.NEW_APP_LOGO}
                 style={{
                   resizeMode: 'contain',
                   alignSelf: 'center',
@@ -183,10 +185,9 @@ const ForgotPass = () => {
                 }}
               />
             </View>
-            <Text style={styles.loginText}>Reset password</Text>
+            <Text style={styles.loginText}>{t('ForgotPassword.title')}</Text>
             <Text style={styles.loginText2}>
-              Provide the email address you use to log in to the application –
-              we will send instructions for resetting your password.
+              {t('ForgotPassword.subtitle')}
             </Text>
             <View style={[styles.SectionStyle]}>
               <Text
@@ -196,7 +197,7 @@ const ForgotPass = () => {
                   fontFamily: typography.fontFamily.Montserrat.Regular,
                   color: '#555555',
                 }}>
-                Email ID
+                {t('ForgotPassword.email')}
               </Text>
               <Image
                 source={Images.EMAIL}
@@ -207,7 +208,7 @@ const ForgotPass = () => {
                 style={styles.inputStyle}
                 onChangeText={UserEmail => setUserEmail(UserEmail)}
                 value={userEmail}
-                placeholder={'Email'}
+                placeholder={t('ForgotPassword.emailPlaceHolder')}
                 placeholderTextColor={'gray'}
                 autoCapitalize="none"
                 keyboardType="email-address"
@@ -225,11 +226,13 @@ const ForgotPass = () => {
               activeOpacity={0.5}
               onPress={onForgotPasswordPress}>
               <Text style={styles.buttonTextStyle}>
-                Send Password Reset Link
+                {t('ForgotPassword.resetButton')}
               </Text>
             </TouchableOpacity>
             <TouchableOpacity onPress={() => navigation.navigate('Login')}>
-              <Text style={inLineStyles.goBack}>Go Back</Text>
+              <Text style={inLineStyles.goBack}>
+                {t('ForgotPassword.backToLogin')}
+              </Text>
             </TouchableOpacity>
           </View>
         </ScrollView>
