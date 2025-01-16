@@ -1,5 +1,13 @@
 import React, {useState, useRef, useEffect} from 'react';
-import {View, StyleSheet, Image, Text, Animated, Alert, Platform} from 'react-native';
+import {
+  View,
+  StyleSheet,
+  Image,
+  Text,
+  Animated,
+  Alert,
+  Platform,
+} from 'react-native';
 import {DrawerContentScrollView, DrawerItem} from '@react-navigation/drawer';
 import {useNavigation} from '@react-navigation/native';
 import {Images} from '../../Config';
@@ -9,7 +17,7 @@ import {useAuthActions} from '../../Redux/Hooks';
 import DropdownAlert from 'react-native-dropdownalert';
 import {toastMessage} from '../../Helpers';
 import {reduxStorage} from '../../Redux/Storage';
-import { useTranslation } from 'react-i18next';
+import {useTranslation} from 'react-i18next';
 // import DailyListScreen from '../../screens/DailyList/DailyListScreen';
 
 const CustomDrawerContent = props => {
@@ -21,12 +29,12 @@ const CustomDrawerContent = props => {
   const {Auth} = state;
   const SessionId = Auth.data?.data?.sesssion_id;
   const [dropdownAlert, setDropdownAlert] = useState(null);
-const [isIos, setIsIos] = useState(false);
-useEffect(()=>{
-if(Platform.OS === 'ios'){
-  setIsIos(true);
-}
-},[])
+  const [isIos, setIsIos] = useState(false);
+  useEffect(() => {
+    if (Platform.OS === 'ios') {
+      setIsIos(true);
+    }
+  }, []);
 
   const goToHome = () => {
     navigation.replace('Home');
@@ -86,6 +94,42 @@ if(Platform.OS === 'ios'){
           icon={() => (
             <Image
               source={Images.DASHBOARD}
+              resizeMode="contain"
+              style={[isIos ? styles.homeIconIosStyle : styles.homeIconStyle]}
+            />
+          )}
+        />
+        <DrawerItem
+          label={t('SideMenuBar.ChangePassword')}
+          labelStyle={{
+            fontFamily: typography.fontFamily.Montserrat.Regular,
+            fontSize: typography.fontSizes.fs15,
+            color: colors.WHITE,
+            marginHorizontal: Matrics.ms(-45),
+          }}
+          onPress={() => navigation.navigate('ChangePassword')}
+          style={[styles.drawerItem]}
+          icon={() => (
+            <Image
+              source={Images.CHANGE_PASSWORD}
+              resizeMode="contain"
+              style={[isIos ? styles.homeIconIosStyle : styles.homeIconStyle]}
+            />
+          )}
+        />
+        <DrawerItem
+          label={t('SideMenuBar.UserProflie')}
+          labelStyle={{
+            fontFamily: typography.fontFamily.Montserrat.Regular,
+            fontSize: typography.fontSizes.fs15,
+            color: colors.WHITE,
+            marginHorizontal: Matrics.ms(-45),
+          }}
+          onPress={()=>navigation.replace('UserProfile')}
+          style={[styles.drawerItem]}
+          icon={() => (
+            <Image
+              source={Images.CHANGE_PASSWORD}
               resizeMode="contain"
               style={[isIos ? styles.homeIconIosStyle : styles.homeIconStyle]}
             />
@@ -172,7 +216,12 @@ if(Platform.OS === 'ios'){
         /> */}
       </DrawerContentScrollView>
       {/* Logout */}
-      <View style={{justifyContent: 'flex-end', marginBottom: Matrics.ms(45), marginLeft: Matrics.ms(13)}}>
+      <View
+        style={{
+          justifyContent: 'flex-end',
+          marginBottom: Matrics.ms(45),
+          marginLeft: Matrics.ms(13),
+        }}>
         <DrawerItem
           label={t('SideMenuBar.Logout')}
           labelStyle={{
@@ -189,7 +238,9 @@ if(Platform.OS === 'ios'){
             <Image
               source={Images.LOGOUT_ICON}
               resizeMode="contain"
-              style={[isIos ? styles.logoutIconIosStyle:styles.logoutIconStyle]}
+              style={[
+                isIos ? styles.logoutIconIosStyle : styles.logoutIconStyle,
+              ]}
             />
           )}
         />

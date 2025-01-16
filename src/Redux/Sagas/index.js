@@ -5,6 +5,8 @@ import dailyListSaga from './DailyListSaga';
 import scanTagSaga from './ScanSaga';
 import fetchNfcTagFromServerSaga from './StoreNfcTagsSaga';
 import fetchWorkStatusFromServerSaga from './WorkStatusSaga';
+import userProfileSaga from './UserProfileSaga';
+
 //Main Root Saga
 const rootSaga = function* rootSaga() {
   yield all([
@@ -14,6 +16,7 @@ const rootSaga = function* rootSaga() {
     scanTagSaga(),
     fetchNfcTagFromServerSaga(),
     fetchWorkStatusFromServerSaga(),
+    userProfileSaga(),
   ]);
 };
 export default rootSaga;

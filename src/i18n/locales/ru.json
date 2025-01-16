@@ -32,6 +32,8 @@
     },
     "SideMenuBar": {
         "dashboard": "Панель управления",
-        "Logout": "Выйти"
+        "Logout": "Выйти",
+        "ChangePassword": "Изменить пароль",
+        "UserProflie":"профиль пользователя"
     }
 }

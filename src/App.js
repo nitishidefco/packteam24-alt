@@ -21,6 +21,8 @@ import CreateDailyList from './Screens/DailyList/CreateDailyList';
 import {SafeAreaProvider} from 'react-native-safe-area-context';
 import {monitorNetworkStatus} from './Utlis/NetworkUtils';
 import ForgotPass from './Screens/Auth/ForgotPass';
+import ChangePassword from './Screens/UserHelp/ChangePassword';
+import UserProfile from './Screens/UserHelp/UserProfile';
 
 const Stack = createStackNavigator();
 // LogBox.ignoreLogs(['Warning: ...']);
@@ -54,6 +56,16 @@ const App = () => {
               <Stack.Screen
                 name="ForgotPass"
                 component={ForgotPass}
+                options={{headerShown: false}}
+              />
+              <Stack.Screen
+                name="ChangePassword"
+                component={ChangePassword}
+                options={{headerShown: false}}
+              />
+              <Stack.Screen
+                name="UserProfile"
+                component={UserProfile}
                 options={{headerShown: false}}
               />
               <Stack.Screen

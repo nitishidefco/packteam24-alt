@@ -19,7 +19,7 @@ import NfcManager, {NfcTech, NfcEvents} from 'react-native-nfc-manager';
 import {useScanTagActions} from '../../Redux/Hooks/useScanTagActions';
 import {useWorkStatusActions} from '../../Redux/Hooks/useWorkStatusActions';
 
-import NetworkStatusComponent from '../../Components/Common/NetworkStatus';
+// import NetworkStatusComponent from '../../Components/Common/NetworkStatus';
 import {
   clearOfflineStorage,
   addDataToOfflineStorage,
@@ -36,6 +36,7 @@ import useValidateTag from '../../Components/Hooks/useValidateTag';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {useFetchNfcTagsActions} from '../../Redux/Hooks/useFetchNfcTagsActions';
 import {reduxStorage} from '../../Redux/Storage';
+import useSavedLanguage from '../../Components/Hooks/useSavedLanguage';
 const Home = ({navigation, route}) => {
   const dispatch = useDispatch();
   useNfcStatus();
@@ -60,7 +61,6 @@ const Home = ({navigation, route}) => {
   const {fetchTagsCall} = useFetchNfcTagsActions();
   const {fetchWorkStatusCall} = useWorkStatusActions();
   const [tagsFromLocalStorage, setTagsFromLocalStorage] = useState([]);
-
   const sessionItems = sessions[SessionId]?.items || [];
   // let validationResult1 = useValidateTag(tagId, sessionItems);
   // useEffect(() => {
@@ -79,6 +79,14 @@ const Home = ({navigation, route}) => {
       setDuplicateTagId(id);
     }
   };
+  /* -------------------------------- language -------------------------------- */
+  const language = useSavedLanguage();
+    useEffect(() => {
+      if (language) {
+        i18n.changeLanguage(language); // Change language once it's loaded
+      }
+    }, [language]);
+
 
   /* ----------------------------- Get device info ---------------------------- */
   useEffect(() => {
@@ -110,6 +118,7 @@ const Home = ({navigation, route}) => {
         let formdata = new FormData();
         formdata.append('session_id', SessionId);
         formdata.append('device_id', '13213211');
+        formdata.append('lang', language);
         fetchWorkStatusCall(formdata);
       } catch (error) {
         console.error('Error updating work status', error);
@@ -126,12 +135,14 @@ const Home = ({navigation, route}) => {
         let formData = new FormData();
         formData.append('session_id', SessionId);
         formData.append('device_id', '13213211');
+        formData.append('lang', language);
         fetchTagsCall(formData);
       } catch (error) {
         console.error('Error saving nfc tags to local storage', error);
       }
     };
     saveNfcTagToLocalStorage();
+    console.log('Lanugae', language);
   }, []);
   // Initializes NFC scanning for iOS
   const initNfcScan = useCallback(async () => {
@@ -218,6 +229,7 @@ const Home = ({navigation, route}) => {
       formdata.append('session_id', SessionId);
       formdata.append('device_id', '13213211');
       formdata.append('nfc_key', uid);
+      formdata.append('lang', language);
       scanCall(formdata);
     } catch (error) {
       console.error('Error processing UID:', error);
@@ -343,6 +355,7 @@ const Home = ({navigation, route}) => {
     let formdata = new FormData();
     formdata.append('session_id', SessionId);
     formdata.append('device_id', '13213211');
+    formdata.append('lang', language);
     homecall(formdata);
   }
 
@@ -410,7 +423,9 @@ const Home = ({navigation, route}) => {
           </View>
           <View style={styles.nfcPromptContainer}>
             <Image source={Images.NFC} style={styles.userIcon} />
-            <Text style={styles.nfcPromptText}>{t('HomeScreen.nfcCardTitle')}</Text>
+            <Text style={styles.nfcPromptText}>
+              {t('HomeScreen.nfcCardTitle')}
+            </Text>
 
             {Platform.OS === 'ios' && (
               <TouchableOpacity

@@ -32,6 +32,8 @@
     },
     "SideMenuBar":{
         "dashboard":"Dashboard",
-        "Logout":"Logout"
+        "Logout":"Logout",
+        "ChangePassword":"Change Password",
+        "UserProflie":"User Profile"
     }
 }

@@ -34,7 +34,9 @@
         "workNotStarted": "Arbeit nicht begonnen"
     },
     "SideMenuBar": {
-        "dashboard": "Dashboard",
-        "Logout": "Abmelden"
+        "dashboard": "Armaturenbrett",
+        "Logout": "Abmelden",
+        "ChangePassword": "Kennwort ändern",
+        "UserProflie":"Benutzerprofil"
     }
 }

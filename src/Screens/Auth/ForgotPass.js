@@ -29,6 +29,7 @@ import {Loader} from '../../Components/Common';
 import {Popup, Validator, toastMessage} from '../../Helpers';
 import {setDeviceInfo} from '../../Redux/Reducers/NetworkSlice';
 import DeviceInfo from 'react-native-device-info';
+import useSavedLanguage from '../../Components/Hooks/useSavedLanguage';
 
 const ForgotPass = () => {
   const navigation = useNavigation();
@@ -53,6 +54,8 @@ const ForgotPass = () => {
   const [dropdownAlert, setDropdownAlert] = useState(null);
   const {state, loginCall, forgotPasswordCall} = useAuthActions();
   const {Auth} = useSelector(state => state);
+  /* ------------------------ Custom hook for language ------------------------ */
+  const language = useSavedLanguage();
   // --------------- LIFECYCLE ---------------
   useEffect(() => {
     if (loading && Auth.isLoginSuccess === true) {
@@ -90,6 +93,7 @@ const ForgotPass = () => {
       formdata.append('email', userEmail);
       formdata.append('password', userPassword);
       formdata.append('device_id', '13213211');
+      formdata.append('lang', language);
       loginCall(formdata);
     } finally {
       // setLoading(false);
@@ -100,6 +104,7 @@ const ForgotPass = () => {
       setLoading(true);
       let formdata = new FormData();
       formdata.append('email', userEmail);
+      formdata.append('lang', language);
       forgotPasswordCall(formdata);
     } catch (error) {
       setLoading(false);

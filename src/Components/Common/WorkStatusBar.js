@@ -8,10 +8,8 @@ import {useSelector} from 'react-redux';
 const WorkStatusBar = ({tagMode}) => {
   const {state: currentStatus} = useWorkStatusActions();
   const [workMode, setWorkMode] = useState('');
-  console.log('tagMode', tagMode);
 
   useEffect(() => {
-    console.log('tagMode', tagMode);
     switch (tagMode) {
       case 'work_start':
         setWorkMode('Work in progress');
@@ -55,8 +53,6 @@ const WorkStatusBar = ({tagMode}) => {
   useEffect(() => {
     const saveTagForOfflineValidation = async () => {
       if (isConnected) {
-        console.log('currentStatus', currentStatus);
-        
         try {
           setWorkMode(currentStatus?.currentState?.work_status_to_display);
           await reduxStorage.setItem(

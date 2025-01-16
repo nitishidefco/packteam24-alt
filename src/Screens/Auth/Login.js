@@ -77,37 +77,38 @@ const Login = ({route}) => {
     }
   }, [Auth?.isLoginSuccess]);
 
-   useEffect(() => {
-     const setDefaultLanguage = async () => {
-       try {
-         const savedLang = await AsyncStorage.getItem('language');
-         if (savedLang) {
-           setActiveLanguage(savedLang);
-           i18n.changeLanguage(savedLang);
-         } else {
-           const deviceLanguage = RNLocalize.getLocales()[0]?.languageCode;
-           const defaultLang = Object.values(languages).includes(deviceLanguage)
-             ? deviceLanguage
-             : 'de'; // Fallback to German
-           setActiveLanguage(defaultLang);
-           i18n.changeLanguage(defaultLang);
-           await AsyncStorage.setItem('language', defaultLang);
-         }
-       } catch (error) {
-         console.error('Error setting default language:', error);
-       }
-     };
-
-     setDefaultLanguage();
-   }, []);
-
-    const handleLanguageChange = async country => {
-      const selectedLang = languages[country];
-      setActiveLanguage(selectedLang);
-      i18n.changeLanguage(selectedLang);
-      await AsyncStorage.setItem('language', selectedLang);
-      console.log(`Language set to ${selectedLang}`);
+  useEffect(() => {
+    const setDefaultLanguage = async () => {
+      try {
+        const savedLang = await AsyncStorage.getItem('language');
+        if (savedLang) {
+          setActiveLanguage(savedLang);
+          i18n.changeLanguage(savedLang);
+        } else {
+          const deviceLanguage = RNLocalize.getLocales()[0]?.languageCode;
+          const defaultLang = Object.values(languages).includes(deviceLanguage)
+            ? deviceLanguage
+            : 'de'; // Fallback to German
+          setActiveLanguage(defaultLang);
+          i18n.changeLanguage(defaultLang);
+          await AsyncStorage.setItem('language', defaultLang);
+        }
+      } catch (error) {
+        console.error('Error setting default language:', error);
+      }
     };
+
+    setDefaultLanguage();
+  }, []);
+  console.log('active language', activeLanguage);
+
+  const handleLanguageChange = async country => {
+    const selectedLang = languages[country];
+    setActiveLanguage(selectedLang);
+    i18n.changeLanguage(selectedLang);
+    await AsyncStorage.setItem('language', selectedLang);
+    console.log(`Language set to ${selectedLang}`);
+  };
   // ---------------Getting Device info---------------
   useEffect(() => {
     const getDeviceInfo = async () => {
@@ -132,6 +133,7 @@ const Login = ({route}) => {
       formdata.append('email', userEmail);
       formdata.append('password', userPassword);
       formdata.append('device_id', '13213211');
+      formdata.append('lang', activeLanguage);
       loginCall(formdata);
     } finally {
       // setLoading(false);
@@ -189,10 +191,7 @@ const Login = ({route}) => {
     StatusBar.setHidden(true);
   };
 
-  const handlePress = language => {
-    console.log(`${language} clicked`);
-    setActiveLanguage(language); // Set the active country
-  };
+
 
   useEffect(() => {
     const keyboardDidShowListener = Keyboard.addListener(

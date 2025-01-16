@@ -6,23 +6,20 @@ const BASE_URL = Constants.IS_DEVELOPING_MODE
   : Constants.BASE_URL.PROD;
 
 export default {
-  ScanTag: async params => {
-    return fetch(`${BASE_URL}api/work-time/update`, {
+  Profile: async params => {
+    return fetch(`${BASE_URL}api/profile`, {
       method: 'POST',
       body: params,
       headers: {
         Accept: 'multipart/form-data',
-        // 'Content-Type': "application/json"
       },
     })
       .then(response => Ajax.handleResponse(response))
-      .then(data => {
-        return data;
-      });
+      .then(data => data);
   },
 
-  WorkStatus: async params => {
-    return fetch(`${BASE_URL}api/my-status`, {
+  UpdateProfile: async params => {
+    return fetch(`${BASE_URL}api/update-profile`, {
       method: 'POST',
       body: params,
       headers: {
@@ -30,13 +27,10 @@ export default {
       },
     })
       .then(response => Ajax.handleResponse(response))
-      .then(data => {
-        return data;
-      });
+      .then(data => data);
   },
-
-  AllNFCTags: async params => {
-    return fetch(`${BASE_URL}api/nfc-tags`, {
+  RemoveProfilePhoto: async params => {
+    return fetch(`${BASE_URL}api/remove-profile-photo`, {
       method: 'POST',
       body: params,
       headers: {
@@ -44,6 +38,6 @@ export default {
       },
     })
       .then(response => Ajax.handleResponse(response))
-      .then(data => data.data[0]);
+      .then(data => data);
   },
 };

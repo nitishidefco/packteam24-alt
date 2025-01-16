@@ -37,7 +37,7 @@ const Splash = () => {
   return (
     <View style={styles.container}>
       <Image
-        source={Images.SPLASH_ICON}
+        source={Images.NEW_APP_LOGO}
         style={styles.image}
         resizeMode="contain"
       />
