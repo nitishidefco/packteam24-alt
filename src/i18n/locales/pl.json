@@ -35,5 +35,49 @@
         "Logout": "Wyloguj się",
         "ChangePassword": "Zmień hasło",
         "UserProflie":"Profil użytkownika"
-    }
+    },
+     "ChangePasswordScreen": {
+    "allFieldsRequired": "Wszystkie pola są wymagane",
+    "currentPassword": "Bieżące hasło",
+    "newPassword": "Nowe hasło",
+    "confirmNewPassword": "Potwierdź nowe hasło",
+    "save": "Zapisz",
+    "cancel": "Anuluj",
+    "changePasswordHeader": "Zmień hasło",
+    "cancelChanges": "Anuluj zmiany",
+    "confirmationCancel": "Czy na pewno chcesz anulować zmianę hasła?",
+    "no": "Nie",
+    "yes": "Tak",
+    "confirmPasswordChange": "Potwierdź zmianę hasła",
+    "changeConfirmation": "Czy na pewno chcesz zmienić swoje hasło?",
+    "passwordError": "Hasła się nie zgadzają"
+  },
+ "UserProfileScreen": {
+    "title": "Profil użytkownika",
+    "EditPhoto": "Edytuj zdjęcie",
+    "SelectPhoto": "Wybierz zdjęcie",
+    "RemovePhoto": "Usuń zdjęcie",
+    "email": "Adres e-mail",
+    "emailPlaceHolder": "E-mail",
+    "cancel": "Anuluj",
+    "save": "Zapisz",
+    "cancelTitle": "Anuluj zmiany",
+    "cancelConfirmation": "Czy na pewno chcesz anulować? Wszystkie niezapisane zmiany zostaną utracone.",
+    "keepEditing": "Kontynuuj edytowanie",
+    "discardChanges": "Odrzuć zmiany",
+    "removeProfilePhoto": "Usuń zdjęcie profilowe",
+    "rusure": "Czy na pewno chcesz usunąć swoje zdjęcie profilowe?",
+    "remove": "Usuń",
+    "Error": "Błąd",
+    "FailedToRemove": "Nie udało się usunąć zdjęcia profilowego. Spróbuj ponownie.",
+    "OK": "OK"
+},
+"ResetPassword": {
+  "passwordResetSuccess": "Wysłaliśmy Ci link do resetowania hasła na Twój adres e-mail!",
+  "emptyEmailValidation": "Proszę wprowadzić adres e-mail!",
+  "invalidEmail": "Proszę wprowadzić prawidłowy adres e-mail"
+}
+
+
+
 }

@@ -35,5 +35,48 @@
         "Logout": "Вийти",
         "ChangePassword": "Змінити пароль",
         "UserProflie":"профіль користувача"
-    }
+    },
+    "ChangePasswordScreen": {
+    "allFieldsRequired": "Всі поля є обов'язковими для заповнення",
+    "currentPassword": "Поточний пароль",
+    "newPassword": "Новий пароль",
+    "confirmNewPassword": "Підтвердіть новий пароль",
+    "save": "Зберегти",
+    "cancel": "Скасувати",
+    "changePasswordHeader": "Змінити пароль",
+    "cancelChanges": "Скасувати зміни",
+    "confirmationCancel": "Ви впевнені, що хочете скасувати зміну пароля?",
+    "no": "Ні",
+    "yes": "Так",
+    "confirmPasswordChange": "Підтвердьте зміну пароля",
+    "changeConfirmation": "Ви впевнені, що хочете змінити пароль?",
+    "passwordError": "Паролі не збігаються"
+  },
+  "UserProfileScreen": {
+    "title": "Профіль користувача",
+    "EditPhoto": "Редагувати фото",
+    "SelectPhoto": "Вибрати фото",
+    "RemovePhoto": "Видалити фото",
+    "email": "Електронна пошта",
+    "emailPlaceHolder": "Електронна пошта",
+    "cancel": "Скасувати",
+    "save": "Зберегти",
+    "cancelTitle": "Скасувати зміни",
+    "cancelConfirmation": "Ви впевнені, що хочете скасувати? Усі незбережені зміни буде втрачено.",
+    "keepEditing": "Продовжити редагування",
+    "discardChanges": "Відхилити зміни",
+    "removeProfilePhoto": "Видалити фото профілю",
+    "rusure": "Ви впевнені, що хочете видалити своє фото профілю?",
+    "remove": "Видалити",
+    "Error": "Помилка",
+    "FailedToRemove": "Не вдалося видалити фото профілю. Спробуйте ще раз.",
+    "OK": "OK"
+},
+"ResetPassword": {
+  "passwordResetSuccess": "Ми надіслали вам посилання для скидання пароля на вашу електронну пошту!",
+  "emptyEmailValidation": "Будь ласка, введіть адресу електронної пошти!",
+  "invalidEmail": "Будь ласка, введіть дійсну адресу електронної пошти"
+}
+
+
 }

@@ -38,5 +38,49 @@
         "Logout": "Abmelden",
         "ChangePassword": "Kennwort ändern",
         "UserProflie":"Benutzerprofil"
-    }
+    },
+    "ChangePasswordScreen": {
+    "allFieldsRequired": "Alle Felder sind erforderlich",
+    "currentPassword": "Aktuelles Passwort",
+    "newPassword": "Neues Passwort",
+    "confirmNewPassword": "Neues Passwort bestätigen",
+    "save": "Speichern",
+    "cancel": "Abbrechen",
+    "changePasswordHeader": "Passwort ändern",
+    "cancelChanges": "Änderungen abbrechen",
+    "confirmationCancel": "Möchten Sie die Passwortänderung wirklich abbrechen?",
+    "no": "Nein",
+    "yes": "Ja",
+    "confirmPasswordChange": "Passwortänderung bestätigen",
+    "changeConfirmation": "Möchten Sie Ihr Passwort wirklich ändern?",
+    "passwordError": "Passwörter stimmen nicht überein"
+  },
+  "UserProfileScreen": {
+    "title": "Benutzerprofil",
+    "EditPhoto": "Foto bearbeiten",
+    "SelectPhoto": "Foto auswählen",
+    "RemovePhoto": "Foto entfernen",
+    "email": "E-Mail-Adresse",
+    "emailPlaceHolder": "E-Mail",
+    "cancel": "Abbrechen",
+    "save": "Speichern",
+    "cancelTitle": "Änderungen abbrechen",
+    "cancelConfirmation": "Möchten Sie wirklich abbrechen? Alle nicht gespeicherten Änderungen gehen verloren.",
+    "keepEditing": "Weiter bearbeiten",
+    "discardChanges": "Änderungen verwerfen",
+    "removeProfilePhoto": "Profilfoto entfernen",
+    "rusure": "Möchten Sie Ihr Profilfoto wirklich entfernen?",
+    "remove": "Entfernen",
+    "Error": "Fehler",
+    "FailedToRemove": "Profilfoto konnte nicht entfernt werden. Bitte versuchen Sie es erneut.",
+    "OK": "OK"
+},
+"ResetPassword": {
+  "passwordResetSuccess": "Wir haben Ihnen den Link zum Zurücksetzen Ihres Passworts per E-Mail gesendet!",
+  "emptyEmailValidation": "Bitte geben Sie eine E-Mail-Adresse ein!",
+  "invalidEmail": "Bitte geben Sie eine gültige E-Mail-Adresse ein"
+}
+
+
+
 }

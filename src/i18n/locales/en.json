@@ -18,11 +18,28 @@
         "emailPlaceHolder":"Email",
         "resetButton":"Send Password Reset Link",
         "backToLogin":"Go Back"
+        
     },
     "HomeScreen":{
         "nfcCardTitle":"Ready to Scan NFC Tags",
         "nfcCardSubtitle":"Hold your device near and NFC Tag",
         "nfcButtonText":"Start NFC Scan"
+    },
+    "ChangePasswordScreen":{
+        "allFieldsRequired":"All fields are requied",
+        "currentPassword": "Current Password",
+        "newPassword": "New Password",
+        "confirmNewPassword": "Confirm New Password",
+        "save": "Save",
+        "cancel": "Cancel",
+        "changePasswordHeader":"Change Password",
+        "cancelChanges":"Cancel Changes",
+        "confirmationCancel":"Are you sure you want to cancel password change?",
+        "no":"No",
+        "yes":"Yes",
+        "confirmPasswordChange":"Confirm Password Change",
+        "changeConfirmation":"Are you sure you want to change your password?",
+        "passwordError":"Passwords do not match"
     },
     "WorkStatusCard":{
         "workStart": "Work in progress",
@@ -34,6 +51,32 @@
         "dashboard":"Dashboard",
         "Logout":"Logout",
         "ChangePassword":"Change Password",
-        "UserProflie":"User Profile"
+        "UserProflie":"User Profile",
+        "ChangeLanguage":"Change Language"
+    },
+    "UserProfileScreen":{
+        "title":"User Profile",
+        "EditPhoto": "Edit Photo",
+        "SelectPhoto":"Select Photo",
+        "RemovePhoto":"Remove Photo",
+        "email":"Email ID",
+        "emailPlaceHolder":"Email",
+        "cancel":"Cancel",
+        "save":"Save",
+        "cancelTitle":"Cancel Changes",
+        "cancelConfirmation":"Are you sure you want to cancel? All unsaved changes will be lost.",
+        "keepEditing":"Keep Editing",
+        "discardChanges":"Discard Changes",
+        "removeProfilePhoto":"Remove Profie Photo",
+        "rusure":"Are you sure you want to remove your profile photo?",
+        "remove":"Remove",
+        "Error":"Error",
+        "FailedToRemove":"Failed to remove profile photo. Please try again.",
+        "OK":"OK"
+    },
+    "ResetPassword":{
+        "passwordResetSuccess":"We have emailed your password reset link!",
+        "emptyEmailValidation":"Please enter email address!",
+        "invalidEmail":"Please enter valid email address"
     }
 }

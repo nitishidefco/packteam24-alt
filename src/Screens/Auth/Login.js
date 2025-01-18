@@ -100,7 +100,6 @@ const Login = ({route}) => {
 
     setDefaultLanguage();
   }, []);
-  console.log('active language', activeLanguage);
 
   const handleLanguageChange = async country => {
     const selectedLang = languages[country];

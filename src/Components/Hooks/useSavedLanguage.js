@@ -8,7 +8,7 @@ const useSavedLanguage = () => {
     const getSavedLanguage = async () => {
       try {
         const storedLanguage = await AsyncStorage.getItem('language');
-        setLanguage(storedLanguage); // Save the language to the state
+        setLanguage(storedLanguage);
       } catch (error) {
         console.error('Error getting language from local storage', error);
       }

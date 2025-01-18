@@ -14,6 +14,8 @@ import API from '../Services/AuthServices';
 import {AUTH_REDUCER} from '../SliceKey';
 import {reduxStorage} from '../Storage/index';
 import ToastMessage, {success} from '../../Helpers/ToastMessage';
+import {useTranslation} from 'react-i18next';
+
 const loginSaga = function* loginSaga({payload}) {
   try {
     const response = yield call(API.Login, payload);
@@ -49,7 +51,9 @@ const forgotPasswordSaga = function* forgotPasswordSaga({payload}) {
   try {
     const response = yield call(API.ForgotPassword, payload);
     if (response) {
-      ToastMessage.success(response.message);
+      console.log('response message', response.message);
+      const success = `${t(ResetPassword.passwordResetSuccess)}`;
+      ToastMessage.success(success);
       yield put(forgotPasswordSuccess(response));
     } else {
       yield put(forgotPasswordFailure(response));

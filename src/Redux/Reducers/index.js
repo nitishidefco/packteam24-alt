@@ -8,7 +8,7 @@ import SaveDataOfflineReducer from './SaveDataOfflineSlice';
 import WorkStateReducer from './WorkStateSlice';
 import GetNfcTagsFromServerReducer from './NFCTagsSlice';
 import UserProfileReducer from './UserProfileSlice';
-
+import PasswordChangeReducer from './PasswordChangeSlice';
 let appReducer = combineReducers({
   Auth: AuthReducer,
   Home: HomeReducer,
@@ -19,6 +19,7 @@ let appReducer = combineReducers({
   WorkState: WorkStateReducer,
   FetchNfcTags: GetNfcTagsFromServerReducer,
   UserProfile: UserProfileReducer,
+  ChangePassword: PasswordChangeReducer,
 });
 
 const rootReducer = (state, action) => {

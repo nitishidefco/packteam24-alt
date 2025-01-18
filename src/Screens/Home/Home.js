@@ -18,7 +18,6 @@ import {Images} from '../../Config';
 import NfcManager, {NfcTech, NfcEvents} from 'react-native-nfc-manager';
 import {useScanTagActions} from '../../Redux/Hooks/useScanTagActions';
 import {useWorkStatusActions} from '../../Redux/Hooks/useWorkStatusActions';
-
 // import NetworkStatusComponent from '../../Components/Common/NetworkStatus';
 import {
   clearOfflineStorage,
@@ -37,6 +36,9 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import {useFetchNfcTagsActions} from '../../Redux/Hooks/useFetchNfcTagsActions';
 import {reduxStorage} from '../../Redux/Storage';
 import useSavedLanguage from '../../Components/Hooks/useSavedLanguage';
+import LanguageSelector from '../../Components/Common/LanguageSelector';
+import Timer from '../../Components/Common/Timer';
+import {Matrics} from '../../Config/AppStyling';
 const Home = ({navigation, route}) => {
   const dispatch = useDispatch();
   useNfcStatus();
@@ -81,12 +83,11 @@ const Home = ({navigation, route}) => {
   };
   /* -------------------------------- language -------------------------------- */
   const language = useSavedLanguage();
-    useEffect(() => {
-      if (language) {
-        i18n.changeLanguage(language); // Change language once it's loaded
-      }
-    }, [language]);
-
+  useEffect(() => {
+    if (language) {
+      i18n.changeLanguage(language); // Change language once it's loaded
+    }
+  }, [language]);
 
   /* ----------------------------- Get device info ---------------------------- */
   useEffect(() => {
@@ -142,7 +143,6 @@ const Home = ({navigation, route}) => {
       }
     };
     saveNfcTagToLocalStorage();
-    console.log('Lanugae', language);
   }, []);
   // Initializes NFC scanning for iOS
   const initNfcScan = useCallback(async () => {
@@ -368,21 +368,21 @@ const Home = ({navigation, route}) => {
   }, [Home]);
 
   // Render fallback UI if the device does not support NFC
-  if (!hasNfc) {
-    return (
-      <DrawerSceneWrapper>
-        <SafeAreaView style={styles.centeredContainer}>
-          <CustomHeader />
-          <View style={styles.centeredContainer}>
-            <Text style={styles.errorText}>
-              Your device does not support NFC! If your device supports NFC turn
-              it on from settings and restart the App
-            </Text>
-          </View>
-        </SafeAreaView>
-      </DrawerSceneWrapper>
-    );
-  }
+  // if (!hasNfc) {
+  //   return (
+  //     <DrawerSceneWrapper>
+  //       <SafeAreaView style={styles.centeredContainer}>
+  //         <CustomHeader />
+  //         <View style={styles.centeredContainer}>
+  //           <Text style={styles.errorText}>
+  //             Your device does not support NFC! If your device supports NFC turn
+  //             it on from settings and restart the App
+  //           </Text>
+  //         </View>
+  //       </SafeAreaView>
+  //     </DrawerSceneWrapper>
+  //   );
+  // }
   if (Platform.OS === 'android') {
     if (!isNfcEnabled) {
       return (
@@ -415,6 +415,11 @@ const Home = ({navigation, route}) => {
     <DrawerSceneWrapper>
       <SafeAreaView style={{flex: 1, backgroundColor: '#EBF0FA'}}>
         <CustomHeader />
+        <LanguageSelector />
+        <View style={styles.timerContainer}>
+          <Timer />
+        </View>
+        {/* <LanguageSelector/> */}
         {/* <OfflineDataDisplay /> */}
         <View style={styles.container}>
           <View>
@@ -524,6 +529,11 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: '#666',
     textAlign: 'center',
+  },
+  timerContainer: {
+    position: 'absolute',
+    top: Matrics.ms(150),
+    left: Matrics.screenWidth / 3.5
   },
 });
 

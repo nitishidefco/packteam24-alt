@@ -35,5 +35,49 @@
         "Logout": "Выйти",
         "ChangePassword": "Изменить пароль",
         "UserProflie":"профиль пользователя"
-    }
+    },
+    "ChangePasswordScreen": {
+    "allFieldsRequired": "Все поля обязательны для заполнения",
+    "currentPassword": "Текущее пароль",
+    "newPassword": "Новый пароль",
+    "confirmNewPassword": "Подтвердите новый пароль",
+    "save": "Сохранить",
+    "cancel": "Отменить",
+    "changePasswordHeader": "Сменить пароль",
+    "cancelChanges": "Отменить изменения",
+    "confirmationCancel": "Вы уверены, что хотите отменить изменение пароля?",
+    "no": "Нет",
+    "yes": "Да",
+    "confirmPasswordChange": "Подтвердить изменение пароля",
+    "changeConfirmation": "Вы уверены, что хотите изменить пароль?",
+    "passwordError": "Пароли не совпадают"
+  },
+  "UserProfileScreen": {
+    "title": "Профиль пользователя",
+    "EditPhoto": "Редактировать фото",
+    "SelectPhoto": "Выбрать фото",
+    "RemovePhoto": "Удалить фото",
+    "email": "Электронная почта",
+    "emailPlaceHolder": "Электронная почта",
+    "cancel": "Отмена",
+    "save": "Сохранить",
+    "cancelTitle": "Отменить изменения",
+    "cancelConfirmation": "Вы уверены, что хотите отменить? Все несохранённые изменения будут потеряны.",
+    "keepEditing": "Продолжить редактирование",
+    "discardChanges": "Отменить изменения",
+    "removeProfilePhoto": "Удалить фото профиля",
+    "rusure": "Вы уверены, что хотите удалить фото профиля?",
+    "remove": "Удалить",
+    "Error": "Ошибка",
+    "FailedToRemove": "Не удалось удалить фото профиля. Попробуйте еще раз.",
+    "OK": "OK"
+},
+"ResetPassword": {
+  "passwordResetSuccess": "Мы отправили вам ссылку для сброса пароля на вашу электронную почту!",
+  "emptyEmailValidation": "Пожалуйста, введите адрес электронной почты!",
+  "invalidEmail": "Пожалуйста, введите действительный адрес электронной почты"
+}
+
+
+
 }

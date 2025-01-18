@@ -1,7 +1,6 @@
 import { StyleSheet } from 'react-native';
 import { AppStyle, COLOR, Matrics, typography } from '../../Config/AppStyling';
 import colors from '../../Config/AppStyling/colors';
-import { moderateVerticalScale } from 'react-native-size-matters';
 
 export const loginStyle = StyleSheet.create({
   FlagContainer: {
@@ -9,6 +8,7 @@ export const loginStyle = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
     padding: 8,
+    marginHorizontal: Matrics.ms(10),
   },
   touchable: {
     opacity: 1, // Default opacity
@@ -34,6 +34,7 @@ export const loginStyle = StyleSheet.create({
   keyboardAvoidingView: {
     flex: 1,
     backgroundColor: '#EBF0FA',
+    paddingHorizontal: Matrics.ms(10)
   },
   container: theme => {
     return [AppStyle.wrapper, {backgroundColor: theme.backgroundColor}];
@@ -87,7 +88,7 @@ export const loginStyle = StyleSheet.create({
     alignItems: 'center',
     height: Matrics.s(40),
     marginTop: Matrics.ms(50),
-    marginHorizontal: Matrics.ms(25),
+    marginHorizontal: Matrics.ms(15),
     margin: Matrics.ms(10),
     borderBottomWidth: 1.5,
     borderBottomColor: '#DEDEDE',
@@ -122,6 +123,7 @@ export const loginStyle = StyleSheet.create({
     paddingTop: Matrics.ms(15),
     fontFamily: typography.fontFamily.Montserrat.Bold,
     fontSize: typography.fontSizes.fs15,
+    maxWidth: '100%',
   },
   inputStyle: {
     flex: 1,

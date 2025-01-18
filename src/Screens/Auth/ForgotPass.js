@@ -30,7 +30,6 @@ import {Popup, Validator, toastMessage} from '../../Helpers';
 import {setDeviceInfo} from '../../Redux/Reducers/NetworkSlice';
 import DeviceInfo from 'react-native-device-info';
 import useSavedLanguage from '../../Components/Hooks/useSavedLanguage';
-
 const ForgotPass = () => {
   const navigation = useNavigation();
   const {t, i18n} = useTranslation();
@@ -113,11 +112,13 @@ const ForgotPass = () => {
   };
   function validateInputs() {
     if (userEmail == '' || userEmail == null) {
-      toastMessage.error('Please enter email address!');
+      const message = `${t('ResetPassword.emptyEmailValidation')}`;
+      toastMessage.error(message);
       return false;
     }
     if (!Validator.validateEmail(userEmail)) {
-      toastMessage.error('Please enter valid email address');
+      const message = `${t('ResetPassword.invalidEmail')}`;
+      toastMessage.error(message);
 
       return false;
     }
@@ -160,6 +161,15 @@ const ForgotPass = () => {
       keyboardDidHideListener.remove();
     };
   }, []);
+  console.log(t('ForgotPassword.resetButton').length);
+  const containerWidth =
+    t('ForgotPassword.resetButton').length > 33
+      ? Matrics.mvs(330)
+      : Matrics.s(250);
+  const fontSize =
+    t('ForgotPassword.resetButton').length > 33
+      ? typography.fontSizes.fs13
+      : typography.fontSizes.fs15;
   return (
     <FullScreenSpinner>
       <KeyboardAvoidingView
@@ -172,7 +182,7 @@ const ForgotPass = () => {
           showsVerticalScrollIndicator={false}>
           <View
             style={[
-              styles.mainBody(theme),
+              inLineStyles.mainBody(theme),
               keyboardVisible && {marginBottom: 80},
             ]}>
             <View
@@ -191,7 +201,7 @@ const ForgotPass = () => {
               />
             </View>
             <Text style={styles.loginText}>{t('ForgotPassword.title')}</Text>
-            <Text style={styles.loginText2}>
+            <Text style={inLineStyles.loginText2}>
               {t('ForgotPassword.subtitle')}
             </Text>
             <View style={[styles.SectionStyle]}>
@@ -227,10 +237,10 @@ const ForgotPass = () => {
             </View>
 
             <TouchableOpacity
-              style={styles.buttonStyle}
+              style={[styles.buttonStyle, {width: containerWidth}]}
               activeOpacity={0.5}
               onPress={onForgotPasswordPress}>
-              <Text style={styles.buttonTextStyle}>
+              <Text style={[styles.buttonTextStyle, {fontSize: fontSize}]}>
                 {t('ForgotPassword.resetButton')}
               </Text>
             </TouchableOpacity>
@@ -251,6 +261,25 @@ const inLineStyles = StyleSheet.create({
     textAlign: 'center',
     fontSize: typography.fontSizes.fs17,
     fontWeight: 'bold',
+  },
+  loginText2: {
+    fontSize: typography.fontSizes.fs15,
+    marginBottom: Matrics.ms(38),
+    marginHorizontal: Matrics.ms(5),
+    textAlign: 'center',
+    color: '#757575',
+    fontFamily: typography.fontFamily.Montserrat.Medium,
+  },
+  mainBody: theme => {
+    return {
+      flex: 1,
+      justifyContent: 'center',
+      backgroundColor: '#EBF0FA',
+      alignContent: 'center',
+    };
+  },
+  mainBodyContainer: {
+    // marginHorizontal: Matrics.ms(2),
   },
 });
 

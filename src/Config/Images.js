@@ -50,4 +50,8 @@ export default {
   GER: require('../Assets/Flags/Germany-Flag.jpg'),
   POL: require('../Assets/Flags/PolandFlag.jpg'),
   UKA: require('../Assets/Flags/ukraine-flag.jpeg'),
+
+  /* ---------------------------- Password helpers ---------------------------- */
+  EYE_OPEN: require('../Assets/Icons/eye-new.png'),
+  EYE_CLOSE: require('../Assets/Icons/eye-off.png'),
 };

@@ -10,7 +10,7 @@ import {
   StatusBar,
   ScrollView,
   KeyboardAvoidingView,
-  Alert
+  Alert,
 } from 'react-native';
 import {launchImageLibrary} from 'react-native-image-picker';
 import React, {useEffect, useState} from 'react';
@@ -40,30 +40,50 @@ const UserProfile = ({navigation}) => {
 
   const [userEmail, setUserEmail] = useState(null);
   const [image, setImage] = useState(null);
+
   const requestAndroidPermission = async () => {
     try {
-      const granted = await PermissionsAndroid.request(
-        PermissionsAndroid.PERMISSIONS.READ_EXTERNAL_STORAGE,
-        {
-          title: 'Photo Access Required',
-          message: 'App needs access to your photos to set profile picture',
-          buttonNeutral: 'Ask Me Later',
-          buttonNegative: 'Cancel',
-          buttonPositive: 'OK',
-        },
-      );
-      return granted === PermissionsAndroid.RESULTS.GRANTED;
+      // For Android 13 and above (API 33+)
+      if (Platform.Version >= 33) {
+        const granted = await PermissionsAndroid.request(
+          PermissionsAndroid.PERMISSIONS.READ_MEDIA_IMAGES,
+          {
+            title: 'Photo Access Required',
+            message: 'App needs access to your photos to set profile picture',
+            buttonNeutral: 'Ask Me Later',
+            buttonNegative: 'Cancel',
+            buttonPositive: 'OK',
+          },
+        );
+        return granted === PermissionsAndroid.RESULTS.GRANTED;
+      }
+      // For Android 12 and below
+      else {
+        const granted = await PermissionsAndroid.request(
+          PermissionsAndroid.PERMISSIONS.READ_EXTERNAL_STORAGE,
+          {
+            title: 'Photo Access Required',
+            message: 'App needs access to your photos to set profile picture',
+            buttonNeutral: 'Ask Me Later',
+            buttonNegative: 'Cancel',
+            buttonPositive: 'OK',
+          },
+        );
+        return granted === PermissionsAndroid.RESULTS.GRANTED;
+      }
     } catch (err) {
       console.warn(err);
       return false;
     }
   };
-  // console.log(Matrics.screenHeight);
+
+  //  TODO: Navigate user to permissoins page if permissions not given
 
   const pickImage = async () => {
     if (Platform.OS === 'android') {
       const hasPermission = await requestAndroidPermission();
       if (!hasPermission) {
+        // You might want to show a message to the user here
         return;
       }
     }
@@ -75,15 +95,19 @@ const UserProfile = ({navigation}) => {
       maxWidth: 800,
     };
 
-    launchImageLibrary(options, response => {
+    // Updated to use promise-based approach
+    try {
+      const response = await launchImageLibrary(options);
       if (response.didCancel) {
         console.log('User cancelled image picker');
-      } else if (response.error) {
-        console.log('ImagePicker Error: ', response.error);
-      } else {
+      } else if (response.errorCode) {
+        console.log('ImagePicker Error: ', response.errorMessage);
+      } else if (response.assets && response.assets.length > 0) {
         setImage(response.assets[0].uri);
       }
-    });
+    } catch (error) {
+      console.log('ImagePicker Error:', error);
+    }
   };
 
   /* -------------------------------- Lifecycle ------------------------------- */
@@ -125,71 +149,78 @@ const UserProfile = ({navigation}) => {
 
       updateUserProfileCall(formData);
       setCounter(prevCounter => prevCounter + 1);
-       navigation.replace('HomeDrawer');
+      navigation.replace('HomeDrawer');
     } catch (error) {
       console.error('Error updating profile:', error);
     }
   };
 
   const handleCancel = () => {
-   Alert.alert(
-     'Cancel Changes',
-     'Are you sure you want to cancel? All unsaved changes will be lost.',
-     [
-       {
-         text: 'Keep Editing',
-         style: 'cancel',
-       },
-       {
-         text: 'Discard Changes',
-         style: 'destructive',
-         onPress: () => {
-           console.log('Cancelling changes...');
-           setImage(profileState?.data?.photo || null);
-           setUserEmail(profileState?.data?.email || '');
-           navigation.replace('HomeDrawer');
-         },
-       },
-     ],
-   );
+    Alert.alert(
+      t('UserProfileScreen.cancelTitle'),
+      t('UserProfileScreen.cancelConfirmation'),
+      [
+        {
+          text: t('UserProfileScreen.keepEditing'),
+          style: 'cancel',
+        },
+        {
+          text: t('UserProfileScreen.discardChanges'),
+          style: 'destructive',
+          onPress: () => {
+            console.log('Cancelling changes...');
+            setImage(profileState?.data?.photo || null);
+            setUserEmail(profileState?.data?.email || '');
+            navigation.replace('HomeDrawer');
+          },
+        },
+      ],
+    );
   };
   const handleRemoveProfilePhoto = () => {
-     Alert.alert(
-       'Remove Profile Photo',
-       'Are you sure you want to remove your profile photo?',
-       [
-         {
-           text: 'Cancel',
-           style: 'cancel',
-         },
-         {
-           text: 'Remove',
-           style: 'destructive',
-           onPress: async () => {
-             try {
-               const formData = new FormData();
-               formData.append('session_id', SessionId);
-               formData.append('device_id', '13213211');
-               formData.append('lang', language);
-               removeUserProfilePhotoCall(formData);
-               setCounter(prevCounter => prevCounter + 1);
-             } catch (error) {
-               Alert.alert(
-                 'Error',
-                 'Failed to remove profile photo. Please try again.',
-                 [{text: 'OK'}],
-               );
-               console.error('Error removing profile photo:', error);
-             }
-           },
-         },
-       ],
-     );
+    Alert.alert(
+      t('UerProfileScreen.removeProfilePhoto'),
+      t('UserProfileScreen.rusure'),
+      [
+        {
+          text: t('UserProfileScreen.cancel'),
+          style: 'cancel',
+        },
+        {
+          text: t('UserProfileScreen.remove'),
+          style: 'destructive',
+          onPress: async () => {
+            try {
+              const formData = new FormData();
+              formData.append('session_id', SessionId);
+              formData.append('device_id', '13213211');
+              formData.append('lang', language);
+              removeUserProfilePhotoCall(formData);
+              setCounter(prevCounter => prevCounter + 1);
+            } catch (error) {
+              Alert.alert(
+                t('UserProfileScreen.Error'),
+                t('UserProfileScreen.FailedToRemove'),
+                [{text: t('UserProfileScreen.OK')}],
+              );
+              console.error('Error removing profile photo:', error);
+            }
+          },
+        },
+      ],
+    );
   };
+
+  /* -------------------------------- Language -------------------------------- */
+  useEffect(() => {
+    if (language) {
+      i18n.changeLanguage(language); // Change language once it's loaded
+    }
+  }, [language]);
   return (
     <SafeAreaView style={styles.safeArea}>
       <View style={styles.header}>
-        <Text style={styles.headerTitle}>User Profile</Text>
+        <Text style={styles.headerTitle}>{t('UserProfileScreen.title')}</Text>
       </View>
       <KeyboardAvoidingView
         style={styles.keyboardAvoidingView}
@@ -201,8 +232,8 @@ const UserProfile = ({navigation}) => {
           showsVerticalScrollIndicator={false}>
           <View>
             <View style={styles.container}>
-              <TouchableOpacity
-                onPress={pickImage}
+              <View
+                // onPress={pickImage}
                 style={styles.imageContainer}>
                 {image ? (
                   <Image
@@ -213,22 +244,28 @@ const UserProfile = ({navigation}) => {
                 ) : (
                   <View style={styles.placeholderContainer}>
                     <View style={styles.placeholder}>
-                      <Text style={styles.placeholderText}>Add Photo</Text>
+                      <Text style={styles.placeholderText}>
+                        Dummy avatar will be added if no photo
+                      </Text>
                     </View>
                   </View>
                 )}
-              </TouchableOpacity>
+              </View>
               <View style={styles.imageActionButton}>
                 <TouchableOpacity onPress={pickImage} style={styles.button}>
                   <Text style={styles.buttonText}>
-                    {image ? 'Change Photo' : 'Select Photo'}
+                    {image
+                      ? t('UserProfileScreen.EditPhoto')
+                      : t('UserProfileScreen.SelectPhoto')}
                   </Text>
                 </TouchableOpacity>
                 {image && (
                   <TouchableOpacity
                     onPress={() => handleRemoveProfilePhoto()}
                     style={styles.button}>
-                    <Text style={styles.buttonText}>Remove Photo</Text>
+                    <Text style={styles.buttonText}>
+                      {t('UserProfileScreen.RemovePhoto')}
+                    </Text>
                   </TouchableOpacity>
                 )}
               </View>
@@ -241,7 +278,7 @@ const UserProfile = ({navigation}) => {
                   fontFamily: typography.fontFamily.Montserrat.Regular,
                   color: '#555555',
                 }}>
-                {t('Login.email')}
+                {t('UserProfileScreen.email')}
               </Text>
               <Image
                 source={Images.EMAIL}
@@ -252,7 +289,7 @@ const UserProfile = ({navigation}) => {
                 style={loginStyle.inputStyle}
                 onChangeText={setUserEmail}
                 value={userEmail}
-                placeholder={t('Login.emailPlaceHolder')}
+                placeholder={t('UserProfileScreen.emailPlaceHolder')}
                 placeholderTextColor={'gray'}
                 autoCapitalize="none"
                 keyboardType="email-address"
@@ -264,13 +301,17 @@ const UserProfile = ({navigation}) => {
             <TouchableOpacity
               style={[styles.actionButton, styles.cancelButton]}
               onPress={handleCancel}>
-              <Text style={styles.cancelButtonText}>Cancel</Text>
+              <Text style={styles.cancelButtonText}>
+                {t('UserProfileScreen.cancel')}
+              </Text>
             </TouchableOpacity>
 
             <TouchableOpacity
               style={[styles.actionButton, styles.saveButton]}
               onPress={handleSave}>
-              <Text style={styles.saveButtonText}>Save</Text>
+              <Text style={styles.saveButtonText}>
+                {t('UserProfileScreen.save')}
+              </Text>
             </TouchableOpacity>
           </View>
         </ScrollView>
@@ -290,7 +331,7 @@ const styles = StyleSheet.create({
   },
   safeArea: {
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: '#EBF0FA',
   },
   header: {
     height: 56,
@@ -365,6 +406,7 @@ const styles = StyleSheet.create({
   placeholderText: {
     color: '#666',
     fontSize: 16,
+    textAlign: 'center',
   },
   button: {
     backgroundColor: '#061439',

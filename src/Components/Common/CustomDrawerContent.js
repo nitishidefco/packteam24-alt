@@ -82,14 +82,22 @@ const CustomDrawerContent = props => {
         </View>
         {/* Drawer Items */}
         <DrawerItem
-          label={t('SideMenuBar.dashboard')}
-          labelStyle={{
-            fontFamily: typography.fontFamily.Montserrat.Regular,
-            fontSize: typography.fontSizes.fs15,
-            color: colors.WHITE,
-            marginHorizontal: Matrics.ms(-45),
-          }}
-          onPress={goToHome}
+          label={() => (
+            <Text
+              style={{
+                fontFamily: typography.fontFamily.Montserrat.Regular,
+                fontSize: typography.fontSizes.fs15,
+                color: colors.WHITE,
+                marginHorizontal: Matrics.ms(-45),
+                flexWrap: 'wrap', // Ensures text wraps to the next line
+              }}
+              numberOfLines={2} // Optional: Limits the number of lines to 2
+              ellipsizeMode="tail" // Optional: Adds ellipsis if the text overflows
+            >
+              {t('SideMenuBar.dashboard')}
+            </Text>
+          )}
+          onPress={() => navigation.replace('UserProfile')}
           style={[styles.drawerItem]}
           icon={() => (
             <Image
@@ -99,15 +107,24 @@ const CustomDrawerContent = props => {
             />
           )}
         />
+
         <DrawerItem
-          label={t('SideMenuBar.ChangePassword')}
-          labelStyle={{
-            fontFamily: typography.fontFamily.Montserrat.Regular,
-            fontSize: typography.fontSizes.fs15,
-            color: colors.WHITE,
-            marginHorizontal: Matrics.ms(-45),
-          }}
-          onPress={() => navigation.navigate('ChangePassword')}
+          label={() => (
+            <Text
+              style={{
+                fontFamily: typography.fontFamily.Montserrat.Regular,
+                fontSize: typography.fontSizes.fs15,
+                color: colors.WHITE,
+                marginHorizontal: Matrics.ms(-45),
+                flexWrap: 'wrap', // Ensures text wraps to the next line
+              }}
+              numberOfLines={2} // Optional: Limits the number of lines to 2
+              ellipsizeMode="tail" // Optional: Adds ellipsis if the text overflows
+            >
+              {t('SideMenuBar.ChangePassword')}
+            </Text>
+          )}
+          onPress={() => navigation.replace('ChangePassword')}
           style={[styles.drawerItem]}
           icon={() => (
             <Image
@@ -117,15 +134,24 @@ const CustomDrawerContent = props => {
             />
           )}
         />
+
         <DrawerItem
-          label={t('SideMenuBar.UserProflie')}
-          labelStyle={{
-            fontFamily: typography.fontFamily.Montserrat.Regular,
-            fontSize: typography.fontSizes.fs15,
-            color: colors.WHITE,
-            marginHorizontal: Matrics.ms(-45),
-          }}
-          onPress={()=>navigation.replace('UserProfile')}
+          label={() => (
+            <Text
+              style={{
+                fontFamily: typography.fontFamily.Montserrat.Regular,
+                fontSize: typography.fontSizes.fs15,
+                color: colors.WHITE,
+                marginHorizontal: Matrics.ms(-45),
+                flexWrap: 'wrap', // Ensures text wraps to the next line
+              }}
+              numberOfLines={2} // Optional: Limits the number of lines to 2
+              ellipsizeMode="tail" // Optional: Adds ellipsis if the text overflows
+            >
+              {t('SideMenuBar.UserProflie')}
+            </Text>
+          )}
+          onPress={() => navigation.replace('UserProfile')}
           style={[styles.drawerItem]}
           icon={() => (
             <Image
@@ -135,7 +161,8 @@ const CustomDrawerContent = props => {
             />
           )}
         />
-        {/* <DrawerItem
+
+        {/* <DrawerItem {t('SideMenuBar.ChangePassword')}
           label="Messages"
           labelStyle={{
             fontFamily: typography.fontFamily.Montserrat.Regular,
