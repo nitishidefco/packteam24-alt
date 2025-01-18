@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {View, Text, TouchableOpacity, Modal, StyleSheet} from 'react-native';
+import {View, Text, TouchableOpacity, Modal, StyleSheet, Platform} from 'react-native';
 import {Matrics} from '../../Config/AppStyling';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {useTranslation} from 'react-i18next';
@@ -56,7 +56,7 @@ const LanguageSelector = () => {
  }, [selectedLanguage, i18n, isLoading]);
 
   return (
-    <View style={styles.container}>
+    <View style={[Platform.OS === 'android' ? styles.container : styles.iosContainer]}>
       <TouchableOpacity style={styles.button} onPress={() => setIsOpen(true)}>
         <Text style={styles.buttonText}>{selected?.label}</Text>
         <Text style={styles.chevron}>▼</Text>
@@ -71,7 +71,7 @@ const LanguageSelector = () => {
           style={styles.modalOverlay}
           activeOpacity={1}
           onPress={() => setIsOpen(false)}>
-          <View style={styles.dropdown}>
+          <View style={[Platform.OS === 'android' ? styles.dropdown : styles.dropdownIos]}>
             {languageOptions.map(option => (
               <TouchableOpacity
                 key={option.value}
@@ -98,6 +98,11 @@ const styles = StyleSheet.create({
   container: {
     position: 'absolute',
     top: Matrics.ms(80),
+    right: Matrics.ms(10),
+  },
+  iosContainer:{
+    position: 'absolute',
+    top: Matrics.ms(120),
     right: Matrics.ms(10),
   },
   button: {
@@ -132,6 +137,21 @@ const styles = StyleSheet.create({
   dropdown: {
     position: 'absolute',
     top: Matrics.ms(80),
+    right: Matrics.ms(10),
+    backgroundColor: 'white',
+    borderRadius: 8,
+    borderWidth: 1,
+    borderColor: '#e2e8f0',
+    shadowColor: '#000',
+    shadowOffset: {width: 0, height: 2},
+    shadowOpacity: 0.15,
+    shadowRadius: 4,
+    elevation: 4,
+    width: 100,
+  },
+  dropdownIos:{
+    position: 'absolute',
+    top: Matrics.ms(120),
     right: Matrics.ms(10),
     backgroundColor: 'white',
     borderRadius: 8,

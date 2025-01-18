@@ -416,10 +416,9 @@ const Home = ({navigation, route}) => {
       <SafeAreaView style={{flex: 1, backgroundColor: '#EBF0FA'}}>
         <CustomHeader />
         <LanguageSelector />
-        <View style={styles.timerContainer}>
+        <View style={[Platform.OS === 'android' ? styles.timerContainer: styles.timerContainerIos]}>
           <Timer />
         </View>
-        {/* <LanguageSelector/> */}
         {/* <OfflineDataDisplay /> */}
         <View style={styles.container}>
           <View>
@@ -535,6 +534,11 @@ const styles = StyleSheet.create({
     top: Matrics.ms(150),
     left: Matrics.screenWidth / 3.5
   },
+  timerContainerIos:{
+    position: 'absolute',
+    top: Matrics.ms(220),
+    left: Matrics.screenWidth / 3.89
+  }
 });
 
 export default Home;
