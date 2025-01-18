@@ -17,10 +17,11 @@ const scanSaga = function* scanSaga({payload}) {
 
   try {
     const response = yield call(API.ScanTag, payload);
+    console.log('scan saga response', response);
 
     if (response?.data) {
       yield put(ScanSuccess(response));
-    } else if (response?.errors) {
+    } else {
       console.log('response error', response);
 
       yield put(ScanFailure(response?.errors));
