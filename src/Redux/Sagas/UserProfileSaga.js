@@ -2,7 +2,7 @@ import {all, call, put, takeEvery} from 'redux-saga/effects';
 import API from '../Services/UserProfileService';
 import {USER_PROFILE_REDUCER} from '../SliceKey';
 import {FetchSuccess, FetchFailure} from '../Reducers/UserProfileSlice';
-import ToastMessage from '../../Helpers/ToastMessage';
+import ToastMessage, { errorToast, success } from '../../Helpers/ToastMessage';
 
 // Fetch Profile Saga
 function* fetchUserProfileSaga({payload}) {
@@ -30,10 +30,10 @@ function* updateUserProfileSaga({payload}) {
 
     if (response?.data) {
       yield put(FetchSuccess(response.data));
-      ToastMessage.success('Profile Updated Successfully');
+      success('Profile Updated Successfully');
     } else if (response?.errors) {
       yield put(FetchFailure(response.errors));
-      ToastMessage.error('There was an error update the Profile');
+     errorToast('There was an error update the Profile');
     }
   } catch (error) {
     console.error('Updating user profile error', error);
@@ -45,10 +45,10 @@ function* removeProfilePhotoSaga({payload}) {
     const response = yield call(API.RemoveProfilePhoto, payload);
     if (response?.data) {
       yield put(FetchSuccess(response.data));
-      ToastMessage.success('Profile Photo Removed Successfully');
+      success('Profile Photo Removed Successfully');
     } else if (response?.errors) {
       yield put(FetchFailure(response.errors));
-      ToastMessage.error('There was an error removing the Profile Photo');
+      errorToast('There was an error removing the Profile Photo');
     }
   } catch (error) {
     console.error('Error removing profile photo', error);

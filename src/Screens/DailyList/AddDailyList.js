@@ -18,6 +18,7 @@ import {useNavigation} from '@react-navigation/native';
 import {toastMessage} from '../../Helpers';
 import {Calendar} from 'react-native-calendars';
 import moment from 'moment';
+import { errorToast } from '../../Helpers/ToastMessage';
 
 const AddDailyList = () => {
   const [isCustomerDropdownVisible, setIsCustomerDropdownVisible] =
@@ -132,7 +133,7 @@ const AddDailyList = () => {
   };
 
   const showToastMessage = message => {
-    toastMessage.error('Please fill the data');
+    errorToast('Please fill the data');
   };
 
   const selectLocation = location => {

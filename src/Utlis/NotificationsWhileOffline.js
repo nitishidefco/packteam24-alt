@@ -1,4 +1,4 @@
-import {toastMessage} from '../Helpers';
+import {success} from '../Helpers/ToastMessage';
 
 export const showNotificationAboutTagScannedWhileOffline = (
   tagId,
@@ -11,16 +11,15 @@ export const showNotificationAboutTagScannedWhileOffline = (
 
   const tagMode = findModeByTagId(tagsFromLocalStorage, tagId);
 
-
   switch (tagMode) {
     case 'work_start':
-      toastMessage.success('Work in progress');
+      success('Work in progress');
       break;
     case 'break_start':
-      toastMessage.success('Break in progress');
+      success('Break in progress');
       break;
     case 'work_end':
-      toastMessage.success('Work finished');
+      success('Work finished');
       break;
   }
 };

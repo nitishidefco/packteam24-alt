@@ -6,6 +6,7 @@ import {
   changePasswordSuccess,
 } from '../Reducers/PasswordChangeSlice';
 import {toastMessage} from '../../Helpers';
+import { success } from '../../Helpers/ToastMessage';
 
 function* changePasswordSaga({payload}) {
   try {
@@ -13,7 +14,7 @@ function* changePasswordSaga({payload}) {
     if (response?.data) {
       // Check for data property
       yield put(changePasswordSuccess(response.data));
-      toastMessage.success('Password Changed Successfully');
+      success('Password Changed Successfully');
     } else if (response?.errors) {
       console.log('Error response', response);
 

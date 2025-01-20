@@ -15,6 +15,7 @@ import {
   ScrollView,
 } from 'react-native';
 import {useTranslation} from 'react-i18next';
+
 import {loginStyle as styles} from './styles';
 import {FullScreenSpinner} from '../../Components/HOC';
 import {useNavigation} from '@react-navigation/native';
@@ -31,6 +32,7 @@ import DeviceInfo from 'react-native-device-info';
 import FlagComponent from '../../Components/Common/FlagComponent';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as RNLocalize from 'react-native-localize';
+import { errorToast, success } from '../../Helpers/ToastMessage';
 const languages = {
   UK: 'en', // English
   GER: 'de', // German
@@ -67,13 +69,13 @@ const Login = ({route}) => {
   useEffect(() => {
     if (loading && Auth.isLoginSuccess === true) {
       setLoading(false);
-      toastMessage.success('Login successful');
+     success('Login successful');
       navigation.navigate('HomeDrawer');
       setUserEmail(null);
       setUserPassword(null);
     } else if (loading && Auth.isLoginSuccess === false) {
       setLoading(false);
-      toastMessage.error('Login Unsuccessful');
+      errorToast('Login Unsuccessful');
     }
   }, [Auth?.isLoginSuccess]);
 
@@ -151,16 +153,16 @@ const Login = ({route}) => {
   };
   function validateInputs() {
     if (userEmail == '' || userEmail == null) {
-      toastMessage.error('Please enter email address!');
+      errorToast('Please enter email address!');
       return false;
     }
     if (!Validator.validateEmail(userEmail)) {
-      toastMessage.error('Please enter valid email address');
+      errorToast('Please enter valid email address');
 
       return false;
     }
     if (userPassword === '') {
-      toastMessage.error('Please enter password');
+      errorToast('Please enter password');
       return false;
     }
     return true;
@@ -169,7 +171,7 @@ const Login = ({route}) => {
   const onLoginPress = () => {
     console.log('Loginpressed');
     if (!isConnected) {
-      toastMessage.error('Please check your internet connection');
+     errorToast('Please check your internet connection');
     } else {
       if (validateInputs('Enter Email')) {
         // changeLanguage('pl');
@@ -179,7 +181,7 @@ const Login = ({route}) => {
   };
   const onForgotPasswordPress = () => {
     if (!isConnected) {
-      toastMessage.error('Please check your internet connection');
+      errorToast('Please check your internet connection');
     } else {
       if (validateInputs('Enter Email')) {
         forgotPasswordAPI();

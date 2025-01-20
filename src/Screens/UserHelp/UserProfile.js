@@ -110,6 +110,10 @@ const UserProfile = ({navigation}) => {
     }
   };
 
+  /* --------------------------- set counter to zero -------------------------- */
+  useEffect(() => {
+    setCounter(0);
+  }, []);
   /* -------------------------------- Lifecycle ------------------------------- */
   useEffect(() => {
     const formData = new FormData();
@@ -123,7 +127,7 @@ const UserProfile = ({navigation}) => {
   useEffect(() => {
     setImage(profileState?.data?.photo);
     setUserEmail(profileState?.data?.email);
-  }, [profileState]);
+  }, [profileState, counter]);
 
   /* ----------------------------- Handle changes ----------------------------- */
   const handleSave = async () => {
@@ -179,7 +183,7 @@ const UserProfile = ({navigation}) => {
   };
   const handleRemoveProfilePhoto = () => {
     Alert.alert(
-      t('UerProfileScreen.removeProfilePhoto'),
+      t('UserProfileScreen.removeProfilePhoto'),
       t('UserProfileScreen.rusure'),
       [
         {

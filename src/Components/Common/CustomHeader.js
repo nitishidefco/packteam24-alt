@@ -19,6 +19,7 @@ import {useAuthActions} from '../../Redux/Hooks';
 import {toastMessage} from '../../Helpers';
 import {reduxStorage} from '../../Redux/Storage';
 import {useUserProfileActions} from '../../Redux/Hooks/useUserProfileActions';
+import { success } from '../../Helpers/ToastMessage';
 
 const CustomHeader = ({onUserPress}) => {
   const [modalVisible, setModalVisible] = useState(false);
@@ -53,7 +54,7 @@ const CustomHeader = ({onUserPress}) => {
   function handleLogoutResponse() {
     if (loading && Auth.islogoutSuccess === true) {
       setLoading(false);
-      toastMessage.success('Logout successful');
+      success('Logout successful');
       navigation.navigate('Login');
       reduxStorage.removeItem('clear');
     } else if (loading && Auth.islogoutSuccess === false) {

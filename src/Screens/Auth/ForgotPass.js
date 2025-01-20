@@ -30,6 +30,7 @@ import {Popup, Validator, toastMessage} from '../../Helpers';
 import {setDeviceInfo} from '../../Redux/Reducers/NetworkSlice';
 import DeviceInfo from 'react-native-device-info';
 import useSavedLanguage from '../../Components/Hooks/useSavedLanguage';
+import {errorToast, success} from '../../Helpers/ToastMessage';
 const ForgotPass = () => {
   const navigation = useNavigation();
   const {t, i18n} = useTranslation();
@@ -59,13 +60,13 @@ const ForgotPass = () => {
   useEffect(() => {
     if (loading && Auth.isLoginSuccess === true) {
       setLoading(false);
-      toastMessage.success('Login successful');
+      success('Login successful');
       navigation.navigate('HomeDrawer');
       setUserEmail(null);
       setUserPassword(null);
     } else if (loading && Auth.isLoginSuccess === false) {
       setLoading(false);
-      toastMessage.error('Login Unsuccessful');
+      errorToast('Login Unsuccessful');
     }
   }, [Auth?.isLoginSuccess]);
   // ---------------Getting Device info---------------
@@ -113,17 +114,17 @@ const ForgotPass = () => {
   function validateInputs() {
     if (userEmail == '' || userEmail == null) {
       const message = `${t('ResetPassword.emptyEmailValidation')}`;
-      toastMessage.error(message);
+      errorToast(message);
       return false;
     }
     if (!Validator.validateEmail(userEmail)) {
       const message = `${t('ResetPassword.invalidEmail')}`;
-      toastMessage.error(message);
+      errorToast(message);
 
       return false;
     }
     if (userPassword === '') {
-      toastMessage.error('Please enter password');
+      errorToast('Please enter password');
       return false;
     }
     return true;
@@ -131,7 +132,7 @@ const ForgotPass = () => {
 
   const onForgotPasswordPress = () => {
     if (!isConnected) {
-      toastMessage.error('Please check your internet connection');
+      errorToast('Please check your internet connection');
     } else {
       if (validateInputs('Enter Email')) {
         forgotPasswordAPI();

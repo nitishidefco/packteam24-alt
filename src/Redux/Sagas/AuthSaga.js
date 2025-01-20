@@ -53,7 +53,7 @@ const forgotPasswordSaga = function* forgotPasswordSaga({payload}) {
     if (response) {
       console.log('response message', response.message);
       const success = `${t(ResetPassword.passwordResetSuccess)}`;
-      ToastMessage.success(success);
+      success(success); //Toast message
       yield put(forgotPasswordSuccess(response));
     } else {
       yield put(forgotPasswordFailure(response));

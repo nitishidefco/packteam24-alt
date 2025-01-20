@@ -25,6 +25,7 @@ import CustomHeader3 from '../../Components/Common/CustomHeader3';
 import RNFetchBlob from 'rn-fetch-blob';
 import {Platform} from 'react-native';
 import Share from 'react-native-share';
+import { success } from '../../Helpers/ToastMessage';
 const EditDailyList = () => {
   const route = useRoute();
   const [isCustomerDropdownVisible, setIsCustomerDropdownVisible] =
@@ -485,7 +486,7 @@ const EditDailyList = () => {
       } else {
         RNFetchBlob.ios.previewDocument(path);
 
-        toastMessage.success('File downloaded successfully');
+        success('File downloaded successfully');
       }
     } catch (error) {
       console.error('Error downloading file:', error);
