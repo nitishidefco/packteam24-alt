@@ -10,6 +10,7 @@ import {
   Platform,
   AppState,
   TouchableOpacity,
+  ScrollView,
 } from 'react-native';
 import {useHomeActions} from '../../Redux/Hooks';
 import DrawerSceneWrapper from '../../Components/Common/DrawerSceneWrapper';
@@ -26,7 +27,6 @@ import {
 import {showNotificationAboutTagScannedWhileOffline} from '../../Utlis/NotificationsWhileOffline';
 import {useDispatch, useSelector} from 'react-redux';
 import moment from 'moment';
-import OfflineDataDisplay from '../../Components/OfflineDataSee';
 import {setDeviceInfo} from '../../Redux/Reducers/NetworkSlice';
 import DeviceInfo from 'react-native-device-info';
 import {useNfcStatus} from '../../Utlis/CheckNfcStatus';
@@ -39,6 +39,7 @@ import useSavedLanguage from '../../Components/Hooks/useSavedLanguage';
 import LanguageSelector from '../../Components/Common/LanguageSelector';
 import Timer from '../../Components/Common/Timer';
 import {Matrics} from '../../Config/AppStyling';
+import TimeLog from '../../Components/HomeComponent/TimeLog';
 const Home = ({navigation, route}) => {
   const dispatch = useDispatch();
   useNfcStatus();
@@ -415,44 +416,59 @@ const Home = ({navigation, route}) => {
     <DrawerSceneWrapper>
       <SafeAreaView style={{flex: 1, backgroundColor: '#EBF0FA'}}>
         <CustomHeader />
-        <LanguageSelector />
-        <View style={[Platform.OS === 'android' ? styles.timerContainer: styles.timerContainerIos]}>
-          <Timer />
-        </View>
-        {/* <OfflineDataDisplay /> */}
-        <View style={styles.container}>
-          <View>
-            {/* <NetworkStatusComponent /> */}
-            <WorkStatusBar tagMode={tagMode} />
-          </View>
-          <View style={styles.nfcPromptContainer}>
-            <Image source={Images.NFC} style={styles.userIcon} />
-            <Text style={styles.nfcPromptText}>
-              {t('HomeScreen.nfcCardTitle')}
-            </Text>
-
-            {Platform.OS === 'ios' && (
-              <TouchableOpacity
-                style={styles.scanButton}
-                onPress={() => initNfcScan()}>
-                <Text style={styles.buttonText}>
-                  {t('HomeScreen.nfcButtonText')}
+        <ScrollView style={{backgroundColor: '#EBF0FA'}}>
+          <LanguageSelector />
+          <View style={styles.topContainer}>
+            <View
+              style={[
+                Platform.OS === 'android'
+                  ? styles.timerContainer
+                  : styles.timerContainerIos,
+              ]}>
+              <Timer />
+            </View>
+            {/* <OfflineDataDisplay /> */}
+            <View style={styles.container}>
+              <View>
+                {/* <NetworkStatusComponent /> */}
+                <WorkStatusBar tagMode={tagMode} />
+              </View>
+              <View style={styles.nfcPromptContainer}>
+                <Image source={Images.NFC} style={styles.userIcon} />
+                <Text style={styles.nfcPromptText}>
+                  {t('HomeScreen.nfcCardTitle')}
                 </Text>
-              </TouchableOpacity>
-            )}
-            {Platform.OS === 'android' && (
-              <Text style={styles.nfcPromptSubtext}>
-                {t('HomeScreen.nfcCardSubtitle')}
-              </Text>
-            )}
+
+                {Platform.OS === 'ios' && (
+                  <TouchableOpacity
+                    style={styles.scanButton}
+                    onPress={() => initNfcScan()}>
+                    <Text style={styles.buttonText}>
+                      {t('HomeScreen.nfcButtonText')}
+                    </Text>
+                  </TouchableOpacity>
+                )}
+                {Platform.OS === 'android' && (
+                  <Text style={styles.nfcPromptSubtext}>
+                    {t('HomeScreen.nfcCardSubtitle')}
+                  </Text>
+                )}
+              </View>
+              <View style={styles.timeLogContainer}>
+                <TimeLog />
+              </View>
+            </View>
           </View>
-        </View>
+        </ScrollView>
       </SafeAreaView>
     </DrawerSceneWrapper>
   );
 };
 
 const styles = StyleSheet.create({
+  topContainer: {
+    minHeight: Matrics.screenHeight,
+  },
   centeredContainer: {
     flex: 1,
     backgroundColor: '#EBF0FA',
@@ -532,13 +548,13 @@ const styles = StyleSheet.create({
   timerContainer: {
     position: 'absolute',
     top: Matrics.ms(150),
-    left: Matrics.screenWidth / 3.5
+    left: Matrics.screenWidth / 3.5,
   },
-  timerContainerIos:{
+  timerContainerIos: {
     position: 'absolute',
     top: Matrics.ms(220),
-    left: Matrics.screenWidth / 3.89
-  }
+    left: Matrics.screenWidth / 3.89,
+  },
 });
 
 export default Home;

@@ -5,8 +5,6 @@ import {SafeAreaComponent} from '../Components/HOC';
 import {COLOR, typography} from '../Config/AppStyling';
 
 export const success = (text1 = '', text2 = '') => {
-  console.log(text1, 'text 1');
-
   Toast.show({
     type: 'success',
     text1: text1,
@@ -43,7 +41,7 @@ export const toastConfig = {
     <SafeAreaComponent style={STYLE.safeareaView}>
       <ErrorToast
         {...props}
-        style={STYLE.toastContainer}
+        style={[{borderLeftColor: COLOR.SECONDARY}, STYLE.toastContainer]}
         text1Style={{
           fontSize: typography.fontSizes.fs15,
           fontFamily: typography.fontFamily.Roboto.Regular,
