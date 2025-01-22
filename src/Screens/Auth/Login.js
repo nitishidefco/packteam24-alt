@@ -79,13 +79,14 @@ const Login = ({route}) => {
   useEffect(() => {
     if (loading && Auth.isLoginSuccess === true) {
       setLoading(false);
-      success('Login successful');
+      const successToast = `${t(Toast.LoginSuccess)}`;
+      success(successToast);
       navigation.navigate('HomeDrawer');
       setUserEmail(null);
       setUserPassword(null);
     } else if (loading && Auth.isLoginSuccess === false) {
       setLoading(false);
-      errorToast('Login Unsuccessful');
+      errorToast(i18n.t('Toast.LoginUnsuccessful'));
     }
   }, [Auth?.isLoginSuccess]);
 
@@ -189,16 +190,16 @@ const Login = ({route}) => {
   };
   function validateInputs() {
     if (userEmail == '' || userEmail == null) {
-      errorToast('Please enter email address!');
+      errorToast(i18n.t('Toast.EnterEmail'));
       return false;
     }
     if (!Validator.validateEmail(userEmail)) {
-      errorToast('Please enter valid email address');
+      errorToast(i18n.t('Toast.ValidEmail'));
 
       return false;
     }
     if (userPassword === '') {
-      errorToast('Please enter password');
+      errorToast(i18n.t('Toast.EnterPassword'));
       return false;
     }
     return true;
@@ -207,7 +208,7 @@ const Login = ({route}) => {
   const onLoginPress = () => {
     console.log('Loginpressed');
     if (!isConnected) {
-      errorToast('Please check your internet connection');
+      errorToast(i18n.t('Toast.CheckInternet'));
     } else {
       if (validateInputs('Enter Email')) {
         // changeLanguage('pl');
@@ -363,7 +364,7 @@ const Login = ({route}) => {
               onPress={() => navigation.navigate('CreateAccount')}>
               <Text style={styles.forgotPasswordText}>
                 {/* {t('Login.forgotPassword')} */}
-                Create Account
+               {t('Login.ca')}
               </Text>
             </TouchableOpacity>
             <View style={styles.FlagContainer}>
@@ -382,9 +383,9 @@ const Login = ({route}) => {
               ))}
             </View>
             <View>
-              <OpenURLText url={privacyPolicyUrl}>Privacy Policy</OpenURLText>
+              <OpenURLText url={privacyPolicyUrl}>{t('Login.pp')}</OpenURLText>
               <OpenURLText url={applicationInformatinoUrl}>
-                Application Information
+               {t('Login.ai')}
               </OpenURLText>
             </View>
           </View>

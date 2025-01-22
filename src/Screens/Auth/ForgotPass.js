@@ -60,13 +60,14 @@ const ForgotPass = () => {
   useEffect(() => {
     if (loading && Auth.isLoginSuccess === true) {
       setLoading(false);
-      success('Login successful');
+      const successToast = `${t(Toast.LoginSuccess)}`;
+      success(successToast);
       navigation.navigate('HomeDrawer');
       setUserEmail(null);
       setUserPassword(null);
     } else if (loading && Auth.isLoginSuccess === false) {
       setLoading(false);
-      errorToast('Login Unsuccessful');
+      errorToast(i18n.t(Toast.LoginUnsuccessful));
     }
   }, [Auth?.isLoginSuccess]);
   // ---------------Getting Device info---------------
@@ -124,7 +125,7 @@ const ForgotPass = () => {
       return false;
     }
     if (userPassword === '') {
-      errorToast('Please enter password');
+      errorToast(i18n.t('Toast.EnterPassword'));
       return false;
     }
     return true;
@@ -132,7 +133,7 @@ const ForgotPass = () => {
 
   const onForgotPasswordPress = () => {
     if (!isConnected) {
-      errorToast('Please check your internet connection');
+      errorToast(i18n.t('Toast.CheckInternet'));
     } else {
       if (validateInputs('Enter Email')) {
         forgotPasswordAPI();

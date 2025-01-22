@@ -581,7 +581,7 @@ const styles = StyleSheet.create({
   timerContainer: {
     position: 'absolute',
     top: Matrics.ms(150),
-    left: Matrics.screenWidth / 3.5,
+    left: Matrics.screenWidth / 4.5,
   },
   timerContainerIos: {
     position: 'absolute',

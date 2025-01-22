@@ -18,7 +18,7 @@ import DropdownAlert from 'react-native-dropdownalert';
 import {toastMessage} from '../../Helpers';
 import {reduxStorage} from '../../Redux/Storage';
 import {useTranslation} from 'react-i18next';
-import { success } from '../../Helpers/ToastMessage';
+import {success} from '../../Helpers/ToastMessage';
 // import DailyListScreen from '../../screens/DailyList/DailyListScreen';
 
 const CustomDrawerContent = props => {
@@ -60,7 +60,8 @@ const CustomDrawerContent = props => {
     console.log('Auth.islogoutSuccess', Auth.islogoutSuccess);
     if (loading && Auth.islogoutSuccess === true) {
       setLoading(false);
-      success('Logout successful');
+      const successToast = t('Toast.LogoutSuccess');
+      success(successToast);
       reduxStorage.removeItem('token');
       navigation.replace('Login');
     } else if (loading && Auth.islogoutSuccess === false) {

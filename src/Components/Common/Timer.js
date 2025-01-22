@@ -2,12 +2,15 @@ import React, {useState, useEffect, useRef} from 'react';
 import {View, Text, StyleSheet, AppState} from 'react-native';
 import {useWorkHistoryActions} from '../../Redux/Hooks/useWorkHistoryActions';
 import {getCurrentTime} from '../../Helpers/GetCurrentTime';
-import {Matrics} from '../../Config/AppStyling';
+import {Matrics, typography} from '../../Config/AppStyling';
 import {findModeByTagId} from '../../Helpers/FindModeByTagId';
 import {addColons} from '../../Helpers/AddColonsToId';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import useSavedLanguage from '../Hooks/useSavedLanguage';
+import {useWorkStatusActions} from '../../Redux/Hooks/useWorkStatusActions';
 const Timer = ({tag, tagsFromLocalStorage, sessionId}) => {
+  const {state: currentStatus, fetchWorkStatusCall} = useWorkStatusActions();
+
   const [seconds, setSeconds] = useState(0);
   const [isActive, setIsActive] = useState(false);
   const intervalRef = useRef(null);
@@ -41,9 +44,6 @@ const Timer = ({tag, tagsFromLocalStorage, sessionId}) => {
   const lastEntry =
     workHistoryState?.data?.[workHistoryState?.data?.length - 1];
   const saveTimerState = async () => {
-    console.log('saving timer state');
-    console.log(isActive);
-
     try {
       const timerState = {
         seconds,
@@ -105,8 +105,6 @@ const Timer = ({tag, tagsFromLocalStorage, sessionId}) => {
       console.error('Error loading timer state:', error);
     }
   };
-  console.log(currentTag, 'Current tag from server');
-
   // Handle the timer behavior based on tag
   const controlTimer = currentTag => {
     if (currentTag === 'work_start') {
@@ -171,7 +169,19 @@ const Timer = ({tag, tagsFromLocalStorage, sessionId}) => {
 
   // Load timer state on component mount
   useEffect(() => {
-    loadTimerState();
+    console.log(
+      currentStatus?.currentState?.work_status === 'work_not_started',
+    );
+    if (
+      currentStatus?.currentState?.work_status === 'work_not_started' ||
+      ' work_end'
+    ) {
+      stopTimer();
+      return;
+    }
+    if (workHistoryState?.data.length > 0) {
+      loadTimerState();
+    }
   }, []);
 
   // Cleanup interval on unmount
@@ -223,14 +233,15 @@ const Timer = ({tag, tagsFromLocalStorage, sessionId}) => {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
+    // flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
     paddingBottom: Matrics.ms(50),
+    // backgroundColor: 'red',
   },
   timerText: {
     fontSize: 48,
-    fontFamily: 'monospace',
+    fontFamily: typography.fontFamily.Montserrat.Bold,
     marginBottom: 20,
   },
   modeText: {
@@ -241,5 +252,3 @@ const styles = StyleSheet.create({
 });
 
 export default Timer;
-
-// ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQDVp6dSvMu5LRLeL5vyFnuS2HR74jbS6QgDfN2c7de0TPqICDlZwsYkJzsqqdrUXHv6mXXAD+Pmf1Z+ZXThyKrw5k/qGdHCG0oCU9pokmup1ys7qb7fEC8AkzktwYgZssytPsoWWvH/pN6gswqHc29ITZ+jFU6x6IYUkKKrUhrgBGB529m0fid06X5lSzAtqT7eBE6qzgvcFhYZQD/F0YUJUWibvk7UjktXjVPFfJXilPxyBkP4NFmL5JwBACqWciAPn65OaXSws9riQLX/A8eKDgez9fCUgitOVn1LcWS7qz1mGmpX7vu8ZMOmtYVHi/pFGxnSayReDe7oF1S+DZvonuC1vrXexxmVZtnSBrRTsgKO7fQwRbD9KTRWFnjJzgfYa4GSk16ThPNQ0RhK+Ah+KkH8PMU4d4tYZGR1PqNMfa5WzOofSdaUK8wkuTKkbsSR1W9DcexdKSNr0Qa5n1uFTnhOLKUIzyClzI1Ga2MUFWLkmRApYOnRfOkL21JTxg+TtZF2bMnpudkbwlaBACL/vyd/4Va7foDa0QoYmeqyZxxkNjPNCdxahiq7KH6hcFnu243BWQZm3s0w3E7OVS+mP4/pVfAh15F12Jb9CaRfEo3KKUcvlupUmsT2fAdxXr6qeSdFH2pDmVLNKO7DbE/hqhbKV25nNizKYe3Ju3RSrw== nitishidefcoinfotech@gmail.com

@@ -9,7 +9,16 @@
         "password":"Password",
         "passwordPlaceHolder":"Password",
         "forgotPassword":"Forgot password?",
-        "loginButton":"Login"
+        "loginButton":"Login",
+        "pp":"Privacy Policy",
+        "ai":"Application Information",
+        "ca":"Create Account"
+    },
+    "CreateAccount":{
+        "title":"Create an account",
+        "subt":"Enter email & password to create an account",
+        "createAccButton":"Create an account",
+        "btl":"Back To Login"
     },
     "ForgotPassword":{
         "title":"Reset Password",
@@ -78,5 +87,23 @@
         "passwordResetSuccess":"We have emailed your password reset link!",
         "emptyEmailValidation":"Please enter email address!",
         "invalidEmail":"Please enter valid email address"
+    },
+    "Toast":{
+        "LogoutSuccess":"Logout Successful",
+        "AccountCreatedSuccessfull":"Account Created Successfully",
+        "PasswordChangeSuccessfull":"Password Changed Successfully",
+        "ProfileUpdated":"Profile Updated Successfully",
+        "PhotoRemovedSuccessfully":"Profie removed Successfully",
+        "LoginSuccess":"Login Successful",
+        "WorkinProgress":"Work in progress",
+        "BreakinProgress":"Break in progress",
+        "WorkFinished":"Work Finished",
+        "ErrorUpdatingProfile":"There was an error updating the Profile",
+        "ErrorRemovingProfilePhoto":"There was an error removing the Profile Photo",
+        "EnterEmail":"Please enter email address",
+        "ValidEmail":"Please enter a valid email address",
+        "EnterPassword":"Please enter password",
+        "CheckInternet":"Please check your internet connection",
+        "LoginUnsuccessful":"Login Unsuccessful"
     }
 }

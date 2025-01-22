@@ -1,28 +1,53 @@
 {
     "Login": {
         "title": "Zaloguj się do swojego konta",
-        "subtitle": "Wprowadź swój email i hasło, aby się zalogować",
+        "subtitle": "Wprowadź swój e-mail i hasło, aby się zalogować",
         "email": "Adres e-mail",
         "emailPlaceHolder": "E-mail",
-        "emptyEmailError": "Proszę podać adres e-mail!",
-  "invalidEmailError": "Proszę podać prawidłowy adres e-mail!",
+        "emptyEmailError": "Proszę wprowadzić adres e-mail!",
+        "invalidEmailError": "Proszę wprowadzić prawidłowy adres e-mail!",
         "password": "Hasło",
         "passwordPlaceHolder": "Hasło",
         "forgotPassword": "Zapomniałeś hasła?",
-        "loginButton": "Zaloguj się"
+        "loginButton": "Zaloguj się",
+        "pp": "Polityka prywatności",
+        "ai": "Informacje o aplikacji",
+        "ca": "Utwórz konto"
+    },
+    "CreateAccount": {
+        "title": "Utwórz konto",
+        "subt": "Wprowadź e-mail i hasło, aby utworzyć konto",
+        "createAccButton": "Utwórz konto",
+        "btl": "Powrót do logowania"
     },
     "ForgotPassword": {
         "title": "Zresetuj hasło",
-        "subtitle": "Podaj adres e-mail, którego używasz do logowania w aplikacji - wyślemy Ci instrukcje dotyczące resetowania hasła",
+        "subtitle": "Podaj adres e-mail, którego używasz do logowania do aplikacji - wyślemy Ci instrukcje dotyczące resetowania hasła",
         "email": "Adres e-mail",
         "emailPlaceHolder": "E-mail",
         "resetButton": "Wyślij link do resetowania hasła",
-        "backToLogin": "Powrót do logowania"
+        "backToLogin": "Powrót"
     },
     "HomeScreen": {
         "nfcCardTitle": "Gotowy do skanowania tagów NFC",
-        "nfcCardSubtitle": "Przyłóż urządzenie do tagu NFC",
-          "nfcButtonText": "Rozpocznij skanowanie NFC"
+        "nfcCardSubtitle": "Przyłóż swoje urządzenie do tagu NFC",
+        "nfcButtonText": "Rozpocznij skanowanie NFC"
+    },
+    "ChangePasswordScreen": {
+        "allFieldsRequired": "Wszystkie pola są wymagane",
+        "currentPassword": "Aktualne hasło",
+        "newPassword": "Nowe hasło",
+        "confirmNewPassword": "Potwierdź nowe hasło",
+        "save": "Zapisz",
+        "cancel": "Anuluj",
+        "changePasswordHeader": "Zmień hasło",
+        "cancelChanges": "Anuluj zmiany",
+        "confirmationCancel": "Czy na pewno chcesz anulować zmianę hasła?",
+        "no": "Nie",
+        "yes": "Tak",
+        "confirmPasswordChange": "Potwierdź zmianę hasła",
+        "changeConfirmation": "Czy na pewno chcesz zmienić swoje hasło?",
+        "passwordError": "Hasła nie pasują"
     },
     "WorkStatusCard": {
         "workStart": "Praca w toku",
@@ -31,53 +56,53 @@
         "workNotStarted": "Praca nie rozpoczęta"
     },
     "SideMenuBar": {
-        "dashboard": "Panel sterowania",
+        "dashboard": "Pulpit",
         "Logout": "Wyloguj się",
         "ChangePassword": "Zmień hasło",
-        "UserProflie":"Profil użytkownika"
+        "UserProflie": "Profil użytkownika",
+        "ChangeLanguage": "Zmień język"
     },
-     "ChangePasswordScreen": {
-    "allFieldsRequired": "Wszystkie pola są wymagane",
-    "currentPassword": "Bieżące hasło",
-    "newPassword": "Nowe hasło",
-    "confirmNewPassword": "Potwierdź nowe hasło",
-    "save": "Zapisz",
-    "cancel": "Anuluj",
-    "changePasswordHeader": "Zmień hasło",
-    "cancelChanges": "Anuluj zmiany",
-    "confirmationCancel": "Czy na pewno chcesz anulować zmianę hasła?",
-    "no": "Nie",
-    "yes": "Tak",
-    "confirmPasswordChange": "Potwierdź zmianę hasła",
-    "changeConfirmation": "Czy na pewno chcesz zmienić swoje hasło?",
-    "passwordError": "Hasła się nie zgadzają"
-  },
- "UserProfileScreen": {
-    "title": "Profil użytkownika",
-    "EditPhoto": "Edytuj zdjęcie",
-    "SelectPhoto": "Wybierz zdjęcie",
-    "RemovePhoto": "Usuń zdjęcie",
-    "email": "Adres e-mail",
-    "emailPlaceHolder": "E-mail",
-    "cancel": "Anuluj",
-    "save": "Zapisz",
-    "cancelTitle": "Anuluj zmiany",
-    "cancelConfirmation": "Czy na pewno chcesz anulować? Wszystkie niezapisane zmiany zostaną utracone.",
-    "keepEditing": "Kontynuuj edytowanie",
-    "discardChanges": "Odrzuć zmiany",
-    "removeProfilePhoto": "Usuń zdjęcie profilowe",
-    "rusure": "Czy na pewno chcesz usunąć swoje zdjęcie profilowe?",
-    "remove": "Usuń",
-    "Error": "Błąd",
-    "FailedToRemove": "Nie udało się usunąć zdjęcia profilowego. Spróbuj ponownie.",
-    "OK": "OK"
-},
-"ResetPassword": {
-  "passwordResetSuccess": "Wysłaliśmy Ci link do resetowania hasła na Twój adres e-mail!",
-  "emptyEmailValidation": "Proszę wprowadzić adres e-mail!",
-  "invalidEmail": "Proszę wprowadzić prawidłowy adres e-mail"
-}
-
-
-
+    "UserProfileScreen": {
+        "title": "Profil użytkownika",
+        "EditPhoto": "Edytuj zdjęcie",
+        "SelectPhoto": "Wybierz zdjęcie",
+        "RemovePhoto": "Usuń zdjęcie",
+        "email": "Adres e-mail",
+        "emailPlaceHolder": "E-mail",
+        "cancel": "Anuluj",
+        "save": "Zapisz",
+        "cancelTitle": "Anuluj zmiany",
+        "cancelConfirmation": "Czy na pewno chcesz anulować? Wszystkie niezapisane zmiany zostaną utracone.",
+        "keepEditing": "Kontynuuj edycję",
+        "discardChanges": "Odrzuć zmiany",
+        "removeProfilePhoto": "Usuń zdjęcie profilowe",
+        "rusure": "Czy na pewno chcesz usunąć zdjęcie profilowe?",
+        "remove": "Usuń",
+        "Error": "Błąd",
+        "FailedToRemove": "Nie udało się usunąć zdjęcia profilowego. Spróbuj ponownie.",
+        "OK": "OK"
+    },
+    "ResetPassword": {
+        "passwordResetSuccess": "Wysłaliśmy Ci link do resetowania hasła!",
+        "emptyEmailValidation": "Proszę wprowadzić adres e-mail!",
+        "invalidEmail": "Proszę wprowadzić prawidłowy adres e-mail"
+    },
+    "Toast": {
+        "LogoutSuccess": "Wylogowano pomyślnie",
+        "AccountCreatedSuccessfull": "Konto utworzono pomyślnie",
+        "PasswordChangeSuccessfull": "Hasło zmienione pomyślnie",
+        "ProfileUpdated": "Profil zaktualizowany pomyślnie",
+        "PhotoRemovedSuccessfully": "Zdjęcie profilowe usunięto pomyślnie",
+        "LoginSuccess": "Zalogowano pomyślnie",
+        "WorkinProgress": "Praca w toku",
+        "BreakinProgress": "Przerwa w toku",
+        "WorkFinished": "Praca zakończona",
+        "ErrorUpdatingProfile": "Wystąpił błąd podczas aktualizacji profilu",
+        "ErrorRemovingProfilePhoto": "Wystąpił błąd podczas usuwania zdjęcia profilowego",
+        "EnterEmail": "Proszę wprowadzić adres e-mail",
+        "ValidEmail": "Proszę wprowadzić prawidłowy adres e-mail",
+        "EnterPassword": "Proszę wprowadzić hasło",
+        "CheckInternet": "Proszę sprawdzić połączenie z internetem",
+        "LoginUnsuccessful": "Logowanie nie powiodło się"
+    }
 }

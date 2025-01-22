@@ -1,4 +1,5 @@
 import {success} from '../Helpers/ToastMessage';
+import i18n from '../i18n/i18n';
 
 export const showNotificationAboutTagScannedWhileOffline = (
   tagId,
@@ -13,13 +14,13 @@ export const showNotificationAboutTagScannedWhileOffline = (
 
   switch (tagMode) {
     case 'work_start':
-      success('Work in progress');
+      success(i18n.t('Toast.WorkinProgress'));
       break;
     case 'break_start':
-      success('Break in progress');
+      success(i18n.t('Toast.BreakinProgress'));
       break;
     case 'work_end':
-      success('Work finished');
+      success(i18n.t('Toast.WorkFinished'));
       break;
   }
 };

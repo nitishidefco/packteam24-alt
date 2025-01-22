@@ -1,86 +1,109 @@
 {
-    "Login": {
-        "title": "Melden Sie sich bei Ihrem Konto an",
-        "subtitle": "Geben Sie Ihre E-Mail-Adresse und Ihr Passwort ein, um sich anzumelden",
-        "email": "E-Mail-Adresse",
-        "emailPlaceHolder": "E-Mail",
-        
-  "emptyEmailError": "Bitte geben Sie eine E-Mail-Adresse ein!",
-  "invalidEmailError": "Bitte geben Sie eine gültige E-Mail-Adresse ein!",
+   "Login": {
+            "title": "Anmelden",
+            "subtitle": "Geben Sie Ihre E-Mail & Passwort ein",
+            "email": "E-Mail-Adresse",
+            "emailPlaceHolder": "E-Mail",
+            "emptyEmailError": "Bitte E-Mail-Adresse eingeben!",
+            "invalidEmailError": "Bitte gültige E-Mail-Adresse eingeben!",
+            "password": "Passwort",
+            "passwordPlaceHolder": "Passwort",
+            "forgotPassword": "Passwort vergessen?",
+            "loginButton": "Anmelden",
+            "pp": "Datenschutzerklärung",
+            "ai": "Anwendungsinformationen",
+            "ca": "Konto erstellen"
+        },
+        "CreateAccount": {
+            "title": "Konto erstellen",
+            "subt": "E-Mail & Passwort eingeben, um ein Konto zu erstellen",
+            "createAccButton": "Konto erstellen",
+            "btl": "Zurück zur Anmeldung"
+        },
+        "ForgotPassword": {
+            "title": "Passwort zurücksetzen",
+            "subtitle": "Geben Sie die E-Mail-Adresse ein, mit der Sie sich anmelden - wir senden Ihnen eine Anleitung zum Zurücksetzen Ihres Passworts",
+            "email": "E-Mail-Adresse",
+            "emailPlaceHolder": "E-Mail",
+            "resetButton": "Link zum Zurücksetzen senden",
+            "backToLogin": "Zurück"
+        },
+        "HomeScreen": {
+            "nfcCardTitle": "Bereit zum Scannen von NFC-Tags",
+            "nfcCardSubtitle": "Halten Sie Ihr Gerät an einen NFC-Tag",
+            "nfcButtonText": "NFC-Scan starten"
+        },
+        "ChangePasswordScreen": {
+            "allFieldsRequired": "Alle Felder sind erforderlich",
+            "currentPassword": "Aktuelles Passwort",
+            "newPassword": "Neues Passwort",
+            "confirmNewPassword": "Neues Passwort bestätigen",
+            "save": "Speichern",
+            "cancel": "Abbrechen",
+            "changePasswordHeader": "Passwort ändern",
+            "cancelChanges": "Änderungen abbrechen",
+            "confirmationCancel": "Möchten Sie die Passwortänderung wirklich abbrechen?",
+            "no": "Nein",
+            "yes": "Ja",
+            "confirmPasswordChange": "Passwortänderung bestätigen",
+            "changeConfirmation": "Möchten Sie Ihr Passwort wirklich ändern?",
+            "passwordError": "Passwörter stimmen nicht überein"
+        },
+        "WorkStatusCard": {
+            "workStart": "Arbeit läuft",
+            "workEnd": "Arbeit beendet",
+            "breakStart": "Pause läuft",
+            "workNotStarted": "Arbeit nicht begonnen"
+        },
+        "SideMenuBar": {
+            "dashboard": "Dashboard",
+            "Logout": "Abmelden",
+            "ChangePassword": "Passwort ändern",
+            "UserProflie": "Benutzerprofil",
+            "ChangeLanguage": "Sprache ändern"
+        },
+        "UserProfileScreen": {
+            "title": "Benutzerprofil",
+            "EditPhoto": "Foto bearbeiten",
+            "SelectPhoto": "Foto auswählen",
+            "RemovePhoto": "Foto entfernen",
+            "email": "E-Mail-Adresse",
+            "emailPlaceHolder": "E-Mail",
+            "cancel": "Abbrechen",
+            "save": "Speichern",
+            "cancelTitle": "Änderungen abbrechen",
+            "cancelConfirmation": "Sind Sie sicher? Alle nicht gespeicherten Änderungen gehen verloren.",
+            "keepEditing": "Weiter bearbeiten",
+            "discardChanges": "Änderungen verwerfen",
+            "removeProfilePhoto": "Profilfoto entfernen",
+            "rusure": "Möchten Sie Ihr Profilfoto wirklich entfernen?",
+            "remove": "Entfernen",
+            "Error": "Fehler",
+            "FailedToRemove": "Profilfoto konnte nicht entfernt werden. Bitte versuchen Sie es erneut.",
+            "OK": "OK"
+        },
+        "ResetPassword": {
+            "passwordResetSuccess": "Wir haben Ihnen einen Link zum Zurücksetzen des Passworts per E-Mail gesendet!",
+            "emptyEmailValidation": "Bitte E-Mail-Adresse eingeben!",
+            "invalidEmail": "Bitte gültige E-Mail-Adresse eingeben"
+        },
+        "Toast": {
+            "LogoutSuccess": "Erfolgreich abgemeldet",
+            "AccountCreatedSuccessfull": "Konto erfolgreich erstellt",
+            "PasswordChangeSuccessfull": "Passwort erfolgreich geändert",
+            "ProfileUpdated": "Profil erfolgreich aktualisiert",
+            "PhotoRemovedSuccessfully": "Foto erfolgreich entfernt",
+            "LoginSuccess": "Anmeldung erfolgreich",
+            "WorkinProgress": "Arbeit läuft",
+            "BreakinProgress": "Pause läuft",
+            "WorkFinished": "Arbeit beendet",
+            "ErrorUpdatingProfile": "Fehler beim Aktualisieren des Profils",
+            "ErrorRemovingProfilePhoto": "Fehler beim Entfernen des Profilfotos",
+            "EnterEmail": "Bitte E-Mail-Adresse eingeben",
+            "ValidEmail": "Bitte gültige E-Mail-Adresse eingeben",
+            "EnterPassword": "Bitte Passwort eingeben",
+            "CheckInternet": "Bitte Internetverbindung überprüfen",
+            "LoginUnsuccessful": "Anmeldung fehlgeschlagen"
+        }
+    }
 
-
-        "password": "Passwort",
-        "passwordPlaceHolder": "Passwort",
-        "forgotPassword": "Passwort vergessen?",
-        "loginButton": "Anmelden"
-    },
-    "ForgotPassword": {
-        "title": "Passwort zurücksetzen",
-        "subtitle": "Geben Sie die E-Mail-Adresse an, die Sie für die Anmeldung in der Anwendung verwenden – wir senden Ihnen Anweisungen zum Zurücksetzen Ihres Passworts",
-        "email": "E-Mail-Adresse",
-        "emailPlaceHolder": "E-Mail",
-        "resetButton": "Link zum Zurücksetzen senden",
-        "backToLogin": "Zurück zum Login"
-    },
-    "HomeScreen": {
-        "nfcCardTitle": "Bereit zum Scannen von NFC-Tags",
-        "nfcCardSubtitle": "Halten Sie Ihr Gerät in die Nähe eines NFC-Tags",
-        "nfcButtonText": "NFC-Scan starten"
-    },
-    "WorkStatusCard": {
-        "workStart": "Arbeit läuft",
-        "workEnd": "Arbeit beendet",
-        "breakStart": "Pause läuft",
-        "workNotStarted": "Arbeit nicht begonnen"
-    },
-    "SideMenuBar": {
-        "dashboard": "Armaturenbrett",
-        "Logout": "Abmelden",
-        "ChangePassword": "Kennwort ändern",
-        "UserProflie":"Benutzerprofil"
-    },
-    "ChangePasswordScreen": {
-    "allFieldsRequired": "Alle Felder sind erforderlich",
-    "currentPassword": "Aktuelles Passwort",
-    "newPassword": "Neues Passwort",
-    "confirmNewPassword": "Neues Passwort bestätigen",
-    "save": "Speichern",
-    "cancel": "Abbrechen",
-    "changePasswordHeader": "Passwort ändern",
-    "cancelChanges": "Änderungen abbrechen",
-    "confirmationCancel": "Möchten Sie die Passwortänderung wirklich abbrechen?",
-    "no": "Nein",
-    "yes": "Ja",
-    "confirmPasswordChange": "Passwortänderung bestätigen",
-    "changeConfirmation": "Möchten Sie Ihr Passwort wirklich ändern?",
-    "passwordError": "Passwörter stimmen nicht überein"
-  },
-  "UserProfileScreen": {
-    "title": "Benutzerprofil",
-    "EditPhoto": "Foto bearbeiten",
-    "SelectPhoto": "Foto auswählen",
-    "RemovePhoto": "Foto entfernen",
-    "email": "E-Mail-Adresse",
-    "emailPlaceHolder": "E-Mail",
-    "cancel": "Abbrechen",
-    "save": "Speichern",
-    "cancelTitle": "Änderungen abbrechen",
-    "cancelConfirmation": "Möchten Sie wirklich abbrechen? Alle nicht gespeicherten Änderungen gehen verloren.",
-    "keepEditing": "Weiter bearbeiten",
-    "discardChanges": "Änderungen verwerfen",
-    "removeProfilePhoto": "Profilfoto entfernen",
-    "rusure": "Möchten Sie Ihr Profilfoto wirklich entfernen?",
-    "remove": "Entfernen",
-    "Error": "Fehler",
-    "FailedToRemove": "Profilfoto konnte nicht entfernt werden. Bitte versuchen Sie es erneut.",
-    "OK": "OK"
-},
-"ResetPassword": {
-  "passwordResetSuccess": "Wir haben Ihnen den Link zum Zurücksetzen Ihres Passworts per E-Mail gesendet!",
-  "emptyEmailValidation": "Bitte geben Sie eine E-Mail-Adresse ein!",
-  "invalidEmail": "Bitte geben Sie eine gültige E-Mail-Adresse ein"
-}
-
-
-
-}

@@ -157,16 +157,16 @@ const CreateAccount = () => {
 
   function validateInputs() {
     if (userEmail == '' || userEmail == null) {
-      errorToast('Please enter email address!');
+      errorToast(i18n.t('Toast.EnterEmail'));
       return false;
     }
     if (!Validator.validateEmail(userEmail)) {
-      errorToast('Please enter valid email address');
+      errorToast(i18n.t('Toast.ValidEmail'));
 
       return false;
     }
     if (userPassword === '') {
-      errorToast('Please enter password');
+      errorToast(i18n.t('Toast.EnterPassword'));
       return false;
     }
     return true;
@@ -175,7 +175,7 @@ const CreateAccount = () => {
   const onCreateAccountPress = () => {
     console.log('Create account');
     if (!isConnected) {
-      errorToast('Please check your internet connection');
+      errorToast(i18n.t('Toast.CheckInternet'));
     } else {
       if (validateInputs('Enter Email')) {
         // changeLanguage('pl');
@@ -233,10 +233,8 @@ const CreateAccount = () => {
                 }}
               />
             </View>
-            <Text style={styles.loginText}>Create an account</Text>
-            <Text style={styles.loginText2}>
-              Enter email & password to create an account
-            </Text>
+            <Text style={styles.loginText}>{t('CreateAccount.title')}</Text>
+            <Text style={styles.loginText2}>{t('CreateAccount.subt')}</Text>
             <View style={[styles.SectionStyle]}>
               <Text
                 style={{
@@ -305,7 +303,7 @@ const CreateAccount = () => {
               onPress={onCreateAccountPress}>
               <Text style={styles.buttonTextStyle}>
                 {/* {t('Login.loginButton')} */}
-                Create an account
+                {t('CreateAccount.createAccButton')}
               </Text>
             </TouchableOpacity>
             <TouchableOpacity
@@ -314,7 +312,7 @@ const CreateAccount = () => {
               onPress={() => navigation.navigate('Login')}>
               <Text style={styles.forgotPasswordText}>
                 {/* {t('Login.forgotPassword')} */}
-                Back to Login
+                {t('CreateAccount.btl')}
               </Text>
             </TouchableOpacity>
 
@@ -334,9 +332,9 @@ const CreateAccount = () => {
               ))}
             </View>
             <View>
-              <OpenURLText url={privacyPolicyUrl}>Privacy Policy</OpenURLText>
+              <OpenURLText url={privacyPolicyUrl}>{t('Login.pp')}</OpenURLText>
               <OpenURLText url={applicationInformatinoUrl}>
-                Application Information
+                {t('Login.ai')}
               </OpenURLText>
             </View>
           </View>

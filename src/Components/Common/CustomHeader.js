@@ -19,11 +19,13 @@ import {useAuthActions} from '../../Redux/Hooks';
 import {toastMessage} from '../../Helpers';
 import {reduxStorage} from '../../Redux/Storage';
 import {useUserProfileActions} from '../../Redux/Hooks/useUserProfileActions';
-import { success } from '../../Helpers/ToastMessage';
+import {success} from '../../Helpers/ToastMessage';
+import {useTranslation} from 'react-i18next';
 
 const CustomHeader = ({onUserPress}) => {
   const [modalVisible, setModalVisible] = useState(false);
   const navigation = useNavigation();
+  const {t} = useTranslation();
   const [dropdownAlert, setDropdownAlert] = useState(null);
   const [loading, setLoading] = useState(false);
   const {state, logoutCall} = useAuthActions();
@@ -54,7 +56,8 @@ const CustomHeader = ({onUserPress}) => {
   function handleLogoutResponse() {
     if (loading && Auth.islogoutSuccess === true) {
       setLoading(false);
-      success('Logout successful');
+      const successToast = t('Toast.LogoutSuccess');
+      success(successToast);
       navigation.navigate('Login');
       reduxStorage.removeItem('clear');
     } else if (loading && Auth.islogoutSuccess === false) {
@@ -126,8 +129,8 @@ const CustomHeader = ({onUserPress}) => {
                     width: Matrics.ms(156),
                     marginTop: Matrics.ms(14),
                   }}></Image>
-
-                <TouchableOpacity onPress={()=>navigation.replace('UserProfile')}>
+                <TouchableOpacity
+                  onPress={() => navigation.replace('UserProfile')}>
                   <View style={[styles.optionContainer, styles.userProfile]}>
                     <Image
                       source={Images.CHANGE_PASSWORD}
@@ -147,8 +150,8 @@ const CustomHeader = ({onUserPress}) => {
                     width: Matrics.ms(156),
                     marginTop: Matrics.ms(14),
                   }}></Image>
-
-                  /* ----------------------------- ChangeLanguage ----------------------------- */
+                /* ----------------------------- ChangeLanguage
+                ----------------------------- */
                 {/* Logout */}
                 <TouchableOpacity onPress={logoutApi}>
                   <View style={styles.optionContainer}>
@@ -174,7 +177,7 @@ const CustomHeader = ({onUserPress}) => {
 };
 
 const styles = StyleSheet.create({
-  userProfile:{marginLeft: Matrics.s(18)},
+  userProfile: {marginLeft: Matrics.s(18)},
   headerContainer: {
     height: Matrics.ms(65),
     width: '100%',
