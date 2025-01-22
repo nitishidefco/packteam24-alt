@@ -23,6 +23,7 @@ import {monitorNetworkStatus} from './Utlis/NetworkUtils';
 import ForgotPass from './Screens/Auth/ForgotPass';
 import ChangePassword from './Screens/UserHelp/ChangePassword';
 import UserProfile from './Screens/UserHelp/UserProfile';
+import CreateAccount from './Screens/Auth/CreateAccount';
 
 const Stack = createStackNavigator();
 // LogBox.ignoreLogs(['Warning: ...']);
@@ -86,6 +87,11 @@ const App = () => {
               <Stack.Screen
                 name="CreateDailyList"
                 component={CreateDailyList}
+                options={{headerShown: false}}
+              />
+              <Stack.Screen
+                name="CreateAccount"
+                component={CreateAccount}
                 options={{headerShown: false}}
               />
             </Stack.Navigator>

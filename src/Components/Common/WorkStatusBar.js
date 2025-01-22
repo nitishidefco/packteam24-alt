@@ -4,26 +4,34 @@ import {House, Coffee, Hammer} from 'lucide-react-native';
 import {reduxStorage} from '../../Redux/Storage';
 import {useWorkStatusActions} from '../../Redux/Hooks/useWorkStatusActions';
 import {useSelector} from 'react-redux';
+import {useScanTagActions} from '../../Redux/Hooks/useScanTagActions';
 
 const WorkStatusBar = ({tagMode}) => {
   const {state: currentStatus} = useWorkStatusActions();
-  const [workMode, setWorkMode] = useState('');
-
+  const {state: scanTag} = useScanTagActions();
+  console.log(scanTag?.data?.data?.message);
+  
+  const [workMode, setWorkMode] = useState(scanTag?.data?.data?.message);
+console.log('workMode', workMode);
   useEffect(() => {
-    switch (tagMode) {
-      case 'work_start':
-        setWorkMode('Work in progress');
-        break;
-      case 'break_start':
-        setWorkMode('Break in progress');
-        break;
-      case 'work_end':
-        setWorkMode('Work finished');
-        break;
-      default:
-        setWorkMode('Not Started');
-    }
-  }, [tagMode]);
+    setWorkMode(scanTag?.data?.data?.message);
+  }, []);
+
+  // useEffect(() => {
+  //   switch (tagMode) {
+  //     case 'work_start':
+  //       setWorkMode('Work in progress');
+  //       break;
+  //     case 'break_start':
+  //       setWorkMode('Break in progress');
+  //       break;
+  //     case 'work_end':
+  //       setWorkMode('Work finished');
+  //       break;
+  //     default:
+  //       setWorkMode('Not Started');
+  //   }
+  // }, [tagMode]);
   const isConnected = useSelector(state => state?.Network?.isConnected);
   const {sessions} = useSelector(state => state.OfflineData);
   // const getMostRecentTagId = sessionId => {
@@ -54,7 +62,7 @@ const WorkStatusBar = ({tagMode}) => {
     const saveTagForOfflineValidation = async () => {
       if (isConnected) {
         try {
-          setWorkMode(currentStatus?.currentState?.work_status_to_display);
+          // setWorkMode(currentStatus?.currentState?.work_status_to_display);
           await reduxStorage.setItem(
             'tagForOfflineValidation',
             currentStatus?.currentState?.work_status,
@@ -69,7 +77,7 @@ const WorkStatusBar = ({tagMode}) => {
 
   const getStatusIcon = () => {
     switch (workMode) {
-      case 'Work in progress':
+      case 'Working time has started':
         return <Hammer size={30} color="#22c55e" />;
       case 'Break in progress':
         return <Coffee size={30} color="#ef4444" />;
@@ -83,7 +91,7 @@ const WorkStatusBar = ({tagMode}) => {
   // Memoizing background color to avoid unnecessary recalculations
   const borderColor = useMemo(() => {
     switch (workMode) {
-      case 'Work in progress':
+      case 'Working time has started':
         return '#22c55e'; // Green for work mode
       case 'Break in progress':
         return '#ef4444'; // Red for break mode
@@ -98,7 +106,7 @@ const WorkStatusBar = ({tagMode}) => {
     <View style={[styles.container, {borderColor}]}>
       <View style={styles.card}>
         <View style={styles.iconContainer}>{getStatusIcon()}</View>
-        <Text style={styles.statusText}>{workMode || 'Not Started'}</Text>
+        <Text style={styles.statusText}>{scanTag?.data?.data?.message}</Text>
       </View>
     </View>
   );

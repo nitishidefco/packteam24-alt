@@ -1,5 +1,10 @@
 import {useDispatch, useSelector} from 'react-redux';
-import {getLogin, getLogout, getForgotPassword} from '../Reducers/AuthSlice';
+import {
+  getLogin,
+  getLogout,
+  getForgotPassword,
+  createAccount,
+} from '../Reducers/AuthSlice';
 
 // ACTIONS WILL BE CALLED FROM HERE
 export const useAuthActions = () => {
@@ -17,5 +22,9 @@ export const useAuthActions = () => {
     dispatch(getForgotPassword(params));
   };
 
-  return {state, loginCall, logoutCall, forgotPasswordCall};
+  const createAccountCall = params => {
+    dispatch(createAccount(params));
+  };
+
+  return {state, loginCall, logoutCall, forgotPasswordCall, createAccountCall};
 };

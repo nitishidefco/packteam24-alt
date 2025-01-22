@@ -49,4 +49,17 @@ export default {
         return data;
       });
   },
+  CreateAccount: params => {
+    let header = {
+      Accept: 'multipart/form-data',
+    };
+    return fetch(`${BASE_URL}api/register`, {
+      method: 'POST',
+      body: params,
+    })
+      .then(response => Ajax.handleResponse(response))
+      .then(data => {
+        return data;
+      });
+  },
 };

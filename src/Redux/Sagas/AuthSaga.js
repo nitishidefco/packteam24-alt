@@ -1,4 +1,4 @@
-import {all, call, delay, put, takeEvery} from 'redux-saga/effects';
+import {all, call, delay, put, take, takeEvery} from 'redux-saga/effects';
 
 import {
   getCatsFailure,
@@ -9,6 +9,8 @@ import {
   logoutSuccess,
   forgotPasswordFailure,
   forgotPasswordSuccess,
+  createAccountSuccess,
+  createAccountFailure,
 } from '../Reducers/AuthSlice';
 import API from '../Services/AuthServices';
 import {AUTH_REDUCER} from '../SliceKey';
@@ -63,11 +65,30 @@ const forgotPasswordSaga = function* forgotPasswordSaga({payload}) {
   }
 };
 
+const createAccountSaga = function* createAccountSaga({payload}) {
+  try {
+    const response = yield call(API.CreateAccount, payload);
+    if (response) {
+      console.log('response message', response.message);
+      // const success = `${t(ResetPassword.passwordResetSuccess)}`;
+      success('Account Created Successfully'); //Toast message
+      yield put(createAccountSuccess(response));
+    } else {
+      yield put(createAccountFailure(response));
+    }
+  } catch (error) {
+    yield put(createAccountFailure(error));
+  }
+};
+
 function* authSaga() {
   yield all([yield takeEvery(`${AUTH_REDUCER}/getLogin`, loginSaga)]);
   yield all([yield takeEvery(`${AUTH_REDUCER}/getLogout`, logoutSaga)]);
   yield all([
     yield takeEvery(`${AUTH_REDUCER}/getForgotPassword`, forgotPasswordSaga),
+  ]);
+  yield all([
+    yield takeEvery(`${AUTH_REDUCER}/createAccount`, createAccountSaga),
   ]);
 }
 

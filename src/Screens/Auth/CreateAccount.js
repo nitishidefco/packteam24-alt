@@ -1,4 +1,3 @@
-// --------------- LIBRARIES ---------------
 import React, {
   useState,
   createRef,
@@ -48,18 +47,12 @@ const languages = {
   RUS: 'ru', // Russian
   UKA: 'uk', // Ukrainian
 };
-const Login = ({route}) => {
-  // --------------- FUNCTION DECLARATION ---------------
+const CreateAccount = () => {
   const navigation = useNavigation();
   const {t, i18n} = useTranslation();
   const privacyPolicyUrl = 'https://eda.workflex360.de/api/privacy-policy';
   const applicationInformatinoUrl =
     'https://eda.workflex360.de/api/application-information';
-  // --------------- STATE ---------------
-
-  // email & password that was static
-  // biuro@mhcode.pl  das4you123
-
   const {dark, theme, toggle} = useContext(ThemeContext);
   const isConnected = useSelector(state => state?.Network?.isConnected);
   const {deviceId, manufacturer} = useSelector(state => state?.Network);
@@ -72,22 +65,9 @@ const Login = ({route}) => {
   const [loading, setLoading] = useState(false);
   const [keyboardVisible, setKeyboardVisible] = useState(false);
   const [dropdownAlert, setDropdownAlert] = useState(null);
-  const {state, loginCall, forgotPasswordCall} = useAuthActions();
+  const {createAccountCall} = useAuthActions();
   const {Auth} = useSelector(state => state);
   const [activeLanguage, setActiveLanguage] = useState(null);
-  // --------------- LIFECYCLE ---------------
-  useEffect(() => {
-    if (loading && Auth.isLoginSuccess === true) {
-      setLoading(false);
-      success('Login successful');
-      navigation.navigate('HomeDrawer');
-      setUserEmail(null);
-      setUserPassword(null);
-    } else if (loading && Auth.isLoginSuccess === false) {
-      setLoading(false);
-      errorToast('Login Unsuccessful');
-    }
-  }, [Auth?.isLoginSuccess]);
 
   useEffect(() => {
     const setDefaultLanguage = async () => {
@@ -112,57 +92,6 @@ const Login = ({route}) => {
 
     setDefaultLanguage();
   }, []);
-
-  const handleLanguageChange = async country => {
-    const selectedLang = languages[country];
-    setActiveLanguage(selectedLang);
-    i18n.changeLanguage(selectedLang);
-    await AsyncStorage.setItem('language', selectedLang);
-    console.log(`Language set to ${selectedLang}`);
-  };
-  // ---------------Getting Device info---------------
-  useEffect(() => {
-    const getDeviceInfo = async () => {
-      const deviceId = await DeviceInfo.getUniqueId();
-      const manufacturer = await DeviceInfo.getManufacturer();
-      dispatch(
-        setDeviceInfo({
-          deviceId: deviceId,
-          manufacturer: manufacturer,
-        }),
-      );
-    };
-    getDeviceInfo();
-  }, []);
-  // --------------- METHODS ---------------
-  const loginAPI = () => {
-    console.log(userEmail, userPassword);
-
-    try {
-      setLoading(true);
-      let formdata = new FormData();
-      formdata.append('email', userEmail);
-      formdata.append('password', userPassword);
-      formdata.append('device_id', '13213211');
-      formdata.append('lang', activeLanguage);
-      loginCall(formdata);
-    } finally {
-      // setLoading(false);
-    }
-  };
-  const forgotPasswordAPI = () => {
-    try {
-      setLoading(true);
-      let formdata = new FormData();
-      formdata.append('email', userEmail);
-      forgotPasswordCall(formdata);
-    } catch (error) {
-      setLoading(false);
-      console.log('error', error);
-    }
-  };
-
-  /* --------------------------------- Openurl -------------------------------- */
   const OpenURLText = ({url, children}) => {
     const handlePress = useCallback(async () => {
       // Checking if the link is supported for links with custom URL scheme.
@@ -187,6 +116,45 @@ const Login = ({route}) => {
       </TouchableOpacity>
     );
   };
+  const handleLanguageChange = async country => {
+    const selectedLang = languages[country];
+    setActiveLanguage(selectedLang);
+    i18n.changeLanguage(selectedLang);
+    await AsyncStorage.setItem('language', selectedLang);
+    console.log(`Language set to ${selectedLang}`);
+  };
+
+  // ---------------Getting Device info---------------
+  useEffect(() => {
+    const getDeviceInfo = async () => {
+      const deviceId = await DeviceInfo.getUniqueId();
+      const manufacturer = await DeviceInfo.getManufacturer();
+      dispatch(
+        setDeviceInfo({
+          deviceId: deviceId,
+          manufacturer: manufacturer,
+        }),
+      );
+    };
+    getDeviceInfo();
+  }, []);
+
+  const createAccountApi = () => {
+    console.log(userEmail, userPassword);
+
+    try {
+      setLoading(true);
+      let formdata = new FormData();
+      formdata.append('email', userEmail);
+      formdata.append('password', userPassword);
+      formdata.append('lang', activeLanguage);
+      createAccountCall(formdata);
+    } finally {
+      // setLoading(false);
+      // navigation.navigate('Login');
+    }
+  };
+
   function validateInputs() {
     if (userEmail == '' || userEmail == null) {
       errorToast('Please enter email address!');
@@ -204,28 +172,16 @@ const Login = ({route}) => {
     return true;
   }
 
-  const onLoginPress = () => {
-    console.log('Loginpressed');
+  const onCreateAccountPress = () => {
+    console.log('Create account');
     if (!isConnected) {
       errorToast('Please check your internet connection');
     } else {
       if (validateInputs('Enter Email')) {
         // changeLanguage('pl');
-        loginAPI();
+        createAccountApi();
       }
     }
-  };
-  const onForgotPasswordPress = () => {
-    if (!isConnected) {
-      errorToast('Please check your internet connection');
-    } else {
-      if (validateInputs('Enter Email')) {
-        forgotPasswordAPI();
-      }
-    }
-  };
-  const hideStatusBar = () => {
-    StatusBar.setHidden(true);
   };
 
   useEffect(() => {
@@ -277,8 +233,10 @@ const Login = ({route}) => {
                 }}
               />
             </View>
-            <Text style={styles.loginText}>{t('Login.title')}</Text>
-            <Text style={styles.loginText2}>{t('Login.subtitle')}</Text>
+            <Text style={styles.loginText}>Create an account</Text>
+            <Text style={styles.loginText2}>
+              Enter email & password to create an account
+            </Text>
             <View style={[styles.SectionStyle]}>
               <Text
                 style={{
@@ -344,28 +302,22 @@ const Login = ({route}) => {
             <TouchableOpacity
               style={styles.buttonStyle}
               activeOpacity={0.5}
-              onPress={onLoginPress}>
+              onPress={onCreateAccountPress}>
               <Text style={styles.buttonTextStyle}>
-                {t('Login.loginButton')}
+                {/* {t('Login.loginButton')} */}
+                Create an account
               </Text>
             </TouchableOpacity>
             <TouchableOpacity
               style={styles.forgotPasswordStyle}
               activeOpacity={0.5}
-              onPress={() => navigation.navigate('ForgotPass')}>
-              <Text style={styles.forgotPasswordText}>
-                {t('Login.forgotPassword')}
-              </Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={styles.forgotPasswordStyle}
-              activeOpacity={0.5}
-              onPress={() => navigation.navigate('CreateAccount')}>
+              onPress={() => navigation.navigate('Login')}>
               <Text style={styles.forgotPasswordText}>
                 {/* {t('Login.forgotPassword')} */}
-                Create Account
+                Back to Login
               </Text>
             </TouchableOpacity>
+
             <View style={styles.FlagContainer}>
               {Object.keys(languages).map(country => (
                 <TouchableOpacity
@@ -394,4 +346,4 @@ const Login = ({route}) => {
   );
 };
 
-export default Login;
+export default CreateAccount;

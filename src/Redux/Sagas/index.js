@@ -7,6 +7,7 @@ import fetchNfcTagFromServerSaga from './StoreNfcTagsSaga';
 import fetchWorkStatusFromServerSaga from './WorkStatusSaga';
 import userProfileSaga from './UserProfileSaga';
 import passwordSaga from './ChangePasswordSaga';
+import fetchWorkHistoryFromServer from './WorkHistorySaga';
 
 //Main Root Saga
 const rootSaga = function* rootSaga() {
@@ -19,6 +20,7 @@ const rootSaga = function* rootSaga() {
     fetchWorkStatusFromServerSaga(),
     userProfileSaga(),
     passwordSaga(),
+    fetchWorkHistoryFromServer(),
   ]);
 };
 export default rootSaga;

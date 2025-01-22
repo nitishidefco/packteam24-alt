@@ -38,10 +38,11 @@ import {reduxStorage} from '../../Redux/Storage';
 import useSavedLanguage from '../../Components/Hooks/useSavedLanguage';
 import LanguageSelector from '../../Components/Common/LanguageSelector';
 import Timer from '../../Components/Common/Timer';
-import {Matrics} from '../../Config/AppStyling';
+import {Matrics, typography} from '../../Config/AppStyling';
 import TimeLog from '../../Components/HomeComponent/TimeLog';
 const Home = ({navigation, route}) => {
   const dispatch = useDispatch();
+
   useNfcStatus();
   const {t, i18n} = useTranslation();
   const sessions = useSelector(state => state?.OfflineData?.sessions);
@@ -64,7 +65,7 @@ const Home = ({navigation, route}) => {
   const {fetchTagsCall} = useFetchNfcTagsActions();
   const {fetchWorkStatusCall} = useWorkStatusActions();
   const [tagsFromLocalStorage, setTagsFromLocalStorage] = useState([]);
-  const sessionItems = sessions[SessionId]?.items || [];
+
   // let validationResult1 = useValidateTag(tagId, sessionItems);
   // useEffect(() => {
   //   setValidationResult(validationResult1);
@@ -74,7 +75,9 @@ const Home = ({navigation, route}) => {
   //
   // on every refresh its showing notification
   // Handles the scanned NFC tag and extracts its ID
+  const [count, setCount] = useState(0);
   const handleNfcTag = async tag => {
+    setCount(prevCount => prevCount + 1);
     if (tag?.id) {
       const id = addColons(tag.id); // Format the tag ID with colons
       setTagDetected(tag);
@@ -128,7 +131,7 @@ const Home = ({navigation, route}) => {
     };
     updateWorkStatus();
     fetchNfcTags();
-  }, [tagDetected]);
+  }, [tagDetected, count]);
 
   // Get nfc from server and save in local storage
   useEffect(() => {
@@ -414,7 +417,7 @@ const Home = ({navigation, route}) => {
 
   return (
     <DrawerSceneWrapper>
-      <SafeAreaView style={{flex: 1, backgroundColor: '#EBF0FA'}}>
+      <SafeAreaView style={{backgroundColor: '#EBF0FA'}}>
         <CustomHeader />
         <ScrollView style={{backgroundColor: '#EBF0FA'}}>
           <LanguageSelector />
@@ -425,7 +428,11 @@ const Home = ({navigation, route}) => {
                   ? styles.timerContainer
                   : styles.timerContainerIos,
               ]}>
-              <Timer />
+              <Timer
+                tag={tagDetected}
+                tagsFromLocalStorage={tagsFromLocalStorage}
+                sessionId={SessionId}
+              />
             </View>
             {/* <OfflineDataDisplay /> */}
             <View style={styles.container}>
@@ -454,10 +461,19 @@ const Home = ({navigation, route}) => {
                   </Text>
                 )}
               </View>
-              <View style={styles.timeLogContainer}>
-                <TimeLog />
+              <View style={{marginTop: Matrics.ms(40)}}>
+                <Text
+                  style={{
+                    fontFamily: typography.fontFamily.Montserrat.SemiBold,
+                    fontSize: typography.fontSizes.fs15,
+                  }}>
+                  Scroll to see the Time Log
+                </Text>
               </View>
             </View>
+          </View>
+          <View style={styles.timeLogContainer}>
+            <TimeLog />
           </View>
         </ScrollView>
       </SafeAreaView>
@@ -468,13 +484,16 @@ const Home = ({navigation, route}) => {
 const styles = StyleSheet.create({
   topContainer: {
     minHeight: Matrics.screenHeight,
+    justifyContent: 'space-between',
+    alignContent: 'space-between',
+    // flex: 1,
   },
-  centeredContainer: {
-    flex: 1,
-    backgroundColor: '#EBF0FA',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
+  // centeredContainer: {
+  //   flex: 1,
+  //   backgroundColor: '#EBF0FA',
+  //   alignItems: 'center',
+  //   justifyContent: 'center',
+  // },
   errorText: {
     color: '#000',
     fontSize: 18,
@@ -554,6 +573,13 @@ const styles = StyleSheet.create({
     position: 'absolute',
     top: Matrics.ms(220),
     left: Matrics.screenWidth / 3.89,
+  },
+  timeLogContainer: {
+    // alignItems: 'center',
+    width: Matrics.screenWidth - 40,
+    marginHorizontal: 'auto',
+    borderRadius: Matrics.s(10),
+    marginBottom: Matrics.ms(20),
   },
 });
 

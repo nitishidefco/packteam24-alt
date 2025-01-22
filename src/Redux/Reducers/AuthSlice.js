@@ -74,6 +74,26 @@ export const AuthSlice = createSlice({
         message: 'Something went wrong',
       };
     },
+    createAccount: state => {
+      
+      return {...state, isAccountCreateSuccess: null, error: null, message: ''};
+    },
+    createAccountSuccess: (state, action) => {
+      return {
+        ...state,
+        isAccountCreateSuccess: true,
+        message: 'Fetch successfully',
+        data: action.payload,
+      };
+    },
+    createAccountFailure: (state, action) => {
+      return {
+        ...state,
+        isAccountCreateSuccess: FAIL,
+        error: action.payload,
+        message: 'Something went wrong',
+      };
+    },
   },
 });
 
@@ -87,6 +107,9 @@ export const {
   getForgotPassword,
   forgotPasswordFailure,
   forgotPasswordSuccess,
+  createAccount,
+  createAccountFailure,
+  createAccountSuccess,
 } = AuthSlice.actions;
 const AuthReducer = AuthSlice.reducer;
 export default AuthReducer;

@@ -6,8 +6,7 @@ export const useChangePasswordActions = () => {
   const passwordState = useSelector(state => state?.changePassword);
 
   const changePasswordCall = params => {
-    const response = dispatch(changePassword(params));
-    console.log(response);
+    dispatch(changePassword(params));
   };
 
   return {

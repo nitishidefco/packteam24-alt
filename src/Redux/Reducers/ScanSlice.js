@@ -1,6 +1,5 @@
 import {createSlice} from '@reduxjs/toolkit';
 import {SCAN_REDUCER} from '../SliceKey';
-import {toastMessage} from '../../Helpers';
 import {errorToast, success} from '../../Helpers/ToastMessage';
 
 const NULL = null;
