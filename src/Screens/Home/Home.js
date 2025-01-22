@@ -11,6 +11,7 @@ import {
   AppState,
   TouchableOpacity,
   ScrollView,
+  RefreshControl
 } from 'react-native';
 import {useHomeActions} from '../../Redux/Hooks';
 import DrawerSceneWrapper from '../../Components/Common/DrawerSceneWrapper';
@@ -76,6 +77,12 @@ const Home = ({navigation, route}) => {
   // on every refresh its showing notification
   // Handles the scanned NFC tag and extracts its ID
   const [count, setCount] = useState(0);
+   const onRefresh = React.useCallback(() => {
+     setRefreshing(true);
+     setTimeout(() => {
+       setRefreshing(false);
+     }, 2000);
+   }, []);
   const handleNfcTag = async tag => {
     setCount(prevCount => prevCount + 1);
     if (tag?.id) {
@@ -280,6 +287,7 @@ const Home = ({navigation, route}) => {
   // useEffect(() => {
   //   updateLastEffectiveTagMode();
   // }, [tagMode]);
+  // console.log('tagDetected', tagDetected);
 
   /* ------------------- Processing online and offline tags ------------------- */
   useEffect(() => {
@@ -333,6 +341,8 @@ const Home = ({navigation, route}) => {
           sessionId: SessionId,
           time: moment().format('YYYY-MM-DD HH:mm:ss'),
           tagId,
+          // initialScanTime,
+          // initialTagMode,
         }),
       );
 
@@ -419,7 +429,11 @@ const Home = ({navigation, route}) => {
     <DrawerSceneWrapper>
       <SafeAreaView style={{backgroundColor: '#EBF0FA'}}>
         <CustomHeader />
-        <ScrollView style={{backgroundColor: '#EBF0FA'}}>
+        <ScrollView
+          style={{backgroundColor: '#EBF0FA'}}
+          refreshControl={
+            <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+          }>
           <LanguageSelector />
           <View style={styles.topContainer}>
             <View
@@ -438,7 +452,7 @@ const Home = ({navigation, route}) => {
             <View style={styles.container}>
               <View>
                 {/* <NetworkStatusComponent /> */}
-                <WorkStatusBar tagMode={tagMode} />
+                <WorkStatusBar tagMode={tagMode} tag={tagDetected} />
               </View>
               <View style={styles.nfcPromptContainer}>
                 <Image source={Images.NFC} style={styles.userIcon} />
@@ -473,7 +487,7 @@ const Home = ({navigation, route}) => {
             </View>
           </View>
           <View style={styles.timeLogContainer}>
-            <TimeLog />
+            <TimeLog sessionId={SessionId} tag={tagDetected} />
           </View>
         </ScrollView>
       </SafeAreaView>

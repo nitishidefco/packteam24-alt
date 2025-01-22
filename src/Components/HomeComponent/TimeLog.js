@@ -1,32 +1,61 @@
 import {View, Text, ScrollView, StyleSheet} from 'react-native';
-import React from 'react';
+import React, {useEffect} from 'react';
 import {useWorkHistoryActions} from '../../Redux/Hooks/useWorkHistoryActions';
-import {typography} from '../../Config/AppStyling';
+import {Matrics, typography} from '../../Config/AppStyling';
+import useSavedLanguage from '../Hooks/useSavedLanguage';
+import {addColons} from '../../Helpers/AddColonsToId';
 
-const TimeLog = () => {
-  const {workHistoryState} = useWorkHistoryActions();
-  console.log(workHistoryState);
-
+const TimeLog = ({sessionId, tag}) => {
+  const {workHistoryState, getWorkHistoryCall} = useWorkHistoryActions();
+  const lanuguage = useSavedLanguage();
+  const formattedId = addColons(tag?.id);
+  useEffect(() => {
+    try {
+      const formData = new FormData();
+      formData.append('session_id', sessionId);
+      formData.append('device_id', '13213211');
+      formData.append('lang', lanuguage);
+      getWorkHistoryCall(formData);
+    } catch (error) {
+      console.error('Error fetching the work history', error);
+    }
+  }, [formattedId]);
   return (
     <View style={styles.container}>
       <Text style={styles.header}>Time Log</Text>
       <ScrollView style={styles.tableContainer}>
         <View style={styles.table}>
-          {/* Table Header */}
-          <View style={styles.row}>
-            <Text style={styles.headerCell}>From</Text>
-            <Text style={styles.headerCell}>Mode</Text>
-            <Text style={styles.headerCell}>To</Text>
-          </View>
-
           {/* Table Data */}
-          {workHistoryState.data.map((item, index) => (
-            <View key={index} style={styles.row}>
-              <Text style={styles.cell}>{item.from}</Text>
-              <Text style={styles.cell}>{item.mode}</Text>
-              <Text style={styles.cell}>{item.to}</Text>
+
+          {workHistoryState?.data?.length > 0 ? (
+            <>
+              {/* Table Header */}
+              <View style={styles.row}>
+                <Text style={styles.headerCell}>From</Text>
+                <Text style={styles.headerCell}>Mode</Text>
+                <Text style={styles.headerCell}>To</Text>
+              </View>
+
+              {/* Table Rows */}
+              {workHistoryState?.data.map((item, index) => (
+                <View key={index} style={styles.row}>
+                  <Text style={styles.cell}>{item.from}</Text>
+                  <Text style={styles.cell}>{item.mode}</Text>
+                  <Text style={styles.cell}>{item.to}</Text>
+                </View>
+              ))}
+            </>
+          ) : (
+            <View>
+              <Text
+                style={{
+                  fontFamily: typography.fontFamily.Montserrat.Bold,
+                  textAlign: 'center',
+                }}>
+                You have no work history for today
+              </Text>
             </View>
-          ))}
+          )}
         </View>
       </ScrollView>
     </View>
@@ -39,6 +68,7 @@ const styles = StyleSheet.create({
     padding: 16,
     backgroundColor: '#f9f9f9',
     marginBottom: 60,
+    borderRadius: Matrics.ms(12),
   },
   header: {
     fontSize: 24,

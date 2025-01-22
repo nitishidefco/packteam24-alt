@@ -5,17 +5,39 @@ import {reduxStorage} from '../../Redux/Storage';
 import {useWorkStatusActions} from '../../Redux/Hooks/useWorkStatusActions';
 import {useSelector} from 'react-redux';
 import {useScanTagActions} from '../../Redux/Hooks/useScanTagActions';
+import {useHomeActions} from '../../Redux/Hooks';
+import useSavedLanguage from '../Hooks/useSavedLanguage';
+import {addColons} from '../../Helpers/AddColonsToId';
 
-const WorkStatusBar = ({tagMode}) => {
-  const {state: currentStatus} = useWorkStatusActions();
-  const {state: scanTag} = useScanTagActions();
-  console.log(scanTag?.data?.data?.message);
-  
-  const [workMode, setWorkMode] = useState(scanTag?.data?.data?.message);
-console.log('workMode', workMode);
+const WorkStatusBar = ({tagMode, tag}) => {
+  const {state: currentStatus, fetchWorkStatusCall} = useWorkStatusActions();
+  const language = useSavedLanguage();
+  const {state} = useHomeActions();
+  const {Auth} = state;
+  const SessionId = Auth.data?.data?.sesssion_id;
+  const [workMode, setWorkMode] = useState(null);
+  const formattedId = addColons(tag?.id);
+
   useEffect(() => {
-    setWorkMode(scanTag?.data?.data?.message);
-  }, []);
+    const updateWorkStatus = async () => {
+      try {
+        let formdata = new FormData();
+        formdata.append('session_id', SessionId);
+        formdata.append('device_id', '13213211');
+        formdata.append('lang', language);
+        fetchWorkStatusCall(formdata);
+        console.log('fetch work status success');
+      } catch (error) {
+        console.error('Error updating work status', error);
+      }
+    };
+    updateWorkStatus();
+    console.log('Updating work status');
+  }, [formattedId]);
+  useEffect(() => {
+    setWorkMode(currentStatus?.currentState?.work_status_to_display);
+    console.log('Updating work mode');
+  }, [currentStatus, formattedId]);
 
   // useEffect(() => {
   //   switch (tagMode) {
@@ -77,7 +99,7 @@ console.log('workMode', workMode);
 
   const getStatusIcon = () => {
     switch (workMode) {
-      case 'Working time has started':
+      case 'Work in progress':
         return <Hammer size={30} color="#22c55e" />;
       case 'Break in progress':
         return <Coffee size={30} color="#ef4444" />;
@@ -91,7 +113,7 @@ console.log('workMode', workMode);
   // Memoizing background color to avoid unnecessary recalculations
   const borderColor = useMemo(() => {
     switch (workMode) {
-      case 'Working time has started':
+      case 'Work in progress':
         return '#22c55e'; // Green for work mode
       case 'Break in progress':
         return '#ef4444'; // Red for break mode
@@ -106,7 +128,7 @@ console.log('workMode', workMode);
     <View style={[styles.container, {borderColor}]}>
       <View style={styles.card}>
         <View style={styles.iconContainer}>{getStatusIcon()}</View>
-        <Text style={styles.statusText}>{scanTag?.data?.data?.message}</Text>
+        <Text style={styles.statusText}>{workMode}</Text>
       </View>
     </View>
   );
