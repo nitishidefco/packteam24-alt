@@ -101,9 +101,9 @@ const styles = StyleSheet.create({
     right: Matrics.ms(10),
   },
   iosContainer:{
-    position: 'absolute',
-    top: Matrics.ms(120),
-    right: Matrics.ms(10),
+    // position: 'absolute',
+    // top: Matrics.ms(40),
+    // right: Matrics.ms(10),
   },
   button: {
     flexDirection: 'row',

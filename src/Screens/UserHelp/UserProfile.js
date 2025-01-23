@@ -217,15 +217,15 @@ const UserProfile = ({navigation}) => {
   };
   const handleRemoveAccount = () => {
     Alert.alert(
-      'Confirm Account Removal',
-      'Are you sure you want to remove the account? This action cannot be undone.',
+      t('UserProfileScreen.confirmAccountRemoval'),
+     t('UserProfileScreen.confirmAccountRemovalDesc'),
       [
         {
-          text: 'No',
+          text: t('UserProfileScreen.no'),
           style: 'cancel',
         },
         {
-          text: 'Yes',
+          text: t('UserProfileScreen.yes'),
           style: 'destructive',
           onPress: () => {
             const formData = new FormData();
@@ -349,7 +349,7 @@ const UserProfile = ({navigation}) => {
                 <TouchableOpacity
                   style={[styles.actionButton, styles.removeAccountButton]}
                   onPress={handleRemoveAccount}>
-                  <Text style={styles.saveButtonText}>Remove Account</Text>
+                  <Text style={styles.saveButtonText}>{t('CreateAccount.removeAccount')}</Text>
                 </TouchableOpacity>
               </View>
             </View>

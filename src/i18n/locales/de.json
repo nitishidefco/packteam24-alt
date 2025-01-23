@@ -18,7 +18,8 @@
             "title": "Konto erstellen",
             "subt": "E-Mail & Passwort eingeben, um ein Konto zu erstellen",
             "createAccButton": "Konto erstellen",
-            "btl": "Zurück zur Anmeldung"
+            "btl": "Zurück zur Anmeldung",
+            "removeAccount": "Konto entfernen"
         },
         "ForgotPassword": {
             "title": "Passwort zurücksetzen",
@@ -80,7 +81,11 @@
             "remove": "Entfernen",
             "Error": "Fehler",
             "FailedToRemove": "Profilfoto konnte nicht entfernt werden. Bitte versuchen Sie es erneut.",
-            "OK": "OK"
+            "OK": "OK",
+            "confirmAccountRemoval": "Kontoentfernung bestätigen",
+            "confirmAccountRemovalDesc": "Sind Sie sicher, dass Sie das Konto entfernen möchten? Diese Aktion kann nicht rückgängig gemacht werden.",
+            "no": "Nein",
+            "yes": "Ja"
         },
         "ResetPassword": {
             "passwordResetSuccess": "Wir haben Ihnen einen Link zum Zurücksetzen des Passworts per E-Mail gesendet!",

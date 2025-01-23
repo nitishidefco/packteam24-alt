@@ -4,6 +4,7 @@ import {useWorkHistoryActions} from '../../Redux/Hooks/useWorkHistoryActions';
 import {Matrics, typography} from '../../Config/AppStyling';
 import useSavedLanguage from '../Hooks/useSavedLanguage';
 import {addColons} from '../../Helpers/AddColonsToId';
+import i18n from '../../i18n/i18n';
 
 const TimeLog = ({sessionId, tag}) => {
   const {workHistoryState, getWorkHistoryCall} = useWorkHistoryActions();

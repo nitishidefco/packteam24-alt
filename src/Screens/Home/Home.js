@@ -428,15 +428,18 @@ const Home = ({navigation, route}) => {
 
   return (
     <DrawerSceneWrapper>
-      <SafeAreaView style={{backgroundColor: '#EBF0FA'}}>
+      <SafeAreaView style={{backgroundColor: '#EBF0FA', flex: 1}}>
         <CustomHeader />
         <ScrollView
-          style={{backgroundColor: '#EBF0FA'}}
+          style={{backgroundColor: '#EBF0FA', flex: 1}}
           refreshControl={
             <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
           }>
-          <LanguageSelector />
-          <View style={styles.topContainer}>
+            
+          <View style={[Platform.OS === 'android' ? styles.topContainer : styles.topContainerios]}>
+          <View style={{position: 'relative', alignItems: 'flex-end', marginRight: Matrics.ms(20), marginBottom: Matrics.vs(30)}}>
+              <LanguageSelector />
+            </View>
             <View
               style={[
                 Platform.OS === 'android'
@@ -482,7 +485,7 @@ const Home = ({navigation, route}) => {
                     fontFamily: typography.fontFamily.Montserrat.SemiBold,
                     fontSize: typography.fontSizes.fs15,
                   }}>
-                  Scroll to see the Time Log
+                  {Platform.OS === 'android' ? 'Scroll to see the Time Log' : ''}
                 </Text>
               </View>
             </View>
@@ -498,10 +501,14 @@ const Home = ({navigation, route}) => {
 
 const styles = StyleSheet.create({
   topContainer: {
-    minHeight: Matrics.screenHeight,
+    // minHeight: Matrics.screenHeight,
     justifyContent: 'space-between',
-    alignContent: 'space-between',
+    // alignContent: 'space-between',
     // flex: 1,
+    // backgroundColor:'red'
+  },
+  topContainerios:{
+    marginTop: Matrics.vs(20)
   },
   // centeredContainer: {
   //   flex: 1,
@@ -543,6 +550,7 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: '#6B7280',
     marginTop: 5,
+    textAlign: 'center'
   },
   scanButton: {
     backgroundColor: '#0A1931',
@@ -585,9 +593,6 @@ const styles = StyleSheet.create({
     left: Matrics.screenWidth / 4.5,
   },
   timerContainerIos: {
-    position: 'absolute',
-    top: Matrics.ms(220),
-    left: Matrics.screenWidth / 3.89,
   },
   timeLogContainer: {
     // alignItems: 'center',

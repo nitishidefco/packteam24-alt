@@ -18,7 +18,8 @@
         "title": "Utwórz konto",
         "subt": "Wprowadź e-mail i hasło, aby utworzyć konto",
         "createAccButton": "Utwórz konto",
-        "btl": "Powrót do logowania"
+        "btl": "Powrót do logowania",
+        "removeAccount": "Usuń konto"
     },
     "ForgotPassword": {
         "title": "Zresetuj hasło",
@@ -80,7 +81,11 @@
         "remove": "Usuń",
         "Error": "Błąd",
         "FailedToRemove": "Nie udało się usunąć zdjęcia profilowego. Spróbuj ponownie.",
-        "OK": "OK"
+        "OK": "OK",
+        "confirmAccountRemoval": "Potwierdź usunięcie konta",
+    "confirmAccountRemovalDesc": "Czy na pewno chcesz usunąć konto? Tej czynności nie można cofnąć.",
+    "no": "Nie",
+    "yes": "Tak"
     },
     "ResetPassword": {
         "passwordResetSuccess": "Wysłaliśmy Ci link do resetowania hasła!",

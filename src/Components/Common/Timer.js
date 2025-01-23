@@ -236,7 +236,7 @@ const styles = StyleSheet.create({
     // flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    paddingBottom: Matrics.ms(50),
+    // paddingBottom: Matrics.ms(50),
     // backgroundColor: 'red',
   },
   timerText: {

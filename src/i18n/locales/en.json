@@ -18,7 +18,8 @@
         "title":"Create an account",
         "subt":"Enter email & password to create an account",
         "createAccButton":"Create an account",
-        "btl":"Back To Login"
+        "btl":"Back To Login",
+        "removeAccount":"Remove Account"
     },
     "ForgotPassword":{
         "title":"Reset Password",
@@ -81,7 +82,11 @@
         "remove":"Remove",
         "Error":"Error",
         "FailedToRemove":"Failed to remove profile photo. Please try again.",
-        "OK":"OK"
+        "OK":"OK",
+        "confirmAccountRemoval":"Confirm Account Removal",
+        "confirmAccountRemovalDesc":"Are you sure you want to remove the account? This action cannot be undone.",
+        "no":"No",
+        "yes":"Yes"
     },
     "ResetPassword":{
         "passwordResetSuccess":"We have emailed your password reset link!",
@@ -105,5 +110,11 @@
         "EnterPassword":"Please enter password",
         "CheckInternet":"Please check your internet connection",
         "LoginUnsuccessful":"Login Unsuccessful"
+    },
+    "TimeLog":{
+        "title":"Time Log",
+        "From":"From",
+        "mode":"Mode",
+        "To":"To"
     }
 }
