@@ -41,6 +41,7 @@ import LanguageSelector from '../../Components/Common/LanguageSelector';
 import Timer from '../../Components/Common/Timer';
 import {Matrics, typography} from '../../Config/AppStyling';
 import TimeLog from '../../Components/HomeComponent/TimeLog';
+import TimerNew from '../../Components/Common/TimerNew';
 const Home = ({navigation, route}) => {
   const dispatch = useDispatch();
 
@@ -435,9 +436,19 @@ const Home = ({navigation, route}) => {
           refreshControl={
             <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
           }>
-            
-          <View style={[Platform.OS === 'android' ? styles.topContainer : styles.topContainerios]}>
-          <View style={{position: 'relative', alignItems: 'flex-end', marginRight: Matrics.ms(20), marginBottom: Matrics.vs(30)}}>
+          <View
+            style={[
+              Platform.OS === 'android'
+                ? styles.topContainer
+                : styles.topContainerios,
+            ]}>
+            <View
+              style={{
+                position: 'relative',
+                alignItems: 'flex-end',
+                marginRight: Matrics.ms(20),
+                marginBottom: Matrics.vs(30),
+              }}>
               <LanguageSelector />
             </View>
             <View
@@ -451,6 +462,7 @@ const Home = ({navigation, route}) => {
                 tagsFromLocalStorage={tagsFromLocalStorage}
                 sessionId={SessionId}
               />
+              {/* <TimerNew /> */}
             </View>
             {/* <OfflineDataDisplay /> */}
             <View style={styles.container}>
@@ -479,15 +491,17 @@ const Home = ({navigation, route}) => {
                   </Text>
                 )}
               </View>
-              <View style={{marginTop: Matrics.ms(40)}}>
+              {/* <View style={{marginTop: Matrics.ms(40)}}>
                 <Text
                   style={{
                     fontFamily: typography.fontFamily.Montserrat.SemiBold,
                     fontSize: typography.fontSizes.fs15,
                   }}>
-                  {Platform.OS === 'android' ? 'Scroll to see the Time Log' : ''}
+                  {Platform.OS === 'android'
+                    ? 'Scroll to see the Time Log'
+                    : ''}
                 </Text>
-              </View>
+              </View> */}
             </View>
           </View>
           <View style={styles.timeLogContainer}>
@@ -502,13 +516,14 @@ const Home = ({navigation, route}) => {
 const styles = StyleSheet.create({
   topContainer: {
     // minHeight: Matrics.screenHeight,
-    justifyContent: 'space-between',
+    // justifyContent: 'space-between',
     // alignContent: 'space-between',
     // flex: 1,
     // backgroundColor:'red'
+    // marginTop: Matrics.vs(20),
   },
-  topContainerios:{
-    marginTop: Matrics.vs(20)
+  topContainerios: {
+    marginTop: Matrics.vs(20),
   },
   // centeredContainer: {
   //   flex: 1,
@@ -550,7 +565,7 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: '#6B7280',
     marginTop: 5,
-    textAlign: 'center'
+    textAlign: 'center',
   },
   scanButton: {
     backgroundColor: '#0A1931',
@@ -588,14 +603,15 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   timerContainer: {
-    position: 'absolute',
-    top: Matrics.screenHeight < 780 ? Matrics.ms(100) : Matrics.ms(150),
-    left: Matrics.screenWidth / 4.5,
+    // position: 'absolute',
+    // top: Matrics.screenHeight < 780 ? Matrics.ms(100) : Matrics.ms(150),
+    // left: Matrics.screenWidth / 4.5,
+    marginTop: Matrics.vs(60),
   },
-  timerContainerIos: {
-  },
+  timerContainerIos: {},
   timeLogContainer: {
     // alignItems: 'center',
+    marginTop: Matrics.ms(40),
     width: Matrics.screenWidth - 40,
     marginHorizontal: 'auto',
     borderRadius: Matrics.s(10),

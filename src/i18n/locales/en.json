@@ -115,6 +115,7 @@
         "title":"Time Log",
         "From":"From",
         "mode":"Mode",
-        "To":"To"
+        "To":"To",
+        "nohistory":"You have no work history for today"
     }
 }

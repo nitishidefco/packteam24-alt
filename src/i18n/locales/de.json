@@ -109,6 +109,13 @@
             "EnterPassword": "Bitte Passwort eingeben",
             "CheckInternet": "Bitte Internetverbindung überprüfen",
             "LoginUnsuccessful": "Anmeldung fehlgeschlagen"
-        }
+        },
+        "TimeLog": {
+      "title": "Zeiterfassung",
+      "From": "Von",
+      "mode": "Modus",
+      "To": "Bis",
+      "nohistory": "Sie haben heute keine Arbeitshistorie"
+    }
     }
 

@@ -109,5 +109,12 @@
         "EnterPassword": "Proszę wprowadzić hasło",
         "CheckInternet": "Proszę sprawdzić połączenie z internetem",
         "LoginUnsuccessful": "Logowanie nie powiodło się"
+    },
+    "TimeLog": {
+      "title": "Dziennik czasu",
+      "From": "Od",
+      "mode": "Tryb",
+      "To": "Do",
+      "nohistory": "Nie masz historii pracy na dzisiaj"
     }
 }

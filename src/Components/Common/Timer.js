@@ -23,7 +23,6 @@ const Timer = ({tag, tagsFromLocalStorage, sessionId}) => {
   const [loading, setLoading] = useState(true);
   useEffect(() => {
     if (workHistoryState && workHistoryState.data) {
-      console.log('Work history state', workHistoryState);
       setLoading(false);
     }
   }, [workHistoryState?.data]);

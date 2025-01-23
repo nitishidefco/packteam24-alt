@@ -23,7 +23,7 @@ const TimeLog = ({sessionId, tag}) => {
   }, [formattedId]);
   return (
     <View style={styles.container}>
-      <Text style={styles.header}>Time Log</Text>
+      <Text style={styles.header}>{i18n.t('TimeLog.title')}</Text>
       <ScrollView style={styles.tableContainer}>
         <View style={styles.table}>
           {/* Table Data */}
@@ -32,9 +32,9 @@ const TimeLog = ({sessionId, tag}) => {
             <>
               {/* Table Header */}
               <View style={styles.row}>
-                <Text style={styles.headerCell}>From</Text>
-                <Text style={styles.headerCell}>Mode</Text>
-                <Text style={styles.headerCell}>To</Text>
+                <Text style={styles.headerCell}>{i18n.t('TimeLog.From')}</Text>
+                <Text style={styles.headerCell}>{i18n.t('TimeLog.mode')}</Text>
+                <Text style={styles.headerCell}>{i18n.t('TimeLog.To')}</Text>
               </View>
 
               {/* Table Rows */}
@@ -53,7 +53,7 @@ const TimeLog = ({sessionId, tag}) => {
                   fontFamily: typography.fontFamily.Montserrat.Bold,
                   textAlign: 'center',
                 }}>
-                You have no work history for today
+                {i18n.t('TimeLog.nohistory')}
               </Text>
             </View>
           )}
