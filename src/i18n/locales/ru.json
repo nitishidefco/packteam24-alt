@@ -2,8 +2,8 @@
     "Login": {
         "title": "Вход в учетную запись",
         "subtitle": "Введите email и пароль для входа",
-        "email": "Email ID",
-        "emailPlaceHolder": "Email",
+        "email": "Электронная почта",
+        "emailPlaceHolder": "Электронная почта",
         "emptyEmailError": "Пожалуйста, введите email адрес!",
         "invalidEmailError": "Пожалуйста, введите действительный email адрес!",
         "password": "Пароль",
@@ -23,8 +23,8 @@
     "ForgotPassword": {
         "title": "Сброс пароля",
         "subtitle": "Укажите email адрес, который вы используете для входа в приложение - мы отправим вам инструкции по сбросу пароля",
-        "email": "Email ID",
-        "emailPlaceHolder": "Email",
+        "email": "Электронная почта",
+        "emailPlaceHolder": "Электронная почта",
         "resetButton": "Отправить ссылку для сброса пароля",
         "backToLogin": "Вернуться"
     },
@@ -67,8 +67,8 @@
         "EditPhoto": "Редактировать фото",
         "SelectPhoto": "Выбрать фото",
         "RemovePhoto": "Удалить фото",
-        "email": "Email ID",
-        "emailPlaceHolder": "Email",
+        "email": "Электронная почта",
+        "emailPlaceHolder": "Электронная почта",
         "cancel": "Отмена",
         "save": "Сохранить",
         "cancelTitle": "Отменить изменения",

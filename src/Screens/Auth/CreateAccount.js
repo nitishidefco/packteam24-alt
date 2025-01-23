@@ -331,7 +331,7 @@ const CreateAccount = () => {
                 </TouchableOpacity>
               ))}
             </View>
-            <View>
+            <View style={{marginBottom: Matrics.ms(20)}}>
               <OpenURLText url={privacyPolicyUrl}>{t('Login.pp')}</OpenURLText>
               <OpenURLText url={applicationInformatinoUrl}>
                 {t('Login.ai')}

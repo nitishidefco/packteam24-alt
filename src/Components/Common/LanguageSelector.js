@@ -97,7 +97,7 @@ const LanguageSelector = () => {
 const styles = StyleSheet.create({
   container: {
     position: 'absolute',
-    top: Matrics.ms(80),
+    top: Matrics.ms(30),
     right: Matrics.ms(10),
   },
   iosContainer:{

@@ -40,4 +40,16 @@ export default {
       .then(response => Ajax.handleResponse(response))
       .then(data => data);
   },
+
+  RemoveAccount: async params => {
+    return fetch(`${BASE_URL}api/remove-account`, {
+      method: 'POST',
+      body: params,
+      headers: {
+        Accept: 'multipart/form-data',
+      },
+    })
+      .then(response => Ajax.handleResponse(response))
+      .then(data => data);
+  },
 };

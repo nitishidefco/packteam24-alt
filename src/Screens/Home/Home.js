@@ -11,7 +11,7 @@ import {
   AppState,
   TouchableOpacity,
   ScrollView,
-  RefreshControl
+  RefreshControl,
 } from 'react-native';
 import {useHomeActions} from '../../Redux/Hooks';
 import DrawerSceneWrapper from '../../Components/Common/DrawerSceneWrapper';
@@ -77,12 +77,12 @@ const Home = ({navigation, route}) => {
   // on every refresh its showing notification
   // Handles the scanned NFC tag and extracts its ID
   const [count, setCount] = useState(0);
-   const onRefresh = React.useCallback(() => {
-     setRefreshing(true);
-     setTimeout(() => {
-       setRefreshing(false);
-     }, 2000);
-   }, []);
+  const onRefresh = React.useCallback(() => {
+    setRefreshing(true);
+    setTimeout(() => {
+      setRefreshing(false);
+    }, 2000);
+  }, []);
   const handleNfcTag = async tag => {
     setCount(prevCount => prevCount + 1);
     if (tag?.id) {
@@ -424,6 +424,7 @@ const Home = ({navigation, route}) => {
       );
     }
   }
+  console.log('Screen height', Matrics.screenHeight);
 
   return (
     <DrawerSceneWrapper>
@@ -580,7 +581,7 @@ const styles = StyleSheet.create({
   },
   timerContainer: {
     position: 'absolute',
-    top: Matrics.ms(150),
+    top: Matrics.screenHeight < 780 ? Matrics.ms(100) : Matrics.ms(150),
     left: Matrics.screenWidth / 4.5,
   },
   timerContainerIos: {

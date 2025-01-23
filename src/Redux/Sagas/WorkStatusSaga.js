@@ -4,7 +4,6 @@ import {WORKSTATE_REDUCER} from '../SliceKey';
 import {
   FetchFailure,
   FetchSuccess,
-  fetchWorkStatus,
 } from '../Reducers/WorkStateSlice';
 
 const fetchWorkStatusSaga = function* fetchWorkStatusSaga({payload}) {

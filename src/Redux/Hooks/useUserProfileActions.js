@@ -3,13 +3,14 @@ import {
   fetchUserProfile,
   updateUserProfile,
   removeUserProfilePhoto,
+  removeAccount,
 } from '../Reducers/UserProfileSlice';
 
 export const useUserProfileActions = () => {
   const dispatch = useDispatch();
   const profileState = useSelector(state => state?.UserProfile);
 
-  const fetchUserProfileCall = params => {
+  const fetchUserProfileCall = async params => {
     dispatch(fetchUserProfile(params));
   };
   const updateUserProfileCall = params => {
@@ -19,10 +20,14 @@ export const useUserProfileActions = () => {
   const removeUserProfilePhotoCall = params => {
     dispatch(removeUserProfilePhoto(params));
   };
+  const removeAccountCall = params => {
+    dispatch(removeAccount(params));
+  };
   return {
     profileState,
     fetchUserProfileCall,
     updateUserProfileCall,
     removeUserProfilePhotoCall,
+    removeAccountCall,
   };
 };

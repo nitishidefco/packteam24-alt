@@ -32,6 +32,7 @@ const UserProfile = ({navigation}) => {
     fetchUserProfileCall,
     updateUserProfileCall,
     removeUserProfilePhotoCall,
+    removeAccountCall,
   } = useUserProfileActions();
   const {state} = useHomeActions();
   const {Auth} = state;
@@ -214,6 +215,30 @@ const UserProfile = ({navigation}) => {
       ],
     );
   };
+  const handleRemoveAccount = () => {
+    Alert.alert(
+      'Confirm Account Removal',
+      'Are you sure you want to remove the account? This action cannot be undone.',
+      [
+        {
+          text: 'No',
+          style: 'cancel',
+        },
+        {
+          text: 'Yes',
+          style: 'destructive',
+          onPress: () => {
+            const formData = new FormData();
+            formData.append('session_id', SessionId);
+            formData.append('device_id', '13213211');
+            removeAccountCall(formData); // Call your API or function here
+          },
+        },
+      ],
+      {cancelable: true},
+    );
+  };
+  console.log(SessionId);
 
   /* -------------------------------- Language -------------------------------- */
   useEffect(() => {
@@ -234,89 +259,100 @@ const UserProfile = ({navigation}) => {
           contentContainerStyle={{flexGrow: 1}}
           keyboardShouldPersistTaps="handled"
           showsVerticalScrollIndicator={false}>
-          <View>
-            <View style={styles.container}>
-              <View
-                // onPress={pickImage}
-                style={styles.imageContainer}>
-                {image ? (
-                  <Image
-                    source={{uri: image}}
-                    style={styles.image}
-                    resizeMode="cover"
-                  />
-                ) : (
-                  <View style={styles.placeholderContainer}>
-                    <View style={styles.placeholder}>
-                      <Text style={styles.placeholderText}>
-                        Dummy avatar will be added if no photo
-                      </Text>
+          <View style={styles.mainContainer}>
+            <View>
+              <View style={styles.container}>
+                <View
+                  // onPress={pickImage}
+                  style={styles.imageContainer}>
+                  {image ? (
+                    <Image
+                      source={{uri: image}}
+                      style={styles.image}
+                      resizeMode="cover"
+                    />
+                  ) : (
+                    <View style={styles.placeholderContainer}>
+                      <View style={styles.placeholder}>
+                        <Text style={styles.placeholderText}>
+                          Dummy avatar will be added if no photo
+                        </Text>
+                      </View>
                     </View>
-                  </View>
-                )}
-              </View>
-              <View style={styles.imageActionButton}>
-                <TouchableOpacity onPress={pickImage} style={styles.button}>
-                  <Text style={styles.buttonText}>
-                    {image
-                      ? t('UserProfileScreen.EditPhoto')
-                      : t('UserProfileScreen.SelectPhoto')}
-                  </Text>
-                </TouchableOpacity>
-                {image && (
-                  <TouchableOpacity
-                    onPress={() => handleRemoveProfilePhoto()}
-                    style={styles.button}>
+                  )}
+                </View>
+                <View style={styles.imageActionButton}>
+                  <TouchableOpacity onPress={pickImage} style={styles.button}>
                     <Text style={styles.buttonText}>
-                      {t('UserProfileScreen.RemovePhoto')}
+                      {image
+                        ? t('UserProfileScreen.EditPhoto')
+                        : t('UserProfileScreen.SelectPhoto')}
                     </Text>
                   </TouchableOpacity>
-                )}
+                  {image && (
+                    <TouchableOpacity
+                      onPress={() => handleRemoveProfilePhoto()}
+                      style={styles.button}>
+                      <Text style={styles.buttonText}>
+                        {t('UserProfileScreen.RemovePhoto')}
+                      </Text>
+                    </TouchableOpacity>
+                  )}
+                </View>
+              </View>
+              <View style={[loginStyle.SectionStyle]}>
+                <Text
+                  style={{
+                    position: 'absolute',
+                    bottom: Matrics.ms(50),
+                    fontFamily: typography.fontFamily.Montserrat.Regular,
+                    color: '#555555',
+                  }}>
+                  {t('UserProfileScreen.email')}
+                </Text>
+                <Image
+                  source={Images.EMAIL}
+                  resizeMode={'center'}
+                  style={loginStyle.loginInputIconStyle}
+                />
+                <TextInput
+                  style={loginStyle.inputStyle}
+                  onChangeText={setUserEmail}
+                  value={userEmail}
+                  placeholder={t('UserProfileScreen.emailPlaceHolder')}
+                  placeholderTextColor={'gray'}
+                  autoCapitalize="none"
+                  keyboardType="email-address"
+                  returnKeyType="next"
+                />
               </View>
             </View>
-            <View style={[loginStyle.SectionStyle]}>
-              <Text
-                style={{
-                  position: 'absolute',
-                  bottom: Matrics.ms(50),
-                  fontFamily: typography.fontFamily.Montserrat.Regular,
-                  color: '#555555',
-                }}>
-                {t('UserProfileScreen.email')}
-              </Text>
-              <Image
-                source={Images.EMAIL}
-                resizeMode={'center'}
-                style={loginStyle.loginInputIconStyle}
-              />
-              <TextInput
-                style={loginStyle.inputStyle}
-                onChangeText={setUserEmail}
-                value={userEmail}
-                placeholder={t('UserProfileScreen.emailPlaceHolder')}
-                placeholderTextColor={'gray'}
-                autoCapitalize="none"
-                keyboardType="email-address"
-                returnKeyType="next"
-              />
-            </View>
-          </View>
-          <View style={styles.actionContainer}>
-            <TouchableOpacity
-              style={[styles.actionButton, styles.cancelButton]}
-              onPress={handleCancel}>
-              <Text style={styles.cancelButtonText}>
-                {t('UserProfileScreen.cancel')}
-              </Text>
-            </TouchableOpacity>
+            <View>
+              <View style={styles.actionContainer}>
+                <TouchableOpacity
+                  style={[styles.actionButton, styles.cancelButton]}
+                  onPress={handleCancel}>
+                  <Text style={styles.cancelButtonText}>
+                    {t('UserProfileScreen.cancel')}
+                  </Text>
+                </TouchableOpacity>
 
-            <TouchableOpacity
-              style={[styles.actionButton, styles.saveButton]}
-              onPress={handleSave}>
-              <Text style={styles.saveButtonText}>
-                {t('UserProfileScreen.save')}
-              </Text>
-            </TouchableOpacity>
+                <TouchableOpacity
+                  style={[styles.actionButton, styles.saveButton]}
+                  onPress={handleSave}>
+                  <Text style={styles.saveButtonText}>
+                    {t('UserProfileScreen.save')}
+                  </Text>
+                </TouchableOpacity>
+              </View>
+              <View>
+                <TouchableOpacity
+                  style={[styles.actionButton, styles.removeAccountButton]}
+                  onPress={handleRemoveAccount}>
+                  <Text style={styles.saveButtonText}>Remove Account</Text>
+                </TouchableOpacity>
+              </View>
+            </View>
           </View>
         </ScrollView>
       </KeyboardAvoidingView>
@@ -336,6 +372,10 @@ const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
     backgroundColor: '#EBF0FA',
+  },
+  mainContainer: {
+    flex: 1,
+    justifyContent: 'space-between',
   },
   header: {
     height: 56,
@@ -448,9 +488,9 @@ const styles = StyleSheet.create({
     width: '100%',
     // flex: '1',
     paddingHorizontal: 20,
-    position: 'absolute',
-    bottom: 20,
-    marginBottom: 10,
+    // position: 'absolute',
+    // bottom: 20,
+    // marginBottom: 10,
   },
   actionButton: {
     width: '45%',
@@ -488,6 +528,12 @@ const styles = StyleSheet.create({
     color: colors.WHITE,
     fontFamily: typography.fontFamily.Montserrat.Bold,
     fontSize: typography.fontSizes.fs15,
+  },
+  removeAccountButton: {
+    backgroundColor: colors.PRIMARY,
+    width: Matrics.screenWidth - 40,
+    marginVertical: Matrics.ms(10),
+    marginHorizontal: 'auto',
   },
 });
 

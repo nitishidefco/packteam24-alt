@@ -8,9 +8,7 @@ import {
 } from '../Reducers/ScanSlice';
 
 import API from '../Services/ScanServices';
-
-import {SCAN_REDUCER} from '../SliceKey';
-import {Alert} from 'react-native';
+import {SCAN_REDUCER, WORKSTATE_REDUCER} from '../SliceKey';
 
 const scanSaga = function* scanSaga({payload}) {
   // console.log('scansagapaykliad', payload);
@@ -21,6 +19,10 @@ const scanSaga = function* scanSaga({payload}) {
 
     if (response?.data) {
       yield put(ScanSuccess(response));
+      yield put({
+        type: `${WORKSTATE_REDUCER}/fetchWorkStatus`,
+        payload: payload,
+      });
     } else {
       console.log('response error', response);
 

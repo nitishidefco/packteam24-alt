@@ -79,7 +79,7 @@ const Login = ({route}) => {
   useEffect(() => {
     if (loading && Auth.isLoginSuccess === true) {
       setLoading(false);
-      const successToast = `${t(Toast.LoginSuccess)}`;
+      const successToast = `${t('Toast.LoginSuccess')}`;
       success(successToast);
       navigation.navigate('HomeDrawer');
       setUserEmail(null);
@@ -364,7 +364,7 @@ const Login = ({route}) => {
               onPress={() => navigation.navigate('CreateAccount')}>
               <Text style={styles.forgotPasswordText}>
                 {/* {t('Login.forgotPassword')} */}
-               {t('Login.ca')}
+                {t('Login.ca')}
               </Text>
             </TouchableOpacity>
             <View style={styles.FlagContainer}>
@@ -382,10 +382,10 @@ const Login = ({route}) => {
                 </TouchableOpacity>
               ))}
             </View>
-            <View>
+            <View style={{marginBottom: Matrics.ms(20)}}>
               <OpenURLText url={privacyPolicyUrl}>{t('Login.pp')}</OpenURLText>
               <OpenURLText url={applicationInformatinoUrl}>
-               {t('Login.ai')}
+                {t('Login.ai')}
               </OpenURLText>
             </View>
           </View>

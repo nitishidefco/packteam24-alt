@@ -165,13 +165,18 @@ const ForgotPass = () => {
   }, []);
   console.log(t('ForgotPassword.resetButton').length);
   const containerWidth =
-    t('ForgotPassword.resetButton').length > 33
-      ? Matrics.mvs(330)
+    t('ForgotPassword.resetButton').length > 31
+      ? Matrics.mvs(320)
       : Matrics.s(250);
   const fontSize =
-    t('ForgotPassword.resetButton').length > 33
-      ? typography.fontSizes.fs13
+    t('ForgotPassword.resetButton').length > 31
+      ? typography.fontSizes.fs14
       : typography.fontSizes.fs15;
+  const longTextHeight =
+    t('ForgotPassword.resetButton').length > 38
+      ? Matrics.vs(60)
+      : Matrics.vs(50);
+
   return (
     <FullScreenSpinner>
       <KeyboardAvoidingView
@@ -239,7 +244,10 @@ const ForgotPass = () => {
             </View>
 
             <TouchableOpacity
-              style={[styles.buttonStyle, {width: containerWidth}]}
+              style={[
+                styles.buttonStyle,
+                {width: containerWidth, height: longTextHeight},
+              ]}
               activeOpacity={0.5}
               onPress={onForgotPasswordPress}>
               <Text style={[styles.buttonTextStyle, {fontSize: fontSize}]}>
@@ -282,6 +290,10 @@ const inLineStyles = StyleSheet.create({
   },
   mainBodyContainer: {
     // marginHorizontal: Matrics.ms(2),
+  },
+  buttontextStyle: {
+    // flexWrap: 'wrap',
+    // textAlign: 'center',
   },
 });
 

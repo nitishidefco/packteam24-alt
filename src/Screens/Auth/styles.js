@@ -124,6 +124,7 @@ export const loginStyle = StyleSheet.create({
     fontFamily: typography.fontFamily.Montserrat.Bold,
     fontSize: typography.fontSizes.fs15,
     maxWidth: '100%',
+    textAlign:'center'
   },
   inputStyle: {
     flex: 1,

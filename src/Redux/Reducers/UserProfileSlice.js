@@ -14,31 +14,69 @@ const userProfileSlice = createSlice({
     message: null,
   },
   reducers: {
-    fetchUserProfile: state => {
-      state.isFetchSuccess = NULL;
-      state.error = NULL;
-      state.message = '';
-    },
+    /* --------------------------- update user profile -------------------------- */
     updateUserProfile: state => {
       state.isFetchSuccess = NULL;
       state.error = NULL;
       state.message = '';
     },
+    updateUserProfileSuccess: (state, action) => {
+      state.data = action?.payload;
+      state.message = 'profile updated successfully';
+      state.isFetchSuccess = SUCCESS;
+    },
+    updateUserProfileFail: (state, action) => {
+      state.data = action?.payload;
+      state.message = 'profile update failed';
+      state.isFetchSuccess = FAIL;
+    },
+    /* -------------------------- Remove profile photo -------------------------- */
     removeUserProfilePhoto: state => {
       state.isFetchSuccess = NULL;
       state.error = NULL;
       state.message = '';
     },
-    FetchSuccess: (state, action) => {
+    removeProfilePhotoSuccess: (state, action) => {
+      state.data = action?.payload;
+      state.message = 'photo removed successfully';
+      state.isFetchSuccess = SUCCESS;
+    },
+    removeProfilePhotoFail: (state, action) => {
+      state.data = action?.payload;
+      state.message = 'profile remove failed';
+      state.isFetchSuccess = FAIL;
+    },
+    /* --------------------------- fetch user profile --------------------------- */
+    fetchUserProfile: state => {
+      state.isFetchSuccess = NULL;
+      state.error = NULL;
+      state.message = '';
+    },
+    fetchUserProfileSuccess: (state, action) => {
       state.data = action?.payload;
       state.message = 'Fetch successfull';
-      state.isFetchSuccess = SUCCESS
+      state.isFetchSuccess = SUCCESS;
     },
-    FetchFailure: (state, action) => {
+    fetchUserProfileFail: (state, action) => {
       console.log('action.payload failure', action.payload);
       state.isFetchSuccess = FAIL;
       state.error = action.payload;
       state.message = 'Something went wrong';
+    },
+
+    /* --------------------------- remove user account -------------------------- */
+    removeAccount: state => {
+      state.message = NULL;
+      state.data = NULL;
+      state.error = NULL;
+    },
+    removeAccountSuccess: (state, action) => {
+      state.message = 'Account removed successfully';
+      state.isFetchSuccess = SUCCESS;
+    },
+    removeAccountFail: (state, action) => {
+      state.message = 'Account remove failed';
+      state.isFetchSuccess = FAIL;
     },
   },
 });
@@ -46,9 +84,16 @@ const userProfileSlice = createSlice({
 export const {
   fetchUserProfile,
   updateUserProfile,
-  FetchSuccess,
-  FetchFailure,
+  fetchUserProfileSuccess,
+  fetchUserProfileFail,
   removeUserProfilePhoto,
+  updateUserProfileSuccess,
+  updateUserProfileFail,
+  removeProfilePhotoSuccess,
+  removeProfilePhotoFail,
+  removeAccount,
+  removeAccountSuccess,
+  removeAccountFail,
 } = userProfileSlice.actions;
 
 const UserProfileReducer = userProfileSlice.reducer;

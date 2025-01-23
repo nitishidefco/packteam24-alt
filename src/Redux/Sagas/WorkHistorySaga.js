@@ -10,9 +10,7 @@ import {
 const fetchWorkHistorySaga = function* fetchWorkHistorySaga({payload}) {
   try {
     const response = yield call(API.WorkHistory, payload);
-
     if (response) {
-
       yield put(FetchWorkHistorySuccess(response));
     } else if (response?.errors) {
       yield put(FetchWorkHistoryFailure(response?.errors));
