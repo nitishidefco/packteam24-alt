@@ -86,8 +86,6 @@ const ForgotPass = () => {
   }, []);
   // --------------- METHODS ---------------
   const loginAPI = () => {
-    console.log(userEmail, userPassword);
-
     try {
       setLoading(true);
       let formdata = new FormData();
@@ -109,7 +107,6 @@ const ForgotPass = () => {
       forgotPasswordCall(formdata);
     } catch (error) {
       setLoading(false);
-      console.log('error', error);
     }
   };
   function validateInputs() {
@@ -163,7 +160,7 @@ const ForgotPass = () => {
       keyboardDidHideListener.remove();
     };
   }, []);
-  console.log(t('ForgotPassword.resetButton').length);
+
   const containerWidth =
     t('ForgotPassword.resetButton').length > 31
       ? Matrics.mvs(320)

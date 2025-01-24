@@ -62,7 +62,6 @@ export const ValidateTagAction = (tagId, sessionItems) => {
     }
 
     if (effectiveLastState === 'work_start') {
-      console.log('inside the correct case');
       return {valid: true, message: 'Break started'};
     }
 

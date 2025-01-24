@@ -7,8 +7,6 @@ const BASE_URL = Constants.IS_DEVELOPING_MODE
 
 export default {
   ChangePassword: async params => {
-    console.log('Params', params);
-
     return fetch(`${BASE_URL}api/change-password`, {
       method: 'POST',
       body: params,
@@ -18,8 +16,6 @@ export default {
     })
       .then(response => Ajax.handleResponse(response))
       .then(data => {
-        console.log('Data', data);
-
         return data;
       });
   },

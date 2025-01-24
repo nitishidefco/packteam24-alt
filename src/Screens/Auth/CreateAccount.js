@@ -96,11 +96,9 @@ const CreateAccount = () => {
   const OpenURLText = ({url, children}) => {
     const handlePress = useCallback(async () => {
       // Checking if the link is supported for links with custom URL scheme.
-      console.log('url', url);
 
       // const supported = await Linking.canOpenURL(url);
       const supported = true;
-      console.log('supported', supported);
 
       if (supported) {
         // Opening the link with some app, if the URL scheme is "http" the web link should be opened
@@ -122,7 +120,6 @@ const CreateAccount = () => {
     setActiveLanguage(selectedLang);
     i18n.changeLanguage(selectedLang);
     await AsyncStorage.setItem('language', selectedLang);
-    console.log(`Language set to ${selectedLang}`);
   };
 
   // ---------------Getting Device info---------------
@@ -141,8 +138,6 @@ const CreateAccount = () => {
   }, []);
 
   const createAccountApi = () => {
-    console.log(userEmail, userPassword);
-
     try {
       setLoading(true);
       let formdata = new FormData();
@@ -174,7 +169,6 @@ const CreateAccount = () => {
   }
 
   const onCreateAccountPress = () => {
-    console.log('Create account');
     if (!isConnected) {
       errorToast(i18n.t('Toast.CheckInternet'));
     } else {

@@ -22,7 +22,7 @@ export const GlobalFunctions = {
   notificationNavigation: remoteMessage => {
     const {post_id, notification_obj, notification_type} =
       remoteMessage?.data ?? {};
-    console.log('remoteMessage', remoteMessage?.data);
+
     // if (notification_type == CONST.CHAT) {
     //     navigate('ConversationList');
     //     return;

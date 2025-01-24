@@ -16,6 +16,7 @@ const TimeLog = ({sessionId, tag}) => {
       formData.append('session_id', sessionId);
       formData.append('device_id', '13213211');
       formData.append('lang', lanuguage);
+
       getWorkHistoryCall(formData);
     } catch (error) {
       console.error('Error fetching the work history', error);

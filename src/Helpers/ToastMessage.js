@@ -13,8 +13,6 @@ export const success = (text1 = '', text2 = '') => {
 };
 
 export const errorToast = (text1 = '', text2 = '') => {
-  console.log(text1, 'text 1');
-
   Toast.show({
     type: 'error',
     text1: text1,

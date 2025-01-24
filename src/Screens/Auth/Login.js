@@ -120,7 +120,6 @@ const Login = ({route}) => {
     setActiveLanguage(selectedLang);
     i18n.changeLanguage(selectedLang);
     await AsyncStorage.setItem('language', selectedLang);
-    console.log(`Language set to ${selectedLang}`);
   };
   // ---------------Getting Device info---------------
   useEffect(() => {
@@ -138,8 +137,6 @@ const Login = ({route}) => {
   }, []);
   // --------------- METHODS ---------------
   const loginAPI = () => {
-    console.log(userEmail, userPassword);
-
     try {
       setLoading(true);
       let formdata = new FormData();
@@ -160,7 +157,6 @@ const Login = ({route}) => {
       forgotPasswordCall(formdata);
     } catch (error) {
       setLoading(false);
-      console.log('error', error);
     }
   };
 
@@ -168,11 +164,9 @@ const Login = ({route}) => {
   const OpenURLText = ({url, children}) => {
     const handlePress = useCallback(async () => {
       // Checking if the link is supported for links with custom URL scheme.
-      console.log('url', url);
 
       // const supported = await Linking.canOpenURL(url);
       const supported = true;
-      console.log('supported', supported);
 
       if (supported) {
         // Opening the link with some app, if the URL scheme is "http" the web link should be opened
@@ -207,7 +201,6 @@ const Login = ({route}) => {
   }
 
   const onLoginPress = () => {
-    console.log('Loginpressed');
     if (!isConnected) {
       errorToast(i18n.t('Toast.CheckInternet'));
     } else {

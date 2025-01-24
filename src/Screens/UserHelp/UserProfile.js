@@ -100,15 +100,11 @@ const UserProfile = ({navigation}) => {
     try {
       const response = await launchImageLibrary(options);
       if (response.didCancel) {
-        console.log('User cancelled image picker');
       } else if (response.errorCode) {
-        console.log('ImagePicker Error: ', response.errorMessage);
       } else if (response.assets && response.assets.length > 0) {
         setImage(response.assets[0].uri);
       }
-    } catch (error) {
-      console.log('ImagePicker Error:', error);
-    }
+    } catch (error) {}
   };
 
   /* --------------------------- set counter to zero -------------------------- */
@@ -173,7 +169,6 @@ const UserProfile = ({navigation}) => {
           text: t('UserProfileScreen.discardChanges'),
           style: 'destructive',
           onPress: () => {
-            console.log('Cancelling changes...');
             setImage(profileState?.data?.photo || null);
             setUserEmail(profileState?.data?.email || '');
             navigation.replace('HomeDrawer');
@@ -218,7 +213,7 @@ const UserProfile = ({navigation}) => {
   const handleRemoveAccount = () => {
     Alert.alert(
       t('UserProfileScreen.confirmAccountRemoval'),
-     t('UserProfileScreen.confirmAccountRemovalDesc'),
+      t('UserProfileScreen.confirmAccountRemovalDesc'),
       [
         {
           text: t('UserProfileScreen.no'),
@@ -238,7 +233,6 @@ const UserProfile = ({navigation}) => {
       {cancelable: true},
     );
   };
-  console.log(SessionId);
 
   /* -------------------------------- Language -------------------------------- */
   useEffect(() => {
@@ -349,7 +343,9 @@ const UserProfile = ({navigation}) => {
                 <TouchableOpacity
                   style={[styles.actionButton, styles.removeAccountButton]}
                   onPress={handleRemoveAccount}>
-                  <Text style={styles.saveButtonText}>{t('CreateAccount.removeAccount')}</Text>
+                  <Text style={styles.saveButtonText}>
+                    {t('CreateAccount.removeAccount')}
+                  </Text>
                 </TouchableOpacity>
               </View>
             </View>

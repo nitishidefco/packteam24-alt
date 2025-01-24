@@ -58,7 +58,6 @@ const userProfileSlice = createSlice({
       state.isFetchSuccess = SUCCESS;
     },
     fetchUserProfileFail: (state, action) => {
-      console.log('action.payload failure', action.payload);
       state.isFetchSuccess = FAIL;
       state.error = action.payload;
       state.message = 'Something went wrong';

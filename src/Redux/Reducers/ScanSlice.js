@@ -35,7 +35,6 @@ export const ScanSlice = createSlice({
     },
     ScanFailure: (state, action) => {
       const {payload} = action;
-      console.log('failed payload', payload);
 
       if (payload?.message) {
         //  error(payload?.errors)

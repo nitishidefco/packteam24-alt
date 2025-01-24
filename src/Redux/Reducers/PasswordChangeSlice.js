@@ -15,14 +15,11 @@ const passwordChangeSlice = createSlice({
   },
   reducers: {
     changePassword: state => {
-
       state.isChangeSuccess = NULL;
       state.error = NULL;
       state.message = '';
     },
     changePasswordSuccess: (state, action) => {
-      console.log('action',action.payload);
-
       state.data = action.payload;
       state.message = 'Password changed successfully';
       state.isChangeSuccess = SUCCESS;

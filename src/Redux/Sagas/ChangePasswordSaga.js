@@ -17,8 +17,6 @@ function* changePasswordSaga({payload}) {
       yield put(changePasswordSuccess(response.data));
       success(i18n.t('Toast.PasswordChangeSuccessfull'));
     } else if (response?.errors) {
-      console.log('Error response', response);
-
       yield put(changePasswordFail(response.errors));
     }
   } catch (error) {

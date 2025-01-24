@@ -72,7 +72,7 @@ const Home = ({navigation, route}) => {
   // useEffect(() => {
   //   setValidationResult(validationResult1);
   // }, []);
-  // console.log('Validation result', validationResult);
+  //
 
   //
   // on every refresh its showing notification
@@ -122,9 +122,7 @@ const Home = ({navigation, route}) => {
         const fetchedTags = await reduxStorage.getItem('nfcTags');
         const parsedTags = JSON.parse(fetchedTags);
         setTagsFromLocalStorage(parsedTags);
-      } catch (error) {
-        console.log('Error in fetching tags from mmkv storage', error);
-      }
+      } catch (error) {}
     };
     const updateWorkStatus = async () => {
       try {
@@ -288,7 +286,7 @@ const Home = ({navigation, route}) => {
   // useEffect(() => {
   //   updateLastEffectiveTagMode();
   // }, [tagMode]);
-  // console.log('tagDetected', tagDetected);
+  //
 
   /* ------------------- Processing online and offline tags ------------------- */
   useEffect(() => {
@@ -303,7 +301,6 @@ const Home = ({navigation, route}) => {
         }
 
         if (storedSessions.length > 0) {
-          console.log('Processing stored offline tags...');
           for (const [index, item] of storedSessions.entries()) {
             try {
               await getUid(item.tagId);

@@ -32,11 +32,8 @@ function* fetchUserProfileSaga({payload}) {
 
 // Update Profile Saga
 function* updateUserProfileSaga({payload}) {
-  console.log('payload in saga', payload);
-
   try {
     const response = yield call(API.UpdateProfile, payload); // Assuming there's an updateProfile method
-    console.log('respoisnss', response);
 
     if (response?.data) {
       yield put(updateUserProfileSuccess(response.data));
@@ -83,8 +80,7 @@ function* removeUserAccountSaga({payload}) {
   } catch (error) {
     console.error('Error removing profile photo', error);
     yield put(removeProfilePhotoFail(error.message));
-      yield put({type: `${USER_PROFILE_REDUCER}/fetchUserProfile`, payload});
-
+    yield put({type: `${USER_PROFILE_REDUCER}/fetchUserProfile`, payload});
   }
 }
 // Root Saga

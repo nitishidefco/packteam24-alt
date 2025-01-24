@@ -34,13 +34,11 @@ const LanguageSelector = ({sessionId}) => {
     formData.append('device_id', '13213211');
     formData.append('lang', selectedLanguage);
     getWorkHistoryCall(formData);
-    console.log('fetching new log');
   }, [selectedLanguage]);
   useEffect(() => {
     const loadSavedLanguage = async () => {
       try {
         const savedLanguage = await AsyncStorage.getItem('language');
-        console.log('', savedLanguage);
 
         setSelectedLanguage(savedLanguage);
         i18n.changeLanguage(savedLanguage); // Change the language in i18n

@@ -54,10 +54,8 @@ const CustomDrawerContent = props => {
     formdata.append('session_id', SessionId);
     formdata.append('device_id', '123');
     logoutCall(formdata);
-    console.log(formdata, 'dataaaa');
   }
   function handleLogoutResponse() {
-    console.log('Auth.islogoutSuccess', Auth.islogoutSuccess);
     if (loading && Auth.islogoutSuccess === true) {
       setLoading(false);
       const successToast = t('Toast.LogoutSuccess');

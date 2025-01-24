@@ -38,7 +38,7 @@ const CreateDailyList = () => {
   const [selectedImages, setSelectedImages] = useState([]);
   const [date, setDate] = useState(new Date());
   const [timestund, setTimestund] = useState(new Date());
-  console.log(DailyList?.saveData?.data.id, 'timestundtimestund');
+
   const [endtime, setEndtime] = useState(new Date());
   const [date1, setDate1] = useState(new Date());
   const [open, setOpen] = useState(false);
@@ -74,7 +74,7 @@ const CreateDailyList = () => {
   const [containerSize, setcontainerSize] = useState({});
   const [selectedCustomer, setSelectedCustomer] = useState('Container');
   const [selectedCustomerid, setSelectedCustomerid] = useState('1');
-  console.log('selectedCustomerid---------------->>>>>', selectedCustomerid);
+
   const [selectedWorkType, setSelectedWorkType] = useState('');
   const [selectedGood, setSelectedGood] = useState('');
   const [selectedWorker, setSelectedWorker] = useState([]);
@@ -86,7 +86,7 @@ const CreateDailyList = () => {
   const {Auth, DailyList} = state;
   const sessionId = Auth.data?.data?.sesssion_id;
   const {listItemId, positionId, serviceLabel} = route.params;
-  console.log('listItemId---------------->>>>>', listItemId);
+
   const [count, setCount] = useState(0);
   const [count1, setCount1] = useState(0);
   const [count2, setCount2] = useState(0);
@@ -376,14 +376,11 @@ const CreateDailyList = () => {
 
   //================== ContainerSize modal======================
   const renderContainerSize = ({item}) => (
-    console.log(item.label, 'jgdhjadgajdajdgjg'),
-    (
-      <TouchableOpacity
-        style={styles.dropdownItem}
-        onPress={() => selectContainerSize(item)}>
-        <Text style={styles.dropdownItemText}>{item.label}</Text>
-      </TouchableOpacity>
-    )
+    <TouchableOpacity
+      style={styles.dropdownItem}
+      onPress={() => selectContainerSize(item)}>
+      <Text style={styles.dropdownItemText}>{item.label}</Text>
+    </TouchableOpacity>
   );
 
   const selectContainerSize = Size => {
@@ -394,14 +391,11 @@ const CreateDailyList = () => {
 
   //================== ContainerSize modal======================
   const renderSetTypes = ({item}) => (
-    console.log(item.label, 'jgdhjadgajdajdgjg'),
-    (
-      <TouchableOpacity
-        style={styles.dropdownItem}
-        onPress={() => selectSetTypes(item)}>
-        <Text style={styles.dropdownItemText}>{item.label}</Text>
-      </TouchableOpacity>
-    )
+    <TouchableOpacity
+      style={styles.dropdownItem}
+      onPress={() => selectSetTypes(item)}>
+      <Text style={styles.dropdownItemText}>{item.label}</Text>
+    </TouchableOpacity>
   );
 
   const selectSetTypes = Types => {
@@ -509,15 +503,13 @@ const CreateDailyList = () => {
       };
 
       await Create1call(params);
-      console.log(params, '<<<<<<<paamds>>>>>>>>>>>');
 
       if (DailyList.isCreate1Success === true) {
         navigation.navigate('EditDailyList', {
-       
           date: null,
           customer: null,
           location: null,
-          id11 : listItemId
+          id11: listItemId,
         });
       } else {
         // Handle error or show error message
@@ -542,12 +534,10 @@ const CreateDailyList = () => {
 
     launchImageLibrary(options, response => {
       if (response.didCancel) {
-        console.log('User cancelled image picker');
       } else if (response.error) {
-        console.log('ImagePicker Error: ', response.error);
       } else {
         // Response contains an array of selected images
-        console.log('Selected Images: ', response.assets);
+
         const selectedUris = response.assets.map(asset => asset.uri);
         setSelectedImages(prevImages => [...prevImages, ...selectedUris]);
         // Upload selected images to the server
@@ -570,11 +560,7 @@ const CreateDailyList = () => {
     try {
       await uploadCall(params);
       fetchFiles();
-
-      console.log('Image uploaded successfully');
-    } catch (error) {
-      console.log('Error uploading image: ', error);
-    }
+    } catch (error) {}
   };
 
   const deleteImage = index => {
@@ -861,7 +847,7 @@ const CreateDailyList = () => {
       // Make the API call
       await Create2call(params);
 
-      // console.log(response, '<<<<<<<params for setbau>>>>>>>>>>>');
+      //
 
       if (DailyList.isCreate2Success === true) {
         navigation.navigate('EditDailyList', {
@@ -905,16 +891,14 @@ const CreateDailyList = () => {
       // Make the API call
       await Create3call(params);
 
-      console.log(params, '<<<<<<<params for Double pallet>>>>>>>>>>>');
-
       // Check if the API call was successful
       if (DailyList.isCreate3Success === true) {
-        let isCreateDailyList = true
+        let isCreateDailyList = true;
         navigation.navigate('EditDailyList', {
           date: null,
           customer: null,
           location: null,
-          isCreateDailyList
+          isCreateDailyList,
         });
       } else {
         // Handle error or show error message
@@ -951,8 +935,6 @@ const CreateDailyList = () => {
 
       // Make the API call
       await Create4call(params);
-
-      console.log(params, '<<<<<<<params for RepackingPallete>>>>>>>>>>>');
 
       // Check if the API call was successful
       if (DailyList.isCreate4Success === true) {
@@ -993,7 +975,6 @@ const CreateDailyList = () => {
 
       await Create5call(params);
 
-      console.log(params, '<<<<<<<params for Wartezeit>>>>>>>>>>>');
       if (DailyList.isCreate5Success === true) {
         navigation.navigate('EditDailyList', {
           date: null,
@@ -1032,7 +1013,7 @@ const CreateDailyList = () => {
         blocks: blockData, // Pass the array of time blocks with worker info to the API
       };
       Create6call(params);
-      console.log(params, '<<<<<<<params for Stundenarbeit>>>>>>>>>>>');
+
       if (DailyList.isCreate5Success === true) {
         navigation.navigate('EditDailyList', {
           date: null,
@@ -1117,27 +1098,27 @@ const CreateDailyList = () => {
           <View style={styles.typeServiceCont}>
             <Text style={styles.label}>Type of service</Text>
             <TouchableOpacity onPress={toggleCustomerDropdown}>
-            <View
-              style={{
-                flexDirection: 'row',
-                justifyContent: 'space-between',
-                alignItems: 'center',
-                top: Matrics.ms(4),
-              }}>
-             
+              <View
+                style={{
+                  flexDirection: 'row',
+                  justifyContent: 'space-between',
+                  alignItems: 'center',
+                  top: Matrics.ms(4),
+                }}>
                 <Text
                   style={{
                     fontFamily: typography.fontFamily.Montserrat.Medium,
-                    fontSize: typography.fontSizes.fs13,color:'black'
+                    fontSize: typography.fontSizes.fs13,
+                    color: 'black',
                   }}>
                   {selectedCustomer ? selectedCustomer : 'Select Services'}
                 </Text>
-              <Image
-                style={{marginTop: 30, bottom: 15}}
-                source={Images.DOWNARROW}
+                <Image
+                  style={{marginTop: 30, bottom: 15}}
+                  source={Images.DOWNARROW}
                 />
-            </View>
-                </TouchableOpacity>
+              </View>
+            </TouchableOpacity>
           </View>
           <View>
             {selectedCustomer === 'Container' ? (
@@ -1155,45 +1136,45 @@ const CreateDailyList = () => {
                       borderColor: '#B3B3B3',
                       bottom: Matrics.ms(20),
                     }}>
-                  <TouchableOpacity onPress={toggleWorkTypeDropdown}>
-
-                    <View
-                      style={{
-                        flexDirection: 'row',
-                        justifyContent: 'space-between',
-                        alignItems: 'center',
-                      }}>
-                      <Text
+                    <TouchableOpacity onPress={toggleWorkTypeDropdown}>
+                      <View
                         style={{
-                          fontFamily: typography.fontFamily.Montserrat.Medium,
-                          fontSize: typography.fontSizes.fs10,
-                          color:'#555555'
+                          flexDirection: 'row',
+                          justifyContent: 'space-between',
+                          alignItems: 'center',
                         }}>
-                        Loading/Unloading
-                      </Text>
-
-                      <Text
-                        style={{
-                          left: Matrics.ms(60),
-                          fontFamily: typography.fontFamily.Montserrat.SemiBold,
-                          fontSize: typography.fontSizes.fs11,
-                          color:'#555555'
-                        }}>
-                        {' '}
-                        {selectedWorkType ? selectedWorkType : ''}
-                      </Text>
-                      <TouchableOpacity onPress={toggleWorkTypeDropdown}>
-                        <Image
+                        <Text
                           style={{
-                            marginTop: Matrics.ms(30),
-                            bottom: Matrics.ms(15),
-                            height: Matrics.ms(10),
-                            width: Matrics.ms(10),
-                          }}
-                          source={Images.DOWNARROW}
-                        />
-                      </TouchableOpacity>
-                    </View>
+                            fontFamily: typography.fontFamily.Montserrat.Medium,
+                            fontSize: typography.fontSizes.fs10,
+                            color: '#555555',
+                          }}>
+                          Loading/Unloading
+                        </Text>
+
+                        <Text
+                          style={{
+                            left: Matrics.ms(60),
+                            fontFamily:
+                              typography.fontFamily.Montserrat.SemiBold,
+                            fontSize: typography.fontSizes.fs11,
+                            color: '#555555',
+                          }}>
+                          {' '}
+                          {selectedWorkType ? selectedWorkType : ''}
+                        </Text>
+                        <TouchableOpacity onPress={toggleWorkTypeDropdown}>
+                          <Image
+                            style={{
+                              marginTop: Matrics.ms(30),
+                              bottom: Matrics.ms(15),
+                              height: Matrics.ms(10),
+                              width: Matrics.ms(10),
+                            }}
+                            source={Images.DOWNARROW}
+                          />
+                        </TouchableOpacity>
+                      </View>
                     </TouchableOpacity>
                   </View>
                   <View style={{flexDirection: 'row', flex: 1}}>
@@ -1214,7 +1195,7 @@ const CreateDailyList = () => {
                               fontFamily:
                                 typography.fontFamily.Montserrat.Medium,
                               fontSize: typography.fontSizes.fs10,
-                              color:'#555555'
+                              color: '#555555',
                             }}>
                             Container Number
                           </Text>
@@ -1343,7 +1324,7 @@ const CreateDailyList = () => {
                         left: 15,
                         fontFamily: typography.fontFamily.Montserrat.Medium,
                         fontSize: typography.fontSizes.fs10,
-                        color:'#555555'
+                        color: '#555555',
                       }}>
                       Container Number
                     </Text>
@@ -1401,7 +1382,7 @@ const CreateDailyList = () => {
                         left: Matrics.ms(15),
                         fontFamily: typography.fontFamily.Montserrat.Medium,
                         fontSize: typography.fontSizes.fs10,
-                        color:'#555555'
+                        color: '#555555',
                       }}>
                       Quantity of boxes in pcs.
                     </Text>
@@ -1447,7 +1428,7 @@ const CreateDailyList = () => {
                           bottom: Platform.select({
                             android: Matrics.ms(6),
                           }),
-                          color:'#555555'
+                          color: '#555555',
                         }}
                         value={count.toString()}
                         onChangeText={updateCount}
@@ -1475,7 +1456,7 @@ const CreateDailyList = () => {
                         left: Matrics.ms(15),
                         fontFamily: typography.fontFamily.Montserrat.Medium,
                         fontSize: typography.fontSizes.fs10,
-                        color:'#555555'
+                        color: '#555555',
                       }}>
                       Quantity of varieties in pcs
                     </Text>
@@ -1521,7 +1502,7 @@ const CreateDailyList = () => {
                           bottom: Platform.select({
                             android: Matrics.ms(6),
                           }),
-                          color:'#555555'
+                          color: '#555555',
                         }}
                         value={count1.toString()}
                         onChangeText={updateCount1}
@@ -1549,7 +1530,7 @@ const CreateDailyList = () => {
                         left: Matrics.ms(15),
                         fontFamily: typography.fontFamily.Montserrat.Medium,
                         fontSize: typography.fontSizes.fs10,
-                        color:'#555555'
+                        color: '#555555',
                       }}>
                       Foil wrapping
                     </Text>
@@ -1583,7 +1564,7 @@ const CreateDailyList = () => {
                         left: Matrics.ms(15),
                         fontFamily: typography.fontFamily.Montserrat.Medium,
                         fontSize: typography.fontSizes.fs10,
-                        color:'#555555'
+                        color: '#555555',
                       }}>
                       Size of goods
                     </Text>
@@ -1624,7 +1605,7 @@ const CreateDailyList = () => {
                         left: Matrics.ms(15),
                         fontFamily: typography.fontFamily.Montserrat.Medium,
                         fontSize: typography.fontSizes.fs10,
-                        color:'#555555'
+                        color: '#555555',
                       }}>
                       Container size
                     </Text>
@@ -1666,7 +1647,7 @@ const CreateDailyList = () => {
                           marginTop: 0,
                           textAlign: 'center',
                           alignSelf: 'center',
-                          color:'black'
+                          color: 'black',
                         }}>
                         {selectedContainerSize
                           ? selectedContainerSize
@@ -1691,7 +1672,7 @@ const CreateDailyList = () => {
                       marginTop: Matrics.ms(10),
                       fontFamily: typography.fontFamily.Montserrat.Medium,
                       fontSize: typography.fontSizes.fs10,
-                      color:'#555555'
+                      color: '#555555',
                     }}>
                     Note
                   </Text>
@@ -1706,7 +1687,7 @@ const CreateDailyList = () => {
                       fontFamily: typography.fontFamily.Montserrat.Medium,
                       fontSize: typography.fontSizes.fs10,
                       paddingTop: Matrics.ms(10),
-                      color:'black'
+                      color: 'black',
                     }}
                     multiline={true}
                     numberOfLines={4}
@@ -1726,7 +1707,7 @@ const CreateDailyList = () => {
                       marginTop: Matrics.ms(40),
                       fontFamily: typography.fontFamily.Montserrat.SemiBold,
                       fontSize: typography.fontSizes.fs14,
-                      color:'#555555'
+                      color: '#555555',
                     }}>
                     Workers
                   </Text>
@@ -1737,7 +1718,7 @@ const CreateDailyList = () => {
                         fontSize: typography.fontSizes.fs12,
                         marginTop: Matrics.ms(40),
                         marginRight: Matrics.ms(16),
-                        color:'#555555'
+                        color: '#555555',
                       }}>
                       ADD
                     </Text>
@@ -1772,7 +1753,7 @@ const CreateDailyList = () => {
                                 fontFamily:
                                   typography.fontFamily.Montserrat.Medium,
                                 fontSize: typography.fontSizes.fs10,
-                                color:'#555555'
+                                color: '#555555',
                               }}>
                               Worker
                             </Text>
@@ -1786,7 +1767,7 @@ const CreateDailyList = () => {
                                   typography.fontFamily.Montserrat.SemiBold,
                                 fontSize: typography.fontSizes.fs11,
                                 alignSelf: 'center',
-                                color:'black'
+                                color: 'black',
                               }}>
                               {selectedWorker[index]}
                             </Text>
@@ -1899,7 +1880,7 @@ const CreateDailyList = () => {
                     marginTop: Matrics.ms(40),
                     fontFamily: typography.fontFamily.Montserrat.SemiBold,
                     fontSize: typography.fontSizes.fs14,
-                    color:'#555555'
+                    color: '#555555',
                   }}>
                   Attachments
                 </Text>
@@ -1939,7 +1920,7 @@ const CreateDailyList = () => {
                         Type of service
                       </Text>
 
-                      <Text style={{      color:'black'}}>
+                      <Text style={{color: 'black'}}>
                         {' '}
                         {selectedCustomer
                           ? selectedCustomer
@@ -2136,7 +2117,7 @@ const CreateDailyList = () => {
                                 fontFamily:
                                   typography.fontFamily.Montserrat.Medium,
                                 fontSize: typography.fontSizes.fs10,
-                                color:'#555555'
+                                color: '#555555',
                               }}>
                               Worker
                             </Text>
@@ -2244,7 +2225,9 @@ const CreateDailyList = () => {
                       borderColor: '#B3B3B3',
                       marginLeft: Matrics.ms(15),
                     }}>
-                    <Text style={{left: Matrics.ms(15) ,color:'#555555'}}>Number of parts</Text>
+                    <Text style={{left: Matrics.ms(15), color: '#555555'}}>
+                      Number of parts
+                    </Text>
                   </View>
                   <View
                     style={{
@@ -2303,7 +2286,7 @@ const CreateDailyList = () => {
                                 fontFamily:
                                   typography.fontFamily.Montserrat.Medium,
                                 fontSize: typography.fontSizes.fs10,
-                                color:'#555555'
+                                color: '#555555',
                               }}>
                               Worker
                             </Text>
@@ -2403,7 +2386,9 @@ const CreateDailyList = () => {
                       borderColor: '#B3B3B3',
                       marginLeft: Matrics.ms(15),
                     }}>
-                    <Text style={{left: Matrics.ms(15),color:'#555555'}}>Number of parts</Text>
+                    <Text style={{left: Matrics.ms(15), color: '#555555'}}>
+                      Number of parts
+                    </Text>
                   </View>
                   <View
                     style={{
@@ -2462,7 +2447,7 @@ const CreateDailyList = () => {
                                 fontFamily:
                                   typography.fontFamily.Montserrat.Medium,
                                 fontSize: typography.fontSizes.fs10,
-                                color:'#555555'
+                                color: '#555555',
                               }}>
                               Worker
                             </Text>
@@ -2565,7 +2550,9 @@ const CreateDailyList = () => {
                       flexDirection: 'row',
                       paddingTop: 10,
                     }}>
-                    <Text style={{left: Matrics.ms(15),color:'#555555'}}>Start Time</Text>
+                    <Text style={{left: Matrics.ms(15), color: '#555555'}}>
+                      Start Time
+                    </Text>
                     <View
                       style={{
                         flex: 0.5,
@@ -2581,7 +2568,7 @@ const CreateDailyList = () => {
                           fontSize: typography.fontSizes.fs11,
                           alignSelf: 'center',
                           paddingTop: Matrics.ms(8),
-                          color:'#272727'
+                          color: '#272727',
                         }}
                         placeholder="--:--">
                         {moment(date).format('HH:mm')}
@@ -2624,7 +2611,9 @@ const CreateDailyList = () => {
                       flexDirection: 'row',
                       paddingTop: 10,
                     }}>
-                    <Text style={{left: Matrics.ms(15),color:'#555555'}}>End Time</Text>
+                    <Text style={{left: Matrics.ms(15), color: '#555555'}}>
+                      End Time
+                    </Text>
                     <View
                       style={{
                         flex: 0.5,
@@ -2640,7 +2629,7 @@ const CreateDailyList = () => {
                           fontSize: typography.fontSizes.fs11,
                           alignSelf: 'center',
                           paddingTop: Matrics.ms(8),
-                          color:'#272727'
+                          color: '#272727',
                         }}
                         placeholder="--:--">
                         {' '}
@@ -2704,7 +2693,7 @@ const CreateDailyList = () => {
                                 fontFamily:
                                   typography.fontFamily.Montserrat.Medium,
                                 fontSize: typography.fontSizes.fs10,
-                                color:'#555555'
+                                color: '#555555',
                               }}>
                               Worker
                             </Text>

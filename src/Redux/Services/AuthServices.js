@@ -8,7 +8,6 @@ const BASE_URL = Constants.IS_DEVELOPING_MODE
 
 export default {
   Login: params => {
-    console.log('params --->>', params);
     let header = {
       Accept: 'multipart/form-data',
     };
@@ -25,7 +24,7 @@ export default {
     let header = {
       Accept: 'multipart/form-data',
     };
-    console.log('Headerr', header);
+
     return fetch(`${BASE_URL}/logout`, {
       method: 'POST',
       body: params,

@@ -31,12 +31,11 @@ export const WorkHistorySlice = createSlice({
     },
     FetchWorkHistoryFailure: (state, action) => {
       const {payload} = action;
-      console.log('failed payload', payload);
 
       if (payload?.message) {
         //  error(payload?.errors)
         state.data = payload;
-      } 
+      }
       state.isFetchWorkHistorySuccess = FAIL;
       state.error = payload;
       state.message = 'Something went wrong';

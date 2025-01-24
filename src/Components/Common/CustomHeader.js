@@ -51,7 +51,6 @@ const CustomHeader = ({onUserPress}) => {
     formdata.append('session_id', SessionId);
     formdata.append('device_id', '123');
     logoutCall(formdata);
-    console.log(formdata, 'dataaaa');
   }
   function handleLogoutResponse() {
     if (loading && Auth.islogoutSuccess === true) {

@@ -19,7 +19,7 @@ import i18n from '../../i18n/i18n';
 const loginSaga = function* loginSaga({payload}) {
   try {
     const response = yield call(API.Login, payload);
-    console.log('after login response', response?.data);
+
     if (response?.data?.sesssion_id && response?.message == 'OK') {
       reduxStorage.setItem('token', response?.data?.sesssion_id);
       yield put(loginSuccess(response));
@@ -35,8 +35,6 @@ const logoutSaga = function* logoutSaga({payload}) {
   try {
     const response = yield call(API.Logout, payload);
     if (response) {
-      console.log(response);
-
       yield put(logoutSuccess(response));
       reduxStorage.removeItem('token');
     } else {
@@ -51,7 +49,6 @@ const forgotPasswordSaga = function* forgotPasswordSaga({payload}) {
   try {
     const response = yield call(API.ForgotPassword, payload);
     if (response) {
-      console.log('response message', response.message);
       success(i18n.t('ResetPassword.passwordResetSuccess')); //Toast message
       yield put(forgotPasswordSuccess(response));
     } else {
@@ -63,12 +60,9 @@ const forgotPasswordSaga = function* forgotPasswordSaga({payload}) {
 };
 
 const createAccountSaga = function* createAccountSaga({payload}) {
-  console.log(payload.navigation);
-
   try {
     const response = yield call(API.CreateAccount, payload.payload);
     if (response) {
-      console.log('response message', response.message);
       // const success = `${t(ResetPassword.passwordResetSuccess)}`;
       success(i18n.t('Toast.AccountCreatedSuccessfull')); //Toast message
       yield put(createAccountSuccess(response));

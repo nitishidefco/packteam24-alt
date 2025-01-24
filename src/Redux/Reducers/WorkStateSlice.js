@@ -21,15 +21,14 @@ const workStateSlice = createSlice({
       state.message = '';
     },
     FetchSuccess: (state, action) => {
-      state.currentState = action.payload?.data; 
+      state.currentState = action.payload?.data;
       state.isFetchSuccess = SUCCESS;
       state.message = 'Fetch Successfully';
       state.data = action.payload;
     },
     FetchFailure: (state, action) => {
-      console.log('action.payload failure', action.payload);
       if (action.payload?.message !== 'OK') {
-        state.currentState = action.payload?.message; 
+        state.currentState = action.payload?.message;
       }
       state.isFetchSuccess = FAIL;
       state.error = action.payload;

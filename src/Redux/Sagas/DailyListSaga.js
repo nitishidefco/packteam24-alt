@@ -71,7 +71,7 @@ const dailyListsaga = function* dailyListSaga({payload}) {
 };
 
 const deleteDailyListItemSaga = function* deleteDailyListItemSaga({payload}) {
-  // console.log('payloadpayload==============================.', payload);
+  //
   try {
     const response = yield call(API.deleteDailyListItem, payload);
     if (response?.message === 'OK') {
@@ -123,7 +123,7 @@ const saveDatasaga = function* saveDatasaga({payload}) {
 };
 
 const servicesDatasaga = function* servicesDatasaga({payload}) {
-  // console.log(payload.response,"savariiiiiiiiiiii nikalii saga");
+  //
   try {
     const response = yield call(API.Services, payload);
     if (response?.message === 'OK') {
@@ -139,7 +139,7 @@ const servicesDatasaga = function* servicesDatasaga({payload}) {
 const containerServicesTypesaga = function* containerServicesTypesaga({
   payload,
 }) {
-  // console.log(payload.response,"savariiiiiiiiiiii nikalii saga");
+  //
   try {
     const response = yield call(API.ContainerServiceType, payload);
     if (response?.message === 'OK') {
@@ -152,7 +152,6 @@ const containerServicesTypesaga = function* containerServicesTypesaga({
   }
 };
 const goodTypesaga = function* goodTypesaga({payload}) {
-  console.log(payload.response, 'savariiiiiiiiiiii nikalii saga');
   try {
     const response = yield call(API.GoodType, payload);
     if (response?.message === 'OK') {
@@ -166,7 +165,6 @@ const goodTypesaga = function* goodTypesaga({payload}) {
 };
 
 const containerSizesSaga = function* containerSizesSaga({payload}) {
-  console.log(payload.response, 'savariiiiiiiiiiii nikalii saga');
   try {
     const response = yield call(API.ContainerSize, payload);
     if (response?.message === 'OK') {
@@ -182,7 +180,7 @@ const containerSizesSaga = function* containerSizesSaga({payload}) {
 //============================== CREATE 1 SAGA ============================
 
 const create1Saga = function* create1Saga({payload}) {
-  // console.log(payload,"savariiiiiiiiiiii nikalii saga");
+  //
   try {
     const response = yield call(API.Create1, payload);
     if (response?.message === 'OK') {
@@ -197,7 +195,6 @@ const create1Saga = function* create1Saga({payload}) {
 //============================== CREATE 2 SAGA ============================
 
 const create2Saga = function* create2Saga({payload}) {
-  console.log(payload, 'savariiiiiiiiiiii nikalii saga');
   try {
     const response = yield call(API.Create2, payload);
     if (response?.message === 'OK') {
@@ -212,7 +209,6 @@ const create2Saga = function* create2Saga({payload}) {
 //============================== CREATE 3 SAGA ============================
 
 const create3Saga = function* create3Saga({payload}) {
-  console.log(payload, 'savariiiiiiiiiiii nikalii saga');
   try {
     const response = yield call(API.Create3, payload);
     if (response?.message === 'OK') {
@@ -227,7 +223,6 @@ const create3Saga = function* create3Saga({payload}) {
 //============================== CREATE 4 SAGA ============================
 
 const create4Saga = function* create4Saga({payload}) {
-  console.log(payload, 'savariiiiiiiiiiii nikalii saga');
   try {
     const response = yield call(API.Create4, payload);
     if (response?.message === 'OK') {
@@ -242,7 +237,6 @@ const create4Saga = function* create4Saga({payload}) {
 //============================== CREATE 5 SAGA ============================
 
 const create5Saga = function* create5Saga({payload}) {
-  console.log(payload, 'savariiiiiiiiiiii nikalii saga');
   try {
     const response = yield call(API.Create5, payload);
     if (response?.message === 'OK') {
@@ -257,7 +251,6 @@ const create5Saga = function* create5Saga({payload}) {
 //============================== CREATE 6 SAGA ============================
 
 const create6Saga = function* create6Saga({payload}) {
-  console.log(payload, 'savariiiiiiiiiiii nikalii saga');
   try {
     const response = yield call(API.Create6, payload);
     if (response?.message === 'OK') {
@@ -273,7 +266,6 @@ const create6Saga = function* create6Saga({payload}) {
 //============================== Worker SAGA ============================
 
 const WorkerSaga = function* WorkerSaga({payload}) {
-  console.log(payload.response, 'savariiiiiiiiiiii nikalii saga');
   try {
     const response = yield call(API.workers, payload);
     if (response?.message === 'OK') {
@@ -289,7 +281,6 @@ const WorkerSaga = function* WorkerSaga({payload}) {
 //============================== SET TYPES ID 2 SAGA ============================
 
 const SetTypesSaga = function* SetTypesSaga({payload}) {
-  console.log(payload.response, 'savariiiiiiiiiiii nikalii saga');
   try {
     const response = yield call(API.setTypes, payload);
     if (response?.message === 'OK') {
@@ -305,7 +296,7 @@ const SetTypesSaga = function* SetTypesSaga({payload}) {
 //============================== SETTING INFO SAGA ============================
 
 const SettingInfoSaga = function* SettingInfoSaga({payload}) {
-  // console.log(payload.response, 'savariiiiiiiiiiii nikalii saga');
+  //
   try {
     const response = yield call(API.settingInfoTypes, payload);
     if (response?.message === 'OK') {
@@ -320,7 +311,6 @@ const SettingInfoSaga = function* SettingInfoSaga({payload}) {
 //============================== SETTING INFO DELETE SAGA ============================
 
 const SettingInfoDeleteSaga = function* SettingInfoDeleteSaga({payload}) {
-  console.log(payload.response, 'savariiiiiiiiiiii nikalii saga');
   try {
     const response = yield call(API.settingInfoDeleteTypes, payload);
     if (response?.message === 'OK') {
@@ -336,7 +326,6 @@ const SettingInfoDeleteSaga = function* SettingInfoDeleteSaga({payload}) {
 //============================== PDF SAGA ============================
 
 const pdfSaga = function* pdfSaga({payload}) {
-  console.log(payload.response, 'savariiiiiiiiiiii nikalii saga');
   try {
     const response = yield call(API.pdf, payload);
     if (response?.message === 'OK') {
@@ -352,7 +341,6 @@ const pdfSaga = function* pdfSaga({payload}) {
 //============================== EDIT SAVE SAGA ============================
 
 const editSaveSaga = function* editSaveSaga({payload}) {
-  console.log(payload.response, 'savariiiiiiiiiiii nikalii saga');
   try {
     const response = yield call(API.editSave, payload);
     if (response?.message === 'OK') {
@@ -367,7 +355,6 @@ const editSaveSaga = function* editSaveSaga({payload}) {
 //============================== FINISHED LIST SAVE SAGA ============================
 
 const finishedSaga = function* finishedSaga({payload}) {
-  console.log(payload.response, 'savariiiiiiiiiiii nikalii saga');
   try {
     const response = yield call(API.finished, payload);
     if (response?.message === 'OK') {
@@ -383,7 +370,6 @@ const finishedSaga = function* finishedSaga({payload}) {
 //============================== UPLOAD IMAGES  SAGA ============================
 
 const uploadSaga = function* uploadSaga({payload}) {
-  console.log(payload, 'savariiiiiiiiiiii nikalii saga upload');
   try {
     const response = yield call(API.upload, payload);
     if (response?.message === 'OK') {
@@ -399,7 +385,6 @@ const uploadSaga = function* uploadSaga({payload}) {
 //============================== UPLOAD REMOVE IMAGES  SAGA ============================
 
 const uploadRemoveSaga = function* uploadRemoveSaga({payload}) {
-  console.log(payload, 'savariiiiiiiiiiii nikalii saga uploadRemove');
   try {
     const response = yield call(API.uploadRemove, payload);
     if (response?.message === 'OK') {
@@ -415,7 +400,6 @@ const uploadRemoveSaga = function* uploadRemoveSaga({payload}) {
 //============================== FILES SAGA ============================
 
 const fileSaga = function* fileSaga({payload}) {
-  console.log(payload, 'savariiiiiiiiiiii nikalii saga uploadRemove');
   try {
     const response = yield call(API.file, payload);
     if (response?.message === 'OK') {
@@ -430,7 +414,6 @@ const fileSaga = function* fileSaga({payload}) {
 //============================== EDIT1 SAVE SAGA ============================
 
 const edit1SaveSaga = function* edit1SaveSaga({payload}) {
-  console.log(payload.response, 'savariiiiiiiiiiii nikalii saga');
   try {
     const response = yield call(API.edit1Save, payload);
     if (response?.message === 'Daten wurden gespeichert') {

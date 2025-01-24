@@ -5,7 +5,7 @@ import {HOME_REDUCER} from '../SliceKey';
 import {HomeFailure, HomeSuccess} from '../Reducers/HomeSlice';
 
 const homesaga = function* homesaga({payload}) {
-  // console.log('payloadpayload', payload);
+  //
   try {
     const response = yield call(API.Home, payload);
     if (response?.message === 'OK') {

@@ -14,8 +14,8 @@ const DELETE = 'delete';
 
 const handleResponse = response => {
   const contentType = response.headers.get('Content-Type');
-  // console.log('responseseesss', response);
-  // console.log('CT', contentType);
+  //
+  //
 
   if (response.status !== 200) {
     return response.json().then(errorData => {
@@ -24,7 +24,7 @@ const handleResponse = response => {
       //   `Message: ${errorData?.errors?.auth || 'Unknown error'}`,
       // );
       // error(errorData)
-      console.log('Error response:', errorData);
+
       errorToast(errorData.message);
       return Promise.reject(errorData);
     });
@@ -32,7 +32,7 @@ const handleResponse = response => {
 
   if (contentType && contentType.indexOf('application/json') !== -1) {
     return response.json().then(jsonData => {
-      // console.log('inside json block', jsonData);
+      //
 
       // Alert.alert(
       //   'Request Success',
@@ -44,7 +44,6 @@ const handleResponse = response => {
     });
   } else {
     return response.text().then(textData => {
-      console.log('inside else block', textData);
       // Alert.alert(
       //   'Request Success text',
       //   `Message: ${textData?.errors?.nfc_key || 'Unknown error'}`,
@@ -92,7 +91,6 @@ const Request = async (route, method, payload, formData, priv = true) => {
     };
   }
 
-  console.log('Request Config:', config);
   return fetch(route, config).then(res => handleResponse(res));
 };
 

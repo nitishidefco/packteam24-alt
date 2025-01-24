@@ -8,14 +8,17 @@ import {
 } from '../Reducers/ScanSlice';
 
 import API from '../Services/ScanServices';
-import {SCAN_REDUCER, WORKSTATE_REDUCER, WORK_HISTORY_REDUCER} from '../SliceKey';
+import {
+  SCAN_REDUCER,
+  WORKSTATE_REDUCER,
+  WORK_HISTORY_REDUCER,
+} from '../SliceKey';
 
 const scanSaga = function* scanSaga({payload}) {
-  // console.log('scansagapaykliad', payload);
+  //
 
   try {
     const response = yield call(API.ScanTag, payload);
-    console.log('scan saga response', response);
 
     if (response?.data) {
       yield put(ScanSuccess(response));
@@ -28,13 +31,9 @@ const scanSaga = function* scanSaga({payload}) {
         payload: payload,
       });
     } else {
-      console.log('response error', response);
-
       yield put(ScanFailure(response?.errors));
     }
   } catch (error) {
-    console.log('scan saga', error);
-
     yield put(ScanFailure(error));
   }
 };

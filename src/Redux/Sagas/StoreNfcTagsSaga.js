@@ -16,7 +16,6 @@ const fetchNfcTagSaga = function* fetchNfcTagSaga({payload}) {
       yield put(FetchSuccess(response));
       reduxStorage.setItem('nfcTags', JSON.stringify(response));
     } else if (response?.errors) {
-      console.log('Fetch nfc tag response error', response);
       yield put(FetchFailure(response?.errors));
     }
   } catch (error) {

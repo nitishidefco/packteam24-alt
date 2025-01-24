@@ -33,10 +33,7 @@ const useValidateTag = (currentTagId, sessionItems) => {
   }, []);
 
   const effectiveLastState = tagForOfflineValidation;
-  console.log(
-    'Effective last state of tag getting from tagForOfflineValidation',
-    effectiveLastState,
-  );
+
 
   const currentDate = moment().format('YYYY-MM-DD');
 
