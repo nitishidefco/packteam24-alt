@@ -46,6 +46,7 @@ const languages = {
   POL: 'pl', // Polish
   RUS: 'ru', // Russian
   UKA: 'uk', // Ukrainian
+  ZH: 'zh', //Chinese
 };
 const CreateAccount = () => {
   const navigation = useNavigation();
@@ -148,7 +149,7 @@ const CreateAccount = () => {
       formdata.append('email', userEmail);
       formdata.append('password', userPassword);
       formdata.append('lang', activeLanguage);
-      createAccountCall(formdata);
+      createAccountCall(formdata, navigation);
     } finally {
       // setLoading(false);
       // navigation.navigate('Login');

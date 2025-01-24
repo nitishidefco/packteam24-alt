@@ -26,17 +26,14 @@ const WorkStatusBar = ({tagMode, tag}) => {
         formdata.append('device_id', '13213211');
         formdata.append('lang', language);
         fetchWorkStatusCall(formdata);
-        console.log('fetch work status success');
       } catch (error) {
         console.error('Error updating work status', error);
       }
     };
     updateWorkStatus();
-    console.log('Updating work status');
   }, [formattedId]);
   useEffect(() => {
     setWorkMode(currentStatus?.currentState?.work_status_to_display);
-    console.log('Updating work mode');
   }, [currentStatus, formattedId]);
 
   // useEffect(() => {

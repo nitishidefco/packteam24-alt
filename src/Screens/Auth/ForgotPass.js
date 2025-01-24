@@ -60,7 +60,7 @@ const ForgotPass = () => {
   useEffect(() => {
     if (loading && Auth.isLoginSuccess === true) {
       setLoading(false);
-      const successToast = `${t(Toast.LoginSuccess)}`;
+      const successToast = `${t('Toast.LoginSuccess')}`;
       success(successToast);
       navigation.navigate('HomeDrawer');
       setUserEmail(null);

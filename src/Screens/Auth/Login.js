@@ -42,11 +42,12 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as RNLocalize from 'react-native-localize';
 import {errorToast, success} from '../../Helpers/ToastMessage';
 const languages = {
-  UK: 'en', // English
-  GER: 'de', // German
   POL: 'pl', // Polish
+  GER: 'de', // German
+  UK: 'en', // English
   RUS: 'ru', // Russian
   UKA: 'uk', // Ukrainian
+  ZH: 'zh', //chinese
 };
 const Login = ({route}) => {
   // --------------- FUNCTION DECLARATION ---------------

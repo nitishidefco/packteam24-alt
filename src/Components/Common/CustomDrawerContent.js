@@ -99,7 +99,7 @@ const CustomDrawerContent = props => {
               {t('SideMenuBar.dashboard')}
             </Text>
           )}
-          onPress={() => navigation.replace('UserProfile')}
+          onPress={() => navigation.replace('HomeDrawer')}
           style={[styles.drawerItem]}
           icon={() => (
             <Image

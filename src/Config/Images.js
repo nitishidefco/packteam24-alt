@@ -45,12 +45,12 @@ export default {
   EYE: require('../Assets/Icons/eye.png'),
 
   /* ------------------------------ Country Flags ----------------------------- */
-  RUS: require('../Assets/Flags/Flag_of_Russia.png'),
-  UK: require('../Assets/Flags/ukflag.jpg'),
-  GER: require('../Assets/Flags/Germany-Flag.jpg'),
-  POL: require('../Assets/Flags/PolandFlag.jpg'),
-  UKA: require('../Assets/Flags/ukraine-flag.jpeg'),
-
+  RUS: require('../Assets/Flags/russian.png'),
+  UK: require('../Assets/Flags/english.png'),
+  GER: require('../Assets/Flags/german.png'),
+  POL: require('../Assets/Flags/polish.png'),
+  UKA: require('../Assets/Flags/ukranian.png'),
+  ZH: require('../Assets/Flags/chinese.png'),
   /* ---------------------------- Password helpers ---------------------------- */
   EYE_OPEN: require('../Assets/Icons/eye-new.png'),
   EYE_CLOSE: require('../Assets/Icons/eye-off.png'),

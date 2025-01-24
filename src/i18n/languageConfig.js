@@ -4,6 +4,7 @@ import de from './locales/de.json';
 import ru from './locales/ru.json';
 import pl from './locales/pl.json';
 import uk from './locales/ua.json';
+import zh from './locales/zh.json';
 // import it from './locales/it.json';
 
 // Set here you favourite default language
@@ -25,5 +26,8 @@ export const languagesResources = {
   },
   uk: {
     translation: uk,
+  },
+  zh: {
+    translation: zh,
   },
 };

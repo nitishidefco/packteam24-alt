@@ -1,8 +1,6 @@
 import {all, call, delay, put, take, takeEvery} from 'redux-saga/effects';
 
 import {
-  getCatsFailure,
-  getCatsSuccess,
   loginFailure,
   loginSuccess,
   logoutFailure,
@@ -15,8 +13,7 @@ import {
 import API from '../Services/AuthServices';
 import {AUTH_REDUCER} from '../SliceKey';
 import {reduxStorage} from '../Storage/index';
-import ToastMessage, {success} from '../../Helpers/ToastMessage';
-import {useTranslation} from 'react-i18next';
+import {success} from '../../Helpers/ToastMessage';
 import i18n from '../../i18n/i18n';
 
 const loginSaga = function* loginSaga({payload}) {
@@ -66,14 +63,16 @@ const forgotPasswordSaga = function* forgotPasswordSaga({payload}) {
 };
 
 const createAccountSaga = function* createAccountSaga({payload}) {
+  console.log(payload.navigation);
+
   try {
-    const response = yield call(API.CreateAccount, payload);
+    const response = yield call(API.CreateAccount, payload.payload);
     if (response) {
       console.log('response message', response.message);
       // const success = `${t(ResetPassword.passwordResetSuccess)}`;
-      const successToast = t('Toast.AccountCreatedSuccessfull');
       success(i18n.t('Toast.AccountCreatedSuccessfull')); //Toast message
       yield put(createAccountSuccess(response));
+      payload.navigation.navigate('Login');
     } else {
       yield put(createAccountFailure(response));
     }

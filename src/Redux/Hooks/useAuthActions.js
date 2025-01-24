@@ -22,8 +22,8 @@ export const useAuthActions = () => {
     dispatch(getForgotPassword(params));
   };
 
-  const createAccountCall = params => {
-    dispatch(createAccount(params));
+  const createAccountCall = (params, navigation) => {
+    dispatch(createAccount({payload: params, navigation}));
   };
 
   return {state, loginCall, logoutCall, forgotPasswordCall, createAccountCall};

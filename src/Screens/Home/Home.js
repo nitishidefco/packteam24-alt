@@ -425,7 +425,6 @@ const Home = ({navigation, route}) => {
       );
     }
   }
-  console.log('Screen height', Matrics.screenHeight);
 
   return (
     <DrawerSceneWrapper>
@@ -449,7 +448,7 @@ const Home = ({navigation, route}) => {
                 marginRight: Matrics.ms(20),
                 marginBottom: Matrics.vs(30),
               }}>
-              <LanguageSelector />
+              <LanguageSelector sessionId={SessionId} />
             </View>
             <View
               style={[

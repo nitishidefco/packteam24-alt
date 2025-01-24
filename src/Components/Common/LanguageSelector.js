@@ -1,10 +1,18 @@
 import React, {useEffect, useState} from 'react';
-import {View, Text, TouchableOpacity, Modal, StyleSheet, Platform} from 'react-native';
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  Modal,
+  StyleSheet,
+  Platform,
+} from 'react-native';
 import {Matrics} from '../../Config/AppStyling';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {useTranslation} from 'react-i18next';
+import {useWorkHistoryActions} from '../../Redux/Hooks/useWorkHistoryActions';
 
-const LanguageSelector = () => {
+const LanguageSelector = ({sessionId}) => {
   const [isOpen, setIsOpen] = useState(false);
   const [selectedLanguage, setSelectedLanguage] = useState('en');
   const [isLoading, setIsLoading] = React.useState(true);
@@ -15,16 +23,25 @@ const LanguageSelector = () => {
     {label: '🇷🇺 RU', value: 'ru'},
     {label: '🇺🇦 UK', value: 'uk'},
     {label: '🇵🇱 PL', value: 'pl'},
+    {label: '🇨🇳 ZH', value: 'zh'},
   ];
-
+  const {getWorkHistoryCall} = useWorkHistoryActions();
   const selected = languageOptions.find(opt => opt.value === selectedLanguage);
 
+  useEffect(() => {
+    const formData = new FormData();
+    formData.append('session_id', sessionId);
+    formData.append('device_id', '13213211');
+    formData.append('lang', selectedLanguage);
+    getWorkHistoryCall(formData);
+    console.log('fetching new log');
+  }, [selectedLanguage]);
   useEffect(() => {
     const loadSavedLanguage = async () => {
       try {
         const savedLanguage = await AsyncStorage.getItem('language');
-        console.log('',savedLanguage);
-        
+        console.log('', savedLanguage);
+
         setSelectedLanguage(savedLanguage);
         i18n.changeLanguage(savedLanguage); // Change the language in i18n
 
@@ -37,26 +54,29 @@ const LanguageSelector = () => {
     loadSavedLanguage();
   }, []);
 
- useEffect(() => {
-   const saveLanguage = async () => {
-     try {
-       if (selectedLanguage !== i18n.language) {
-         // Avoid re-saving if language is the same
-         await AsyncStorage.setItem('language', selectedLanguage);
-         i18n.changeLanguage(selectedLanguage); // Change the language in i18n
-       }
-     } catch (error) {
-       console.error('Error saving language:', error);
-     }
-   };
+  useEffect(() => {
+    const saveLanguage = async () => {
+      try {
+        if (selectedLanguage !== i18n.language) {
+          // Avoid re-saving if language is the same
+          await AsyncStorage.setItem('language', selectedLanguage);
+          i18n.changeLanguage(selectedLanguage); // Change the language in i18n
+        }
+      } catch (error) {
+        console.error('Error saving language:', error);
+      }
+    };
 
-   if (!isLoading) {
-     saveLanguage();
-   }
- }, [selectedLanguage, i18n, isLoading]);
+    if (!isLoading) {
+      saveLanguage();
+    }
+  }, [selectedLanguage, i18n, isLoading]);
 
   return (
-    <View style={[Platform.OS === 'android' ? styles.container : styles.iosContainer]}>
+    <View
+      style={[
+        Platform.OS === 'android' ? styles.container : styles.iosContainer,
+      ]}>
       <TouchableOpacity style={styles.button} onPress={() => setIsOpen(true)}>
         <Text style={styles.buttonText}>{selected?.label}</Text>
         <Text style={styles.chevron}>▼</Text>
@@ -71,7 +91,10 @@ const LanguageSelector = () => {
           style={styles.modalOverlay}
           activeOpacity={1}
           onPress={() => setIsOpen(false)}>
-          <View style={[Platform.OS === 'android' ? styles.dropdown : styles.dropdownIos]}>
+          <View
+            style={[
+              Platform.OS === 'android' ? styles.dropdown : styles.dropdownIos,
+            ]}>
             {languageOptions.map(option => (
               <TouchableOpacity
                 key={option.value}
@@ -82,7 +105,6 @@ const LanguageSelector = () => {
                 onPress={() => {
                   setSelectedLanguage(option.value);
                   setIsOpen(false);
-          
                 }}>
                 <Text style={styles.optionText}>{option.label}</Text>
               </TouchableOpacity>
@@ -100,7 +122,7 @@ const styles = StyleSheet.create({
     top: Matrics.ms(30),
     right: Matrics.ms(10),
   },
-  iosContainer:{
+  iosContainer: {
     // position: 'absolute',
     // top: Matrics.ms(40),
     // right: Matrics.ms(10),
@@ -149,7 +171,7 @@ const styles = StyleSheet.create({
     elevation: 4,
     width: 100,
   },
-  dropdownIos:{
+  dropdownIos: {
     position: 'absolute',
     top: Matrics.ms(120),
     right: Matrics.ms(10),

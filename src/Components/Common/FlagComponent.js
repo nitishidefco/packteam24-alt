@@ -17,9 +17,10 @@ const FlagComponent = ({Country}) => {
 const styles = StyleSheet.create({
   flagContainer: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    padding: 8,
+    // justifyContent: 'space-between',
+    // alignItems: 'center',
+    // padding: 8,
+// backgroundColor: 'red'
   },
 });
 
