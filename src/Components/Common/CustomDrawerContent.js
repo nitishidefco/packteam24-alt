@@ -19,6 +19,7 @@ import {toastMessage} from '../../Helpers';
 import {reduxStorage} from '../../Redux/Storage';
 import {useTranslation} from 'react-i18next';
 import {success} from '../../Helpers/ToastMessage';
+import { useSelector } from 'react-redux';
 // import DailyListScreen from '../../screens/DailyList/DailyListScreen';
 
 const CustomDrawerContent = props => {
@@ -31,6 +32,8 @@ const CustomDrawerContent = props => {
   const SessionId = Auth.data?.data?.sesssion_id;
   const [dropdownAlert, setDropdownAlert] = useState(null);
   const [isIos, setIsIos] = useState(false);
+  const {deviceId} = useSelector(state => state?.Network);
+
   useEffect(() => {
     if (Platform.OS === 'ios') {
       setIsIos(true);
@@ -52,7 +55,7 @@ const CustomDrawerContent = props => {
     setLoading(true);
     let formdata = new FormData();
     formdata.append('session_id', SessionId);
-    formdata.append('device_id', '123');
+    formdata.append('device_id', deviceId);
     logoutCall(formdata);
   }
   function handleLogoutResponse() {

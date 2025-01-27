@@ -11,9 +11,13 @@ export const AuthSlice = createSlice({
   initialState: [],
   reducers: {
     getLogin: state => {
+      console.log('reducer login state', state);
+
       return {...state, isLoginSuccess: null, error: null, message: ''};
     },
     loginSuccess: (state, action) => {
+      console.log('login success', action.payload);
+
       return {
         ...state,
         isLoginSuccess: true,
@@ -75,7 +79,6 @@ export const AuthSlice = createSlice({
       };
     },
     createAccount: state => {
-      
       return {...state, isAccountCreateSuccess: null, error: null, message: ''};
     },
     createAccountSuccess: (state, action) => {

@@ -1,10 +1,8 @@
 import {Alert} from 'react-native';
 import {Constants} from '../../Config';
-import ToastMessage, {
-  error,
-  errorToast,
-  info,
-} from '../../Helpers/ToastMessage';
+import {errorToast} from '../../Helpers/ToastMessage';
+import {getSessionHandler} from '../../Utlis/SessionHandler';
+import {getLogout} from '../Reducers/AuthSlice';
 
 const POST = 'post';
 const GET = 'get';
@@ -13,42 +11,48 @@ const PATCH = 'patch';
 const DELETE = 'delete';
 
 const handleResponse = response => {
+  const {dispatch, SessionId, deviceId, navigation} = getSessionHandler();
+
   const contentType = response.headers.get('Content-Type');
-  //
-  //
+
+  console.log(response);
+
+  if (response.status === 403) {
+    // Handle 403 Forbidden response
+    return response.json().then(errorData => {
+      Alert.alert(
+        'Session Expired',
+        errorData.message || 'You have been logged out.',
+        [
+          {
+            text: 'OK',
+            onPress: () => {
+              const formData = new FormData();
+              formData.append('session_id', SessionId);
+              formData.append('device_id', deviceId);
+              dispatch(getLogout(formData));
+              navigation.navigate('Login');
+            },
+          },
+        ],
+      );
+      return Promise.reject(errorData);
+    });
+  }
 
   if (response.status !== 200) {
     return response.json().then(errorData => {
-      // Alert.alert(
-      //   'Request failed',
-      //   `Message: ${errorData?.errors?.auth || 'Unknown error'}`,
-      // );
-      // error(errorData)
-
-      errorToast(errorData.message);
+      errorToast(errorData.errors.email);
       return Promise.reject(errorData);
     });
   }
 
   if (contentType && contentType.indexOf('application/json') !== -1) {
     return response.json().then(jsonData => {
-      //
-
-      // Alert.alert(
-      //   'Request Success',
-      //   `Message: ${jsonData?.errors?.nfc_key || 'Unknown error'}`,
-      // );
-
-      // info(jsonData);
       return jsonData;
     });
   } else {
     return response.text().then(textData => {
-      // Alert.alert(
-      //   'Request Success text',
-      //   `Message: ${textData?.errors?.nfc_key || 'Unknown error'}`,
-      // );
-
       return textData;
     });
   }

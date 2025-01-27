@@ -12,10 +12,14 @@ export const useAuthActions = () => {
   const state = useSelector(state => state);
 
   const loginCall = params => {
+    console.log('Login params', params);
+
     dispatch(getLogin(params));
   };
-  const logoutCall = params => {
-    dispatch(getLogout(params));
+  const logoutCall = (params, navigation) => {
+    console.log(params);
+
+    dispatch(getLogout({payload: params, navigation}));
   };
 
   const forgotPasswordCall = params => {

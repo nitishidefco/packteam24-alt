@@ -20,8 +20,8 @@ export const useUserProfileActions = () => {
   const removeUserProfilePhotoCall = params => {
     dispatch(removeUserProfilePhoto(params));
   };
-  const removeAccountCall = params => {
-    dispatch(removeAccount(params));
+  const removeAccountCall = (params, navigation) => {
+    dispatch(removeAccount({payload: params, navigation}));
   };
   return {
     profileState,

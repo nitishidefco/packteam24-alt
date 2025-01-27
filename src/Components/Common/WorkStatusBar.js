@@ -17,14 +17,15 @@ const WorkStatusBar = ({tagMode, tag}) => {
   const SessionId = Auth.data?.data?.sesssion_id;
   const [workMode, setWorkMode] = useState(null);
   const formattedId = addColons(tag?.id);
-
+  const {deviceId} = useSelector(state => state?.Network);
+  const {globalLanguage} = useSelector(state => state?.GlobalLanguage);
   useEffect(() => {
     const updateWorkStatus = async () => {
       try {
         let formdata = new FormData();
         formdata.append('session_id', SessionId);
-        formdata.append('device_id', '13213211');
-        formdata.append('lang', language);
+        formdata.append('device_id', deviceId);
+        formdata.append('lang', globalLanguage);
         fetchWorkStatusCall(formdata);
       } catch (error) {
         console.error('Error updating work status', error);

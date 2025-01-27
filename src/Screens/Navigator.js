@@ -11,6 +11,9 @@ import {useContext, useEffect, useState} from 'react';
 import {AuthContext} from '../../context/AuthContext';
 import {reduxStorage} from '../Redux/Storage';
 import ForgotPass from './Auth/ForgotPass';
+import CreateAccount from './Auth/CreateAccount';
+import ChangePassword from './UserHelp/ChangePassword';
+import UserProfile from './UserHelp/UserProfile';
 const Stack = createStackNavigator();
 LogBox.ignoreLogs(['Warning: ...']);
 LogBox.ignoreAllLogs();
@@ -34,9 +37,16 @@ function UnAuthRoutes() {
         component={ForgotPass}
         options={{headerShown: false}}
       />
+     
+      <Stack.Screen
+        name="CreateAccount"
+        component={CreateAccount}
+        options={{headerShown: false}}
+      />
     </Stack.Navigator>
   );
 }
+
 
 function AfterAuthRoutes() {
   return (
@@ -64,6 +74,16 @@ function AfterAuthRoutes() {
       <Stack.Screen
         name="CreateDailyList"
         component={CreateDailyList}
+        options={{headerShown: false}}
+      />
+      <Stack.Screen
+        name="UserProfile"
+        component={UserProfile}
+        options={{headerShown: false}}
+      />
+      <Stack.Screen
+        name="ChangePassword"
+        component={ChangePassword}
         options={{headerShown: false}}
       />
     </Stack.Navigator>

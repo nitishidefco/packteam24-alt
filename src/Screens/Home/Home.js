@@ -42,6 +42,9 @@ import Timer from '../../Components/Common/Timer';
 import {Matrics, typography} from '../../Config/AppStyling';
 import TimeLog from '../../Components/HomeComponent/TimeLog';
 import TimerNew from '../../Components/Common/TimerNew';
+import {initializeLanguage} from '../../Redux/Reducers/LanguageProviderSlice';
+import {setSessionHandler} from '../../Utlis/SessionHandler';
+
 const Home = ({navigation, route}) => {
   const dispatch = useDispatch();
 
@@ -67,7 +70,11 @@ const Home = ({navigation, route}) => {
   const {fetchTagsCall} = useFetchNfcTagsActions();
   const {fetchWorkStatusCall} = useWorkStatusActions();
   const [tagsFromLocalStorage, setTagsFromLocalStorage] = useState([]);
+  const {deviceId} = useSelector(state => state?.Network);
+  const {globalLanguage} = useSelector(state => state?.GlobalLanguage);
 
+  // Set session handler values
+  setSessionHandler(dispatch, SessionId, deviceId, navigation);
   // let validationResult1 = useValidateTag(tagId, sessionItems);
   // useEffect(() => {
   //   setValidationResult(validationResult1);
@@ -94,12 +101,9 @@ const Home = ({navigation, route}) => {
     }
   };
   /* -------------------------------- language -------------------------------- */
-  const language = useSavedLanguage();
   useEffect(() => {
-    if (language) {
-      i18n.changeLanguage(language); // Change language once it's loaded
-    }
-  }, [language]);
+    dispatch(initializeLanguage());
+  }, []);
 
   /* ----------------------------- Get device info ---------------------------- */
   useEffect(() => {
@@ -128,8 +132,8 @@ const Home = ({navigation, route}) => {
       try {
         let formdata = new FormData();
         formdata.append('session_id', SessionId);
-        formdata.append('device_id', '13213211');
-        formdata.append('lang', language);
+        formdata.append('device_id', deviceId);
+        formdata.append('lang', globalLanguage);
         fetchWorkStatusCall(formdata);
       } catch (error) {
         console.error('Error updating work status', error);
@@ -145,8 +149,8 @@ const Home = ({navigation, route}) => {
       try {
         let formData = new FormData();
         formData.append('session_id', SessionId);
-        formData.append('device_id', '13213211');
-        formData.append('lang', language);
+        formData.append('device_id', deviceId);
+        formData.append('lang', globalLanguage);
         fetchTagsCall(formData);
       } catch (error) {
         console.error('Error saving nfc tags to local storage', error);
@@ -237,9 +241,11 @@ const Home = ({navigation, route}) => {
       setLoading(true);
       let formdata = new FormData();
       formdata.append('session_id', SessionId);
-      formdata.append('device_id', '13213211');
+      formdata.append('device_id', deviceId);
       formdata.append('nfc_key', uid);
-      formdata.append('lang', language);
+      formdata.append('lang', globalLanguage);
+      console.log('Home screen tag scan', globalLanguage);
+
       scanCall(formdata);
     } catch (error) {
       console.error('Error processing UID:', error);
@@ -366,8 +372,8 @@ const Home = ({navigation, route}) => {
     setLoading(true);
     let formdata = new FormData();
     formdata.append('session_id', SessionId);
-    formdata.append('device_id', '13213211');
-    formdata.append('lang', language);
+    formdata.append('device_id', deviceId);
+    formdata.append('lang', globalLanguage);
     homecall(formdata);
   }
 

@@ -22,6 +22,7 @@ import ToastMessage, {errorToast} from '../../Helpers/ToastMessage';
 import {useTranslation} from 'react-i18next';
 import {SafeAreaComponent} from '../../Components/HOC';
 import {SafeAreaView} from 'react-native-safe-area-context';
+import {useSelector} from 'react-redux';
 
 const ChangePassword = ({navigation}) => {
   const {theme} = useContext(ThemeContext);
@@ -39,7 +40,8 @@ const ChangePassword = ({navigation}) => {
   const [newPassword, setNewPassword] = useState('');
   const [confirmNewPassword, setConfirmNewPassword] = useState('');
   const [passwordError, setPasswordError] = useState('');
-
+  const {deviceId} = useSelector(state => state?.Network);
+  const {globalLanguage} = useSelector(state => state?.GlobalLanguage);
   // Handle input field changes
   const handleChange = (name, value) => {
     switch (name) {
@@ -77,8 +79,8 @@ const ChangePassword = ({navigation}) => {
           onPress: () => {
             const formData = new FormData();
             formData.append('session_id', SessionId);
-            formData.append('device_id', '13213211');
-            formData.append('lang', language);
+            formData.append('device_id', deviceId);
+            formData.append('lang', globalLanguage);
             formData.append('current_password', currentPassword);
             formData.append('new_password', newPassword);
             formData.append('confirm_new_password', confirmNewPassword);

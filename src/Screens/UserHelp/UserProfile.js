@@ -23,6 +23,7 @@ import {SafeAreaView} from 'react-native-safe-area-context';
 import colors from '../../Config/AppStyling/colors';
 import {useUserProfileActions} from '../../Redux/Hooks/useUserProfileActions';
 import {useHomeActions} from '../../Redux/Hooks';
+import {useSelector} from 'react-redux';
 
 const UserProfile = ({navigation}) => {
   const {t, i18n} = useTranslation();
@@ -41,7 +42,8 @@ const UserProfile = ({navigation}) => {
 
   const [userEmail, setUserEmail] = useState(null);
   const [image, setImage] = useState(null);
-
+  const {deviceId} = useSelector(state => state?.Network);
+  const {globalLanguage} = useSelector(state => state?.GlobalLanguage);
   const requestAndroidPermission = async () => {
     try {
       // For Android 13 and above (API 33+)
@@ -115,8 +117,8 @@ const UserProfile = ({navigation}) => {
   useEffect(() => {
     const formData = new FormData();
     formData.append('session_id', SessionId);
-    formData.append('device_id', '13213211');
-    formData.append('lang', language);
+    formData.append('device_id', deviceId);
+    formData.append('lang', globalLanguage);
     fetchUserProfileCall(formData);
   }, [counter]);
 
@@ -136,8 +138,8 @@ const UserProfile = ({navigation}) => {
     try {
       const formData = new FormData();
       formData.append('session_id', SessionId);
-      formData.append('device_id', '13213211');
-      formData.append('lang', language);
+      formData.append('device_id', deviceId);
+      formData.append('lang', globalLanguage);
       formData.append('email', userEmail);
 
       if (image) {
@@ -193,8 +195,8 @@ const UserProfile = ({navigation}) => {
             try {
               const formData = new FormData();
               formData.append('session_id', SessionId);
-              formData.append('device_id', '13213211');
-              formData.append('lang', language);
+              formData.append('device_id', deviceId);
+              formData.append('lang', globalLanguage);
               removeUserProfilePhotoCall(formData);
               setCounter(prevCounter => prevCounter + 1);
             } catch (error) {
@@ -225,8 +227,8 @@ const UserProfile = ({navigation}) => {
           onPress: () => {
             const formData = new FormData();
             formData.append('session_id', SessionId);
-            formData.append('device_id', '13213211');
-            removeAccountCall(formData); // Call your API or function here
+            formData.append('device_id', deviceId);
+            removeAccountCall(formData, navigation); // Call your API or function here
           },
         },
       ],

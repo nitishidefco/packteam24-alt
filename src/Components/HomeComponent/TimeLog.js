@@ -5,17 +5,20 @@ import {Matrics, typography} from '../../Config/AppStyling';
 import useSavedLanguage from '../Hooks/useSavedLanguage';
 import {addColons} from '../../Helpers/AddColonsToId';
 import i18n from '../../i18n/i18n';
+import {useSelector} from 'react-redux';
 
 const TimeLog = ({sessionId, tag}) => {
   const {workHistoryState, getWorkHistoryCall} = useWorkHistoryActions();
   const lanuguage = useSavedLanguage();
+  const {deviceId} = useSelector(state => state?.Network);
+  const {globalLanguage} = useSelector(state => state?.GlobalLanguage);
   const formattedId = addColons(tag?.id);
   useEffect(() => {
     try {
       const formData = new FormData();
       formData.append('session_id', sessionId);
-      formData.append('device_id', '13213211');
-      formData.append('lang', lanuguage);
+      formData.append('device_id', deviceId);
+      formData.append('lang', globalLanguage);
 
       getWorkHistoryCall(formData);
     } catch (error) {

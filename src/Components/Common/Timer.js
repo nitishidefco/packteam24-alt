@@ -8,6 +8,7 @@ import {addColons} from '../../Helpers/AddColonsToId';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import useSavedLanguage from '../Hooks/useSavedLanguage';
 import {useWorkStatusActions} from '../../Redux/Hooks/useWorkStatusActions';
+import {useSelector} from 'react-redux';
 const Timer = ({tag, tagsFromLocalStorage, sessionId}) => {
   const {state: currentStatus, fetchWorkStatusCall} = useWorkStatusActions();
   const [appState, setAppState] = useState(AppState.currentState);
@@ -19,10 +20,9 @@ const Timer = ({tag, tagsFromLocalStorage, sessionId}) => {
   const [anotherDevice, setAnotherDevice] = useState(false);
   const language = useSavedLanguage();
   const formattedTagId = addColons(tag?.id);
-  console.log(tag?.id);
-  
   const [loading, setLoading] = useState(true);
-
+  const {deviceId} = useSelector(state => state?.Network);
+  const {globalLanguage} = useSelector(state => state?.GlobalLanguage)
   const tagMode = findModeByTagId(tagsFromLocalStorage, tag?.id);
   useEffect(() => {
     if (workHistoryState && workHistoryState.data) {
@@ -62,17 +62,13 @@ const Timer = ({tag, tagsFromLocalStorage, sessionId}) => {
     if (workHistoryState?.data?.length > 0) {
       const lastEntry =
         workHistoryState?.data?.[workHistoryState?.data?.length - 1].from;
-      console.log('Last entry', lastEntry);
 
       const currentTime = getCurrentTime();
       const elapsedTime = getTimeDifferenceInSeconds(currentTime, lastEntry);
-      console.log(elapsedTime);
       if (
         currentStatus?.currentState?.work_status === 'work_finished' ||
         currentStatus?.currentState?.work_status === 'work_not_started'
       ) {
-        console.log('insdie');
-
         setSeconds(0);
         controlTimer(null, currentStatus?.currentState?.work_status);
         return;
@@ -88,8 +84,8 @@ const Timer = ({tag, tagsFromLocalStorage, sessionId}) => {
   useEffect(() => {
     const formData = new FormData();
     formData.append('session_id', sessionId);
-    formData.append('device_id', '13213211');
-    formData.append('lang', language);
+    formData.append('device_id', deviceId);
+    formData.append('lang', globalLanguage);
     const timer = setTimeout(() => {
       getWorkHistoryCall(formData);
       setInitialTimer();
@@ -116,58 +112,57 @@ const Timer = ({tag, tagsFromLocalStorage, sessionId}) => {
   };
 
   // Handle the timer behavior based on tag
-const controlTimer = (currentTag, workStatus) => {
-  console.log('Outer current tag:', currentTag);
+  const controlTimer = (currentTag, workStatus) => {
+    console.log('Outer current tag:', currentTag);
 
-  const actions = {
-    work_start: () => {
-      console.log('Executing action for: work_start');
-      resetTimer();
-      startTimer();
-      setIsActive(true);
-    },
-    work_in_progress: () => {
-      console.log('Executing action for: work_in_progress');
-      startTimer();
-      setIsActive(true);
-    },
-    break_start: () => {
-      console.log('Executing action for: break_start');
-      resetTimer();
-      setIsActive(true);
-    },
-    break_in_progress: () => {
-      console.log('Executing action for: break_in_progress');
-      startTimer();
-      setIsActive(true);
-    },
-    work_end: () => {
-      console.log('Executing action for: work_end');
-      stopTimer();
-      setIsActive(false);
-    },
-    work_not_started: () => {
-      console.log('Executing action for: work_not_started');
-      stopTimer();
-      setIsActive(false);
-    },
-    work_finished: () => {
-      console.log('Executing action for: work_finished');
-      stopTimer();
-      setIsActive(false);
-    },
+    const actions = {
+      work_start: () => {
+        console.log('Executing action for: work_start');
+        resetTimer();
+        startTimer();
+        setIsActive(true);
+      },
+      work_in_progress: () => {
+        console.log('Executing action for: work_in_progress');
+        startTimer();
+        setIsActive(true);
+      },
+      break_start: () => {
+        console.log('Executing action for: break_start');
+        resetTimer();
+        setIsActive(true);
+      },
+      break_in_progress: () => {
+        console.log('Executing action for: break_in_progress');
+        startTimer();
+        setIsActive(true);
+      },
+      work_end: () => {
+        console.log('Executing action for: work_end');
+        stopTimer();
+        setIsActive(false);
+      },
+      work_not_started: () => {
+        console.log('Executing action for: work_not_started');
+        stopTimer();
+        setIsActive(false);
+      },
+      work_finished: () => {
+        console.log('Executing action for: work_finished');
+        stopTimer();
+        setIsActive(false);
+      },
+    };
+
+    // Default action for undefined or unhandled cases
+    const defaultAction = () =>
+      console.log('No matching action found for:', currentTag ?? workStatus);
+
+    // Use currentTag if it exists; otherwise, fall back to workStatus
+    const actionKey = currentTag ?? workStatus; // Nullish coalescing
+    console.log('Determined actionKey:', actionKey); // Log the resolved key
+    (actions[actionKey] || defaultAction)();
   };
-
-  // Default action for undefined or unhandled cases
-  const defaultAction = () =>
-    console.log('No matching action found for:', currentTag ?? workStatus);
-
-  // Use currentTag if it exists; otherwise, fall back to workStatus
-  const actionKey = currentTag ?? workStatus; // Nullish coalescing
-  console.log('Determined actionKey:', actionKey); // Log the resolved key
-  (actions[actionKey] || defaultAction)();
-};
-
 
   const startTimer = () => {
     console.log('before intervaRef', intervalRef.current);
@@ -208,8 +203,8 @@ const controlTimer = (currentTag, workStatus) => {
   useEffect(() => {
     const formData = new FormData();
     formData.append('session_id', sessionId);
-    formData.append('device_id', '13213211');
-    formData.append('lang', language);
+    formData.append('device_id', deviceId);
+    formData.append('lang', globalLanguage);
     getWorkHistoryCall(formData);
   }, [formattedTagId]);
 

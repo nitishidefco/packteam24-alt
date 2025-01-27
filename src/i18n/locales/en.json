@@ -95,7 +95,8 @@
     },
     "Toast":{
         "LogoutSuccess":"Logout Successful",
-        "AccountCreatedSuccessfull":"Account Created Successfully",
+        "AccountCreatedSuccessfull":"Your account has been created",
+        "AccountCreatedSuccessfullSubtitle":"We will send further information by email",
         "PasswordChangeSuccessfull":"Password Changed Successfully",
         "ProfileUpdated":"Profile Updated Successfully",
         "PhotoRemovedSuccessfully":"Profie removed Successfully",

@@ -13,18 +13,20 @@ import {
 import API from '../Services/AuthServices';
 import {AUTH_REDUCER} from '../SliceKey';
 import {reduxStorage} from '../Storage/index';
-import {success} from '../../Helpers/ToastMessage';
+import {errorToast, success} from '../../Helpers/ToastMessage';
 import i18n from '../../i18n/i18n';
 
 const loginSaga = function* loginSaga({payload}) {
   try {
     const response = yield call(API.Login, payload);
+    console.log('Login response', response);
 
     if (response?.data?.sesssion_id && response?.message == 'OK') {
       reduxStorage.setItem('token', response?.data?.sesssion_id);
       yield put(loginSuccess(response));
     } else {
       yield put(loginFailure(response));
+      errorToast(response?.errors?.password);
     }
   } catch (error) {
     yield put(loginFailure(error));
@@ -33,10 +35,12 @@ const loginSaga = function* loginSaga({payload}) {
 
 const logoutSaga = function* logoutSaga({payload}) {
   try {
-    const response = yield call(API.Logout, payload);
+    const response = yield call(API.Logout, payload.payload);
+
     if (response) {
       yield put(logoutSuccess(response));
       reduxStorage.removeItem('token');
+      payload.navigation.navigate('Login');
     } else {
       yield put(logoutFailure(response));
     }
@@ -64,7 +68,10 @@ const createAccountSaga = function* createAccountSaga({payload}) {
     const response = yield call(API.CreateAccount, payload.payload);
     if (response) {
       // const success = `${t(ResetPassword.passwordResetSuccess)}`;
-      success(i18n.t('Toast.AccountCreatedSuccessfull')); //Toast message
+      success(
+        i18n.t('Toast.AccountCreatedSuccessfull'),
+        i18n.t('Toast.AccountCreatedSuccessfullSubtitle'),
+      );
       yield put(createAccountSuccess(response));
       payload.navigation.navigate('Login');
     } else {

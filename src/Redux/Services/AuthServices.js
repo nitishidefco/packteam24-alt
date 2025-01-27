@@ -7,7 +7,7 @@ const BASE_URL = Constants.IS_DEVELOPING_MODE
   : Constants.BASE_URL.PROD;
 
 export default {
-  Login: params => {
+  Login: async params => {
     let header = {
       Accept: 'multipart/form-data',
     };
@@ -20,16 +20,16 @@ export default {
         return data;
       });
   },
-  Logout: params => {
+  Logout: async params => {
     let header = {
       Accept: 'multipart/form-data',
     };
 
-    return fetch(`${BASE_URL}/logout`, {
+    return fetch(`${BASE_URL}api/logout`, {
       method: 'POST',
       body: params,
     })
-      .then(response => Ajax.handleResponse(response))
+      .then(response => response)
       .then(data => {
         return data;
       });
@@ -48,7 +48,7 @@ export default {
         return data;
       });
   },
-  CreateAccount: params => {
+  CreateAccount: async params => {
     let header = {
       Accept: 'multipart/form-data',
     };

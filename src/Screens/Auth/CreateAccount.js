@@ -40,13 +40,17 @@ import FlagComponent from '../../Components/Common/FlagComponent';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as RNLocalize from 'react-native-localize';
 import {errorToast, success} from '../../Helpers/ToastMessage';
+import {
+  initializeLanguage,
+  setLanguageWithStorage,
+} from '../../Redux/Reducers/LanguageProviderSlice';
 const languages = {
-  UK: 'en', // English
-  GER: 'de', // German
   POL: 'pl', // Polish
+  GER: 'de', // German
+  UK: 'en', // English
   RUS: 'ru', // Russian
   UKA: 'uk', // Ukrainian
-  ZH: 'zh', //Chinese
+  ZH: 'cn', //chinese
 };
 const CreateAccount = () => {
   const navigation = useNavigation();
@@ -69,29 +73,10 @@ const CreateAccount = () => {
   const {createAccountCall} = useAuthActions();
   const {Auth} = useSelector(state => state);
   const [activeLanguage, setActiveLanguage] = useState(null);
+  const {globalLanguage} = useSelector(state => state?.GlobalLanguage);
 
   useEffect(() => {
-    const setDefaultLanguage = async () => {
-      try {
-        const savedLang = await AsyncStorage.getItem('language');
-        if (savedLang) {
-          setActiveLanguage(savedLang);
-          i18n.changeLanguage(savedLang);
-        } else {
-          const deviceLanguage = RNLocalize.getLocales()[0]?.languageCode;
-          const defaultLang = Object.values(languages).includes(deviceLanguage)
-            ? deviceLanguage
-            : 'de'; // Fallback to German
-          setActiveLanguage(defaultLang);
-          i18n.changeLanguage(defaultLang);
-          await AsyncStorage.setItem('language', defaultLang);
-        }
-      } catch (error) {
-        console.error('Error setting default language:', error);
-      }
-    };
-
-    setDefaultLanguage();
+    dispatch(initializeLanguage());
   }, []);
   const OpenURLText = ({url, children}) => {
     const handlePress = useCallback(async () => {
@@ -119,7 +104,7 @@ const CreateAccount = () => {
     const selectedLang = languages[country];
     setActiveLanguage(selectedLang);
     i18n.changeLanguage(selectedLang);
-    await AsyncStorage.setItem('language', selectedLang);
+    dispatch(setLanguageWithStorage(selectedLang));
   };
 
   // ---------------Getting Device info---------------
@@ -143,7 +128,7 @@ const CreateAccount = () => {
       let formdata = new FormData();
       formdata.append('email', userEmail);
       formdata.append('password', userPassword);
-      formdata.append('lang', activeLanguage);
+      formdata.append('lang', globalLanguage);
       createAccountCall(formdata, navigation);
     } finally {
       // setLoading(false);
@@ -318,8 +303,8 @@ const CreateAccount = () => {
                   onPress={() => handleLanguageChange(country)}
                   style={[
                     styles.touchable,
-                    activeLanguage &&
-                      activeLanguage !== languages[country] &&
+                    globalLanguage &&
+                      globalLanguage !== languages[country] &&
                       styles.inactive,
                   ]}>
                   <FlagComponent Country={country} />

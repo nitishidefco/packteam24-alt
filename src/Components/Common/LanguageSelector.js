@@ -11,64 +11,40 @@ import {Matrics} from '../../Config/AppStyling';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {useTranslation} from 'react-i18next';
 import {useWorkHistoryActions} from '../../Redux/Hooks/useWorkHistoryActions';
+import {useDispatch, useSelector} from 'react-redux';
+import {setLanguageWithStorage} from '../../Redux/Reducers/LanguageProviderSlice';
 
 const LanguageSelector = ({sessionId}) => {
   const [isOpen, setIsOpen] = useState(false);
-  const [selectedLanguage, setSelectedLanguage] = useState('en');
-  const [isLoading, setIsLoading] = React.useState(true);
   const {t, i18n} = useTranslation();
+  const dispatch = useDispatch();
+  const {deviceId} = useSelector(state => state?.Network);
+  const {globalLanguage} = useSelector(state => state?.GlobalLanguage);
+  console.log(globalLanguage);
+
+  const {getWorkHistoryCall} = useWorkHistoryActions();
+
   const languageOptions = [
     {label: '🇬🇧 EN', value: 'en'},
     {label: '🇩🇪 DE', value: 'de'},
     {label: '🇷🇺 RU', value: 'ru'},
     {label: '🇺🇦 UK', value: 'uk'},
     {label: '🇵🇱 PL', value: 'pl'},
-    {label: '🇨🇳 ZH', value: 'zh'},
+    {label: '🇨🇳 CN', value: 'cn'},
   ];
-  const {getWorkHistoryCall} = useWorkHistoryActions();
-  const selected = languageOptions.find(opt => opt.value === selectedLanguage);
 
-  useEffect(() => {
+  const selected = languageOptions.find(opt => opt.value === globalLanguage);
+
+  const handleLanguageChange = async language => {
     const formData = new FormData();
     formData.append('session_id', sessionId);
-    formData.append('device_id', '13213211');
-    formData.append('lang', selectedLanguage);
+    formData.append('device_id', deviceId);
+    formData.append('lang', language);
+
+    dispatch(setLanguageWithStorage(language));
     getWorkHistoryCall(formData);
-  }, [selectedLanguage]);
-  useEffect(() => {
-    const loadSavedLanguage = async () => {
-      try {
-        const savedLanguage = await AsyncStorage.getItem('language');
-
-        setSelectedLanguage(savedLanguage);
-        i18n.changeLanguage(savedLanguage); // Change the language in i18n
-
-        setIsLoading(false);
-      } catch (error) {
-        console.error('Error loading saved language:', error);
-        setIsLoading(false);
-      }
-    };
-    loadSavedLanguage();
-  }, []);
-
-  useEffect(() => {
-    const saveLanguage = async () => {
-      try {
-        if (selectedLanguage !== i18n.language) {
-          // Avoid re-saving if language is the same
-          await AsyncStorage.setItem('language', selectedLanguage);
-          i18n.changeLanguage(selectedLanguage); // Change the language in i18n
-        }
-      } catch (error) {
-        console.error('Error saving language:', error);
-      }
-    };
-
-    if (!isLoading) {
-      saveLanguage();
-    }
-  }, [selectedLanguage, i18n, isLoading]);
+    setIsOpen(false);
+  };
 
   return (
     <View
@@ -98,12 +74,9 @@ const LanguageSelector = ({sessionId}) => {
                 key={option.value}
                 style={[
                   styles.option,
-                  selectedLanguage === option.value && styles.selectedOption,
+                  globalLanguage === option.value && styles.selectedOption,
                 ]}
-                onPress={() => {
-                  setSelectedLanguage(option.value);
-                  setIsOpen(false);
-                }}>
+                onPress={() => handleLanguageChange(option.value)}>
                 <Text style={styles.optionText}>{option.label}</Text>
               </TouchableOpacity>
             ))}

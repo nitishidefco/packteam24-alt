@@ -41,13 +41,17 @@ import FlagComponent from '../../Components/Common/FlagComponent';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as RNLocalize from 'react-native-localize';
 import {errorToast, success} from '../../Helpers/ToastMessage';
+import {
+  initializeLanguage,
+  setLanguageWithStorage,
+} from '../../Redux/Reducers/LanguageProviderSlice';
 const languages = {
   POL: 'pl', // Polish
   GER: 'de', // German
   UK: 'en', // English
   RUS: 'ru', // Russian
   UKA: 'uk', // Ukrainian
-  ZH: 'zh', //chinese
+  ZH: 'cn', //chinese
 };
 const Login = ({route}) => {
   // --------------- FUNCTION DECLARATION ---------------
@@ -76,6 +80,8 @@ const Login = ({route}) => {
   const {state, loginCall, forgotPasswordCall} = useAuthActions();
   const {Auth} = useSelector(state => state);
   const [activeLanguage, setActiveLanguage] = useState(null);
+  const {globalLanguage} = useSelector(state => state?.GlobalLanguage);
+  
   // --------------- LIFECYCLE ---------------
   useEffect(() => {
     if (loading && Auth.isLoginSuccess === true) {
@@ -87,39 +93,18 @@ const Login = ({route}) => {
       setUserPassword(null);
     } else if (loading && Auth.isLoginSuccess === false) {
       setLoading(false);
-      errorToast(i18n.t('Toast.LoginUnsuccessful'));
     }
   }, [Auth?.isLoginSuccess]);
 
   useEffect(() => {
-    const setDefaultLanguage = async () => {
-      try {
-        const savedLang = await AsyncStorage.getItem('language');
-        if (savedLang) {
-          setActiveLanguage(savedLang);
-          i18n.changeLanguage(savedLang);
-        } else {
-          const deviceLanguage = RNLocalize.getLocales()[0]?.languageCode;
-          const defaultLang = Object.values(languages).includes(deviceLanguage)
-            ? deviceLanguage
-            : 'de'; // Fallback to German
-          setActiveLanguage(defaultLang);
-          i18n.changeLanguage(defaultLang);
-          await AsyncStorage.setItem('language', defaultLang);
-        }
-      } catch (error) {
-        console.error('Error setting default language:', error);
-      }
-    };
-
-    setDefaultLanguage();
+    dispatch(initializeLanguage());
   }, []);
 
   const handleLanguageChange = async country => {
     const selectedLang = languages[country];
     setActiveLanguage(selectedLang);
     i18n.changeLanguage(selectedLang);
-    await AsyncStorage.setItem('language', selectedLang);
+    dispatch(setLanguageWithStorage(selectedLang));
   };
   // ---------------Getting Device info---------------
   useEffect(() => {
@@ -135,6 +120,7 @@ const Login = ({route}) => {
     };
     getDeviceInfo();
   }, []);
+
   // --------------- METHODS ---------------
   const loginAPI = () => {
     try {
@@ -142,8 +128,8 @@ const Login = ({route}) => {
       let formdata = new FormData();
       formdata.append('email', userEmail);
       formdata.append('password', userPassword);
-      formdata.append('device_id', '13213211');
-      formdata.append('lang', activeLanguage);
+      formdata.append('device_id', deviceId);
+      formdata.append('lang', globalLanguage);
       loginCall(formdata);
     } finally {
       // setLoading(false);
@@ -368,8 +354,8 @@ const Login = ({route}) => {
                   onPress={() => handleLanguageChange(country)}
                   style={[
                     styles.touchable,
-                    activeLanguage &&
-                      activeLanguage !== languages[country] &&
+                    globalLanguage &&
+                      globalLanguage !== languages[country] &&
                       styles.inactive,
                   ]}>
                   <FlagComponent Country={country} />

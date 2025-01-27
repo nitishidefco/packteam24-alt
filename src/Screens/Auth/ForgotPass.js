@@ -56,13 +56,14 @@ const ForgotPass = () => {
   const {Auth} = useSelector(state => state);
   /* ------------------------ Custom hook for language ------------------------ */
   const language = useSavedLanguage();
+  const {globalLanguage} = useSelector(state => state?.GlobalLanguage);
   // --------------- LIFECYCLE ---------------
   useEffect(() => {
     if (loading && Auth.isLoginSuccess === true) {
       setLoading(false);
       const successToast = `${t('Toast.LoginSuccess')}`;
       success(successToast);
-      navigation.navigate('HomeDrawer');
+      navigation.navigate('HomeDrawerStack', {screen: 'HomeDrawer'});
       setUserEmail(null);
       setUserPassword(null);
     } else if (loading && Auth.isLoginSuccess === false) {
@@ -91,8 +92,8 @@ const ForgotPass = () => {
       let formdata = new FormData();
       formdata.append('email', userEmail);
       formdata.append('password', userPassword);
-      formdata.append('device_id', '13213211');
-      formdata.append('lang', language);
+      formdata.append('device_id', deviceId);
+      formdata.append('lang', globalLanguage);
       loginCall(formdata);
     } finally {
       // setLoading(false);
@@ -103,7 +104,7 @@ const ForgotPass = () => {
       setLoading(true);
       let formdata = new FormData();
       formdata.append('email', userEmail);
-      formdata.append('lang', language);
+      formdata.append('lang', globalLanguage);
       forgotPasswordCall(formdata);
     } catch (error) {
       setLoading(false);
