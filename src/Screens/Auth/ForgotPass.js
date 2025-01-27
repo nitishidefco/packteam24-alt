@@ -68,7 +68,7 @@ const ForgotPass = () => {
       setUserPassword(null);
     } else if (loading && Auth.isLoginSuccess === false) {
       setLoading(false);
-      errorToast(i18n.t(Toast.LoginUnsuccessful));
+      errorToast(i18n.t('Toast.LoginUnsuccessful'));
     }
   }, [Auth?.isLoginSuccess]);
   // ---------------Getting Device info---------------

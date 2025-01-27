@@ -6,7 +6,7 @@ import {
   changePasswordSuccess,
 } from '../Reducers/PasswordChangeSlice';
 import {toastMessage} from '../../Helpers';
-import {success} from '../../Helpers/ToastMessage';
+import {errorToast, success} from '../../Helpers/ToastMessage';
 import i18n from '../../i18n/i18n';
 
 function* changePasswordSaga({payload}) {
@@ -17,7 +17,10 @@ function* changePasswordSaga({payload}) {
       yield put(changePasswordSuccess(response.data));
       success(i18n.t('Toast.PasswordChangeSuccessfull'));
     } else if (response?.errors) {
+      console.log(response);
+
       yield put(changePasswordFail(response.errors));
+      errorToast(response?.errors?.password);
     }
   } catch (error) {
     console.error('Updating password error', error);

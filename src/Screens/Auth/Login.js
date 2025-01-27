@@ -81,7 +81,7 @@ const Login = ({route}) => {
   const {Auth} = useSelector(state => state);
   const [activeLanguage, setActiveLanguage] = useState(null);
   const {globalLanguage} = useSelector(state => state?.GlobalLanguage);
-  
+
   // --------------- LIFECYCLE ---------------
   useEffect(() => {
     if (loading && Auth.isLoginSuccess === true) {
@@ -170,7 +170,7 @@ const Login = ({route}) => {
     );
   };
   function validateInputs() {
-    if (userEmail == '' || userEmail == null) {
+    if (userEmail === '' || userEmail == null) {
       errorToast(i18n.t('Toast.EnterEmail'));
       return false;
     }
@@ -179,7 +179,9 @@ const Login = ({route}) => {
 
       return false;
     }
-    if (userPassword === '') {
+    if (userPassword === '' || userPassword === null) {
+      console.log('validate password');
+
       errorToast(i18n.t('Toast.EnterPassword'));
       return false;
     }
@@ -193,7 +195,7 @@ const Login = ({route}) => {
       if (validateInputs('Enter Email')) {
         // changeLanguage('pl');
         loginAPI();
-      }
+      } 
     }
   };
   const onForgotPasswordPress = () => {

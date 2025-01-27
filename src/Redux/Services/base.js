@@ -15,8 +15,6 @@ const handleResponse = response => {
 
   const contentType = response.headers.get('Content-Type');
 
-  console.log(response);
-
   if (response.status === 403) {
     // Handle 403 Forbidden response
     return response.json().then(errorData => {
@@ -42,7 +40,7 @@ const handleResponse = response => {
 
   if (response.status !== 200) {
     return response.json().then(errorData => {
-      errorToast(errorData.errors.email);
+      errorToast(errorData.message);
       return Promise.reject(errorData);
     });
   }
