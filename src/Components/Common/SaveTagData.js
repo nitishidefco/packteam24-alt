@@ -4,7 +4,6 @@ export const saveScannedItem = (tagId, sessionID) => {
     time: currentTime,
     tag_id: tagId,
   };
-  console.log('newItem', newItem);
 
   //   dispatch(addScannedItem(newItem)); // Dispatch to Redux
   // Or use AsyncStorage/Redux Persist to store it locally

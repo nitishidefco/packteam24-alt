@@ -14,10 +14,10 @@ const ModalComponent = ({ closeModal }) => {
           <TouchableOpacity onPress={closeModal} style={styles.closeButton}>
             <Text style={styles.closeButtonText}>Close</Text>
           </TouchableOpacity>
-          <TouchableOpacity onPress={() => console.log('Change Password clicked')}>
+          <TouchableOpacity onPress={() => 
             <Text>Change Password</Text>
           </TouchableOpacity>
-          <TouchableOpacity onPress={() => console.log('Settings clicked')}>
+          <TouchableOpacity onPress={() => 
             <Text>Settings</Text>
           </TouchableOpacity>
         </View>

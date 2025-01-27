@@ -1,9 +1,31 @@
 import { StyleSheet } from 'react-native';
 import { AppStyle, COLOR, Matrics, typography } from '../../Config/AppStyling';
 import colors from '../../Config/AppStyling/colors';
-import { moderateVerticalScale } from 'react-native-size-matters';
 
 export const loginStyle = StyleSheet.create({
+  FlagContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    padding: 8,
+    marginHorizontal: Matrics.ms(10),
+  },
+  touchable: {
+    opacity: 1, // Default opacity
+  },
+  inactive: {
+    opacity: 0.5, // Reduced opacity for inactive countries
+  },
+  forgotPasswordText: {
+    color: '#307ecc',
+    textAlign: 'center',
+    marginTop: 10,
+    fontSize: 18,
+    textDecorationLine: 'underline',
+  },
+  forgotPasswordStyle: {
+    // marginRight:Matrics.ms(10),
+  },
   scrollViewStyle: {
     flex: 1,
     justifyContent: 'center',
@@ -11,9 +33,11 @@ export const loginStyle = StyleSheet.create({
   },
   keyboardAvoidingView: {
     flex: 1,
+    backgroundColor: '#EBF0FA',
+    paddingHorizontal: Matrics.ms(10)
   },
   container: theme => {
-    return [AppStyle.wrapper, { backgroundColor: theme.backgroundColor }];
+    return [AppStyle.wrapper, {backgroundColor: theme.backgroundColor}];
   },
   reactLogoContainer: {
     alignItems: 'center',
@@ -32,20 +56,20 @@ export const loginStyle = StyleSheet.create({
       alignContent: 'center',
     };
   },
-  loginlogoContainer:{
-    marginTop:Matrics.ms(50),
-    marginBottom:Matrics.ms(55)
+  loginlogoContainer: {
+    marginTop: Matrics.ms(50),
+    marginBottom: Matrics.ms(55),
   },
-  androidLogoConatiner:{
-    marginTop:Matrics.ms(100),
-    marginBottom:Matrics.ms(60)
+  androidLogoConatiner: {
+    marginTop: Matrics.ms(100),
+    marginBottom: Matrics.ms(60),
   },
   loginText: {
     fontSize: typography.fontSizes.fs21,
     marginBottom: Matrics.ms(9),
     textAlign: 'center',
-    color: "#091242",
-    fontFamily: typography.fontFamily.Montserrat.SemiBold
+    color: '#091242',
+    fontFamily: typography.fontFamily.Montserrat.SemiBold,
   },
   logo: {
     resizeMode: 'contain',
@@ -57,21 +81,21 @@ export const loginStyle = StyleSheet.create({
     marginBottom: Matrics.ms(38),
     textAlign: 'center',
     color: '#757575',
-    fontFamily: typography.fontFamily.Montserrat.Medium
+    fontFamily: typography.fontFamily.Montserrat.Medium,
   },
   SectionStyle: {
     flexDirection: 'row',
     alignItems: 'center',
     height: Matrics.s(40),
     marginTop: Matrics.ms(50),
-    marginHorizontal: Matrics.ms(25),
+    marginHorizontal: Matrics.ms(15),
     margin: Matrics.ms(10),
     borderBottomWidth: 1.5,
-    borderBottomColor:'#DEDEDE',
+    borderBottomColor: '#DEDEDE',
   },
   buttonStyle: {
-    position:'relative',
-    backgroundColor: '#091242',
+    position: 'relative',
+    backgroundColor: '#061439',
     borderWidth: 0,
     color: COLOR.PRIMARY,
     borderColor: COLOR.PRIMARY,
@@ -91,9 +115,7 @@ export const loginStyle = StyleSheet.create({
     shadowOpacity: 0.5,
     shadowRadius: 10,
     elevation: 14,
-    bottom:15
-    
-
+    bottom: 15,
   },
 
   buttonTextStyle: {
@@ -101,6 +123,8 @@ export const loginStyle = StyleSheet.create({
     paddingTop: Matrics.ms(15),
     fontFamily: typography.fontFamily.Montserrat.Bold,
     fontSize: typography.fontSizes.fs15,
+    maxWidth: '100%',
+    textAlign:'center'
   },
   inputStyle: {
     flex: 1,
@@ -108,7 +132,7 @@ export const loginStyle = StyleSheet.create({
     fontFamily: typography.fontFamily.Montserrat.Medium,
     paddingLeft: Matrics.ms(15),
     paddingRight: Matrics.ms(15),
-    fontSize :typography.fontSizes.fs15,
+    fontSize: typography.fontSizes.fs15,
   },
   registerTextStyle: {
     color: COLOR.GRAY,
@@ -144,7 +168,7 @@ export const loginStyle = StyleSheet.create({
     // tintColor: COLOR.LIGHT_GRAY,
     width: Matrics.ms(22),
     height: Matrics.ms(22),
-    resizeMode: 'contain'
+    resizeMode: 'contain',
   },
   loginContainerImage: {
     alignSelf: 'center',
@@ -153,7 +177,6 @@ export const loginStyle = StyleSheet.create({
     paddingBottom: Matrics.ms(25),
     alignItems: 'center',
     height: Matrics.ms(300),
-
   },
   socialIconsRow: {
     flexDirection: 'row',

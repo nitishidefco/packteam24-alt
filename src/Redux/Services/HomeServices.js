@@ -7,12 +7,10 @@ const BASE_URL = Constants.IS_DEVELOPING_MODE
   : Constants.BASE_URL.PROD;
 
 export default {
-  Home: params => {
-    console.log('params', params);
+  Home: async params => {
     let header = {
       Accept: 'multipart/form-data',
     };
-    console.log('Headerr', header);
     return fetch('https://eda.workflex360.de/api/dashboard', {
       method: 'POST',
       body: params,

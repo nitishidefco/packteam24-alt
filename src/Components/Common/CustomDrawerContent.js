@@ -1,5 +1,13 @@
 import React, {useState, useRef, useEffect} from 'react';
-import {View, StyleSheet, Image, Text, Animated, Alert} from 'react-native';
+import {
+  View,
+  StyleSheet,
+  Image,
+  Text,
+  Animated,
+  Alert,
+  Platform,
+} from 'react-native';
 import {DrawerContentScrollView, DrawerItem} from '@react-navigation/drawer';
 import {useNavigation} from '@react-navigation/native';
 import {Images} from '../../Config';
@@ -9,9 +17,13 @@ import {useAuthActions} from '../../Redux/Hooks';
 import DropdownAlert from 'react-native-dropdownalert';
 import {toastMessage} from '../../Helpers';
 import {reduxStorage} from '../../Redux/Storage';
+import {useTranslation} from 'react-i18next';
+import {success} from '../../Helpers/ToastMessage';
+import { useSelector } from 'react-redux';
 // import DailyListScreen from '../../screens/DailyList/DailyListScreen';
 
 const CustomDrawerContent = props => {
+  const {t, i18n} = useTranslation();
   const navigation = useNavigation();
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -19,6 +31,14 @@ const CustomDrawerContent = props => {
   const {Auth} = state;
   const SessionId = Auth.data?.data?.sesssion_id;
   const [dropdownAlert, setDropdownAlert] = useState(null);
+  const [isIos, setIsIos] = useState(false);
+  const {deviceId} = useSelector(state => state?.Network);
+
+  useEffect(() => {
+    if (Platform.OS === 'ios') {
+      setIsIos(true);
+    }
+  }, []);
 
   const goToHome = () => {
     navigation.replace('Home');
@@ -35,15 +55,14 @@ const CustomDrawerContent = props => {
     setLoading(true);
     let formdata = new FormData();
     formdata.append('session_id', SessionId);
-    formdata.append('device_id', '123');
+    formdata.append('device_id', deviceId);
     logoutCall(formdata);
-    console.log(formdata, 'dataaaa');
   }
   function handleLogoutResponse() {
-    console.log('Auth.islogoutSuccess', Auth.islogoutSuccess);
     if (loading && Auth.islogoutSuccess === true) {
       setLoading(false);
-      toastMessage.success('Logout successful');
+      const successToast = t('Toast.LogoutSuccess');
+      success(successToast);
       reduxStorage.removeItem('token');
       navigation.replace('Login');
     } else if (loading && Auth.islogoutSuccess === false) {
@@ -59,31 +78,94 @@ const CustomDrawerContent = props => {
         {/* Application Logo */}
         <View style={styles.logoContainer}>
           <Image
-            source={Images.HEADER_LOGO}
+            source={Images.NEW_APP_LOGO}
             resizeMode="contain"
             style={styles.logoStyle}
           />
         </View>
         {/* Drawer Items */}
         <DrawerItem
-          label="Dashboard"
-          labelStyle={{
-            fontFamily: typography.fontFamily.Montserrat.Regular,
-            fontSize: typography.fontSizes.fs15,
-            color: colors.WHITE,
-            marginHorizontal: Matrics.ms(-45),
-          }}
-          onPress={goToHome}
-          style={styles.drawerItem}
+          label={() => (
+            <Text
+              style={{
+                fontFamily: typography.fontFamily.Montserrat.Regular,
+                fontSize: typography.fontSizes.fs15,
+                color: colors.WHITE,
+                marginHorizontal: Matrics.ms(-45),
+                flexWrap: 'wrap', // Ensures text wraps to the next line
+              }}
+              numberOfLines={2} // Optional: Limits the number of lines to 2
+              ellipsizeMode="tail" // Optional: Adds ellipsis if the text overflows
+            >
+              {t('SideMenuBar.dashboard')}
+            </Text>
+          )}
+          onPress={() => navigation.replace('HomeDrawer')}
+          style={[styles.drawerItem]}
           icon={() => (
             <Image
               source={Images.DASHBOARD}
               resizeMode="contain"
-              style={styles.homeIconStyle}
+              style={[isIos ? styles.homeIconIosStyle : styles.homeIconStyle]}
             />
           )}
         />
+
         <DrawerItem
+          label={() => (
+            <Text
+              style={{
+                fontFamily: typography.fontFamily.Montserrat.Regular,
+                fontSize: typography.fontSizes.fs15,
+                color: colors.WHITE,
+                marginHorizontal: Matrics.ms(-45),
+                flexWrap: 'wrap', // Ensures text wraps to the next line
+              }}
+              numberOfLines={2} // Optional: Limits the number of lines to 2
+              ellipsizeMode="tail" // Optional: Adds ellipsis if the text overflows
+            >
+              {t('SideMenuBar.ChangePassword')}
+            </Text>
+          )}
+          onPress={() => navigation.replace('ChangePassword')}
+          style={[styles.drawerItem]}
+          icon={() => (
+            <Image
+              source={Images.CHANGE_PASSWORD}
+              resizeMode="contain"
+              style={[isIos ? styles.homeIconIosStyle : styles.homeIconStyle]}
+            />
+          )}
+        />
+
+        <DrawerItem
+          label={() => (
+            <Text
+              style={{
+                fontFamily: typography.fontFamily.Montserrat.Regular,
+                fontSize: typography.fontSizes.fs15,
+                color: colors.WHITE,
+                marginHorizontal: Matrics.ms(-45),
+                flexWrap: 'wrap', // Ensures text wraps to the next line
+              }}
+              numberOfLines={2} // Optional: Limits the number of lines to 2
+              ellipsizeMode="tail" // Optional: Adds ellipsis if the text overflows
+            >
+              {t('SideMenuBar.UserProflie')}
+            </Text>
+          )}
+          onPress={() => navigation.replace('UserProfile')}
+          style={[styles.drawerItem]}
+          icon={() => (
+            <Image
+              source={Images.CHANGE_PASSWORD}
+              resizeMode="contain"
+              style={[isIos ? styles.homeIconIosStyle : styles.homeIconStyle]}
+            />
+          )}
+        />
+
+        {/* <DrawerItem {t('SideMenuBar.ChangePassword')}
           label="Messages"
           labelStyle={{
             fontFamily: typography.fontFamily.Montserrat.Regular,
@@ -98,7 +180,7 @@ const CustomDrawerContent = props => {
             <Image
               source={Images.MESSAGES_ICON}
               resizeMode="contain"
-              style={styles.messageIconStyle}
+              style={[isIos ? styles.messageIconIosStyle : styles.messageIconStyle]}
             />
           )}
         />
@@ -118,7 +200,7 @@ const CustomDrawerContent = props => {
             <Image
               source={Images.DAILY_LIST}
               resizeMode="contain"
-              style={styles.messageIconStyle}
+              style={[isIos ? styles.messageIconIosStyle : styles.messageIconStyle]}
             />
           )}
         />
@@ -137,7 +219,8 @@ const CustomDrawerContent = props => {
             <Image
               source={Images.CALENDER_ICON}
               resizeMode="contain"
-              style={styles.messageIconStyle}
+              style={[isIos ? styles.messageIconIosStyle : styles.messageIconStyle]}
+
             />
           )}
         />
@@ -157,15 +240,20 @@ const CustomDrawerContent = props => {
             <Image
               source={Images.ADVANCES}
               resizeMode="contain"
-              style={styles.dashBoardIconStyle}
+              style={[isIos? styles.dashBoardIconIosStyle:styles.dashBoardIconStyle]}
             />
           )}
-        />
+        /> */}
       </DrawerContentScrollView>
       {/* Logout */}
-      <View style={{justifyContent: 'flex-end', marginBottom: Matrics.ms(45), marginLeft: Matrics.ms(13)}}>
+      <View
+        style={{
+          justifyContent: 'flex-end',
+          marginBottom: Matrics.ms(45),
+          marginLeft: Matrics.ms(13),
+        }}>
         <DrawerItem
-          label="Logout"
+          label={t('SideMenuBar.Logout')}
           labelStyle={{
             fontFamily: typography.fontFamily.Montserrat.Regular,
             fontSize: typography.fontSizes.fs15,
@@ -180,7 +268,9 @@ const CustomDrawerContent = props => {
             <Image
               source={Images.LOGOUT_ICON}
               resizeMode="contain"
-              style={styles.logoutIconStyle}
+              style={[
+                isIos ? styles.logoutIconIosStyle : styles.logoutIconStyle,
+              ]}
             />
           )}
         />
@@ -204,10 +294,10 @@ const CustomDrawerContent = props => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#091242',
+    backgroundColor: '#061439',
   },
   drawerContent: {
-    backgroundColor: '#091242',
+    backgroundColor: '#061439',
   },
   logoContainer: {
     alignItems: 'center',
@@ -222,33 +312,55 @@ const styles = StyleSheet.create({
   drawerItem: {
     marginLeft: 0,
   },
+  homeIconIosStyle: {
+    width: Matrics.ms(20),
+    height: Matrics.ms(19),
+    marginRight: 55,
+  },
+  messageIconIosStyle: {
+    width: Matrics.ms(24),
+    height: Matrics.ms(22),
+    marginRight: 45,
+    marginTop: 10,
+  },
   homeIconStyle: {
     width: Matrics.ms(20),
     height: Matrics.ms(19),
-    marginRight: Matrics.ms(16),
-    paddingLeft: Matrics.ms(80),
+    marginRight: Matrics.ms(55),
+    // paddingLeft: Matrics.ms(80),
   },
   messageIconStyle: {
-    width: Matrics.ms(19),
-    height: Matrics.ms(20),
-    marginRight: Matrics.ms(16),
-    paddingLeft: Matrics.ms(80),
+    width: Matrics.ms(24),
+    height: Matrics.ms(22),
+    marginRight: Matrics.ms(45),
+    // paddingLeft: Matrics.ms(80),
     marginTop: Matrics.ms(10),
   },
+  dashBoardIconIosStyle: {
+    width: Matrics.ms(22),
+    height: Matrics.ms(19),
+    marginRight: 45,
+    marginBottom: 10,
+  },
   dashBoardIconStyle: {
-    width: Matrics.ms(19),
+    width: Matrics.ms(22),
     height: Matrics.ms(20),
-    marginRight: Matrics.ms(16),
-    paddingLeft: Matrics.ms(80),
+    marginRight: Matrics.ms(45),
+    // paddingLeft: Matrics.ms(80),
     marginTop: Matrics.vs(-8),
   },
   logoutIconStyle: {
     width: Matrics.ms(24),
     height: Matrics.ms(24),
-    marginRight: Matrics.ms(10),
-    paddingLeft: Matrics.ms(80),
+    marginRight: Matrics.ms(45),
+    // paddingLeft: Matrics.ms(80),
     // tintColor: 'red',
     marginBottom: Matrics.ms(0),
+  },
+  logoutIconIosStyle: {
+    width: Matrics.ms(24),
+    height: Matrics.ms(24),
+    marginRight: Matrics.ms(32),
   },
 });
 

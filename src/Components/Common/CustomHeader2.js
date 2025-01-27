@@ -59,7 +59,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    backgroundColor: '#091242',
+    backgroundColor: '#061439',
   },
   drawerIconStyle: {
     tintColor: 'white',

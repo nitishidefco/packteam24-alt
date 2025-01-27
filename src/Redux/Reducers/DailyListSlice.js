@@ -249,7 +249,6 @@ export const DailyListSlice = createSlice({
       };
     },
     create1Failure: (state, action) => {
-      console.log('actionactionactionaction', action);
       return {
         ...state,
         isCreate1sSuccess: FAIL,
@@ -275,7 +274,6 @@ export const DailyListSlice = createSlice({
       };
     },
     create2Failure: (state, action) => {
-      console.log('actionactionactionaction', action);
       return {
         ...state,
         isCreate2Success: FAIL,
@@ -301,7 +299,6 @@ export const DailyListSlice = createSlice({
       };
     },
     create3Failure: (state, action) => {
-      console.log('actionactionactionaction', action);
       return {
         ...state,
         isCreate3Success: FAIL,
@@ -327,7 +324,6 @@ export const DailyListSlice = createSlice({
       };
     },
     create4Failure: (state, action) => {
-      console.log('actionactionactionaction', action);
       return {
         ...state,
         isCreate4Success: FAIL,
@@ -353,7 +349,6 @@ export const DailyListSlice = createSlice({
       };
     },
     create5Failure: (state, action) => {
-      console.log('actionactionactionaction', action);
       return {
         ...state,
         isCreate5Success: FAIL,
@@ -379,7 +374,6 @@ export const DailyListSlice = createSlice({
       };
     },
     create6Failure: (state, action) => {
-      console.log('actionactionactionaction', action);
       return {
         ...state,
         isCreate6Success: FAIL,

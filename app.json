@@ -1,6 +1,6 @@
 {
   "name": "packteam",
-  "displayName": "packteam",
+  "displayName": "EDA - Time Tracker",
   "react-native": {
     "enableHermes": true
   }

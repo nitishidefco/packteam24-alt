@@ -19,7 +19,7 @@ import {Images} from '../../Config';
 import CustomHeader from '../../Components/Common/CustomHeader';
 import DrawerSceneWrapper from '../../Components/Common/DrawerSceneWrapper';
 import {deleteDailyListItem} from '../../Redux/Reducers/DailyListSlice';
-import { useNavigation } from '@react-navigation/native';
+import {useNavigation} from '@react-navigation/native';
 
 const DailyListScreen = () => {
   const [loading, setLoading] = useState(false);
@@ -36,25 +36,25 @@ const DailyListScreen = () => {
   const [refreshing, setRefreshing] = useState(false);
   const [modalStartDate, setModalStartDate] = useState(null);
   const [modalEndDate, setModalEndDate] = useState(null);
-  const navigation = useNavigation(); 
+  const navigation = useNavigation();
   //>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> Debug Console <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 
-  console.log('Data length ----------------------->>>>>> ', list);
-  console.log('Page Number ----------------------->>>>>> ', page);
-  console.log('Start Date ----------------------->>>>>> ', startDate);
-  console.log('End Date ----------------------->>>>>> ', endDate);
-
-
-
-
   const navigateToAddDailyList = () => {
-    navigation.navigate('AddDailyList'); 
+    navigation.navigate('AddDailyList');
   };
 
-  const navigateToeditDailyList = (item) => {
-    let isFromDashboardlist = true
-    navigation.navigate('EditDailyList',{ date: item.date, customer:item.company_name,location:item.location_name ,listId :item.id,isFromDashboardlist , customerId: item.customer_ids , locationId:item.location_ids}); 
-  }; 
+  const navigateToeditDailyList = item => {
+    let isFromDashboardlist = true;
+    navigation.navigate('EditDailyList', {
+      date: item.date,
+      customer: item.company_name,
+      location: item.location_name,
+      listId: item.id,
+      isFromDashboardlist,
+      customerId: item.customer_ids,
+      locationId: item.location_ids,
+    });
+  };
   //>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> LIfe CYCLE <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 
   useEffect(() => {
@@ -153,7 +153,7 @@ const DailyListScreen = () => {
     if (startDate && endDate) {
       setPage(1);
       fetchDailyList();
-    }  else {
+    } else {
       fetchDailyList();
     }
     toggleCalendarModal();
@@ -175,29 +175,28 @@ const DailyListScreen = () => {
           text: 'Confirm',
           onPress: () => {
             clearSelectedDates();
-            setPage(1); 
-            fetchDailyList(); 
+            setPage(1);
+            fetchDailyList();
           },
         },
       ],
-      { cancelable: false }
+      {cancelable: false},
     );
   };
-  
+
   const onRefresh = () => {
     setRefreshing(true);
     setPage(1);
     setIsLastPage(false);
-  
+
     if (startDate && endDate) {
-    
       fetchDailyList();
     } else {
       setPage(1);
       fetchDailyList();
     }
   };
-  
+
   const renderArrow = direction => (
     <Image
       resizeMode="contain"
@@ -229,11 +228,11 @@ const DailyListScreen = () => {
       </View>
 
       <View style={{flexDirection: 'row', height: 115}}>
-      <TouchableOpacity onPress={() => navigateToeditDailyList(item)}>
-        <Image
-          style={{height: 25, width: 25, marginRight: 5}}
-          source={Images.EDIT}
-        />
+        <TouchableOpacity onPress={() => navigateToeditDailyList(item)}>
+          <Image
+            style={{height: 25, width: 25, marginRight: 5}}
+            source={Images.EDIT}
+          />
         </TouchableOpacity>
         <TouchableOpacity onPress={() => handleDeleteItem(item.id)}>
           <Image style={{height: 25, width: 25}} source={Images.DELETE} />
@@ -260,7 +259,7 @@ const DailyListScreen = () => {
               top: 7,
               justifyContent: 'center',
               marginHorizontal: 70,
-              backgroundColor: '#091242',
+              backgroundColor: '#061439',
               borderRadius: Matrics.ms(14),
               paddingVertical: Matrics.ms(10),
             }}>
@@ -300,16 +299,17 @@ const DailyListScreen = () => {
           </Text>
           <View style={{flexDirection: 'row'}}>
             <TouchableOpacity onPress={navigateToAddDailyList}>
-            <Image
-              source={Images.ADD}
-              style={{
-                height: 25,
-                width: 25,
-                resizeMode: 'contain',
-                bottom: Matrics.ms(5),
-                marginRight: Matrics.ms(8),
-              }}
-            /></TouchableOpacity>
+              <Image
+                source={Images.ADD}
+                style={{
+                  height: 25,
+                  width: 25,
+                  resizeMode: 'contain',
+                  bottom: Matrics.ms(5),
+                  marginRight: Matrics.ms(8),
+                }}
+              />
+            </TouchableOpacity>
             <TouchableOpacity onPress={toggleCalendarModal}>
               <Image
                 source={Images.MENU}
@@ -339,7 +339,7 @@ const DailyListScreen = () => {
         />
         {loading && <ActivityIndicator style={styles.loader} />}
         <Modal
-          animationType='none'
+          animationType="none"
           transparent={true}
           visible={isCalendarModalVisible}
           onRequestClose={toggleCalendarModal}>
@@ -444,7 +444,7 @@ const DailyListScreen = () => {
                     color: '#091242',
                   },
                 }}
-                minDate={startDate} 
+                minDate={startDate}
                 onDayPress={handleDayPress}
                 renderArrow={renderArrow}
               />
@@ -489,7 +489,7 @@ const styles = StyleSheet.create({
     color: 'black',
     fontFamily: typography.fontFamily.Montserrat.Regular,
     paddingVertical: 3,
-    color: 'black'
+    color: 'black',
   },
   bold: {
     fontFamily: typography.fontFamily.Montserrat.SemiBold,
@@ -512,7 +512,7 @@ const styles = StyleSheet.create({
     paddingTop: 60,
   },
   buttonStyle: {
-    backgroundColor: '#091242',
+    backgroundColor: '#061439',
     borderWidth: 0,
     color: 'white',
     height: 49,

@@ -1,4 +1,6 @@
 import React, {useEffect, useState, useCallback} from 'react';
+import {useTranslation} from 'react-i18next';
+
 import {
   SafeAreaView,
   View,
@@ -8,6 +10,8 @@ import {
   Platform,
   AppState,
   TouchableOpacity,
+  ScrollView,
+  RefreshControl,
 } from 'react-native';
 import {useHomeActions} from '../../Redux/Hooks';
 import DrawerSceneWrapper from '../../Components/Common/DrawerSceneWrapper';
@@ -15,7 +19,8 @@ import CustomHeader from '../../Components/Common/CustomHeader';
 import {Images} from '../../Config';
 import NfcManager, {NfcTech, NfcEvents} from 'react-native-nfc-manager';
 import {useScanTagActions} from '../../Redux/Hooks/useScanTagActions';
-import NetworkStatusComponent from '../../Components/Common/NetworkStatus';
+import {useWorkStatusActions} from '../../Redux/Hooks/useWorkStatusActions';
+// import NetworkStatusComponent from '../../Components/Common/NetworkStatus';
 import {
   clearOfflineStorage,
   addDataToOfflineStorage,
@@ -23,22 +28,32 @@ import {
 import {showNotificationAboutTagScannedWhileOffline} from '../../Utlis/NotificationsWhileOffline';
 import {useDispatch, useSelector} from 'react-redux';
 import moment from 'moment';
-import OfflineDataDisplay from '../../Components/OfflineDataSee';
 import {setDeviceInfo} from '../../Redux/Reducers/NetworkSlice';
 import DeviceInfo from 'react-native-device-info';
 import {useNfcStatus} from '../../Utlis/CheckNfcStatus';
 import WorkStatusBar from '../../Components/Common/WorkStatusBar';
-import {setLastOnlineMode} from '../../Redux/Reducers/WorkStateSlice';
 import useValidateTag from '../../Components/Hooks/useValidateTag';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import {useFetchNfcTagsActions} from '../../Redux/Hooks/useFetchNfcTagsActions';
+import {reduxStorage} from '../../Redux/Storage';
+import useSavedLanguage from '../../Components/Hooks/useSavedLanguage';
+import LanguageSelector from '../../Components/Common/LanguageSelector';
+import Timer from '../../Components/Common/Timer';
+import {Matrics, typography} from '../../Config/AppStyling';
+import TimeLog from '../../Components/HomeComponent/TimeLog';
+import TimerNew from '../../Components/Common/TimerNew';
+import {initializeLanguage} from '../../Redux/Reducers/LanguageProviderSlice';
+import {setSessionHandler} from '../../Utlis/SessionHandler';
+
 const Home = ({navigation, route}) => {
   const dispatch = useDispatch();
+
   useNfcStatus();
+  const {t, i18n} = useTranslation();
   const sessions = useSelector(state => state?.OfflineData?.sessions);
   const isConnected = useSelector(state => state?.Network?.isConnected);
   const isNfcEnabled = useSelector(state => state?.Network?.isNfcEnabled);
-  const lastOnlineMode = useSelector(state => state?.WorkState?.lastOnlineMode);
-  const [duplicateTagId, setDuplicatTagId] = useState('');
+  const [duplicateTagId, setDuplicateTagId] = useState('');
   const [tagDetected, setTagDetected] = useState();
   const [tagId, setTagId] = useState('');
   const [loading, setLoading] = useState(false);
@@ -52,14 +67,45 @@ const Home = ({navigation, route}) => {
   const CurrentMode = states?.data?.data?.mode;
   const [appState, setAppState] = useState(AppState.currentState);
   const [validationResult, setValidationResult] = useState(null);
+  const {fetchTagsCall} = useFetchNfcTagsActions();
+  const {fetchWorkStatusCall} = useWorkStatusActions();
+  const [tagsFromLocalStorage, setTagsFromLocalStorage] = useState([]);
+  const {deviceId} = useSelector(state => state?.Network);
+  const {globalLanguage} = useSelector(state => state?.GlobalLanguage);
+
+  // Set session handler values
+  setSessionHandler(dispatch, SessionId, deviceId, navigation);
+  // let validationResult1 = useValidateTag(tagId, sessionItems);
+  // useEffect(() => {
+  //   setValidationResult(validationResult1);
+  // }, []);
+  //
+
+  //
+  // on every refresh its showing notification
   // Handles the scanned NFC tag and extracts its ID
+  const [count, setCount] = useState(0);
+  const onRefresh = React.useCallback(() => {
+    setRefreshing(true);
+    setTimeout(() => {
+      setRefreshing(false);
+    }, 2000);
+  }, []);
   const handleNfcTag = async tag => {
+    setCount(prevCount => prevCount + 1);
     if (tag?.id) {
       const id = addColons(tag.id); // Format the tag ID with colons
       setTagDetected(tag);
       setTagId(id);
+      setDuplicateTagId(id);
     }
   };
+  /* -------------------------------- language -------------------------------- */
+  useEffect(() => {
+    dispatch(initializeLanguage());
+  }, []);
+
+  /* ----------------------------- Get device info ---------------------------- */
   useEffect(() => {
     const getDeviceInfo = async () => {
       const deviceId = await DeviceInfo.getUniqueId();
@@ -73,7 +119,45 @@ const Home = ({navigation, route}) => {
     };
     getDeviceInfo();
   }, []);
+  // fetching nfc tags stored in local storage
+  useEffect(() => {
+    const fetchNfcTags = async () => {
+      try {
+        const fetchedTags = await reduxStorage.getItem('nfcTags');
+        const parsedTags = JSON.parse(fetchedTags);
+        setTagsFromLocalStorage(parsedTags);
+      } catch (error) {}
+    };
+    const updateWorkStatus = async () => {
+      try {
+        let formdata = new FormData();
+        formdata.append('session_id', SessionId);
+        formdata.append('device_id', deviceId);
+        formdata.append('lang', globalLanguage);
+        fetchWorkStatusCall(formdata);
+      } catch (error) {
+        console.error('Error updating work status', error);
+      }
+    };
+    updateWorkStatus();
+    fetchNfcTags();
+  }, [tagDetected, count]);
 
+  // Get nfc from server and save in local storage
+  useEffect(() => {
+    const saveNfcTagToLocalStorage = async () => {
+      try {
+        let formData = new FormData();
+        formData.append('session_id', SessionId);
+        formData.append('device_id', deviceId);
+        formData.append('lang', globalLanguage);
+        fetchTagsCall(formData);
+      } catch (error) {
+        console.error('Error saving nfc tags to local storage', error);
+      }
+    };
+    saveNfcTagToLocalStorage();
+  }, []);
   // Initializes NFC scanning for iOS
   const initNfcScan = useCallback(async () => {
     try {
@@ -157,9 +241,12 @@ const Home = ({navigation, route}) => {
       setLoading(true);
       let formdata = new FormData();
       formdata.append('session_id', SessionId);
-      formdata.append('device_id', '13213211');
+      formdata.append('device_id', deviceId);
       formdata.append('nfc_key', uid);
-      await scanCall(formdata);
+      formdata.append('lang', globalLanguage);
+      console.log('Home screen tag scan', globalLanguage);
+
+      scanCall(formdata);
     } catch (error) {
       console.error('Error processing UID:', error);
     } finally {
@@ -167,141 +254,117 @@ const Home = ({navigation, route}) => {
     }
   };
 
+  /* --------------------------- most recent tag id --------------------------- */
+  const getMostRecentTagId = sessionId => {
+    const sessionData = sessions[sessionId];
+
+    // Check if sessionData and items are present
+    if (sessionData && sessionData.items) {
+      // Sort the items by time in descending order (latest first)
+      const sortedItems = [...sessionData.items].sort((a, b) => {
+        const timeA = new Date(a.time);
+        const timeB = new Date(b.time);
+        return timeB - timeA; // Sort in descending order
+      });
+
+      return sortedItems[0]?.tagId;
+    }
+
+    return null; // If session data or items are not available
+  };
+  const mostRecentTagId = getMostRecentTagId(SessionId);
+  /* -------------------------- get tag mode from id -------------------------- */
+
+  function findModeByTagId(tags, tagId) {
+    const matchingTag = tags.find(tag => tag.key === tagId);
+    return matchingTag ? matchingTag.mode : null;
+  }
+  const [tagMode, setTagMode] = useState(null);
+  const mode = findModeByTagId(tagsFromLocalStorage, mostRecentTagId);
   useEffect(() => {
-    if (SessionId) {
-      const processTag = async () => {
-        if (isConnected) {
-          try {
-            const storedSessions = sessions[SessionId]?.items || [];
+    setTagMode(mode);
+  }, [mode]);
 
-            if (tagId !== '') {
-              // Process the current tag first when online
-              await getUid(tagId);
-              const validationResult = useValidateTag(
-                tagId,
-                storedSessions,
-                lastOnlineMode,
+  // const updateLastEffectiveTagMode = async (tagMode) => {
+  //   await reduxStorage.setItem('tagForOfflineValidation', tagMode);
+  // };
+
+  // useEffect(() => {
+  //   updateLastEffectiveTagMode();
+  // }, [tagMode]);
+  //
+
+  /* ------------------- Processing online and offline tags ------------------- */
+  useEffect(() => {
+    if (!SessionId) return;
+
+    const processOnlineTags = async storedSessions => {
+      try {
+        if (tagId) {
+          // Process the current tag when online
+          await getUid(tagId);
+          setTagId('');
+        }
+
+        if (storedSessions.length > 0) {
+          for (const [index, item] of storedSessions.entries()) {
+            try {
+              await getUid(item.tagId);
+            } catch (error) {
+              console.error(
+                `Error processing stored tag ${item.tagId}:`,
+                error,
               );
-
-              if (!validationResult.valid) {
-                console.warn('Validation failed:', validationResult.message);
-                showNotificationAboutTagScannedWhileOffline(
-                  tagId,
-                  sessions,
-                  SessionId,
-                  lastOnlineMode,
-                );
-                return;
-              }
-              setValidationResult(validationResult);
-              setTagId('');
-            }
-            // If there are stored offline tags, process them sequentially
-            if (storedSessions.length > 0) {
-              console.log('Processing stored offline tags...');
-
-              // Process each stored tag one by one with delay
-              for (const item of storedSessions) {
-                try {
-                  await getUid(item.tagId);
-                  // Add 6-second delay before processing next tag
-                  // Skip delay for the last item
-                  if (
-                    storedSessions.indexOf(item) <
-                    storedSessions.length - 1
-                  ) {
-                    await new Promise(resolve => setTimeout(resolve, 6000));
-                  }
-                } catch (error) {
-                  console.error(
-                    `Error processing stored tag ${item.tagId}:`,
-                    error,
-                  );
-                  // Still wait 6 seconds before trying next tag even if there's an error
-                  if (
-                    storedSessions.indexOf(item) <
-                    storedSessions.length - 1
-                  ) {
-                    await new Promise(resolve => setTimeout(resolve, 6000));
-                  }
-                }
-              }
             }
 
-            // Clear storage after all tags are processed
-            dispatch(setLastOnlineMode(CurrentMode));
-            dispatch(clearOfflineStorage());
-          } catch (error) {
-            console.error('Error processing tags:', error);
-          }
-        } else {
-          // Offline mode - store the tag and update lastOnlineMode for subsequent scans
-          if (tagId !== '') {
-            setDuplicatTagId(tagId);
-
-            // Determine the mode based on the tagId scanned
-            let tagMode = '';
-            if (
-              tagId === '53:AE:E6:BB:40:00:01' ||
-              tagId === '53:71:D8:BB:40:00:01'
-            ) {
-              tagMode = 'work_start';
-            } else if (
-              tagId === '53:1E:3D:BC:40:00:01' ||
-              tagId === '53:30:85:BB:40:00:01'
-            ) {
-              tagMode = 'break_start';
-            } else if (
-              tagId === '53:88:66:BC:40:00:01' ||
-              tagId === '53:8B:07:BC:40:00:01'
-            ) {
-              tagMode = 'work_end';
+            // Add a delay of 6 seconds before the next item (except for the last one)
+            if (index < storedSessions.length - 1) {
+              await new Promise(resolve => setTimeout(resolve, 6000));
             }
-            const sessionItems = sessions[SessionId]?.items || [];
-
-            const validationResult = useValidateTag(
-              tagId,
-              sessionItems,
-              lastOnlineMode,
-            );
-
-            if (!validationResult.valid) {
-              console.warn('Validation failed:', validationResult.message);
-              showNotificationAboutTagScannedWhileOffline(
-                tagId,
-                sessions,
-                SessionId,
-                lastOnlineMode,
-              );
-              return;
-            }
-            console.log('validation result in home', validationResult);
-
-            setValidationResult(validationResult);
-            // Just store the data without updating lastOnlineMode
-            dispatch(
-              addDataToOfflineStorage({
-                sessionId: SessionId,
-                time: moment().format('YYYY-MM-DD HH:mm:ss'),
-                tagId: tagId,
-                lastOnlineMode: lastOnlineMode,
-              }),
-            );
-            showNotificationAboutTagScannedWhileOffline(
-              tagId,
-              sessions,
-              SessionId,
-              lastOnlineMode,
-            );
-            console.log('tag mode in home', tagMode);
-
-            dispatch(setLastOnlineMode(tagMode));
-            setTagId('');
           }
         }
-      };
-      processTag();
-    }
+
+        // Clear offline storage after processing
+        dispatch(clearOfflineStorage());
+      } catch (error) {
+        console.error('Error processing online tags:', error);
+      }
+    };
+
+    const processOfflineTag = () => {
+      if (!tagId) return;
+      setDuplicateTagId(tagId);
+
+      // if (!validationResult.valid) {
+      //   showNotificationAboutTagScannedWhileOffline(validationResult);
+      //   return;
+      // }
+
+      dispatch(
+        addDataToOfflineStorage({
+          sessionId: SessionId,
+          time: moment().format('YYYY-MM-DD HH:mm:ss'),
+          tagId,
+          // initialScanTime,
+          // initialTagMode,
+        }),
+      );
+
+      showNotificationAboutTagScannedWhileOffline(tagId, tagsFromLocalStorage);
+      setTagId('');
+    };
+
+    const processTag = async () => {
+      const storedSessions = sessions[SessionId]?.items || [];
+
+      if (isConnected) {
+        await processOnlineTags(storedSessions);
+      } else {
+        processOfflineTag();
+      }
+    };
+
+    processTag();
   }, [tagDetected, isConnected]);
 
   // Fetches dashboard data from the server
@@ -309,7 +372,8 @@ const Home = ({navigation, route}) => {
     setLoading(true);
     let formdata = new FormData();
     formdata.append('session_id', SessionId);
-    formdata.append('device_id', '13213211');
+    formdata.append('device_id', deviceId);
+    formdata.append('lang', globalLanguage);
     homecall(formdata);
   }
 
@@ -322,21 +386,21 @@ const Home = ({navigation, route}) => {
   }, [Home]);
 
   // Render fallback UI if the device does not support NFC
-  if (!hasNfc) {
-    return (
-      <DrawerSceneWrapper>
-        <SafeAreaView style={styles.centeredContainer}>
-          <CustomHeader />
-          <View style={styles.centeredContainer}>
-            <Text style={styles.errorText}>
-              Your device does not support NFC! If your device supports NFC turn
-              it on from settings and restart the App
-            </Text>
-          </View>
-        </SafeAreaView>
-      </DrawerSceneWrapper>
-    );
-  }
+  // if (!hasNfc) {
+  //   return (
+  //     <DrawerSceneWrapper>
+  //       <SafeAreaView style={styles.centeredContainer}>
+  //         <CustomHeader />
+  //         <View style={styles.centeredContainer}>
+  //           <Text style={styles.errorText}>
+  //             Your device does not support NFC! If your device supports NFC turn
+  //             it on from settings and restart the App
+  //           </Text>
+  //         </View>
+  //       </SafeAreaView>
+  //     </DrawerSceneWrapper>
+  //   );
+  // }
   if (Platform.OS === 'android') {
     if (!isNfcEnabled) {
       return (
@@ -367,44 +431,108 @@ const Home = ({navigation, route}) => {
 
   return (
     <DrawerSceneWrapper>
-      <SafeAreaView style={{flex: 1, backgroundColor: '#EBF0FA'}}>
+      <SafeAreaView style={{backgroundColor: '#EBF0FA', flex: 1}}>
         <CustomHeader />
-        {/* <OfflineDataDisplay /> */}
-        <View style={styles.container}>
-          <View>
-            {/* <NetworkStatusComponent /> */}
-            <WorkStatusBar validationResult={validationResult} />
-          </View>
-          <View style={styles.nfcPromptContainer}>
-            <Image source={Images.NFC} style={styles.userIcon} />
-            <Text style={styles.nfcPromptText}>Ready to Scan NFC Tags</Text>
+        <ScrollView
+          style={{backgroundColor: '#EBF0FA', flex: 1}}
+          refreshControl={
+            <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+          }>
+          <View
+            style={[
+              Platform.OS === 'android'
+                ? styles.topContainer
+                : styles.topContainerios,
+            ]}>
+            <View
+              style={{
+                position: 'relative',
+                alignItems: 'flex-end',
+                marginRight: Matrics.ms(20),
+                marginBottom: Matrics.vs(30),
+              }}>
+              <LanguageSelector sessionId={SessionId} />
+            </View>
+            <View
+              style={[
+                Platform.OS === 'android'
+                  ? styles.timerContainer
+                  : styles.timerContainerIos,
+              ]}>
+              <Timer
+                tag={tagDetected}
+                tagsFromLocalStorage={tagsFromLocalStorage}
+                sessionId={SessionId}
+              />
+              {/* <TimerNew /> */}
+            </View>
+            {/* <OfflineDataDisplay /> */}
+            <View style={styles.container}>
+              <View>
+                {/* <NetworkStatusComponent /> */}
+                <WorkStatusBar tagMode={tagMode} tag={tagDetected} />
+              </View>
+              <View style={styles.nfcPromptContainer}>
+                <Image source={Images.NFC} style={styles.userIcon} />
+                <Text style={styles.nfcPromptText}>
+                  {t('HomeScreen.nfcCardTitle')}
+                </Text>
 
-            {Platform.OS === 'ios' && (
-              <TouchableOpacity
-                style={styles.scanButton}
-                onPress={() => initNfcScan()}>
-                <Text style={styles.buttonText}>Start NFC Scan</Text>
-              </TouchableOpacity>
-            )}
-            {Platform.OS === 'android' && (
-              <Text style={styles.nfcPromptSubtext}>
-                Hold your device near an NFC tag
-              </Text>
-            )}
+                {Platform.OS === 'ios' && (
+                  <TouchableOpacity
+                    style={styles.scanButton}
+                    onPress={() => initNfcScan()}>
+                    <Text style={styles.buttonText}>
+                      {t('HomeScreen.nfcButtonText')}
+                    </Text>
+                  </TouchableOpacity>
+                )}
+                {Platform.OS === 'android' && (
+                  <Text style={styles.nfcPromptSubtext}>
+                    {t('HomeScreen.nfcCardSubtitle')}
+                  </Text>
+                )}
+              </View>
+              {/* <View style={{marginTop: Matrics.ms(40)}}>
+                <Text
+                  style={{
+                    fontFamily: typography.fontFamily.Montserrat.SemiBold,
+                    fontSize: typography.fontSizes.fs15,
+                  }}>
+                  {Platform.OS === 'android'
+                    ? 'Scroll to see the Time Log'
+                    : ''}
+                </Text>
+              </View> */}
+            </View>
           </View>
-        </View>
+          <View style={styles.timeLogContainer}>
+            <TimeLog sessionId={SessionId} tag={tagDetected} />
+          </View>
+        </ScrollView>
       </SafeAreaView>
     </DrawerSceneWrapper>
   );
 };
 
 const styles = StyleSheet.create({
-  centeredContainer: {
-    flex: 1,
-    backgroundColor: '#EBF0FA',
-    alignItems: 'center',
-    justifyContent: 'center',
+  topContainer: {
+    // minHeight: Matrics.screenHeight,
+    // justifyContent: 'space-between',
+    // alignContent: 'space-between',
+    // flex: 1,
+    // backgroundColor:'red'
+    // marginTop: Matrics.vs(20),
   },
+  topContainerios: {
+    marginTop: Matrics.vs(20),
+  },
+  // centeredContainer: {
+  //   flex: 1,
+  //   backgroundColor: '#EBF0FA',
+  //   alignItems: 'center',
+  //   justifyContent: 'center',
+  // },
   errorText: {
     color: '#000',
     fontSize: 18,
@@ -439,6 +567,7 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: '#6B7280',
     marginTop: 5,
+    textAlign: 'center',
   },
   scanButton: {
     backgroundColor: '#0A1931',
@@ -474,6 +603,21 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: '#666',
     textAlign: 'center',
+  },
+  timerContainer: {
+    // position: 'absolute',
+    // top: Matrics.screenHeight < 780 ? Matrics.ms(100) : Matrics.ms(150),
+    // left: Matrics.screenWidth / 4.5,
+    marginTop: Matrics.vs(60),
+  },
+  timerContainerIos: {},
+  timeLogContainer: {
+    // alignItems: 'center',
+    marginTop: Matrics.ms(40),
+    width: Matrics.screenWidth - 40,
+    marginHorizontal: 'auto',
+    borderRadius: Matrics.s(10),
+    marginBottom: Matrics.ms(20),
   },
 });
 

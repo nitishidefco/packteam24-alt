@@ -5,3 +5,9 @@ export const SCAN_REDUCER = 'scan_reducer';
 export const NETWORK_REDUCER = 'network_reducer';
 export const OFFLINE_REDUCER = 'offline_reducer';
 export const WORKSTATE_REDUCER = 'workstate_reducer';
+export const GET_NFC_TAGS_FROM_SERVER_REDUCER =
+  'get_nfc_tags_from_server_reducer';
+export const USER_PROFILE_REDUCER = 'user_profile_reducer';
+export const PASSWORD_CHANGE_REDUCER = 'password_change_reducer';
+export const WORK_HISTORY_REDUCER = 'work_history_reducer';
+export const LANGUAGE_REDUCER = 'language_reducer';

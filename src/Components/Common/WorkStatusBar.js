@@ -1,69 +1,107 @@
 import {View, Text, StyleSheet} from 'react-native';
 import React, {useEffect, useState, useMemo} from 'react';
 import {House, Coffee, Hammer} from 'lucide-react-native';
+import {reduxStorage} from '../../Redux/Storage';
+import {useWorkStatusActions} from '../../Redux/Hooks/useWorkStatusActions';
+import {useSelector} from 'react-redux';
 import {useScanTagActions} from '../../Redux/Hooks/useScanTagActions';
-import {useDispatch, useSelector} from 'react-redux';
-import {setLastOnlineMode} from '../../Redux/Reducers/WorkStateSlice';
-const WorkStatusBar = ({validationResult}) => {
-  const dispatch = useDispatch();
+import {useHomeActions} from '../../Redux/Hooks';
+import useSavedLanguage from '../Hooks/useSavedLanguage';
+import {addColons} from '../../Helpers/AddColonsToId';
 
-  const {state: states} = useScanTagActions(null);
-  const onlineMode = states?.data?.data?.mode;
-  const [workMode, setWorkMode] = useState();
+const WorkStatusBar = ({tagMode, tag}) => {
+  const {state: currentStatus, fetchWorkStatusCall} = useWorkStatusActions();
+  const language = useSavedLanguage();
+  const {state} = useHomeActions();
+  const {Auth} = state;
+  const SessionId = Auth.data?.data?.sesssion_id;
+  const [workMode, setWorkMode] = useState(null);
+  const formattedId = addColons(tag?.id);
+  const {deviceId} = useSelector(state => state?.Network);
+  const {globalLanguage} = useSelector(state => state?.GlobalLanguage);
+  useEffect(() => {
+    const updateWorkStatus = async () => {
+      try {
+        let formdata = new FormData();
+        formdata.append('session_id', SessionId);
+        formdata.append('device_id', deviceId);
+        formdata.append('lang', globalLanguage);
+        fetchWorkStatusCall(formdata);
+      } catch (error) {
+        console.error('Error updating work status', error);
+      }
+    };
+    updateWorkStatus();
+  }, [formattedId]);
+  useEffect(() => {
+    setWorkMode(currentStatus?.currentState?.work_status_to_display);
+  }, [currentStatus, formattedId]);
+
+  // useEffect(() => {
+  //   switch (tagMode) {
+  //     case 'work_start':
+  //       setWorkMode('Work in progress');
+  //       break;
+  //     case 'break_start':
+  //       setWorkMode('Break in progress');
+  //       break;
+  //     case 'work_end':
+  //       setWorkMode('Work finished');
+  //       break;
+  //     default:
+  //       setWorkMode('Not Started');
+  //   }
+  // }, [tagMode]);
   const isConnected = useSelector(state => state?.Network?.isConnected);
+  const {sessions} = useSelector(state => state.OfflineData);
+  // const getMostRecentTagId = sessionId => {
+  //   const sessionData = sessions[sessionId];
+
+  //   // Check if sessionData and items are present
+  //   if (sessionData && sessionData.items) {
+  //     // Sort the items by time in descending order (latest first)
+  //     const sortedItems = [...sessionData.items].sort((a, b) => {
+  //       const timeA = new Date(a.time);
+  //       const timeB = new Date(b.time);
+  //       return timeB - timeA; // Sort in descending order
+  //     });
+
+  //     return sortedItems[0]?.tagId;
+  //   }
+
+  //   return null; // If session data or items are not available
+  // };
+  // const mostRecentTagId = getMostRecentTagId(sessionId);
+
+  // function findModeByTagId(tags, tagId) {
+  //   const matchingTag = tags.find(tag => tag.key === tagId);
+  //   return matchingTag ? matchingTag.mode : null;
+  // }
 
   useEffect(() => {
-    if (isConnected) {
-      if (onlineMode === 'work_start') {
-        dispatch(setLastOnlineMode('work_start'));
-        setWorkMode('Work Started');
-      } else if (onlineMode === 'break_start') {
-        dispatch(setLastOnlineMode('break_start'));
-        setWorkMode('Break Started');
-      } else if (onlineMode === 'work_end') {
-        dispatch(setLastOnlineMode('work_end'));
-        setWorkMode('Work Ended');
-      }
-    } else {
-      console.log('***********inside isConnected false**************');
-      console.log('Validation result in wsb', validationResult);
-      if (validationResult?.valid) {
-        switch (validationResult?.message) {
-          case 'Work started':
-            setWorkMode('Work Started');
-            dispatch(setLastOnlineMode('work_start'));
-
-            break;
-          case 'Break ended, work resumed':
-            setWorkMode('Work Started');
-            dispatch(setLastOnlineMode('work_start'));
-
-            break;
-          case 'Break started':
-            setWorkMode('Break Started');
-            dispatch(setLastOnlineMode('break_start'));
-
-            break;
-          case 'Work ended':
-            setWorkMode('Work Ended');
-            console.log('offine work edn');
-            dispatch(setLastOnlineMode('work_end'));
-
-            break;
-          default:
-            setWorkMode('Not Started');
+    const saveTagForOfflineValidation = async () => {
+      if (isConnected) {
+        try {
+          // setWorkMode(currentStatus?.currentState?.work_status_to_display);
+          await reduxStorage.setItem(
+            'tagForOfflineValidation',
+            currentStatus?.currentState?.work_status,
+          );
+        } catch (error) {
+          console.error('Error saving tag for offline validation:', error);
         }
       }
-    }
-  }, [isConnected, onlineMode, validationResult]);
+    };
+    saveTagForOfflineValidation();
+  }, [currentStatus]);
 
   const getStatusIcon = () => {
     switch (workMode) {
-      case 'Work Started':
+      case 'Work in progress':
         return <Hammer size={30} color="#22c55e" />;
-      case 'Break Started':
+      case 'Break in progress':
         return <Coffee size={30} color="#ef4444" />;
-      case 'Work Ended':
+      case 'Work finished':
         return <House size={30} color="#3b82f6" />;
       default:
         return <House size={30} color="#6b7280" />;
@@ -73,11 +111,11 @@ const WorkStatusBar = ({validationResult}) => {
   // Memoizing background color to avoid unnecessary recalculations
   const borderColor = useMemo(() => {
     switch (workMode) {
-      case 'Work Started':
+      case 'Work in progress':
         return '#22c55e'; // Green for work mode
-      case 'Break Started':
+      case 'Break in progress':
         return '#ef4444'; // Red for break mode
-      case 'Work Ended':
+      case 'Work finished':
         return '#3b82f6'; // Blue for work ended
       default:
         return '#6b7280'; // Gray for default
@@ -88,7 +126,7 @@ const WorkStatusBar = ({validationResult}) => {
     <View style={[styles.container, {borderColor}]}>
       <View style={styles.card}>
         <View style={styles.iconContainer}>{getStatusIcon()}</View>
-        <Text style={styles.statusText}>{workMode || 'Not Started'}</Text>
+        <Text style={styles.statusText}>{workMode}</Text>
       </View>
     </View>
   );

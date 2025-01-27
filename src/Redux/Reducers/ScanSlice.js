@@ -1,6 +1,6 @@
 import {createSlice} from '@reduxjs/toolkit';
 import {SCAN_REDUCER} from '../SliceKey';
-import {toastMessage} from '../../Helpers';
+import {errorToast, success} from '../../Helpers/ToastMessage';
 
 const NULL = null;
 const SUCCESS = true;
@@ -8,42 +8,47 @@ const FAIL = false;
 
 const initialState = {
   currentState: null,
+  isScanSuccess: NULL,
+  error: null,
+  message: '',
+  data: null,
 };
 
 export const ScanSlice = createSlice({
   name: SCAN_REDUCER,
-  initialState: initialState,
+  initialState,
   reducers: {
     getScan: state => {
-      return {...state, isScanSuccess: NULL, error: null, message: ''};
+      state.isScanSuccess = NULL;
+      state.error = null;
+      state.message = '';
     },
     ScanSuccess: (state, action) => {
-      toastMessage.success(action.payload?.data?.mode);
-      initialState.currentState = action.payload?.data[1];
-      return {
-        ...state,
-        isScanSuccess: SUCCESS,
-        message: 'Fetch successfully',
-        data: action.payload,
-      };
+      const {payload} = action;
+      success(payload?.data?.message);
+      // toastMessage.success(payload?.data?.message);
+
+      state.currentState = payload?.data[1];
+      state.isScanSuccess = SUCCESS;
+      state.message = 'Fetch successfully';
+      state.data = payload;
     },
     ScanFailure: (state, action) => {
-      if (action.payload?.message) {
-        toastMessage.error(action.payload?.message);
-        initialState.currentState = action.payload?.message;
-      } else if (action.payload?.nfc_key) {
-        toastMessage.error(action.payload?.nfc_key);
+      const {payload} = action;
+
+      if (payload?.message) {
+        //  error(payload?.errors)
+        state.currentState = payload.message;
+      } else if (payload?.nfc_key) {
+        errorToast(payload?.nfc_key);
+        // toastMessage.error(payload.nfc_key);
       }
-      return {
-        ...state,
-        isScanSuccess: FAIL,
-        error: action.payload,
-        message: 'Something went wrong',
-      };
+      state.isScanSuccess = FAIL;
+      state.error = payload;
+      state.message = 'Something went wrong';
     },
   },
 });
 
 export const {getScan, ScanSuccess, ScanFailure} = ScanSlice.actions;
-const ScanReducer = ScanSlice.reducer;
-export default ScanReducer;
+export default ScanSlice.reducer;

@@ -5,11 +5,10 @@ import {View, StyleSheet, Image} from 'react-native';
 import {useNavigation} from '@react-navigation/native';
 import Images from './Config/Images';
 import {reduxStorage} from './Redux/Storage';
-
 import {useDispatch, useSelector} from 'react-redux';
 const Splash = () => {
   const [userToken, setuserToken] = useState(null);
-  const dispatch = useDispatch();
+  
   // fetch user token initally
   useEffect(() => {
     async function getToken() {
@@ -19,9 +18,10 @@ const Splash = () => {
     getToken();
   }, [userToken]);
   // fetch device info
- 
 
   const navigation = useNavigation();
+
+  // Set the nfc tags to local storage
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -37,7 +37,7 @@ const Splash = () => {
   return (
     <View style={styles.container}>
       <Image
-        source={Images.SPLASH_ICON}
+        source={Images.NEW_APP_LOGO}
         style={styles.image}
         resizeMode="contain"
       />
@@ -48,7 +48,7 @@ const Splash = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#091242',
+    backgroundColor: '#061439',
     alignItems: 'center',
     justifyContent: 'center',
   },

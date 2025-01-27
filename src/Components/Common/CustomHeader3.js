@@ -58,8 +58,8 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'center', 
-    backgroundColor: '#091242',
+    justifyContent: 'center',
+    backgroundColor: '#061439',
   },
   drawerIconStyle: {
     tintColor: 'white',

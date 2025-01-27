@@ -1,4 +1,5 @@
 export default {
+  NEW_APP_LOGO: require('../Assets/Icons/EDALOGO.jpg'),
   LOGIN_LOGO: require('../Assets/Icons/loginlogo3x.png'),
   EMAIL: require('../Assets/Icons/emailfieldicon3x.png'),
   PASSWORD: require('../Assets/Icons/passwordfieldicon3x.png'),
@@ -42,4 +43,15 @@ export default {
   ARCHIVE: require('../Assets/Icons/archive.png'),
   CLOSE: require('../Assets/Icons/close.png'),
   EYE: require('../Assets/Icons/eye.png'),
+
+  /* ------------------------------ Country Flags ----------------------------- */
+  RUS: require('../Assets/Flags/russian.png'),
+  UK: require('../Assets/Flags/english.png'),
+  GER: require('../Assets/Flags/german.png'),
+  POL: require('../Assets/Flags/polish.png'),
+  UKA: require('../Assets/Flags/ukranian.png'),
+  ZH: require('../Assets/Flags/chinese.png'),
+  /* ---------------------------- Password helpers ---------------------------- */
+  EYE_OPEN: require('../Assets/Icons/eye-new.png'),
+  EYE_CLOSE: require('../Assets/Icons/eye-off.png'),
 };

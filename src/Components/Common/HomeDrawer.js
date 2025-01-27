@@ -22,7 +22,7 @@ const HomeDrawer = () => {
           width: '60%',
         },
         sceneContainerStyle: {
-          backgroundColor: '#091242',
+          backgroundColor: '#061439',
         },
       }}>
       <Drawer.Screen

@@ -18,15 +18,19 @@ import DropdownAlert from 'react-native-dropdownalert';
 import {useAuthActions} from '../../Redux/Hooks';
 import {toastMessage} from '../../Helpers';
 import {reduxStorage} from '../../Redux/Storage';
+import {useUserProfileActions} from '../../Redux/Hooks/useUserProfileActions';
+import {success} from '../../Helpers/ToastMessage';
+import {useTranslation} from 'react-i18next';
 
 const CustomHeader = ({onUserPress}) => {
   const [modalVisible, setModalVisible] = useState(false);
   const navigation = useNavigation();
+  const {t} = useTranslation();
   const [dropdownAlert, setDropdownAlert] = useState(null);
   const [loading, setLoading] = useState(false);
   const {state, logoutCall} = useAuthActions();
+  // const {profileState} = useUserProfileActions();
   const {Auth} = state;
-  // console.log(Auth.data?.data?.avatar, 'bhau');
   const SessionId = Auth.data?.data?.sesssion_id;
 
   const openDrawer = () => {
@@ -47,12 +51,12 @@ const CustomHeader = ({onUserPress}) => {
     formdata.append('session_id', SessionId);
     formdata.append('device_id', '123');
     logoutCall(formdata);
-    console.log(formdata, 'dataaaa');
   }
   function handleLogoutResponse() {
     if (loading && Auth.islogoutSuccess === true) {
       setLoading(false);
-      toastMessage.success('Logout successful');
+      const successToast = t('Toast.LogoutSuccess');
+      success(successToast);
       navigation.navigate('Login');
       reduxStorage.removeItem('clear');
     } else if (loading && Auth.islogoutSuccess === false) {
@@ -79,7 +83,7 @@ const CustomHeader = ({onUserPress}) => {
           />
         </TouchableOpacity>
         <Image
-          source={Images.HEADER_LOGO}
+          source={Images.NEW_APP_LOGO}
           resizeMode={'contain'}
           style={styles.logoStyle}
         />
@@ -87,7 +91,8 @@ const CustomHeader = ({onUserPress}) => {
           onPress={toggleModal}
           style={styles.userIconContainer}>
           <Image
-            source={{uri: Auth.data?.data?.avatar}}
+            // source={{uri: Auth.data?.data?.avatar}}
+            // source={Images.USER}
             style={styles.userIconStyle}
           />
         </TouchableOpacity>
@@ -107,27 +112,52 @@ const CustomHeader = ({onUserPress}) => {
               ]}>
               <View style={styles.modalContent}>
                 {/* Change Password */}
-                <View style={styles.optionContainer}>
-                  <Image
-                    source={Images.CHANGE_PASSWORD}
-                    style={styles.passwordLogo}
-                  />
-                  <Text style={styles.modalText}>Change Password</Text>
-                </View>
-
+                <TouchableOpacity
+                  onPress={() => navigation.replace('ChangePassword')}>
+                  <View style={styles.optionContainer}>
+                    <Image
+                      source={Images.CHANGE_PASSWORD}
+                      style={styles.passwordLogo}
+                    />
+                    <Text style={styles.modalText}>Change Password</Text>
+                  </View>
+                </TouchableOpacity>
                 <Image
                   source={Images.SEPRATOR}
                   style={{
                     width: Matrics.ms(156),
                     marginTop: Matrics.ms(14),
                   }}></Image>
+                <TouchableOpacity
+                  onPress={() => navigation.replace('UserProfile')}>
+                  <View style={[styles.optionContainer, styles.userProfile]}>
+                    <Image
+                      source={Images.CHANGE_PASSWORD}
+                      style={{
+                        width: Matrics.scale(15),
+                        height: Matrics.scale(15),
+                        resizeMode: 'contain',
+                        right: 36,
+                      }}
+                    />
+                    <Text style={styles.LogoutText}>User Profile</Text>
+                  </View>
+                </TouchableOpacity>
+                <Image
+                  source={Images.SEPRATOR}
+                  style={{
+                    width: Matrics.ms(156),
+                    marginTop: Matrics.ms(14),
+                  }}></Image>
+                /* ----------------------------- ChangeLanguage
+                ----------------------------- */
                 {/* Logout */}
                 <TouchableOpacity onPress={logoutApi}>
                   <View style={styles.optionContainer}>
                     <Image
                       source={Images.LOGOUT_ICON}
                       style={{
-                        width: Matrics.scale(12),
+                        width: Matrics.scale(15),
                         height: Matrics.scale(15),
                         resizeMode: 'contain',
                         right: 37,
@@ -146,6 +176,7 @@ const CustomHeader = ({onUserPress}) => {
 };
 
 const styles = StyleSheet.create({
+  userProfile: {marginLeft: Matrics.s(18)},
   headerContainer: {
     height: Matrics.ms(65),
     width: '100%',
@@ -153,7 +184,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    backgroundColor: '#091242',
+    backgroundColor: '#061439',
   },
   drawerIconStyle: {
     tintColor: COLOR.WHITE,
@@ -176,8 +207,8 @@ const styles = StyleSheet.create({
     marginTop: Matrics.vs(2),
   },
   userIconStyle: {
-    width: Matrics.ms(46),
-    height: Matrics.ms(46),
+    width: Matrics.ms(40),
+    height: Matrics.ms(40),
     marginBottom: Matrics.ms(0),
     borderRadius: Matrics.ms(50),
     resizeMode: 'cover',
@@ -208,7 +239,7 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.5,
     shadowRadius: 3.84,
     elevation: 5,
-    height: Matrics.ms(85),
+    height: Matrics.ms(125),
     width: Matrics.ms(155),
   },
   modalText: {

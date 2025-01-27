@@ -25,6 +25,7 @@ import CustomHeader3 from '../../Components/Common/CustomHeader3';
 import RNFetchBlob from 'rn-fetch-blob';
 import {Platform} from 'react-native';
 import Share from 'react-native-share';
+import { success } from '../../Helpers/ToastMessage';
 const EditDailyList = () => {
   const route = useRoute();
   const [isCustomerDropdownVisible, setIsCustomerDropdownVisible] =
@@ -485,7 +486,7 @@ const EditDailyList = () => {
       } else {
         RNFetchBlob.ios.previewDocument(path);
 
-        toastMessage.success('File downloaded successfully');
+        success('File downloaded successfully');
       }
     } catch (error) {
       console.error('Error downloading file:', error);
@@ -862,7 +863,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    marginTop:  Platform.select({
+    marginTop: Platform.select({
       ios: Matrics.ms(50),
       android: Matrics.ms(50),
     }),
@@ -885,10 +886,10 @@ const styles = StyleSheet.create({
   },
   placemodalContainer: {
     justifyContent: 'flex-start',
-    position:'absolute',
+    position: 'absolute',
     top: Platform.select({
       ios: '55%',
-      android:'55%',
+      android: '55%',
     }),
     shadowColor: '#0A1931',
     shadowOffset: {
@@ -899,7 +900,7 @@ const styles = StyleSheet.create({
     shadowRadius: 10,
     elevation: 14,
     width: '100%',
-    alignItems:'center'
+    alignItems: 'center',
   },
   placemodalContent: {
     backgroundColor: '#EBF0FA',
@@ -929,7 +930,7 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   backButton: {
-    backgroundColor: '#091242',
+    backgroundColor: '#061439',
     borderWidth: 0,
     color: 'white',
     height: Matrics.ms(49),
@@ -942,7 +943,7 @@ const styles = StyleSheet.create({
     marginTop: 5,
   },
   downloadButton: {
-    backgroundColor: '#091242',
+    backgroundColor: '#061439',
     borderWidth: 0,
     color: 'white',
     height: Matrics.ms(49),
@@ -969,7 +970,7 @@ const styles = StyleSheet.create({
     }),
   },
   cancelButton: {
-    backgroundColor: '#091242',
+    backgroundColor: '#061439',
     borderWidth: 0,
     color: 'white',
     height: Matrics.ms(49),
@@ -982,7 +983,7 @@ const styles = StyleSheet.create({
     marginTop: 5,
   },
   saveButton: {
-    backgroundColor: '#091242',
+    backgroundColor: '#061439',
     borderWidth: 0,
     color: 'white',
     height: Matrics.ms(49),

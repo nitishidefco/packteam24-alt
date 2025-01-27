@@ -122,7 +122,7 @@ export const useSocket = () => {
   };
 
   const get_new_message = callback => {
-    // console.log("CALLLLLLED", global.socket);
+    //
     global.socket.on('get_new_message', callback);
   };
 
@@ -149,7 +149,7 @@ export const useSocket = () => {
 
   const disconnect_socket = () => {
     const dataObj = {user_id: Auth?.userId};
-    console.log('disconnected', dataObj);
+
     global.socket.emit('disconnect_socket', dataObj);
     global.socket?.disconnect();
     global.socket = undefined;

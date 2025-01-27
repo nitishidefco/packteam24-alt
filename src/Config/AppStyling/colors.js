@@ -35,6 +35,7 @@ export default {
   ERROR_BG: 'rgb(254,241,242)',
   SUCCESS: '#38C1A0',
   ON_PRESS: '#EEEEEE',
+  GREEN: '#124700',
 
   FONT_GRAY: 'rgb(103,105,111)',
   INDICATOR_INACTIVE: 'rgb(196,216,252)',

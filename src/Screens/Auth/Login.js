@@ -1,5 +1,11 @@
 // --------------- LIBRARIES ---------------
-import React, {useState, createRef, useContext, useEffect} from 'react';
+import React, {
+  useState,
+  createRef,
+  useContext,
+  useEffect,
+  useCallback,
+} from 'react';
 import {
   Image,
   View,
@@ -13,7 +19,11 @@ import {
   Alert,
   StatusBar,
   ScrollView,
+  Linking,
+  Button,
 } from 'react-native';
+import {useTranslation} from 'react-i18next';
+
 import {loginStyle as styles} from './styles';
 import {FullScreenSpinner} from '../../Components/HOC';
 import {useNavigation} from '@react-navigation/native';
@@ -27,11 +37,29 @@ import {Loader} from '../../Components/Common';
 import {Popup, Validator, toastMessage} from '../../Helpers';
 import {setDeviceInfo} from '../../Redux/Reducers/NetworkSlice';
 import DeviceInfo from 'react-native-device-info';
-
+import FlagComponent from '../../Components/Common/FlagComponent';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import * as RNLocalize from 'react-native-localize';
+import {errorToast, success} from '../../Helpers/ToastMessage';
+import {
+  initializeLanguage,
+  setLanguageWithStorage,
+} from '../../Redux/Reducers/LanguageProviderSlice';
+const languages = {
+  POL: 'pl', // Polish
+  GER: 'de', // German
+  UK: 'en', // English
+  RUS: 'ru', // Russian
+  UKA: 'uk', // Ukrainian
+  ZH: 'cn', //chinese
+};
 const Login = ({route}) => {
   // --------------- FUNCTION DECLARATION ---------------
   const navigation = useNavigation();
-
+  const {t, i18n} = useTranslation();
+  const privacyPolicyUrl = 'https://eda.workflex360.de/api/privacy-policy';
+  const applicationInformatinoUrl =
+    'https://eda.workflex360.de/api/application-information';
   // --------------- STATE ---------------
 
   // email & password that was static
@@ -49,21 +77,35 @@ const Login = ({route}) => {
   const [loading, setLoading] = useState(false);
   const [keyboardVisible, setKeyboardVisible] = useState(false);
   const [dropdownAlert, setDropdownAlert] = useState(null);
-  const {state, loginCall} = useAuthActions();
+  const {state, loginCall, forgotPasswordCall} = useAuthActions();
   const {Auth} = useSelector(state => state);
+  const [activeLanguage, setActiveLanguage] = useState(null);
+  const {globalLanguage} = useSelector(state => state?.GlobalLanguage);
+  
   // --------------- LIFECYCLE ---------------
   useEffect(() => {
     if (loading && Auth.isLoginSuccess === true) {
       setLoading(false);
-      toastMessage.success('Login successful');
+      const successToast = `${t('Toast.LoginSuccess')}`;
+      success(successToast);
       navigation.navigate('HomeDrawer');
       setUserEmail(null);
       setUserPassword(null);
     } else if (loading && Auth.isLoginSuccess === false) {
       setLoading(false);
-      toastMessage.error('Login Unsuccessful');
     }
   }, [Auth?.isLoginSuccess]);
+
+  useEffect(() => {
+    dispatch(initializeLanguage());
+  }, []);
+
+  const handleLanguageChange = async country => {
+    const selectedLang = languages[country];
+    setActiveLanguage(selectedLang);
+    i18n.changeLanguage(selectedLang);
+    dispatch(setLanguageWithStorage(selectedLang));
+  };
   // ---------------Getting Device info---------------
   useEffect(() => {
     const getDeviceInfo = async () => {
@@ -78,50 +120,91 @@ const Login = ({route}) => {
     };
     getDeviceInfo();
   }, []);
+
   // --------------- METHODS ---------------
   const loginAPI = () => {
-    console.log(userEmail, userPassword);
-
     try {
       setLoading(true);
       let formdata = new FormData();
       formdata.append('email', userEmail);
       formdata.append('password', userPassword);
-      formdata.append('device_id', '13213211');
+      formdata.append('device_id', deviceId);
+      formdata.append('lang', globalLanguage);
       loginCall(formdata);
     } finally {
       // setLoading(false);
     }
   };
+  const forgotPasswordAPI = () => {
+    try {
+      setLoading(true);
+      let formdata = new FormData();
+      formdata.append('email', userEmail);
+      forgotPasswordCall(formdata);
+    } catch (error) {
+      setLoading(false);
+    }
+  };
 
+  /* --------------------------------- Openurl -------------------------------- */
+  const OpenURLText = ({url, children}) => {
+    const handlePress = useCallback(async () => {
+      // Checking if the link is supported for links with custom URL scheme.
+
+      // const supported = await Linking.canOpenURL(url);
+      const supported = true;
+
+      if (supported) {
+        // Opening the link with some app, if the URL scheme is "http" the web link should be opened
+        // by some browser in the mobile
+        await Linking.openURL(url);
+      } else {
+        Alert.alert(`Don't know how to open this URL: ${url}`);
+      }
+    }, [url]);
+
+    return (
+      <TouchableOpacity onPress={handlePress}>
+        <Text style={styles.forgotPasswordText}>{children}</Text>
+      </TouchableOpacity>
+    );
+  };
   function validateInputs() {
     if (userEmail == '' || userEmail == null) {
-      toastMessage.error('Please enter email address!');
+      errorToast(i18n.t('Toast.EnterEmail'));
       return false;
     }
     if (!Validator.validateEmail(userEmail)) {
-      toastMessage.error('Please enter valid email address');
+      errorToast(i18n.t('Toast.ValidEmail'));
 
       return false;
     }
     if (userPassword === '') {
-      toastMessage.error('Please enter password');
+      errorToast(i18n.t('Toast.EnterPassword'));
       return false;
     }
     return true;
   }
 
   const onLoginPress = () => {
-    console.log('Loginpressed');
     if (!isConnected) {
-      toastMessage.error('Please check your internet connection');
+      errorToast(i18n.t('Toast.CheckInternet'));
     } else {
       if (validateInputs('Enter Email')) {
+        // changeLanguage('pl');
         loginAPI();
       }
     }
   };
-
+  const onForgotPasswordPress = () => {
+    if (!isConnected) {
+      errorToast('Please check your internet connection');
+    } else {
+      if (validateInputs('Enter Email')) {
+        forgotPasswordAPI();
+      }
+    }
+  };
   const hideStatusBar = () => {
     StatusBar.setHidden(true);
   };
@@ -150,8 +233,7 @@ const Login = ({route}) => {
       <KeyboardAvoidingView
         style={styles.keyboardAvoidingView}
         behavior={Platform.OS === 'android' ? 'height' : 'padding'}
-        enabled
-        keyboardVerticalOffset={Platform.OS === 'ios' ? 64 : 0}>
+        enabled>
         <ScrollView
           contentContainerStyle={{flexGrow: 1}}
           keyboardShouldPersistTaps="handled"
@@ -159,7 +241,7 @@ const Login = ({route}) => {
           <View
             style={[
               styles.mainBody(theme),
-              keyboardVisible && {paddingBottom: 80},
+              keyboardVisible && {marginBottom: 80},
             ]}>
             <View
               style={[
@@ -167,7 +249,7 @@ const Login = ({route}) => {
                 Platform.OS === 'ios' && styles.androidLogoConatiner,
               ]}>
               <Image
-                source={Images.LOGIN_LOGO}
+                source={Images.NEW_APP_LOGO}
                 style={{
                   resizeMode: 'contain',
                   alignSelf: 'center',
@@ -176,10 +258,8 @@ const Login = ({route}) => {
                 }}
               />
             </View>
-            <Text style={styles.loginText}>Login to your account</Text>
-            <Text style={styles.loginText2}>
-              Enter your email & password to login
-            </Text>
+            <Text style={styles.loginText}>{t('Login.title')}</Text>
+            <Text style={styles.loginText2}>{t('Login.subtitle')}</Text>
             <View style={[styles.SectionStyle]}>
               <Text
                 style={{
@@ -188,7 +268,7 @@ const Login = ({route}) => {
                   fontFamily: typography.fontFamily.Montserrat.Regular,
                   color: '#555555',
                 }}>
-                Email ID
+                {t('Login.email')}
               </Text>
               <Image
                 source={Images.EMAIL}
@@ -199,7 +279,7 @@ const Login = ({route}) => {
                 style={styles.inputStyle}
                 onChangeText={UserEmail => setUserEmail(UserEmail)}
                 value={userEmail}
-                placeholder={'Email'}
+                placeholder={t('Login.emailPlaceHolder')}
                 placeholderTextColor={'gray'}
                 autoCapitalize="none"
                 keyboardType="email-address"
@@ -219,7 +299,7 @@ const Login = ({route}) => {
                   fontFamily: typography.fontFamily.Montserrat.Regular,
                   color: '#555555',
                 }}>
-                Password
+                {t('Login.password')}
               </Text>
 
               <Image
@@ -230,7 +310,7 @@ const Login = ({route}) => {
               <TextInput
                 style={styles.inputStyle}
                 onChangeText={userPassword => setUserPassword(userPassword)}
-                placeholder={'Password'}
+                placeholder={t('Login.passwordPlaceHolder')}
                 placeholderTextColor={'gray'}
                 keyboardType="default"
                 ref={passwordInputRef}
@@ -246,8 +326,48 @@ const Login = ({route}) => {
               style={styles.buttonStyle}
               activeOpacity={0.5}
               onPress={onLoginPress}>
-              <Text style={styles.buttonTextStyle}>Login</Text>
+              <Text style={styles.buttonTextStyle}>
+                {t('Login.loginButton')}
+              </Text>
             </TouchableOpacity>
+            <TouchableOpacity
+              style={styles.forgotPasswordStyle}
+              activeOpacity={0.5}
+              onPress={() => navigation.navigate('ForgotPass')}>
+              <Text style={styles.forgotPasswordText}>
+                {t('Login.forgotPassword')}
+              </Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={styles.forgotPasswordStyle}
+              activeOpacity={0.5}
+              onPress={() => navigation.navigate('CreateAccount')}>
+              <Text style={styles.forgotPasswordText}>
+                {/* {t('Login.forgotPassword')} */}
+                {t('Login.ca')}
+              </Text>
+            </TouchableOpacity>
+            <View style={styles.FlagContainer}>
+              {Object.keys(languages).map(country => (
+                <TouchableOpacity
+                  key={country}
+                  onPress={() => handleLanguageChange(country)}
+                  style={[
+                    styles.touchable,
+                    globalLanguage &&
+                      globalLanguage !== languages[country] &&
+                      styles.inactive,
+                  ]}>
+                  <FlagComponent Country={country} />
+                </TouchableOpacity>
+              ))}
+            </View>
+            <View style={{marginBottom: Matrics.ms(20)}}>
+              <OpenURLText url={privacyPolicyUrl}>{t('Login.pp')}</OpenURLText>
+              <OpenURLText url={applicationInformatinoUrl}>
+                {t('Login.ai')}
+              </OpenURLText>
+            </View>
           </View>
         </ScrollView>
       </KeyboardAvoidingView>
