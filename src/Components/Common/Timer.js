@@ -118,19 +118,20 @@ const Timer = ({tag, tagsFromLocalStorage, sessionId}) => {
   // Handle the timer behavior based on tag
   const controlTimer = (currentTag, workStatus) => {
     if (currentTag === 'break_start' && workStatus === 'work_not_started') {
-      errorToast(i18n.t('Toast.StartWorkFirst'));
+      
       return;
     }
     if (currentTag === 'break_start' && workStatus === 'work_finished') {
-      errorToast(i18n.t('Toast.WorkAlreadyFinished'));
+      
       return;
     }
     if (currentTag === 'work_start' && workStatus === 'work_not_started') {
-      errorToast(i18n.t('Toast.StartWorkFirst'));
+      
       return;
     }
     if (currentTag === 'work_start' && workStatus === 'work_finished') {
-      errorToast(i18n.t('Toast.WorkAlreadyFinished'));
+      
+      return;
     }
     const actions = {
       work_start: () => {
