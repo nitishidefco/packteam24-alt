@@ -108,7 +108,11 @@
       "ValidEmail": "请输入有效的电子邮件地址",
       "EnterPassword": "请输入密码",
       "CheckInternet": "请检查您的互联网连接",
-      "LoginUnsuccessful": "登录失败"
+      "LoginUnsuccessful": "登录失败",
+      
+  "StartWorkFirst": "请先开始工作"
+
+
     },
     "TimeLog": {
       "title": "时间记录",

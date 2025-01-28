@@ -9,6 +9,8 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import useSavedLanguage from '../Hooks/useSavedLanguage';
 import {useWorkStatusActions} from '../../Redux/Hooks/useWorkStatusActions';
 import {useSelector} from 'react-redux';
+import {errorToast} from '../../Helpers/ToastMessage';
+import i18n from '../../i18n/i18n';
 const Timer = ({tag, tagsFromLocalStorage, sessionId}) => {
   const {state: currentStatus, fetchWorkStatusCall} = useWorkStatusActions();
   const [appState, setAppState] = useState(AppState.currentState);
@@ -22,7 +24,9 @@ const Timer = ({tag, tagsFromLocalStorage, sessionId}) => {
   const formattedTagId = addColons(tag?.id);
   const [loading, setLoading] = useState(true);
   const {deviceId} = useSelector(state => state?.Network);
-  const {globalLanguage} = useSelector(state => state?.GlobalLanguage)
+  const {globalLanguage} = useSelector(state => state?.GlobalLanguage);
+
+
   const tagMode = findModeByTagId(tagsFromLocalStorage, tag?.id);
   useEffect(() => {
     if (workHistoryState && workHistoryState.data) {
@@ -113,8 +117,21 @@ const Timer = ({tag, tagsFromLocalStorage, sessionId}) => {
 
   // Handle the timer behavior based on tag
   const controlTimer = (currentTag, workStatus) => {
-    console.log('Outer current tag:', currentTag);
-
+    if (currentTag === 'break_start' && workStatus === 'work_not_started') {
+      errorToast(i18n.t('Toast.StartWorkFirst'));
+      return;
+    }
+    if (currentTag === 'break_start' && workStatus === 'work_finished') {
+      errorToast(i18n.t('Toast.WorkAlreadyFinished'));
+      return;
+    }
+    if (currentTag === 'work_start' && workStatus === 'work_not_started') {
+      errorToast(i18n.t('Toast.StartWorkFirst'));
+      return;
+    }
+    if (currentTag === 'work_start' && workStatus === 'work_finished') {
+      errorToast(i18n.t('Toast.WorkAlreadyFinished'));
+    }
     const actions = {
       work_start: () => {
         console.log('Executing action for: work_start');
@@ -157,10 +174,8 @@ const Timer = ({tag, tagsFromLocalStorage, sessionId}) => {
     // Default action for undefined or unhandled cases
     const defaultAction = () =>
       console.log('No matching action found for:', currentTag ?? workStatus);
-
-    // Use currentTag if it exists; otherwise, fall back to workStatus
-    const actionKey = currentTag ?? workStatus; // Nullish coalescing
-    console.log('Determined actionKey:', actionKey); // Log the resolved key
+    const actionKey = currentTag ?? workStatus;
+    console.log('Determined actionKey:', actionKey);
     (actions[actionKey] || defaultAction)();
   };
 

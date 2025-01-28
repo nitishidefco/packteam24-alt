@@ -301,10 +301,11 @@ const styles = StyleSheet.create({
   },
   mainBody: theme => ({
     flex: 1,
-    justifyContent: 'center',
+
     backgroundColor: '#EBF0FA',
     alignContent: 'center',
     marginHorizontal: Matrics.s(15),
+    marginVertical: Matrics.s(10),
   }),
   headerTitle: {
     color: '#fff',
@@ -349,8 +350,7 @@ const styles = StyleSheet.create({
     color: colors.BLACK,
     fontFamily: typography.fontFamily.Montserrat.Medium,
     fontSize: typography.fontSizes.fs15,
-    fontStyle: 'normal',
-    height: Matrics.vs(35),
+    height: Matrics.vs(40),
   },
   actionButtonContainer: {
     flexDirection: 'row',

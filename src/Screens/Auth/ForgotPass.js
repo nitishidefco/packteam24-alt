@@ -252,7 +252,7 @@ const ForgotPass = () => {
                 {t('ForgotPassword.resetButton')}
               </Text>
             </TouchableOpacity>
-            <TouchableOpacity onPress={() => navigation.navigate('Login')}>
+            <TouchableOpacity onPress={() => navigation.replace('Login')}>
               <Text style={inLineStyles.goBack}>
                 {t('ForgotPassword.backToLogin')}
               </Text>

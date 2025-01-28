@@ -335,7 +335,7 @@ const Login = ({route}) => {
             <TouchableOpacity
               style={styles.forgotPasswordStyle}
               activeOpacity={0.5}
-              onPress={() => navigation.navigate('ForgotPass')}>
+              onPress={() => navigation.replace('ForgotPass')}>
               <Text style={styles.forgotPasswordText}>
                 {t('Login.forgotPassword')}
               </Text>
@@ -343,7 +343,7 @@ const Login = ({route}) => {
             <TouchableOpacity
               style={styles.forgotPasswordStyle}
               activeOpacity={0.5}
-              onPress={() => navigation.navigate('CreateAccount')}>
+              onPress={() => navigation.replace('CreateAccount')}>
               <Text style={styles.forgotPasswordText}>
                 {/* {t('Login.forgotPassword')} */}
                 {t('Login.ca')}

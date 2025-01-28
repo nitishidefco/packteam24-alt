@@ -108,7 +108,8 @@
             "ValidEmail": "Bitte gültige E-Mail-Adresse eingeben",
             "EnterPassword": "Bitte Passwort eingeben",
             "CheckInternet": "Bitte Internetverbindung überprüfen",
-            "LoginUnsuccessful": "Anmeldung fehlgeschlagen"
+            "LoginUnsuccessful": "Anmeldung fehlgeschlagen",
+              "StartWorkFirst": "Bitte beginnen Sie zuerst mit der Arbeit"
         },
         "TimeLog": {
       "title": "Zeiterfassung",

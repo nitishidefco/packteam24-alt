@@ -289,7 +289,7 @@ const CreateAccount = () => {
             <TouchableOpacity
               style={styles.forgotPasswordStyle}
               activeOpacity={0.5}
-              onPress={() => navigation.navigate('Login')}>
+              onPress={() => navigation.replace('Login')}>
               <Text style={styles.forgotPasswordText}>
                 {/* {t('Login.forgotPassword')} */}
                 {t('CreateAccount.btl')}

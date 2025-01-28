@@ -110,7 +110,9 @@
         "ValidEmail":"Please enter a valid email address",
         "EnterPassword":"Please enter password",
         "CheckInternet":"Please check your internet connection",
-        "LoginUnsuccessful":"Login Unsuccessful"
+        "LoginUnsuccessful":"Login Unsuccessful",
+        "StartWorkFirst":"Please start work first",
+        "WorkAlreadyFinished":"Work is already finished"
     },
     "TimeLog":{
         "title":"Time Log",

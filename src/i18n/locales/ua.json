@@ -105,7 +105,10 @@
             "ValidEmail": "Будь ласка, введіть дійсну email адресу",
             "EnterPassword": "Будь ласка, введіть пароль",
             "CheckInternet": "Будь ласка, перевірте підключення до інтернету",
-            "LoginUnsuccessful": "Вхід не вдався"
+            "LoginUnsuccessful": "Вхід не вдався",
+            "StartWorkFirst": "Будь ласка, почніть роботу спочатку"
+
+
         },
         "TimeLog": {
       "title": "Журнал часу",

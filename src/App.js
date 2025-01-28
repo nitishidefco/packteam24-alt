@@ -34,7 +34,7 @@ const App = () => {
     const unsubscribe = monitorNetworkStatus(Store.dispatch);
     //
 
-    return () => unsubscribe(); // Cleanup listener on unmount
+    return () => unsubscribe();
   }, []);
 
   return (

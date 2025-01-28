@@ -24,6 +24,8 @@ import colors from '../../Config/AppStyling/colors';
 import {useUserProfileActions} from '../../Redux/Hooks/useUserProfileActions';
 import {useHomeActions} from '../../Redux/Hooks';
 import {useSelector} from 'react-redux';
+import {Validator} from '../../Helpers';
+import { errorToast } from '../../Helpers/ToastMessage';
 
 const UserProfile = ({navigation}) => {
   const {t, i18n} = useTranslation();
@@ -44,6 +46,8 @@ const UserProfile = ({navigation}) => {
   const [image, setImage] = useState(null);
   const {deviceId} = useSelector(state => state?.Network);
   const {globalLanguage} = useSelector(state => state?.GlobalLanguage);
+  const [error, setError] = useState(null);
+
   const requestAndroidPermission = async () => {
     try {
       // For Android 13 and above (API 33+)
@@ -123,38 +127,80 @@ const UserProfile = ({navigation}) => {
   }, [counter]);
 
   /* --------------------------- Set data of profile -------------------------- */
+
   useEffect(() => {
-    setImage(profileState?.data?.photo);
-    setUserEmail(profileState?.data?.email);
+    try {
+      const photoData = profileState?.data?.photo;
+
+      // Reset error state at the start of each effect
+      setError(null);
+
+      // Check if photo is an object (error case) or string (success case)
+      if (typeof photoData === 'object' && photoData !== null) {
+        // Handle error case
+        const errorMessage = Array.isArray(photoData.photo)
+          ? photoData.photo[0]
+          : 'Invalid image format';
+        setError(errorMessage);
+        setImage(null);
+      } else if (typeof photoData === 'string') {
+        // Handle success case
+        setImage(photoData);
+      } else {
+        // Handle undefined or null case
+        setImage(null);
+        setError('No image available');
+      }
+
+      // Set email if available
+      setUserEmail(profileState?.data?.email || null);
+    } catch (error) {
+      console.error('Error processing profile data:', error);
+      setError('Error loading profile data');
+      setImage(null);
+    }
   }, [profileState, counter]);
 
   /* ----------------------------- Handle changes ----------------------------- */
-  const handleSave = async () => {
-    if (!userEmail) {
-      console.error('Email is required!');
-      return;
+  function validateInputs() {
+    console.log('inside validate');
+
+    if (userEmail === '' || userEmail === null) {
+      console.log('Not emila');
+
+      errorToast(i18n.t('Toast.EnterEmail'));
+      return false;
     }
+    if (!Validator.validateEmail(userEmail)) {
+      errorToast(i18n.t('Toast.ValidEmail'));
 
-    try {
-      const formData = new FormData();
-      formData.append('session_id', SessionId);
-      formData.append('device_id', deviceId);
-      formData.append('lang', globalLanguage);
-      formData.append('email', userEmail);
+      return false;
+    }
+    return true;
+  }
+  const handleSave = async () => {
+    if (validateInputs()) {
+      try {
+        const formData = new FormData();
+        formData.append('session_id', SessionId);
+        formData.append('device_id', deviceId);
+        formData.append('lang', globalLanguage);
+        formData.append('email', userEmail);
 
-      if (image) {
-        formData.append('photo', {
-          uri: image,
-          type: 'image/jpeg',
-          name: 'profile.jpg',
-        });
+        if (image) {
+          formData.append('photo', {
+            uri: image,
+            type: 'image/jpeg',
+            name: 'profile.jpg',
+          });
+        }
+
+        updateUserProfileCall(formData);
+        setCounter(prevCounter => prevCounter + 1);
+        navigation.replace('HomeDrawer');
+      } catch (error) {
+        console.error('Error updating profile:', error);
       }
-
-      updateUserProfileCall(formData);
-      setCounter(prevCounter => prevCounter + 1);
-      navigation.replace('HomeDrawer');
-    } catch (error) {
-      console.error('Error updating profile:', error);
     }
   };
 
@@ -258,25 +304,25 @@ const UserProfile = ({navigation}) => {
           <View style={styles.mainContainer}>
             <View>
               <View style={styles.container}>
-                <View
-                  // onPress={pickImage}
-                  style={styles.imageContainer}>
+                <View style={styles.imageContainer}>
                   {image ? (
                     <Image
                       source={{uri: image}}
                       style={styles.image}
                       resizeMode="cover"
+                      onError={() => setError('Failed to load image')}
                     />
                   ) : (
                     <View style={styles.placeholderContainer}>
                       <View style={styles.placeholder}>
                         <Text style={styles.placeholderText}>
-                          Dummy avatar will be added if no photo
+                          {error || 'Dummy avatar will be added if no photo'}
                         </Text>
                       </View>
                     </View>
                   )}
                 </View>
+                {error && <Text style={styles.errorText}>{error}</Text>}
                 <View style={styles.imageActionButton}>
                   <TouchableOpacity onPress={pickImage} style={styles.button}>
                     <Text style={styles.buttonText}>
@@ -374,6 +420,12 @@ const styles = StyleSheet.create({
   mainContainer: {
     flex: 1,
     justifyContent: 'space-between',
+  },
+  errorText: {
+    color: '#ff6b6b',
+    fontSize: 12,
+    marginTop: 5,
+    textAlign: 'center',
   },
   header: {
     height: 56,

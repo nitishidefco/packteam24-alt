@@ -1,6 +1,5 @@
 import {all, call, put, take, takeEvery} from 'redux-saga/effects';
 import API from '../Services/UserProfileService';
-import LOGOUT_API from '../Services/AuthServices';
 import {USER_PROFILE_REDUCER, AUTH_REDUCER} from '../SliceKey';
 import {
   fetchUserProfileSuccess,
@@ -81,7 +80,6 @@ function* removeUserAccountSaga({payload}) {
       // errorToast(i18n.t('Toast.ErrorRemovingProfilePhoto'));
     }
   } catch (error) {
-    console.error('Error removing profile photo', error);
     yield put(removeAccountFail(error.message));
     yield put({type: `${USER_PROFILE_REDUCER}/fetchUserProfile`, payload});
   }

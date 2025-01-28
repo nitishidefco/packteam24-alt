@@ -20,7 +20,11 @@ function* changePasswordSaga({payload}) {
       console.log(response);
 
       yield put(changePasswordFail(response.errors));
-      errorToast(response?.errors?.password);
+      if (response?.errors?.current_password) {
+        errorToast(response?.errors?.current_password);
+      } else {
+        errorToast(response?.error?.message);
+      }
     }
   } catch (error) {
     console.error('Updating password error', error);

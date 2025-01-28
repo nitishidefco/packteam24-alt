@@ -108,7 +108,8 @@
         "ValidEmail": "Proszę wprowadzić prawidłowy adres e-mail",
         "EnterPassword": "Proszę wprowadzić hasło",
         "CheckInternet": "Proszę sprawdzić połączenie z internetem",
-        "LoginUnsuccessful": "Logowanie nie powiodło się"
+        "LoginUnsuccessful": "Logowanie nie powiodło się",
+        "StartWorkFirst": "Proszę najpierw rozpocząć pracę"
     },
     "TimeLog": {
       "title": "Dziennik czasu",

@@ -29,7 +29,7 @@ const handleResponse = response => {
               formData.append('session_id', SessionId);
               formData.append('device_id', deviceId);
               dispatch(getLogout(formData));
-              navigation.navigate('Login');
+              navigation.replace('Login');
             },
           },
         ],
@@ -38,12 +38,12 @@ const handleResponse = response => {
     });
   }
 
-  if (response.status !== 200) {
-    return response.json().then(errorData => {
-      errorToast(errorData.message);
-      return Promise.reject(errorData);
-    });
-  }
+  // if (response.status !== 200) {
+  //   return response.json().then(errorData => {
+  //     errorToast(errorData.message);
+  //     return Promise.reject(errorData);
+  //   });
+  // }
 
   if (contentType && contentType.indexOf('application/json') !== -1) {
     return response.json().then(jsonData => {
