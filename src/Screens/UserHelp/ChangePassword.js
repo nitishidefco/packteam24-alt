@@ -86,8 +86,7 @@ const ChangePassword = ({navigation}) => {
             formData.append('current_password', currentPassword);
             formData.append('new_password', newPassword);
             formData.append('confirm_new_password', confirmNewPassword);
-            changePasswordCall(formData);
-            navigation.replace('HomeDrawer');
+            changePasswordCall(formData, navigation);
           },
         },
       ],

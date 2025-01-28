@@ -28,7 +28,7 @@ const LanguageSelector = ({sessionId}) => {
     {label: '🇬🇧 EN', value: 'en'},
     {label: '🇩🇪 DE', value: 'de'},
     {label: '🇷🇺 RU', value: 'ru'},
-    {label: '🇺🇦 UK', value: 'uk'},
+    {label: '🇺🇦 UA', value: 'ua'},
     {label: '🇵🇱 PL', value: 'pl'},
     {label: '🇨🇳 CN', value: 'cn'},
   ];

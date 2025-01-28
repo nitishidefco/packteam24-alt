@@ -5,8 +5,8 @@ export const useChangePasswordActions = () => {
   const dispatch = useDispatch();
   const passwordState = useSelector(state => state?.changePassword);
 
-  const changePasswordCall = params => {
-    dispatch(changePassword(params));
+  const changePasswordCall = (params, navigation) => {
+    dispatch(changePassword({payload: params, navigation}));  
   };
 
   return {

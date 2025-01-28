@@ -11,11 +11,14 @@ import i18n from '../../i18n/i18n';
 
 function* changePasswordSaga({payload}) {
   try {
-    const response = yield call(API.ChangePassword, payload);
+    const response = yield call(API.ChangePassword, payload.payload);
+    console.log('password change response', response);
+
     if (response?.data) {
       // Check for data property
       yield put(changePasswordSuccess(response.data));
       success(i18n.t('Toast.PasswordChangeSuccessfull'));
+      payload.navigation.replace('HomeDrawer');
     } else if (response?.errors) {
       console.log(response);
 

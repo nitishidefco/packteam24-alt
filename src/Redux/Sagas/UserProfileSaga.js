@@ -68,7 +68,6 @@ function* removeProfilePhotoSaga({payload}) {
 function* removeUserAccountSaga({payload}) {
   try {
     const response = yield call(API.RemoveAccount, payload.payload);
-    console.log('remove user account response', response);
 
     if (response?.data) {
       yield put(removeAccountSuccess(response.data));

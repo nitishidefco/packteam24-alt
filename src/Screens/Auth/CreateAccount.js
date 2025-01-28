@@ -49,7 +49,7 @@ const languages = {
   GER: 'de', // German
   UK: 'en', // English
   RUS: 'ru', // Russian
-  UKA: 'uk', // Ukrainian
+  UKA: 'ua', // Ukrainian
   ZH: 'cn', //chinese
 };
 const CreateAccount = () => {
