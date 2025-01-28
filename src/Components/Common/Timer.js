@@ -132,6 +132,10 @@ const Timer = ({tag, tagsFromLocalStorage, sessionId}) => {
       startTimer();
       return;
     }
+    if (currentTag === 'break_start' && workStatus === 'break_in_progress') {
+      startTimer();
+      return;
+    }
     const actions = {
       work_start: () => {
         console.log('Executing action for: work_start');

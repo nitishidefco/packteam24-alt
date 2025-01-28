@@ -66,6 +66,8 @@ const ChangePassword = ({navigation}) => {
       return;
     }
 
+    
+
     Alert.alert(
       t('ChangePasswordScreen.confirmNewPassword'),
       t('ChangePasswordScreen.changeConfirmation'),

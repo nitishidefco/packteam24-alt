@@ -15,8 +15,11 @@ import {errorToast, success} from '../../Helpers/ToastMessage';
 import i18n from '../../i18n/i18n';
 // Fetch Profile Saga
 function* fetchUserProfileSaga({payload}) {
+  console.log('fetch user profile payload', payload);
+
   try {
     const response = yield call(API.Profile, payload);
+    console.log('fetch user profile rsponse', response);
     if (response?.data) {
       // Check for data property
       yield put(fetchUserProfileSuccess(response.data));

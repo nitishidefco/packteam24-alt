@@ -91,6 +91,7 @@
     "Toast": {
         "LogoutSuccess": "Выход выполнен успешно",
         "AccountCreatedSuccessfull": "Учетная запись успешно создана",
+        "AccountCreatedSuccessfullSubtitle":"Мы отправим дополнительную информацию по электронной почте",
         "PasswordChangeSuccessfull": "Пароль успешно изменен",
         "ProfileUpdated": "Профиль успешно обновлен",
         "PhotoRemovedSuccessfully": "Фото успешно удалено",

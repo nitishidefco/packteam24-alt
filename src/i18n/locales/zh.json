@@ -95,6 +95,8 @@
     "Toast": {
       "LogoutSuccess": "登出成功",
       "AccountCreatedSuccessfull": "帐户创建成功",
+      "AccountCreatedSuccessfullSubtitle":"我们将通过电子邮件发送进一步的信息"
+,
       "PasswordChangeSuccessfull": "密码更改成功",
       "ProfileUpdated": "个人资料更新成功",
       "PhotoRemovedSuccessfully": "头像移除成功",

@@ -25,7 +25,7 @@ import {useUserProfileActions} from '../../Redux/Hooks/useUserProfileActions';
 import {useHomeActions} from '../../Redux/Hooks';
 import {useSelector} from 'react-redux';
 import {Validator} from '../../Helpers';
-import { errorToast } from '../../Helpers/ToastMessage';
+import {errorToast} from '../../Helpers/ToastMessage';
 
 const UserProfile = ({navigation}) => {
   const {t, i18n} = useTranslation();
@@ -123,10 +123,13 @@ const UserProfile = ({navigation}) => {
     formData.append('session_id', SessionId);
     formData.append('device_id', deviceId);
     formData.append('lang', globalLanguage);
+    console.log('fetching user profile');
+
     fetchUserProfileCall(formData);
-  }, [counter]);
+  }, []);
 
   /* --------------------------- Set data of profile -------------------------- */
+  console.log(profileState);
 
   useEffect(() => {
     try {
@@ -290,7 +293,6 @@ const UserProfile = ({navigation}) => {
   }, [language]);
   return (
     <SafeAreaView style={styles.safeArea}>
-    
       <View style={styles.header}>
         <Text style={styles.headerTitle}>{t('UserProfileScreen.title')}</Text>
       </View>
@@ -323,7 +325,7 @@ const UserProfile = ({navigation}) => {
                     </View>
                   )}
                 </View>
-                {error && <Text style={styles.errorText}>{error}</Text>}
+                {/* {error && <Text style={styles.errorText}>{error}</Text>} */}
                 <View style={styles.imageActionButton}>
                   <TouchableOpacity onPress={pickImage} style={styles.button}>
                     <Text style={styles.buttonText}>
