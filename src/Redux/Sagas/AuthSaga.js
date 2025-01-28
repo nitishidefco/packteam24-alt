@@ -52,10 +52,14 @@ const logoutSaga = function* logoutSaga({payload}) {
 const forgotPasswordSaga = function* forgotPasswordSaga({payload}) {
   try {
     const response = yield call(API.ForgotPassword, payload);
-    if (response) {
-      success(i18n.t('ResetPassword.passwordResetSuccess')); //Toast message
+    if (!response?.errors?.email) {
+      console.log('forgot password response', response);
+
       yield put(forgotPasswordSuccess(response));
+      success(response?.message); 
+
     } else {
+      errorToast(response?.errors?.email);
       yield put(forgotPasswordFailure(response));
     }
   } catch (error) {

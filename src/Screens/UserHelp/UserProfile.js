@@ -18,7 +18,7 @@ import useSavedLanguage from '../../Components/Hooks/useSavedLanguage';
 import {loginStyle} from '../Auth/styles';
 import {COLOR, Matrics, typography} from '../../Config/AppStyling';
 import {useTranslation} from 'react-i18next';
-import {Images} from '../../Config';
+import {Images, setHeader} from '../../Config';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import colors from '../../Config/AppStyling/colors';
 import {useUserProfileActions} from '../../Redux/Hooks/useUserProfileActions';
@@ -290,6 +290,7 @@ const UserProfile = ({navigation}) => {
   }, [language]);
   return (
     <SafeAreaView style={styles.safeArea}>
+    
       <View style={styles.header}>
         <Text style={styles.headerTitle}>{t('UserProfileScreen.title')}</Text>
       </View>

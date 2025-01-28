@@ -26,7 +26,6 @@ const Timer = ({tag, tagsFromLocalStorage, sessionId}) => {
   const {deviceId} = useSelector(state => state?.Network);
   const {globalLanguage} = useSelector(state => state?.GlobalLanguage);
 
-
   const tagMode = findModeByTagId(tagsFromLocalStorage, tag?.id);
   useEffect(() => {
     if (workHistoryState && workHistoryState.data) {
@@ -118,19 +117,19 @@ const Timer = ({tag, tagsFromLocalStorage, sessionId}) => {
   // Handle the timer behavior based on tag
   const controlTimer = (currentTag, workStatus) => {
     if (currentTag === 'break_start' && workStatus === 'work_not_started') {
-      
       return;
     }
     if (currentTag === 'break_start' && workStatus === 'work_finished') {
-      
       return;
     }
     if (currentTag === 'work_start' && workStatus === 'work_not_started') {
-      
       return;
     }
     if (currentTag === 'work_start' && workStatus === 'work_finished') {
-      
+      return;
+    }
+    if (currentTag === 'work_start' && workStatus === 'work_in_progress') {
+      startTimer();
       return;
     }
     const actions = {
