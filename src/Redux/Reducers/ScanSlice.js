@@ -24,7 +24,7 @@ export const ScanSlice = createSlice({
       state.message = '';
     },
     ScanSuccess: (state, action) => {
-      console.log('state scan', action?.payload);
+
 
       const {payload} = action;
       success(payload?.data?.message);

@@ -120,5 +120,10 @@
         "mode":"Mode",
         "To":"To",
         "nohistory":"You have no work history for today"
+    },
+    "TagModes":{
+        "break_start":"Break",
+        "work_start":"Work",
+        "work_end":"Work End"
     }
 }

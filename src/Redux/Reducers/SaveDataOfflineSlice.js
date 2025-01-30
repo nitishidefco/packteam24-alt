@@ -12,7 +12,8 @@ const SaveDataOfflineSlice = createSlice({
   initialState,
   reducers: {
     addDataToOfflineStorage: (state, action) => {
-      const {sessionId, time, tagId} = action.payload;
+      const {sessionId, time, tagId, current_date, current_hour} =
+        action.payload;
 
       // Step 2: Ensure the session exists or create it
       if (!state.sessions[sessionId]) {
@@ -30,7 +31,12 @@ const SaveDataOfflineSlice = createSlice({
       }
 
       // Step 4: Add valid tag to offline storage
-      state.sessions[sessionId].items.push({time, tagId});
+      state.sessions[sessionId].items.push({
+        time,
+        tagId,
+        current_hour,
+        current_date,
+      });
     },
 
     clearOfflineStorage: state => {

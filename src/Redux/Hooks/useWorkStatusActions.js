@@ -6,6 +6,8 @@ export const useWorkStatusActions = () => {
   const state = useSelector(state => state?.WorkState);
 
   const fetchWorkStatusCall = params => {
+    console.log('fetching updating work status');
+
     dispatch(fetchWorkStatus(params));
   };
 

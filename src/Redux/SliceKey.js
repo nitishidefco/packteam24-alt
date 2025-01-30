@@ -11,3 +11,4 @@ export const USER_PROFILE_REDUCER = 'user_profile_reducer';
 export const PASSWORD_CHANGE_REDUCER = 'password_change_reducer';
 export const WORK_HISTORY_REDUCER = 'work_history_reducer';
 export const LANGUAGE_REDUCER = 'language_reducer';
+export const LOCAL_WORK_HISTORY_REDUCER = 'local_work_history_reducer';

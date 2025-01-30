@@ -13,6 +13,7 @@ import {useTranslation} from 'react-i18next';
 import {useWorkHistoryActions} from '../../Redux/Hooks/useWorkHistoryActions';
 import {useDispatch, useSelector} from 'react-redux';
 import {setLanguageWithStorage} from '../../Redux/Reducers/LanguageProviderSlice';
+import {useWorkStatusActions} from '../../Redux/Hooks/useWorkStatusActions';
 
 const LanguageSelector = ({sessionId}) => {
   const [isOpen, setIsOpen] = useState(false);
@@ -20,9 +21,9 @@ const LanguageSelector = ({sessionId}) => {
   const dispatch = useDispatch();
   const {deviceId} = useSelector(state => state?.Network);
   const {globalLanguage} = useSelector(state => state?.GlobalLanguage);
-  console.log(globalLanguage);
 
   const {getWorkHistoryCall} = useWorkHistoryActions();
+  const {fetchWorkStatusCall} = useWorkStatusActions();
 
   const languageOptions = [
     {label: '🇬🇧 EN', value: 'en'},
@@ -42,7 +43,12 @@ const LanguageSelector = ({sessionId}) => {
     formData.append('lang', language);
 
     dispatch(setLanguageWithStorage(language));
-    getWorkHistoryCall(formData);
+    try {
+      getWorkHistoryCall(formData);
+      fetchWorkStatusCall(formData);
+    } catch (error) {
+      console.log('error', error);
+    }
     setIsOpen(false);
   };
 

@@ -41,7 +41,6 @@ import LanguageSelector from '../../Components/Common/LanguageSelector';
 import Timer from '../../Components/Common/Timer';
 import {Matrics, typography} from '../../Config/AppStyling';
 import TimeLog from '../../Components/HomeComponent/TimeLog';
-import TimerNew from '../../Components/Common/TimerNew';
 import {initializeLanguage} from '../../Redux/Reducers/LanguageProviderSlice';
 import {setSessionHandler} from '../../Utlis/SessionHandler';
 
@@ -120,6 +119,17 @@ const Home = ({navigation, route}) => {
     getDeviceInfo();
   }, []);
   // fetching nfc tags stored in local storage
+  const updateWorkStatus = async () => {
+    try {
+      let formdata = new FormData();
+      formdata.append('session_id', SessionId);
+      formdata.append('device_id', deviceId);
+      formdata.append('lang', globalLanguage);
+      fetchWorkStatusCall(formdata);
+    } catch (error) {
+      console.error('Error updating work status', error);
+    }
+  };
   useEffect(() => {
     const fetchNfcTags = async () => {
       try {
@@ -128,17 +138,7 @@ const Home = ({navigation, route}) => {
         setTagsFromLocalStorage(parsedTags);
       } catch (error) {}
     };
-    const updateWorkStatus = async () => {
-      try {
-        let formdata = new FormData();
-        formdata.append('session_id', SessionId);
-        formdata.append('device_id', deviceId);
-        formdata.append('lang', globalLanguage);
-        fetchWorkStatusCall(formdata);
-      } catch (error) {
-        console.error('Error updating work status', error);
-      }
-    };
+
     updateWorkStatus();
     fetchNfcTags();
   }, [tagDetected, count]);
@@ -236,7 +236,7 @@ const Home = ({navigation, route}) => {
   }
 
   // Processes the NFC tag ID by sending it to the server
-  const getUid = async uid => {
+  const getUid = async (uid, current_date, current_hour) => {
     try {
       setLoading(true);
       let formdata = new FormData();
@@ -244,8 +244,8 @@ const Home = ({navigation, route}) => {
       formdata.append('device_id', deviceId);
       formdata.append('nfc_key', uid);
       formdata.append('lang', globalLanguage);
-      console.log('Home screen tag scan', globalLanguage);
-
+      formdata.append('current_date', current_date);
+      formdata.append('current_hour', current_hour);
       scanCall(formdata);
     } catch (error) {
       console.error('Error processing UID:', error);
@@ -302,14 +302,20 @@ const Home = ({navigation, route}) => {
       try {
         if (tagId) {
           // Process the current tag when online
-          await getUid(tagId);
+          const current_date = moment().format('YYYY-MM-DD');
+          const current_hour = moment().format('HH:mm');
+          await getUid(tagId, current_date, current_hour);
           setTagId('');
         }
 
         if (storedSessions.length > 0) {
           for (const [index, item] of storedSessions.entries()) {
+            console.log('stored sessions', storedSessions);
+
+            console.log('current_date from session', item);
+
             try {
-              await getUid(item.tagId);
+              await getUid(item.tagId, item.current_date, item.current_hour);
             } catch (error) {
               console.error(
                 `Error processing stored tag ${item.tagId}:`,
@@ -319,7 +325,7 @@ const Home = ({navigation, route}) => {
 
             // Add a delay of 6 seconds before the next item (except for the last one)
             if (index < storedSessions.length - 1) {
-              await new Promise(resolve => setTimeout(resolve, 6000));
+              await new Promise(resolve => setTimeout(resolve, 3000));
             }
           }
         }
@@ -339,14 +345,16 @@ const Home = ({navigation, route}) => {
       //   showNotificationAboutTagScannedWhileOffline(validationResult);
       //   return;
       // }
+      const current_date = moment().format('YYYY-MM-DD');
+      const current_hour = moment().format('HH:mm');
 
       dispatch(
         addDataToOfflineStorage({
           sessionId: SessionId,
           time: moment().format('YYYY-MM-DD HH:mm:ss'),
           tagId,
-          // initialScanTime,
-          // initialTagMode,
+          current_date,
+          current_hour,
         }),
       );
 
@@ -433,11 +441,7 @@ const Home = ({navigation, route}) => {
     <DrawerSceneWrapper>
       <SafeAreaView style={{backgroundColor: '#EBF0FA', flex: 1}}>
         <CustomHeader />
-        <ScrollView
-          style={{backgroundColor: '#EBF0FA', flex: 1}}
-          refreshControl={
-            <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-          }>
+        <ScrollView style={{backgroundColor: '#EBF0FA', flex: 1}}>
           <View
             style={[
               Platform.OS === 'android'
@@ -470,7 +474,10 @@ const Home = ({navigation, route}) => {
             <View style={styles.container}>
               <View>
                 {/* <NetworkStatusComponent /> */}
-                <WorkStatusBar tagMode={tagMode} tag={tagDetected} />
+                <WorkStatusBar
+                  tagsFromLocalStorage={tagsFromLocalStorage}
+                  tag={tagDetected}
+                />
               </View>
               <View style={styles.nfcPromptContainer}>
                 <Image source={Images.NFC} style={styles.userIcon} />
@@ -507,7 +514,11 @@ const Home = ({navigation, route}) => {
             </View>
           </View>
           <View style={styles.timeLogContainer}>
-            <TimeLog sessionId={SessionId} tag={tagDetected} />
+            <TimeLog
+              sessionId={SessionId}
+              tag={tagDetected}
+              tagsFromLocalStorage={tagsFromLocalStorage}
+            />
           </View>
         </ScrollView>
       </SafeAreaView>

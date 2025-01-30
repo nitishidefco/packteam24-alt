@@ -15,15 +15,10 @@ import {
 } from '../SliceKey';
 
 const scanSaga = function* scanSaga({payload}) {
-  //
 
   try {
     const response = yield call(API.ScanTag, payload);
-    console.log('scan response', response);
-
     if (response?.data) {
-      console.log('Scan response', response);
-
       yield put(ScanSuccess(response));
       yield put({
         type: `${WORKSTATE_REDUCER}/fetchWorkStatus`,

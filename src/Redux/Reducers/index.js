@@ -11,6 +11,7 @@ import UserProfileReducer from './UserProfileSlice';
 import PasswordChangeReducer from './PasswordChangeSlice';
 import WorkHistoryReducer from './WorkHistorySlice';
 import LanguageProviderReducer from './LanguageProviderSlice';
+import LocalWorkHistoryReducer from './LocalWorkHistorySlice';
 let appReducer = combineReducers({
   Auth: AuthReducer,
   Home: HomeReducer,
@@ -23,7 +24,8 @@ let appReducer = combineReducers({
   UserProfile: UserProfileReducer,
   ChangePassword: PasswordChangeReducer,
   WorkHistory: WorkHistoryReducer,
-  GlobalLanguage: LanguageProviderReducer
+  GlobalLanguage: LanguageProviderReducer,
+  LocalWorkHistory: LocalWorkHistoryReducer
 });
 
 const rootReducer = (state, action) => {
