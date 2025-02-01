@@ -47,7 +47,7 @@ const Timer = ({tag, tagsFromLocalStorage, sessionId}) => {
       }
 
       setAppState(nextAppState);
-      setTagMode(null);
+      // setTagMode(null);
       setSeconds(0);
     };
 
