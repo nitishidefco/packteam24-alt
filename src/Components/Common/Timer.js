@@ -41,7 +41,7 @@ const Timer = ({tag, tagsFromLocalStorage, sessionId}) => {
 
       if (nextAppState === 'active') {
         setInitialTimer();
-      } else if (nextAppState === 'background' && intervalRef.current) {
+      } else if (nextAppState === 'background' || nextAppState === 'inactive' && intervalRef.current) {
         clearInterval(intervalRef.current);
         intervalRef.current = null;
       }
