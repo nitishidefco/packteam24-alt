@@ -215,7 +215,11 @@ const Timer = ({tag, tagsFromLocalStorage, sessionId}) => {
       if (!isConnected) {
         controlTimer(tagInLocalStorage || tagMode);
       } else {
-        controlTimer(tagMode || currentStatus?.currentState?.work_status || tagInLocalStorage);
+        controlTimer(
+          tagMode ||
+            currentStatus?.currentState?.work_status ||
+            tagInLocalStorage,
+        );
       }
     }
   };

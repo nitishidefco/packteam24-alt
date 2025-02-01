@@ -67,7 +67,9 @@ const SaveDataOfflineSlice = createSlice({
           state.tagInLocalStorage = action.payload;
           break;
         default:
-          state.tagInLocalStorage = null;
+          console.log('do nothing');
+
+          // state.tagInLocalStorage = null;
           break;
       }
     },

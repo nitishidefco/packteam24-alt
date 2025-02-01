@@ -117,7 +117,7 @@ const TimeLog = ({sessionId, tag, tagsFromLocalStorage}) => {
     // Update the local history state
     dispatch(setLocalWorkHistoryInStorage(updatedHistory));
   };
-  console.log('local work history', localWorkHistory);
+
 
   return (
     <View style={styles.container}>

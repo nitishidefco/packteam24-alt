@@ -11,6 +11,7 @@ import {
   ScrollView,
   KeyboardAvoidingView,
   Alert,
+  ActivityIndicator,
 } from 'react-native';
 import {launchImageLibrary} from 'react-native-image-picker';
 import React, {useEffect, useState} from 'react';
@@ -19,7 +20,7 @@ import {loginStyle} from '../Auth/styles';
 import {COLOR, Matrics, typography} from '../../Config/AppStyling';
 import {useTranslation} from 'react-i18next';
 import {Images, setHeader} from '../../Config';
-import {SafeAreaView} from 'react-native-safe-area-context';
+import {SafeAreaProvider, SafeAreaView} from 'react-native-safe-area-context';
 import colors from '../../Config/AppStyling/colors';
 import {useUserProfileActions} from '../../Redux/Hooks/useUserProfileActions';
 import {useHomeActions} from '../../Redux/Hooks';
@@ -123,13 +124,12 @@ const UserProfile = ({navigation}) => {
     formData.append('session_id', SessionId);
     formData.append('device_id', deviceId);
     formData.append('lang', globalLanguage);
-    console.log('fetching user profile');
 
     fetchUserProfileCall(formData);
-  }, []);
+  }, [profileState?.isLoading]);
 
   /* --------------------------- Set data of profile -------------------------- */
-  console.log(profileState);
+  console.log('Profile state', profileState?.isLoading);
 
   useEffect(() => {
     try {
@@ -200,7 +200,7 @@ const UserProfile = ({navigation}) => {
 
         updateUserProfileCall(formData);
         setCounter(prevCounter => prevCounter + 1);
-        navigation.replace('HomeDrawer');
+        // navigation.replace('HomeDrawer');
       } catch (error) {
         console.error('Error updating profile:', error);
       }
@@ -291,7 +291,23 @@ const UserProfile = ({navigation}) => {
       i18n.changeLanguage(language); // Change language once it's loaded
     }
   }, [language]);
-  return (
+  return profileState?.fetchProfileLoading ? (
+    <SafeAreaProvider>
+      <SafeAreaView style={[styles.loadingContainer, styles.horizontal]}>
+        <View style={{alignItems: 'center', marginTop: 10}}>
+          <ActivityIndicator size="large" color={COLOR.AUDIO_PLAYER_BG} />
+          <Text
+            style={{
+              marginTop: 5,
+              fontFamily: typography.fontFamily.Montserrat.Medium,
+              fontSize: typography.fontSizes.fs18,
+            }}>
+            Wait just a second
+          </Text>
+        </View>
+      </SafeAreaView>
+    </SafeAreaProvider>
+  ) : (
     <SafeAreaView style={styles.safeArea}>
       <View style={styles.header}>
         <Text style={styles.headerTitle}>{t('UserProfileScreen.title')}</Text>
@@ -408,6 +424,13 @@ const UserProfile = ({navigation}) => {
 };
 
 const styles = StyleSheet.create({
+  loadingContainer: {
+    flex: 1,
+    justifyContent: 'center',
+  },
+  activityIndicator: {
+    color: '#0000ff',
+  },
   keyboardAvoidingView: {
     flex: 1,
     backgroundColor: '#EBF0FA',

@@ -9,10 +9,11 @@ import {
   TouchableOpacity,
   Image,
   Alert,
+  ActivityIndicator,
 } from 'react-native';
 import React, {useState, useEffect, useContext} from 'react';
 import {ThemeContext} from '../../Components/Provider/ThemeProvider';
-import {Matrics, typography} from '../../Config/AppStyling';
+import {COLOR, Matrics, typography} from '../../Config/AppStyling';
 import colors from '../../Config/AppStyling/colors';
 import {Images} from '../../Config';
 import {useChangePasswordActions} from '../../Redux/Hooks/useChangePasswordActions';
@@ -58,6 +59,7 @@ const ChangePassword = ({navigation}) => {
         console.warn(`Unhandled input name: ${name}`);
     }
   };
+  console.log('Password state', passwordState);
 
   const handlePasswordChange = () => {
     if (!currentPassword || !newPassword || !confirmNewPassword) {
@@ -65,8 +67,6 @@ const ChangePassword = ({navigation}) => {
       errorToast(errorMessage);
       return;
     }
-
-    
 
     Alert.alert(
       t('ChangePasswordScreen.confirmNewPassword'),
@@ -165,7 +165,25 @@ const ChangePassword = ({navigation}) => {
   const eyeIconStyle = passwordError
     ? {transform: [{translateY: -10}]}
     : {transform: [{translateY: 3}]};
-  return (
+  return passwordState?.isLoading ? (
+    <SafeAreaView style={{flex: 1}}>
+      <View
+        style={{
+          flex: 1,
+          alignItems: 'center',
+          justifyContent: 'center',
+        }}>
+        <ActivityIndicator size={'large'} color={COLOR.AUDIO_PLAYER_BG} />
+        <Text
+          style={{
+            fontFamily: typography.fontFamily.Montserrat.Medium,
+            fontSize: typography.fontSizes.fs18,
+          }}>
+          Making sure your password is secure
+        </Text>
+      </View>
+    </SafeAreaView>
+  ) : (
     <KeyboardAvoidingView
       style={styles.keyboardAvoidingView}
       behavior={Platform.OS === 'android' ? 'height' : 'padding'}
