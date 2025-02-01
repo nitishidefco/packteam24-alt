@@ -97,7 +97,7 @@ const UserProfile = ({navigation}) => {
 
     const options = {
       mediaType: 'photo',
-      includeBase64: false,
+      includeBase64: true,
       maxHeight: 800,
       maxWidth: 800,
     };

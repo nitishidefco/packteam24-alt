@@ -21,6 +21,8 @@ const workStateSlice = createSlice({
       state.message = '';
     },
     FetchSuccess: (state, action) => {
+      console.log('Successfully feted the works history');
+
       state.currentState = action.payload?.data;
       state.isFetchSuccess = SUCCESS;
       state.message = 'Fetch Successfully';
@@ -34,10 +36,13 @@ const workStateSlice = createSlice({
       state.error = action.payload;
       state.message = 'Something went wrong';
     },
+    OffineStatus: (state, action) => {
+      state.currentState = null;
+    },
   },
 });
 
-export const {FetchFailure, FetchSuccess, fetchWorkStatus} =
+export const {FetchFailure, FetchSuccess, fetchWorkStatus, OffineStatus} =
   workStateSlice.actions;
 
 const WorkStateReducer = workStateSlice.reducer;

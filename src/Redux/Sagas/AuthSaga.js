@@ -17,6 +17,8 @@ import {errorToast, success} from '../../Helpers/ToastMessage';
 import i18n from '../../i18n/i18n';
 
 const loginSaga = function* loginSaga({payload}) {
+  console.log('payload', payload);
+
   try {
     const response = yield call(API.Login, payload);
     console.log('Login response', response);
@@ -56,8 +58,7 @@ const forgotPasswordSaga = function* forgotPasswordSaga({payload}) {
       console.log('forgot password response', response);
 
       yield put(forgotPasswordSuccess(response));
-      success(response?.message); 
-
+      success(response?.message);
     } else {
       errorToast(response?.errors?.email);
       yield put(forgotPasswordFailure(response));

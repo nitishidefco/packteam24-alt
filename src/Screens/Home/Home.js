@@ -310,10 +310,6 @@ const Home = ({navigation, route}) => {
 
         if (storedSessions.length > 0) {
           for (const [index, item] of storedSessions.entries()) {
-            console.log('stored sessions', storedSessions);
-
-            console.log('current_date from session', item);
-
             try {
               await getUid(item.tagId, item.current_date, item.current_hour);
             } catch (error) {

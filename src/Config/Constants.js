@@ -15,7 +15,9 @@ export default {
   BASE_URL: {
     DEV: 'https://eda.workflex360.de/',
     PROD: 'https://eda.workflex360.de/',
-    IMAGEURL : 'https://das4you.mhcode.pl/storage/daily_list/attachment/'
+    // DEV: 'https://nfc.visionvivante.com/',
+    // PROD: 'https://nfc.visionvivante.com/',
+    IMAGEURL: 'https://das4you.mhcode.pl/storage/daily_list/attachment/',
   },
   ENVIRONMENT: {
     DEV: 'development',

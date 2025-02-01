@@ -1,81 +1,62 @@
 import React, {useState, useEffect, useRef} from 'react';
 import {View, Text, StyleSheet, AppState} from 'react-native';
-import {useWorkHistoryActions} from '../../Redux/Hooks/useWorkHistoryActions';
-import {getCurrentTime} from '../../Helpers/GetCurrentTime';
-import {Matrics, typography} from '../../Config/AppStyling';
-import {findModeByTagId} from '../../Helpers/FindModeByTagId';
-import {addColons} from '../../Helpers/AddColonsToId';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import {useWorkHistoryActions} from '../../Redux/Hooks/useWorkHistoryActions';
 import {useWorkStatusActions} from '../../Redux/Hooks/useWorkStatusActions';
-import {useSelector} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
+import {getCurrentTime} from '../../Helpers/GetCurrentTime';
+import {findModeByTagId} from '../../Helpers/FindModeByTagId';
 import moment from 'moment';
+import {typography} from '../../Config/AppStyling';
+import {OffineStatus} from '../../Redux/Reducers/WorkStateSlice';
+import {
+  loadTagFromLocalStorage,
+  saveTag,
+  saveTagToLocalStorage,
+} from '../../Redux/Reducers/SaveDataOfflineSlice';
 
 const Timer = ({tag, tagsFromLocalStorage, sessionId}) => {
+  const dispatch = useDispatch();
   const {state: currentStatus, fetchWorkStatusCall} = useWorkStatusActions();
   const [appState, setAppState] = useState(AppState.currentState);
   const [seconds, setSeconds] = useState(0);
-  const [isActive, setIsActive] = useState(false);
   const intervalRef = useRef(null);
   const {workHistoryState, getWorkHistoryCall} = useWorkHistoryActions();
-  const currentTime = getCurrentTime();
-  const formattedTagId = addColons(tag?.id);
-  const [loading, setLoading] = useState(true);
   const {deviceId} = useSelector(state => state?.Network);
   const {globalLanguage} = useSelector(state => state?.GlobalLanguage);
   const {localWorkHistory} = useSelector(state => state?.LocalWorkHistory);
+  const {isConnected} = useSelector(state => state?.Network);
   const tagMode = findModeByTagId(tagsFromLocalStorage, tag?.id);
-  const isConnected = useSelector(state => state?.Network?.isConnected);
+  const {tagInLocalStorage} = useSelector(state => state.OfflineData);
+  // const [tagMode, setTagMode] = useState(tagModeById);
 
+
+  //loadTagFromLocalStorage
   useEffect(() => {
-    if (workHistoryState && workHistoryState.data) {
-      setLoading(false);
-    }
-  }, [workHistoryState?.data]);
-  const timeToSeconds = time => {
-    const [hours, minutes] = time?.split(':')?.map(Number); // Split the time into hours and minutes
-    return hours * 3600 + minutes * 60; // Convert to seconds
-  };
-
-  const getTimeDifferenceInSeconds = (time1, time2) => {
-    const time1InSeconds = timeToSeconds(time1);
-    const time2InSeconds = timeToSeconds(time2);
-    return Math.abs(time2InSeconds - time1InSeconds);
-  };
-  const saveAppState = async appState => {
-    await AsyncStorage.setItem('appState', appState);
-  };
-
-  const loadAppState = async () => {
-    const appSateFromStorage = await AsyncStorage.getItem('appState');
-    console.log('app state from storaeg', appSateFromStorage);
-    return appSateFromStorage;
-  };
+    dispatch(loadTagFromLocalStorage());
+  }, [appState]);
   useEffect(() => {
-    const handleAppStateChange = nextAppState => {
+    const handleAppStateChange = async nextAppState => {
       console.log('App State changed to:', nextAppState);
-      console.log('current status of online mode', currentStatus?.currentState);
+      await saveAppState(nextAppState);
 
       if (nextAppState === 'active') {
-        setInitialTimer(nextAppState);
-        saveAppState(nextAppState);
-      } else if (nextAppState === 'background') {
-        if (intervalRef.current) {
-          clearInterval(intervalRef.current);
-          intervalRef.current = null;
-          saveAppState(nextAppState);
-        }
+        setInitialTimer();
+      } else if (nextAppState === 'background' && intervalRef.current) {
+        clearInterval(intervalRef.current);
+        intervalRef.current = null;
       }
 
       setAppState(nextAppState);
+      setTagMode(null);
+      setSeconds(0);
     };
 
-    // Add event listener for app state changes
     const subscription = AppState.addEventListener(
       'change',
       handleAppStateChange,
     );
 
-    // Cleanup the listener on component unmount
     return () => {
       if (intervalRef.current) {
         clearInterval(intervalRef.current);
@@ -83,245 +64,252 @@ const Timer = ({tag, tagsFromLocalStorage, sessionId}) => {
       subscription.remove();
     };
   }, []);
+  const saveAppState = async appState => {
+    try {
+      await AsyncStorage.setItem('appState', appState);
+    } catch (error) {
+      console.error('Error saving app state:', error);
+    }
+  };
 
-  const setInitialTimer = stateApp => {
-    console.log('calling set initial timer');
-    if (isConnected) {
-      if (workHistoryState?.data?.length > 0) {
-        const lastEntry =
-          workHistoryState?.data?.[workHistoryState?.data?.length - 1].from;
+  const loadAppState = async () => {
+    try {
+      return await AsyncStorage.getItem('appState');
+    } catch (error) {
+      console.error('Error loading app state:', error);
+      return null;
+    }
+  };
 
-        const currentTime = getCurrentTime();
-        const elapsedTime = getTimeDifferenceInSeconds(currentTime, lastEntry);
-        if (
+  const getTimeDifferenceInSeconds = (time1, time2) => {
+    return Math.abs(
+      moment(time1, 'HH:mm').unix() - moment(time2, 'HH:mm').unix(),
+    );
+  };
+
+  const setInitialTimer = async () => {
+    console.log(
+      'Initializing timer...',
+      tagMode,
+      'Tag in local storage',
+      tagInLocalStorage,
+    );
+    if (isConnected && workHistoryState?.data?.length > 0) {
+      const lastEntry =
+        workHistoryState.data[workHistoryState.data.length - 1].from;
+      console.log('Lat entrey in workHistory state', lastEntry);
+
+      const lastMode =
+        workHistoryState?.data?.[workHistoryState?.data?.length - 1].mode_raw;
+      console.log('Last mode in work history state', lastMode);
+
+      const elapsedTime = getTimeDifferenceInSeconds(
+        getCurrentTime(),
+        lastEntry,
+      );
+      console.log('isConnected elapsed time', elapsedTime);
+
+      if (intervalRef.current) {
+        console.log('Clearing interval');
+
+        clearInterval(intervalRef.current);
+      }
+      setSeconds(elapsedTime);
+
+      // Set the timer when the app becomes active to current work status from server
+      // controlTimer(tagMode || currentStatus?.currentState?.work_status);
+      console.log('app state', appState);
+
+      if (appState === 'active') {
+        console.log('Controlling timer from app state active');
+        if (lastMode === 'work' && tagMode === 'break_start') {
+          console.log('Switching from Work to Break.');
+          controlTimer(tagMode || currentStatus?.currentState?.work_status);
+        } else if (lastMode === 'break' && tagMode === 'work_start') {
+          console.log('Switching from Break to Work.');
+          controlTimer(tagMode || currentStatus?.currentState?.work_status);
+        } else if (
+          tagMode === 'work_end' ||
           currentStatus?.currentState?.work_status === 'work_finished' ||
           currentStatus?.currentState?.work_status === 'work_not_started'
         ) {
-          setSeconds(0);
-          controlTimer(null, currentStatus?.currentState?.work_status);
-          return;
+          console.log('Work has ended or not started.');
+          controlTimer(tagMode || currentStatus?.currentState?.work_status);
         } else {
-          setSeconds(elapsedTime);
-          console.log(tagMode, currentStatus?.currentState?.work_status);
-          controlTimer(tagMode, currentStatus?.currentState?.work_status);
+          console.log(
+            'Continuing current status:',
+            currentStatus?.currentState?.work_status,
+          );
+          controlTimer(currentStatus?.currentState?.work_status);
         }
       } else {
-        console.log('Nothing in history');
+        console.log('Controlling timer from else of app state active');
+
+        controlTimer(tagMode || currentStatus?.currentState?.work_status);
+      }
+    } else if (!isConnected && localWorkHistory?.length > 0) {
+      // dispatch(OffineStatus());
+      console.log(
+        'last entry unedited',
+        localWorkHistory[localWorkHistory.length - 1].from,
+      );
+
+      const lastEntry = localWorkHistory[localWorkHistory.length - 1].from;
+      console.log('Last entrey in localHistory state', lastEntry);
+
+      const lastMode =
+        localWorkHistory?.[localWorkHistory?.length - 1].mode_raw;
+      console.log('Last mode in local history state', lastMode);
+
+      const lastEntryTime =
+        localWorkHistory[localWorkHistory.length - 1].from.length > 5
+          ? moment(localWorkHistory[localWorkHistory.length - 1].from).unix()
+          : moment(
+              localWorkHistory[localWorkHistory.length - 1].from,
+              'HH:mm',
+            ).unix();
+      console.log('lastnetry+++>', moment().unix() - lastEntryTime);
+
+      console.log(moment().unix() - lastEntryTime);
+      if (intervalRef.current) {
+        clearInterval(intervalRef.current);
+      }
+      setSeconds(moment().unix() - lastEntryTime || 0);
+      console.log(
+        'TagMode while offline',
+        tagMode,
+        'tag in local storage',
+        tagInLocalStorage,
+      );
+      if (
+        tagMode === 'break_start' &&
+        tagInLocalStorage === 'break_in_progress'
+      ) {
+        controlTimer(tagInLocalStorage || tagMode);
+      } else if (
+        tagMode === 'work_start' &&
+        tagInLocalStorage === 'break_in_progress'
+      ) {
+        controlTimer(tagMode);
+      } else if (
+        tagMode === 'break_start' &&
+        tagInLocalStorage === 'work_in_progress'
+      ) {
+        controlTimer(tagMode);
+      } else {
+        controlTimer(tagInLocalStorage);
       }
     } else {
-      if (localWorkHistory?.length > 0) {
-        // console.log(localWorkHistory);
+      console.log(
+        'No work history available. controlling timer from last else',
+      );
+      console.log(
+        'Else: taginlocalstorage',
+        tagInLocalStorage,
+        'tagMode:',
+        tagMode,
+        'currentStatus?.currentState?.work_status:--->',
+        currentStatus?.currentState?.work_status,
+      );
+      console.log('Work history state', workHistoryState?.data);
 
-        const lastEntry =
-          localWorkHistory?.[localWorkHistory?.length - 1].from.length > 5
-            ? moment(
-                localWorkHistory?.[localWorkHistory?.length - 1].from,
-              ).unix()
-            : moment(
-                localWorkHistory?.[localWorkHistory?.length - 1].from,
-                'HH:mm',
-              ).unix();
-        const currentTime = moment().unix();
-        console.log(localWorkHistory?.[localWorkHistory?.length - 1].from);
-
-        const elapsedTime = currentTime - lastEntry;
-        console.log('Elapesed time', elapsedTime, tagMode, stateApp);
-
-        if (
-          (tagMode === 'work_end' || tagMode === 'work_start') &&
-          !loadAppState
-        ) {
-          setSeconds(0);
-          controlTimer(tagMode, null);
-        } else {
-          setSeconds(elapsedTime);
-          controlTimer(tagMode, null);
-        }
+      if (!isConnected) {
+        controlTimer(tagInLocalStorage || tagMode);
       } else {
-        console.log('Nothing inside local work history');
+        controlTimer(tagMode || currentStatus?.currentState?.work_status);
       }
     }
   };
-  // useEffect(() => {
-  //   console.log('fetching work status call');
+  useEffect(() => {
+    if (!isConnected) {
+      console.log('Dispatching tag to localStorage');
 
-  //   const formData = new FormData();
-  //   formData.append('session_id', sessionId);
-  //   formData.append('device_id', deviceId);
-  //   formData.append('lang', globalLanguage);
-  //   fetchWorkStatusCall(formData);
-  // }, [appState]);
-
+      dispatch(saveTagToLocalStorage(tagMode));
+    }
+  }, [appState]);
   useEffect(() => {
     const formData = new FormData();
     formData.append('session_id', sessionId);
     formData.append('device_id', deviceId);
     formData.append('lang', globalLanguage);
-    const timer = setTimeout(() => {
-      setInitialTimer(appState);
-    }, 2000); // Wait for 2 seconds (2000ms)
-    getWorkHistoryCall(formData);
-    fetchWorkStatusCall(formData);
-    // Cleanup the timeout to avoid memory leaks
-    return () => clearTimeout(timer);
-  }, [appState]);
 
-  const saveTimerState = async () => {
-    try {
-      const timerState = {
-        seconds,
-        isActive,
-        lastSavedTime: Date.now(),
-      };
-      console.log('Saving timer state', timerState);
-
-      if (timerState.seconds === 0) return;
-      await AsyncStorage.setItem('timerState', JSON.stringify(timerState));
-    } catch (error) {
-      console.error('Error saving timer state:', error);
-    }
-  };
-
-  // Handle the timer behavior based on tag
-  const controlTimer = (currentTag, workStatus) => {
     if (isConnected) {
-      if (currentTag === 'break_start' && workStatus === 'work_not_started') {
-        return;
-      }
-      if (currentTag === 'break_start' && workStatus === 'work_finished') {
-        return;
-      }
-      if (currentTag === 'work_start' && workStatus === 'work_not_started') {
-        return;
-      }
-      if (currentTag === 'work_start' && workStatus === 'work_finished') {
-        return;
-      }
-      if (currentTag === 'work_start' && workStatus === 'work_in_progress') {
-        startTimer();
-        return;
-      }
-      if (currentTag === 'break_start' && workStatus === 'break_in_progress') {
-        console.log('inside break start and break in progress');
-
-        startTimer();
-        return;
-      }
+      // getWorkHistoryCall(formData);
+      fetchWorkStatusCall(formData);
     }
+    const timer = setTimeout(setInitialTimer, 2000);
 
-    if (appState === 'active' && currentTag === 'work_start') {
+    return () => clearTimeout(timer);
+  }, [
+    appState,
+    currentStatus?.currentState?.work_status,
+    workHistoryState?.data,
+  ]);
+  const [pretag, setPreTag] = useState(null);
+  const controlTimer = currentTag => {
+    console.log('currentTag==>', currentTag, pretag, tagInLocalStorage);
+
+    if (
+      (currentTag === 'break_start' && pretag === 'break_start') ||
+      (currentTag === 'work_start' && pretag === 'work_start')
+    ) {
       startTimer();
       return;
     }
-    // if (appState === 'active' && currentTag === 'break_start') {
-    //   startTimer();
-    //   return;
-    // }
+    if (!currentTag) {
+      stopTimer();
+      return;
+    }
+    setPreTag(currentTag);
+    if (['work_in_progress', 'break_in_progress'].includes(currentTag)) {
+      console.log('Start timer function called');
+      if (intervalRef.current) {
+        clearInterval(intervalRef.current);
+      }
+      startTimer();
+    } else if (['work_start', 'break_start'].includes(currentTag)) {
+      console.log('reset timer function called');
 
-    const actions = {
-      work_start: () => {
-        console.log('Executing action for: work_start');
-        resetTimer();
-        startTimer();
-        setIsActive(true);
-      },
-      work_in_progress: () => {
-        console.log('Executing action for: work_in_progress');
-        startTimer();
-        setIsActive(true);
-      },
-      break_start: () => {
-        console.log('Executing action for: break_start');
-        console.log('reseting timer');
-
-        resetTimer();
-        setIsActive(true);
-      },
-      break_in_progress: () => {
-        console.log('Executing action for: break_in_progress');
-        startTimer();
-        setIsActive(true);
-      },
-      work_end: () => {
-        console.log('Executing action for: work_end');
-        stopTimer();
-        setIsActive(false);
-      },
-      work_not_started: () => {
-        console.log('Executing action for: work_not_started');
-        stopTimer();
-        setIsActive(false);
-      },
-      work_finished: () => {
-        console.log('Executing action for: work_finished');
-        stopTimer();
-        setIsActive(false);
-      },
-    };
-
-    // Default action for undefined or unhandled cases
-    const defaultAction = () => startTimer();
-    console.log('No matching action found for:', currentTag ?? workStatus);
-
-    const actionKey = currentTag ?? workStatus;
-    console.log('current tag alkdfja skdfj asdkfj asdlkfj a', currentTag);
-
-    console.log('Determined actionKey:', actionKey);
-    (actions[actionKey] || defaultAction)();
+      resetTimer();
+    } else if (
+      ['work_end', 'work_not_started', 'work_finished'].includes(currentTag)
+    ) {
+      console.log('Stop timer function called function control timer');
+      stopTimer();
+    } else {
+      console.log('Unhandled tag:', currentTag);
+      stopTimer();
+    }
   };
-
-  const startTimer = () => {
-    console.log('before intervaRef', intervalRef.current);
-
-    if (intervalRef.current) return;
-    console.log('after intervaRef strating timer', intervalRef.current);
-
-    intervalRef.current = setInterval(() => {
-      setSeconds(prev => prev + 1);
-    }, 1000);
-  };
-
   const resetTimer = () => {
-    console.log('resetting timer');
+    console.log('Inside reset timer');
 
-    clearInterval(intervalRef.current); // Stop the timer
-    intervalRef.current = null; // Reset the interval reference
-    setSeconds(0); // Reset the timer
-    startTimer(); // Start the timer again
+    setSeconds(0);
+    console.log('Reseted the seconds');
+
+    if (intervalRef.current) {
+      clearInterval(intervalRef.current);
+    }
+    console.log('Start timer from the reset timer');
+    startTimer();
+  };
+  const startTimer = () => {
+    console.log('start_timers');
+
+    intervalRef.current = setInterval(() => setSeconds(prev => prev + 1), 1000);
+    console.log('after the interval ref');
   };
 
   const stopTimer = () => {
-    clearInterval(intervalRef.current); // Stop the timer
-    intervalRef.current = null; // Reset the interval reference
-    setSeconds(0); // Reset the timer
-  };
-
-  // Cleanup interval on unmount
-  useEffect(() => {
-    return () => clearInterval(intervalRef.current);
-  }, []);
-  // Effect to handle tag changes
-  useEffect(() => {
-    if (tag || currentStatus?.currentState?.work_status) {
-      controlTimer(tagMode, currentStatus?.currentState?.work_status);
+    console.log('stop Work');
+    console.log('Settings Seconds zero inside stop timer');
+    setSeconds(0);
+    setPreTag(null);
+    dispatch(saveTag(null));
+    if (intervalRef.current) {
+      clearInterval(intervalRef.current);
     }
-  }, [tagMode, currentStatus?.currentState?.work_status]);
-
-  // Initial timer state fetch
-  useEffect(() => {
-    const formData = new FormData();
-    formData.append('session_id', sessionId);
-    formData.append('device_id', deviceId);
-    formData.append('lang', globalLanguage);
-    getWorkHistoryCall(formData);
-  }, [formattedTagId]);
-
-  // Cleanup the interval on unmount
-  useEffect(() => {
-    return () => clearInterval(intervalRef.current);
-  }, []);
-
-  // Format the time for display
+  };
   const formatTime = totalSeconds => {
     const hours = Math.floor(totalSeconds / 3600);
     const minutes = Math.floor((totalSeconds % 3600) / 60);
@@ -358,5 +346,4 @@ const styles = StyleSheet.create({
     marginTop: 10,
   },
 });
-
 export default Timer;

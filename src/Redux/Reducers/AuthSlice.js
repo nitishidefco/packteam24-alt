@@ -26,6 +26,7 @@ export const AuthSlice = createSlice({
       };
     },
     loginFailure: (state, action) => {
+      console.log('login Fail', action.payload);
       return {
         ...state,
         isLoginSuccess: FAIL,

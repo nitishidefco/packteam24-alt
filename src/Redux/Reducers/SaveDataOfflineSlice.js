@@ -1,10 +1,12 @@
 import {createSlice} from '@reduxjs/toolkit';
 import {OFFLINE_REDUCER} from '../SliceKey';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const initialState = {
   sessions: {},
   isConnected: true,
   isSyncing: false,
+  tagInLocalStorage: '',
 };
 
 const SaveDataOfflineSlice = createSlice({
@@ -42,10 +44,69 @@ const SaveDataOfflineSlice = createSlice({
     clearOfflineStorage: state => {
       state.sessions = {}; // Reset session storage
     },
+    saveTag: (state, action) => {
+      console.log('tag===>', action.payload);
+
+      switch (action.payload) {
+        case 'work_start':
+          state.tagInLocalStorage = 'work_in_progress';
+          break;
+        case 'break_start':
+          state.tagInLocalStorage = 'break_in_progress';
+          break;
+        case 'work_end':
+          state.tagInLocalStorage = 'work_finished';
+          break;
+        case 'work_in_progress':
+          state.tagInLocalStorage = action.payload;
+          break;
+        case 'break_in_progress':
+          state.tagInLocalStorage = action.payload;
+          break;
+        case 'work_finished':
+          state.tagInLocalStorage = action.payload;
+          break;
+        default:
+          state.tagInLocalStorage = null;
+          break;
+      }
+    },
   },
 });
 
-export const {addDataToOfflineStorage, clearOfflineStorage} =
+export const {addDataToOfflineStorage, clearOfflineStorage, saveTag} =
   SaveDataOfflineSlice.actions;
+
+export const saveTagToLocalStorage = tagMode => async dispatch => {
+  console.log('save====>', tagMode);
+
+  switch (tagMode) {
+    case 'work_start':
+      console.log('tagMode in save data offline slice', tagMode);
+
+      await AsyncStorage.setItem('tagMode', 'work_in_progress');
+      dispatch(saveTag(tagMode));
+      break;
+    case 'break_start':
+      await AsyncStorage.setItem('tagMode', 'break_in_progress');
+      dispatch(saveTag(tagMode));
+      break;
+    case 'work_end':
+      dispatch(saveTag(tagMode));
+      await AsyncStorage.setItem('tagMode', 'work_finished');
+      break;
+  }
+};
+
+export const loadTagFromLocalStorage = () => async dispatch => {
+  try {
+    const tagRetrivedFromLocalStorage = await AsyncStorage.getItem('tagMode');
+    console.log('Tag retrevied from localStorage');
+
+    dispatch(saveTag(tagRetrivedFromLocalStorage));
+  } catch (error) {
+    console.error('Error getting tag from localstorage', error);
+  }
+};
 const SaveDataOfflineReducer = SaveDataOfflineSlice.reducer;
 export default SaveDataOfflineReducer;
