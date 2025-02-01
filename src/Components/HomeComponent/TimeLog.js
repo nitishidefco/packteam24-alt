@@ -19,7 +19,7 @@ const TimeLog = ({sessionId, tag, tagsFromLocalStorage}) => {
   const tagMode = findModeByTagId(tagsFromLocalStorage, tag?.id);
   const formattedId = addColons(tag?.id);
   const isConnected = useSelector(state => state?.Network?.isConnected);
-  const sessions = useSelector(state => state?.OfflineData?.sessions);
+  const {tagInLocalStorage} = useSelector(state => state.OfflineData);
 
   useEffect(() => {
     try {
@@ -117,6 +117,7 @@ const TimeLog = ({sessionId, tag, tagsFromLocalStorage}) => {
     // Update the local history state
     dispatch(setLocalWorkHistoryInStorage(updatedHistory));
   };
+  console.log('local work history', localWorkHistory);
 
   return (
     <View style={styles.container}>

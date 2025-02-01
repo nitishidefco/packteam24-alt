@@ -15,28 +15,28 @@ const handleResponse = response => {
 
   const contentType = response.headers.get('Content-Type');
 
-  // if (response.status === 403) {
-  //   // Handle 403 Forbidden response
-  //   return response.json().then(errorData => {
-  //     Alert.alert(
-  //       'Session Expired',
-  //       errorData.message || 'You have been logged out.',
-  //       [
-  //         {
-  //           text: 'OK',
-  //           onPress: () => {
-  //             const formData = new FormData();
-  //             formData.append('session_id', SessionId);
-  //             formData.append('device_id', deviceId);
-  //             dispatch(getLogout(formData));
-  //             navigation.replace('Login');
-  //           },
-  //         },
-  //       ],
-  //     );
-  //     return Promise.reject(errorData);
-  //   });
-  // }
+  if (response.status === 403) {
+    // Handle 403 Forbidden response
+    return response.json().then(errorData => {
+      Alert.alert(
+        'Session Expired',
+        errorData.message || 'You have been logged out.',
+        [
+          {
+            text: 'OK',
+            onPress: () => {
+              const formData = new FormData();
+              formData.append('session_id', SessionId);
+              formData.append('device_id', deviceId);
+              dispatch(getLogout(formData));
+              navigation.replace('Login');
+            },
+          },
+        ],
+      );
+      return Promise.reject(errorData);
+    });
+  }
 
   if (response.status !== 200) {
     return response.json().then(errorData => {

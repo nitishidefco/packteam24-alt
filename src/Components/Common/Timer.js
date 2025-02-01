@@ -30,7 +30,6 @@ const Timer = ({tag, tagsFromLocalStorage, sessionId}) => {
   const {tagInLocalStorage} = useSelector(state => state.OfflineData);
   // const [tagMode, setTagMode] = useState(tagModeById);
 
-
   //loadTagFromLocalStorage
   useEffect(() => {
     dispatch(loadTagFromLocalStorage());
@@ -216,16 +215,13 @@ const Timer = ({tag, tagsFromLocalStorage, sessionId}) => {
       if (!isConnected) {
         controlTimer(tagInLocalStorage || tagMode);
       } else {
-        controlTimer(tagMode || currentStatus?.currentState?.work_status);
+        controlTimer(tagMode || currentStatus?.currentState?.work_status || tagInLocalStorage);
       }
     }
   };
   useEffect(() => {
-    if (!isConnected) {
-      console.log('Dispatching tag to localStorage');
-
-      dispatch(saveTagToLocalStorage(tagMode));
-    }
+    console.log('Dispatching tag to localStorage');
+    dispatch(saveTagToLocalStorage(tagMode));
   }, [appState]);
   useEffect(() => {
     const formData = new FormData();
