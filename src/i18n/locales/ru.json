@@ -1,118 +1,125 @@
 {
-    "Login": {
-        "title": "Вход в учетную запись",
-        "subtitle": "Введите email и пароль для входа",
-        "email": "Электронная почта",
-        "emailPlaceHolder": "Электронная почта",
-        "emptyEmailError": "Пожалуйста, введите email адрес!",
-        "invalidEmailError": "Пожалуйста, введите действительный email адрес!",
-        "password": "Пароль",
-        "passwordPlaceHolder": "Пароль",
-        "forgotPassword": "Забыли пароль?",
-        "loginButton": "Войти",
-        "pp": "Политика конфиденциальности",
-        "ai": "Информация о приложении",
-        "ca": "Создать учетную запись"
-    },
-    "CreateAccount": {
-        "title": "Создать учетную запись",
-        "subt": "Введите email и пароль для создания учетной записи",
-        "createAccButton": "Создать учетную запись",
-        "btl": "Вернуться к входу",
-        "removeAccount": "Удалить аккаунт"
-    },
-    "ForgotPassword": {
-        "title": "Сброс пароля",
-        "subtitle": "Укажите email адрес, который вы используете для входа в приложение - мы отправим вам инструкции по сбросу пароля",
-        "email": "Электронная почта",
-        "emailPlaceHolder": "Электронная почта",
-        "resetButton": "Отправить ссылку для сброса пароля",
-        "backToLogin": "Вернуться"
-    },
-    "HomeScreen": {
-        "nfcCardTitle": "Готов к сканированию NFC-меток",
-        "nfcCardSubtitle": "Поднесите устройство к NFC-метке",
-        "nfcButtonText": "Начать NFC сканирование"
-    },
-    "ChangePasswordScreen": {
-        "allFieldsRequired": "Все поля обязательны",
-        "currentPassword": "Текущий пароль",
-        "newPassword": "Новый пароль",
-        "confirmNewPassword": "Подтвердите новый пароль",
-        "save": "Сохранить",
-        "cancel": "Отмена",
-        "changePasswordHeader": "Изменить пароль",
-        "cancelChanges": "Отменить изменения",
-        "confirmationCancel": "Вы уверены, что хотите отменить изменение пароля?",
-        "no": "Нет",
-        "yes": "Да",
-        "confirmPasswordChange": "Подтвердить изменение пароля",
-        "changeConfirmation": "Вы уверены, что хотите изменить пароль?",
-        "passwordError": "Пароли не совпадают"
-    },
-    "WorkStatusCard": {
-        "workStart": "Работа в процессе",
-        "workEnd": "Работа завершена",
-        "breakStart": "Перерыв",
-        "workNotStarted": "Работа не начата"
-    },
-    "SideMenuBar": {
-        "dashboard": "Панель управления",
-        "Logout": "Выйти",
-        "ChangePassword": "Изменить пароль",
-        "UserProflie": "Профиль пользователя",
-        "ChangeLanguage": "Изменить язык"
-    },
-    "UserProfileScreen": {
-        "title": "Профиль пользователя",
-        "EditPhoto": "Редактировать фото",
-        "SelectPhoto": "Выбрать фото",
-        "RemovePhoto": "Удалить фото",
-        "email": "Электронная почта",
-        "emailPlaceHolder": "Электронная почта",
-        "cancel": "назад",
-        "save": "Сохранить",
-        "cancelTitle": "Отменить изменения",
-        "cancelConfirmation": "Вы уверены? Все несохраненные изменения будут потеряны.",
-        "keepEditing": "Продолжить редактирование",
-        "discardChanges": "Отменить изменения",
-        "removeProfilePhoto": "Удалить фото профиля",
-        "rusure": "Вы уверены, что хотите удалить фото профиля?",
-        "remove": "Удалить",
-        "Error": "Ошибка",
-        "FailedToRemove": "Не удалось удалить фото профиля. Попробуйте еще раз.",
-        "OK": "OK"
-    },
-    "ResetPassword": {
-        "passwordResetSuccess": "Мы отправили вам ссылку для сброса пароля!",
-        "emptyEmailValidation": "Пожалуйста, введите email адрес!",
-        "invalidEmail": "Пожалуйста, введите действительный email адрес"
-    },
-    "Toast": {
-        "LogoutSuccess": "Выход выполнен успешно",
-        "AccountCreatedSuccessfull": "Учетная запись успешно создана",
-        "AccountCreatedSuccessfullSubtitle":"Мы отправим дополнительную информацию по электронной почте",
-        "PasswordChangeSuccessfull": "Пароль успешно изменен",
-        "ProfileUpdated": "Профиль успешно обновлен",
-        "PhotoRemovedSuccessfully": "Фото успешно удалено",
-        "LoginSuccess": "Вход выполнен успешно",
-        "WorkinProgress": "Работа в процессе",
-        "BreakinProgress": "Перерыв",
-        "WorkFinished": "Работа завершена",
-        "ErrorUpdatingProfile": "Ошибка обновления профиля",
-        "ErrorRemovingProfilePhoto": "Ошибка удаления фото профиля",
-        "EnterEmail": "Пожалуйста, введите email адрес",
-        "ValidEmail": "Пожалуйста, введите действительный email адрес",
-        "EnterPassword": "Пожалуйста, введите пароль",
-        "CheckInternet": "Пожалуйста, проверьте подключение к интернету",
-        "LoginUnsuccessful": "Не удалось войти",
-        "StartWorkFirst": "Пожалуйста, начните работу сначала"
-    },
-     "TimeLog": {
-      "title": "Журнал времени",
-      "From": "От",
-      "mode": "Режим",
-      "To": "До",
-      "nohistory": "У вас нет истории работы за сегодня"
-    }
+  "Login": {
+    "title": "Вход в учетную запись",
+    "subtitle": "Введите email и пароль для входа",
+    "email": "Электронная почта",
+    "emailPlaceHolder": "Электронная почта",
+    "emptyEmailError": "Пожалуйста, введите email адрес!",
+    "invalidEmailError": "Пожалуйста, введите действительный email адрес!",
+    "password": "Пароль",
+    "passwordPlaceHolder": "Пароль",
+    "forgotPassword": "Забыли пароль?",
+    "loginButton": "Войти",
+    "pp": "Политика конфиденциальности",
+    "ai": "Информация о приложении",
+    "ca": "Создать учетную запись"
+  },
+  "CreateAccount": {
+    "title": "Создать учетную запись",
+    "subt": "Введите email и пароль для создания учетной записи",
+    "createAccButton": "Создать учетную запись",
+    "btl": "Вернуться к входу",
+    "removeAccount": "Удалить аккаунт"
+  },
+  "ForgotPassword": {
+    "title": "Сброс пароля",
+    "subtitle": "Укажите email адрес, который вы используете для входа в приложение - мы отправим вам инструкции по сбросу пароля",
+    "email": "Электронная почта",
+    "emailPlaceHolder": "Электронная почта",
+    "resetButton": "Отправить ссылку для сброса пароля",
+    "backToLogin": "Вернуться"
+  },
+  "HomeScreen": {
+    "nfcCardTitle": "Готов к сканированию NFC-меток",
+    "nfcCardSubtitle": "Поднесите устройство к NFC-метке",
+    "nfcButtonText": "Начать NFC сканирование"
+  },
+  "ChangePasswordScreen": {
+    "allFieldsRequired": "Все поля обязательны",
+    "currentPassword": "Текущий пароль",
+    "newPassword": "Новый пароль",
+    "confirmNewPassword": "Подтвердите новый пароль",
+    "save": "Сохранить",
+    "cancel": "Отмена",
+    "changePasswordHeader": "Изменить пароль",
+    "cancelChanges": "Отменить изменения",
+    "confirmationCancel": "Вы уверены, что хотите отменить изменение пароля?",
+    "no": "Нет",
+    "yes": "Да",
+    "confirmPasswordChange": "Подтвердить изменение пароля",
+    "changeConfirmation": "Вы уверены, что хотите изменить пароль?",
+    "passwordError": "Пароли не совпадают"
+  },
+  "WorkStatusCard": {
+    "workStart": "Работа в процессе",
+    "workEnd": "Работа завершена",
+    "breakStart": "Перерыв",
+    "workNotStarted": "Работа не начата"
+  },
+  "SideMenuBar": {
+    "dashboard": "Панель управления",
+    "Logout": "Выйти",
+    "ChangePassword": "Изменить пароль",
+    "UserProflie": "Профиль пользователя",
+    "ChangeLanguage": "Изменить язык"
+  },
+  "UserProfileScreen": {
+    "title": "Профиль пользователя",
+    "EditPhoto": "Редактировать фото",
+    "SelectPhoto": "Выбрать фото",
+    "RemovePhoto": "Удалить фото",
+    "email": "Электронная почта",
+    "emailPlaceHolder": "Электронная почта",
+    "cancel": "назад",
+    "save": "Сохранить",
+    "cancelTitle": "Отменить изменения",
+    "cancelConfirmation": "Вы уверены? Все несохраненные изменения будут потеряны.",
+    "keepEditing": "Продолжить редактирование",
+    "discardChanges": "Отменить изменения",
+    "removeProfilePhoto": "Удалить фото профиля",
+    "rusure": "Вы уверены, что хотите удалить фото профиля?",
+    "remove": "Удалить",
+    "Error": "Ошибка",
+    "FailedToRemove": "Не удалось удалить фото профиля. Попробуйте еще раз.",
+    "OK": "OK"
+  },
+  "ResetPassword": {
+    "passwordResetSuccess": "Мы отправили вам ссылку для сброса пароля!",
+    "emptyEmailValidation": "Пожалуйста, введите email адрес!",
+    "invalidEmail": "Пожалуйста, введите действительный email адрес"
+  },
+  "Toast": {
+    "LogoutSuccess": "Выход выполнен успешно",
+    "AccountCreatedSuccessfull": "Учетная запись успешно создана",
+    "AccountCreatedSuccessfullSubtitle": "Мы отправим дополнительную информацию по электронной почте",
+    "PasswordChangeSuccessfull": "Пароль успешно изменен",
+    "ProfileUpdated": "Профиль успешно обновлен",
+    "PhotoRemovedSuccessfully": "Фото успешно удалено",
+    "LoginSuccess": "Вход выполнен успешно",
+    "WorkinProgress": "Работа в процессе",
+    "BreakinProgress": "Перерыв",
+    "WorkFinished": "Работа завершена",
+    "ErrorUpdatingProfile": "Ошибка обновления профиля",
+    "ErrorRemovingProfilePhoto": "Ошибка удаления фото профиля",
+    "EnterEmail": "Пожалуйста, введите email адрес",
+    "ValidEmail": "Пожалуйста, введите действительный email адрес",
+    "EnterPassword": "Пожалуйста, введите пароль",
+    "CheckInternet": "Пожалуйста, проверьте подключение к интернету",
+    "LoginUnsuccessful": "Не удалось войти",
+    "StartWorkFirst": "Пожалуйста, начните работу сначала"
+  },
+  "TimeLog": {
+    "title": "Журнал времени",
+    "From": "От",
+    "mode": "Режим",
+    "To": "До",
+    "nohistory": "У вас нет истории работы за сегодня"
+  },
+  "Loading": {
+    "Wait": "Подожди секунду",
+    "PassWait": "Убедитесь, что ваш пароль надежен"
+  },
+  "Session": {
+    "SE": "Сессия истекла"
+  }
 }

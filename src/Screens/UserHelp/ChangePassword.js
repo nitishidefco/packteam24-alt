@@ -178,8 +178,9 @@ const ChangePassword = ({navigation}) => {
           style={{
             fontFamily: typography.fontFamily.Montserrat.Medium,
             fontSize: typography.fontSizes.fs18,
+            textAlign: 'center',
           }}>
-          Making sure your password is secure
+          {i18n.t('Loading.PassWait')}
         </Text>
       </View>
     </SafeAreaView>

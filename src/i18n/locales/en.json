@@ -1,129 +1,135 @@
 {
-    "Login":{
-        "title":"Login to your account",
-        "subtitle":"Enter your email & password to login",
-        "email":"Email ID",
-        "emailPlaceHolder":"Email",
-        "emptyEmailError":"Please enter email address!",
-        "invalidEmailError":"Please enter valid email address!",
-        "password":"Password",
-        "passwordPlaceHolder":"Password",
-        "forgotPassword":"Forgot password?",
-        "loginButton":"Login",
-        "pp":"Privacy Policy",
-        "ai":"Application Information",
-        "ca":"Create Account"
-    },
-    "CreateAccount":{
-        "title":"Create an account",
-        "subt":"Enter email & password to create an account",
-        "createAccButton":"Create an account",
-        "btl":"Back To Login",
-        "removeAccount":"Remove Account"
-    },
-    "ForgotPassword":{
-        "title":"Reset Password",
-        "subtitle":"Provide the email address you use to log in to the application - we will send you an instructions for resetting your password",
-        "email":"Email ID",
-        "emailPlaceHolder":"Email",
-        "resetButton":"Send Password Reset Link",
-        "backToLogin":"Go Back"
-        
-    },
-    "HomeScreen":{
-        "nfcCardTitle":"Ready to Scan NFC Tags",
-        "nfcCardSubtitle":"Hold your device near and NFC Tag",
-        "nfcButtonText":"Start NFC Scan"
-    },
-    "ChangePasswordScreen":{
-        "allFieldsRequired":"All fields are requied",
-        "currentPassword": "Current Password",
-        "newPassword": "New Password",
-        "confirmNewPassword": "Confirm New Password",
-        "save": "Save",
-        "cancel": "Cancel",
-        "changePasswordHeader":"Change Password",
-        "cancelChanges":"Cancel Changes",
-        "confirmationCancel":"Are you sure you want to cancel password change?",
-        "no":"No",
-        "yes":"Yes",
-        "confirmPasswordChange":"Confirm Password Change",
-        "changeConfirmation":"Are you sure you want to change your password?",
-        "passwordError":"Passwords do not match"
-    },
-    "WorkStatusCard":{
-        "workStart": "Work in progress",
-        "workEnd": "Work finished",
-        "breakStart":"Break in progress",
-        "workNotStarted":"Work not started"
-    },
-    "SideMenuBar":{
-        "dashboard":"Dashboard",
-        "Logout":"Logout",
-        "ChangePassword":"Change Password",
-        "UserProflie":"User Profile",
-        "ChangeLanguage":"Change Language"
-    },
-    "UserProfileScreen":{
-        "title":"User Profile",
-        "EditPhoto": "Edit Photo",
-        "SelectPhoto":"Select Photo",
-        "RemovePhoto":"Remove Photo",
-        "email":"Email ID",
-        "emailPlaceHolder":"Email",
-        "cancel":"Back",
-        "save":"Save",
-        "cancelTitle":"Cancel Changes",
-        "cancelConfirmation":"Are you sure you want to cancel? All unsaved changes will be lost.",
-        "keepEditing":"Keep Editing",
-        "discardChanges":"Discard Changes",
-        "removeProfilePhoto":"Remove Profie Photo",
-        "rusure":"Are you sure you want to remove your profile photo?",
-        "remove":"Remove",
-        "Error":"Error",
-        "FailedToRemove":"Failed to remove profile photo. Please try again.",
-        "OK":"OK",
-        "confirmAccountRemoval":"Confirm Account Removal",
-        "confirmAccountRemovalDesc":"Are you sure you want to remove the account? This action cannot be undone.",
-        "no":"No",
-        "yes":"Yes"
-    },
-    "ResetPassword":{
-        "passwordResetSuccess":"We have emailed your password reset link!",
-        "emptyEmailValidation":"Please enter email address!",
-        "invalidEmail":"Please enter valid email address"
-    },
-    "Toast":{
-        "LogoutSuccess":"Logout Successful",
-        "AccountCreatedSuccessfull":"Your account has been created",
-        "AccountCreatedSuccessfullSubtitle":"We will send further information by email",
-        "PasswordChangeSuccessfull":"Password Changed Successfully",
-        "ProfileUpdated":"Profile Updated Successfully",
-        "PhotoRemovedSuccessfully":"Profie removed Successfully",
-        "LoginSuccess":"Login Successful",
-        "WorkinProgress":"Work in progress",
-        "BreakinProgress":"Break in progress",
-        "WorkFinished":"Work Finished",
-        "ErrorUpdatingProfile":"There was an error updating the Profile",
-        "ErrorRemovingProfilePhoto":"There was an error removing the Profile Photo",
-        "EnterEmail":"Please enter email address",
-        "ValidEmail":"Please enter a valid email address",
-        "EnterPassword":"Please enter password",
-        "CheckInternet":"Please check your internet connection",
-        "LoginUnsuccessful":"Login Unsuccessful",
-        "StartWorkFirst":"Please start work first",
-        "WorkAlreadyFinished":"Work is already finished"
-    },
-    "TimeLog":{
-        "title":"Time Log",
-        "From":"From",
-        "mode":"Mode",
-        "To":"To",
-        "nohistory":"You have no work history for today"
-    },
-    "TagModes":{
-        "break_start":"Break",
-        "work_start":"Work",
-        "work_end":"Work End"
-    }
+  "Login": {
+    "title": "Login to your account",
+    "subtitle": "Enter your email & password to login",
+    "email": "Email ID",
+    "emailPlaceHolder": "Email",
+    "emptyEmailError": "Please enter email address!",
+    "invalidEmailError": "Please enter valid email address!",
+    "password": "Password",
+    "passwordPlaceHolder": "Password",
+    "forgotPassword": "Forgot password?",
+    "loginButton": "Login",
+    "pp": "Privacy Policy",
+    "ai": "Application Information",
+    "ca": "Create Account"
+  },
+  "CreateAccount": {
+    "title": "Create an account",
+    "subt": "Enter email & password to create an account",
+    "createAccButton": "Create an account",
+    "btl": "Back To Login",
+    "removeAccount": "Remove Account"
+  },
+  "ForgotPassword": {
+    "title": "Reset Password",
+    "subtitle": "Provide the email address you use to log in to the application - we will send you an instructions for resetting your password",
+    "email": "Email ID",
+    "emailPlaceHolder": "Email",
+    "resetButton": "Send Password Reset Link",
+    "backToLogin": "Go Back"
+  },
+  "HomeScreen": {
+    "nfcCardTitle": "Ready to Scan NFC Tags",
+    "nfcCardSubtitle": "Hold your device near and NFC Tag",
+    "nfcButtonText": "Start NFC Scan"
+  },
+  "ChangePasswordScreen": {
+    "allFieldsRequired": "All fields are requied",
+    "currentPassword": "Current Password",
+    "newPassword": "New Password",
+    "confirmNewPassword": "Confirm New Password",
+    "save": "Save",
+    "cancel": "Cancel",
+    "changePasswordHeader": "Change Password",
+    "cancelChanges": "Cancel Changes",
+    "confirmationCancel": "Are you sure you want to cancel password change?",
+    "no": "No",
+    "yes": "Yes",
+    "confirmPasswordChange": "Confirm Password Change",
+    "changeConfirmation": "Are you sure you want to change your password?",
+    "passwordError": "Passwords do not match"
+  },
+  "WorkStatusCard": {
+    "workStart": "Work in progress",
+    "workEnd": "Work finished",
+    "breakStart": "Break in progress",
+    "workNotStarted": "Work not started"
+  },
+  "SideMenuBar": {
+    "dashboard": "Dashboard",
+    "Logout": "Logout",
+    "ChangePassword": "Change Password",
+    "UserProflie": "User Profile",
+    "ChangeLanguage": "Change Language"
+  },
+  "UserProfileScreen": {
+    "title": "User Profile",
+    "EditPhoto": "Edit Photo",
+    "SelectPhoto": "Select Photo",
+    "RemovePhoto": "Remove Photo",
+    "email": "Email ID",
+    "emailPlaceHolder": "Email",
+    "cancel": "Back",
+    "save": "Save",
+    "cancelTitle": "Cancel Changes",
+    "cancelConfirmation": "Are you sure you want to cancel? All unsaved changes will be lost.",
+    "keepEditing": "Keep Editing",
+    "discardChanges": "Discard Changes",
+    "removeProfilePhoto": "Remove Profie Photo",
+    "rusure": "Are you sure you want to remove your profile photo?",
+    "remove": "Remove",
+    "Error": "Error",
+    "FailedToRemove": "Failed to remove profile photo. Please try again.",
+    "OK": "OK",
+    "confirmAccountRemoval": "Confirm Account Removal",
+    "confirmAccountRemovalDesc": "Are you sure you want to remove the account? This action cannot be undone.",
+    "no": "No",
+    "yes": "Yes"
+  },
+  "ResetPassword": {
+    "passwordResetSuccess": "We have emailed your password reset link!",
+    "emptyEmailValidation": "Please enter email address!",
+    "invalidEmail": "Please enter valid email address"
+  },
+  "Toast": {
+    "LogoutSuccess": "Logout Successful",
+    "AccountCreatedSuccessfull": "Your account has been created",
+    "AccountCreatedSuccessfullSubtitle": "We will send further information by email",
+    "PasswordChangeSuccessfull": "Password Changed Successfully",
+    "ProfileUpdated": "Profile Updated Successfully",
+    "PhotoRemovedSuccessfully": "Profie removed Successfully",
+    "LoginSuccess": "Login Successful",
+    "WorkinProgress": "Work in progress",
+    "BreakinProgress": "Break in progress",
+    "WorkFinished": "Work Finished",
+    "ErrorUpdatingProfile": "There was an error updating the Profile",
+    "ErrorRemovingProfilePhoto": "There was an error removing the Profile Photo",
+    "EnterEmail": "Please enter email address",
+    "ValidEmail": "Please enter a valid email address",
+    "EnterPassword": "Please enter password",
+    "CheckInternet": "Please check your internet connection",
+    "LoginUnsuccessful": "Login Unsuccessful",
+    "StartWorkFirst": "Please start work first",
+    "WorkAlreadyFinished": "Work is already finished"
+  },
+  "TimeLog": {
+    "title": "Time Log",
+    "From": "From",
+    "mode": "Mode",
+    "To": "To",
+    "nohistory": "You have no work history for today"
+  },
+  "TagModes": {
+    "break_start": "Break",
+    "work_start": "Work",
+    "work_end": "Work End"
+  },
+  "Loading": {
+    "Wait": "Wait just a second",
+    "PassWait": "Making sure your password is secure!"
+  },
+  "Session": {
+    "SE": "Session Expired"
+  }
 }

@@ -302,7 +302,7 @@ const UserProfile = ({navigation}) => {
               fontFamily: typography.fontFamily.Montserrat.Medium,
               fontSize: typography.fontSizes.fs18,
             }}>
-            Wait just a second
+            {i18n.t("Loading.Wait")}
           </Text>
         </View>
       </SafeAreaView>
