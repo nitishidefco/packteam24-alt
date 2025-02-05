@@ -11,7 +11,7 @@ const localWorkHistorySlice = createSlice({
   initialState: initialState,
   reducers: {
     setLocalWorkHistory: (state, action) => {
-      // console.log('action**********', action.payload);
+      console.log('action**********', action.payload);
 
       state.localWorkHistory = action?.payload;
     },
@@ -36,6 +36,7 @@ export const setLocalWorkHistoryInStorage =
   localWorkHistory => async dispatch => {
     try {
       const stringifiedLocalWorkHistory = JSON.stringify(localWorkHistory);
+      console.log(stringifiedLocalWorkHistory);
 
       await AsyncStorage.setItem('workHistory', stringifiedLocalWorkHistory);
       dispatch(setLocalWorkHistory(localWorkHistory));

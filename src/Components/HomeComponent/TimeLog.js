@@ -62,7 +62,7 @@ const TimeLog = ({sessionId, tag, tagsFromLocalStorage}) => {
     }
   }, [tagMode, isConnected]);
   const handleTagScan = async newMode => {
-    const currentTime = moment();
+    const currentTime = moment().format('HH:mm');
     const modeMapping = {
       work_start: 'work',
       work_end: 'work_end',
@@ -117,7 +117,6 @@ const TimeLog = ({sessionId, tag, tagsFromLocalStorage}) => {
     // Update the local history state
     dispatch(setLocalWorkHistoryInStorage(updatedHistory));
   };
-
 
   return (
     <View style={styles.container}>
