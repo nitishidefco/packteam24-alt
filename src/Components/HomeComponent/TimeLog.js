@@ -62,7 +62,7 @@ const TimeLog = ({sessionId, tag, tagsFromLocalStorage}) => {
     }
   }, [tagMode, isConnected]);
   const handleTagScan = async newMode => {
-    const currentTime = moment().format('HH:mm');
+    const currentTime = moment().format('HH:mm:ss');
     const modeMapping = {
       work_start: 'work',
       work_end: 'work_end',
