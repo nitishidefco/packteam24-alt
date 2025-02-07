@@ -12,6 +12,7 @@ const initialState = {
   error: null,
   message: '',
   data: null,
+  isLoading: false,
 };
 
 export const ScanSlice = createSlice({
@@ -24,8 +25,6 @@ export const ScanSlice = createSlice({
       state.message = '';
     },
     ScanSuccess: (state, action) => {
-
-
       const {payload} = action;
       success(payload?.data?.message);
       // toastMessage.success(payload?.data?.message);
@@ -37,7 +36,6 @@ export const ScanSlice = createSlice({
     },
     ScanFailure: (state, action) => {
       const {payload} = action;
-
       if (payload?.message) {
         //  error(payload?.errors)
         state.currentState = payload.message;
@@ -49,8 +47,34 @@ export const ScanSlice = createSlice({
       state.error = payload;
       state.message = 'Something went wrong';
     },
+    sendBulk: (state, action) => {
+      state.isScanSuccess = NULL;
+      state.error = null;
+      state.message = '';
+      state.isLoading = true;
+    },
+    SendSuccess: (state, action) => {
+      const {payload} = action;
+      console.log('Send success payload', payload);
+      state.isScanSuccess = SUCCESS;
+      state.message = 'Send bulk successfully';
+      state.isLoading = false;
+    },
+    SendFailure: (state, action) => {
+      const {payload} = action;
+      state.isScanSuccess = FAIL;
+      state.message = 'Send Bulk failed';
+      state.isLoading = false;
+    },
   },
 });
 
-export const {getScan, ScanSuccess, ScanFailure} = ScanSlice.actions;
+export const {
+  getScan,
+  ScanSuccess,
+  ScanFailure,
+  sendBulk,
+  SendFailure,
+  SendSuccess,
+} = ScanSlice.actions;
 export default ScanSlice.reducer;

@@ -164,7 +164,6 @@ const WorkStatusBar = ({tagsFromLocalStorage, tag}) => {
           return <Hammer size={30} color="#22c55e" />;
         case 'break_start':
           console.log('insdie break start');
-
           return <Coffee size={30} color="#ef4444" />;
         case 'work_end':
           return <House size={30} color="#3b82f6" />;

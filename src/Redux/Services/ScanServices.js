@@ -46,4 +46,16 @@ export default {
       .then(response => Ajax.handleResponse(response))
       .then(data => data.data[0]);
   },
+
+  BulkUpdate: async params => {
+    return fetch(`${BASE_URL}api/work-time/update-bulk`, {
+      method: 'POST',
+      body: params,
+      headers: {
+        Accept: 'multipart/form-data',
+      },
+    })
+      .then(response => Ajax.handleResponse(response))
+      .then(data => data.data[0]);
+  },
 };
