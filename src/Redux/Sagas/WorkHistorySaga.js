@@ -6,6 +6,7 @@ import {
   FetchWorkHistoryFailure,
   FetchWorkHistorySuccess,
 } from '../Reducers/WorkHistorySlice';
+console.log(API?.WorkHistory);
 
 const fetchWorkHistorySaga = function* fetchWorkHistorySaga({payload}) {
   try {

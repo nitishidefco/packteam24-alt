@@ -1,123 +1,131 @@
 {
-    
-        "Login": {
-            "title": "Вхід до облікового запису",
-            "subtitle": "Введіть email та пароль для входу",
-            "email": "електронною поштою",
-            "emailPlaceHolder": "електронною поштою",
-            "emptyEmailError": "Будь ласка, введіть email адресу!",
-            "invalidEmailError": "Будь ласка, введіть дійсну email адресу!",
-            "password": "Пароль",
-            "passwordPlaceHolder": "Пароль",
-            "forgotPassword": "Забули пароль?",
-            "loginButton": "Увійти",
-            "pp": "Політика конфіденційності",
-            "ai": "Інформація про додаток",
-            "ca": "Створити обліковий запис"
-        },
-        "CreateAccount": {
-            "title": "Створити обліковий запис",
-            "subt": "Введіть email та пароль для створення облікового запису",
-            "createAccButton": "Створити обліковий запис",
-            "btl": "Повернутися до входу",
-            "removeAccount": "Видалити обліковий запис"
-        },
-        "ForgotPassword": {
-            "title": "Скинути пароль",
-            "subtitle": "Вкажіть email адресу, яку ви використовуєте для входу в додаток - ми надішлемо вам інструкції для скидання пароля",
-            "email": "електронною поштою",
-            "emailPlaceHolder": "електронною поштою",
-            "resetButton": "Надіслати посилання для скидання пароля",
-            "backToLogin": "Повернутися"
-        },
-        "HomeScreen": {
-            "nfcCardTitle": "Готовий до сканування NFC-міток",
-            "nfcCardSubtitle": "Піднесіть пристрій до NFC-мітки",
-            "nfcButtonText": "Почати NFC сканування"
-        },
-        "ChangePasswordScreen": {
-            "allFieldsRequired": "Всі поля обов'язкові",
-            "currentPassword": "Поточний пароль",
-            "newPassword": "Новий пароль",
-            "confirmNewPassword": "Підтвердіть новий пароль",
-            "save": "Зберегти",
-            "cancel": "Скасувати",
-            "changePasswordHeader": "Змінити пароль",
-            "cancelChanges": "Скасувати зміни",
-            "confirmationCancel": "Ви впевнені, що хочете скасувати зміну пароля?",
-            "no": "nemaye",
-            "yes": "Так",
-            "confirmPasswordChange": "Підтвердити зміну пароля",
-            "changeConfirmation": "Ви впевнені, що хочете змінити пароль?",
-            "passwordError": "Паролі не співпадають"
-        },
-        "WorkStatusCard": {
-            "workStart": "Робота в процесі",
-            "workEnd": "Робота завершена",
-            "breakStart": "Перерва",
-            "workNotStarted": "Робота не розпочата"
-        },
-        "SideMenuBar": {
-            "dashboard": "Панель керування",
-            "Logout": "Вийти",
-            "ChangePassword": "Змінити пароль",
-            "UserProflie": "Профіль користувача",
-            "ChangeLanguage": "Змінити мову"
-        },
-        "UserProfileScreen": {
-            "title": "Профіль користувача",
-            "EditPhoto": "Редагувати фото",
-            "SelectPhoto": "Вибрати фото",
-            "RemovePhoto": "Видалити фото",
-            "email": "Электронная почта",
-            "emailPlaceHolder": "Электронная почта",
-            "cancel": "назад",
-            "save": "Зберегти",
-            "cancelTitle": "Скасувати зміни",
-            "cancelConfirmation": "Ви впевнені? Всі незбережені зміни будуть втрачені.",
-            "keepEditing": "Продовжити редагування",
-            "discardChanges": "Відхилити зміни",
-            "removeProfilePhoto": "Видалити фото профілю",
-            "rusure": "Ви впевнені, що хочете видалити фото профілю?",
-            "remove": "Видалити",
-            "Error": "Помилка",
-            "FailedToRemove": "Не вдалося видалити фото профілю. Спробуйте ще раз.",
-            "OK": "OK"
-        },
-        "ResetPassword": {
-            "passwordResetSuccess": "Ми надіслали вам посилання для скидання пароля!",
-            "emptyEmailValidation": "Будь ласка, введіть email адресу!",
-            "invalidEmail": "Будь ласка, введіть дійсну email адресу"
-        },
-        "Toast": {
-            "LogoutSuccess": "Вихід успішний",
-            "AccountCreatedSuccessfull": "Обліковий запис успішно створено",
-            "AccountCreatedSuccessfullSubtitle":"Ми надішлемо додаткову інформацію електронною поштою",
-            "PasswordChangeSuccessfull": "Пароль успішно змінено",
-            "ProfileUpdated": "Профіль успішно оновлено",
-            "PhotoRemovedSuccessfully": "Фото успішно видалено",
-            "LoginSuccess": "Вхід успішний",
-            "WorkinProgress": "Робота в процесі",
-            "BreakinProgress": "Перерва",
-            "WorkFinished": "Робота завершена",
-            "ErrorUpdatingProfile": "Помилка оновлення профілю",
-            "ErrorRemovingProfilePhoto": "Помилка видалення фото профілю",
-            "EnterEmail": "Будь ласка, введіть email адресу",
-            "ValidEmail": "Будь ласка, введіть дійсну email адресу",
-            "EnterPassword": "Будь ласка, введіть пароль",
-            "CheckInternet": "Будь ласка, перевірте підключення до інтернету",
-            "LoginUnsuccessful": "Вхід не вдався",
-            "StartWorkFirst": "Будь ласка, почніть роботу спочатку"
-
-
-        },
-        "TimeLog": {
-      "title": "Журнал часу",
-      "From": "Від",
-      "mode": "Режим",
-      "To": "До",
-      "nohistory": "У вас немає історії роботи за сьогодні"
-    }
-
-
+  "Login": {
+    "title": "Вхід до облікового запису",
+    "subtitle": "Введіть email та пароль для входу",
+    "email": "електронною поштою",
+    "emailPlaceHolder": "електронною поштою",
+    "emptyEmailError": "Будь ласка, введіть email адресу!",
+    "invalidEmailError": "Будь ласка, введіть дійсну email адресу!",
+    "password": "Пароль",
+    "passwordPlaceHolder": "Пароль",
+    "forgotPassword": "Забули пароль?",
+    "loginButton": "Увійти",
+    "pp": "Політика конфіденційності",
+    "ai": "Інформація про додаток",
+    "ca": "Створити обліковий запис"
+  },
+  "CreateAccount": {
+    "title": "Створити обліковий запис",
+    "subt": "Введіть email та пароль для створення облікового запису",
+    "createAccButton": "Створити обліковий запис",
+    "btl": "Повернутися до входу",
+    "removeAccount": "Видалити обліковий запис"
+  },
+  "ForgotPassword": {
+    "title": "Скинути пароль",
+    "subtitle": "Вкажіть email адресу, яку ви використовуєте для входу в додаток - ми надішлемо вам інструкції для скидання пароля",
+    "email": "електронною поштою",
+    "emailPlaceHolder": "електронною поштою",
+    "resetButton": "Надіслати посилання для скидання пароля",
+    "backToLogin": "Повернутися"
+  },
+  "HomeScreen": {
+    "nfcCardTitle": "Готовий до сканування NFC-міток",
+    "nfcCardSubtitle": "Піднесіть пристрій до NFC-мітки",
+    "nfcButtonText": "Почати NFC сканування"
+  },
+  "ChangePasswordScreen": {
+    "allFieldsRequired": "Всі поля обов'язкові",
+    "currentPassword": "Поточний пароль",
+    "newPassword": "Новий пароль",
+    "confirmNewPassword": "Підтвердіть новий пароль",
+    "save": "Зберегти",
+    "cancel": "Скасувати",
+    "changePasswordHeader": "Змінити пароль",
+    "cancelChanges": "Скасувати зміни",
+    "confirmationCancel": "Ви впевнені, що хочете скасувати зміну пароля?",
+    "no": "nemaye",
+    "yes": "Так",
+    "confirmPasswordChange": "Підтвердити зміну пароля",
+    "changeConfirmation": "Ви впевнені, що хочете змінити пароль?",
+    "passwordError": "Паролі не співпадають"
+  },
+  "WorkStatusCard": {
+    "workStart": "Робота в процесі",
+    "workEnd": "Робота завершена",
+    "breakStart": "Перерва",
+    "workNotStarted": "Робота не розпочата"
+  },
+  "SideMenuBar": {
+    "dashboard": "Панель керування",
+    "Logout": "Вийти",
+    "ChangePassword": "Змінити пароль",
+    "UserProflie": "Профіль користувача",
+    "ChangeLanguage": "Змінити мову"
+  },
+  "UserProfileScreen": {
+    "title": "Профіль користувача",
+    "EditPhoto": "Редагувати фото",
+    "SelectPhoto": "Вибрати фото",
+    "RemovePhoto": "Видалити фото",
+    "email": "Электронная почта",
+    "emailPlaceHolder": "Электронная почта",
+    "cancel": "назад",
+    "save": "Зберегти",
+    "cancelTitle": "Скасувати зміни",
+    "cancelConfirmation": "Ви впевнені? Всі незбережені зміни будуть втрачені.",
+    "keepEditing": "Продовжити редагування",
+    "discardChanges": "Відхилити зміни",
+    "removeProfilePhoto": "Видалити фото профілю",
+    "rusure": "Ви впевнені, що хочете видалити фото профілю?",
+    "remove": "Видалити",
+    "Error": "Помилка",
+    "FailedToRemove": "Не вдалося видалити фото профілю. Спробуйте ще раз.",
+    "OK": "OK"
+  },
+  "ResetPassword": {
+    "passwordResetSuccess": "Ми надіслали вам посилання для скидання пароля!",
+    "emptyEmailValidation": "Будь ласка, введіть email адресу!",
+    "invalidEmail": "Будь ласка, введіть дійсну email адресу"
+  },
+  "Toast": {
+    "LogoutSuccess": "Вихід успішний",
+    "AccountCreatedSuccessfull": "Обліковий запис успішно створено",
+    "AccountCreatedSuccessfullSubtitle": "Ми надішлемо додаткову інформацію електронною поштою",
+    "PasswordChangeSuccessfull": "Пароль успішно змінено",
+    "ProfileUpdated": "Профіль успішно оновлено",
+    "PhotoRemovedSuccessfully": "Фото успішно видалено",
+    "LoginSuccess": "Вхід успішний",
+    "WorkinProgress": "Робота в процесі",
+    "BreakinProgress": "Перерва",
+    "WorkFinished": "Робота завершена",
+    "ErrorUpdatingProfile": "Помилка оновлення профілю",
+    "ErrorRemovingProfilePhoto": "Помилка видалення фото профілю",
+    "EnterEmail": "Будь ласка, введіть email адресу",
+    "ValidEmail": "Будь ласка, введіть дійсну email адресу",
+    "EnterPassword": "Будь ласка, введіть пароль",
+    "CheckInternet": "Будь ласка, перевірте підключення до інтернету",
+    "LoginUnsuccessful": "Вхід не вдався",
+    "StartWorkFirst": "Будь ласка, почніть роботу спочатку"
+  },
+  "TimeLog": {
+    "title": "Журнал часу",
+    "From": "Від",
+    "mode": "Режим",
+    "To": "До",
+    "nohistory": "У вас немає історії роботи за сьогодні",
+    "now": "Сейчас"
+  },
+  "TagModes": {
+    "break_start": "Перерва",
+    "work_start": "Робота",
+    "work_end": "Кінець Роботи"
+  },
+  "Loading": {
+    "Wait": "Почекай секунду",
+    "PassWait": "Переконайтеся, що ваш пароль безпечний"
+  },
+  "Session": {
+    "SE": "Сесія закінчилася"
+  }
 }

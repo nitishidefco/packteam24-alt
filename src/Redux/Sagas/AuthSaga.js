@@ -71,15 +71,20 @@ const forgotPasswordSaga = function* forgotPasswordSaga({payload}) {
 const createAccountSaga = function* createAccountSaga({payload}) {
   try {
     const response = yield call(API.CreateAccount, payload.payload);
-    if (response) {
+    if (response.message === 'OK') {
       // const success = `${t(ResetPassword.passwordResetSuccess)}`;
       success(
         i18n.t('Toast.AccountCreatedSuccessfull'),
         i18n.t('Toast.AccountCreatedSuccessfullSubtitle'),
       );
+
       yield put(createAccountSuccess(response));
       payload.navigation.navigate('Login');
-    } else {
+    } else if (response.errors.email) {
+      errorToast(response.errors.email);
+      yield put(createAccountFailure(response));
+    } else if (response.errors.password) {
+      errorToast(response.errors.password);
       yield put(createAccountFailure(response));
     }
   } catch (error) {

@@ -191,10 +191,14 @@ const UserProfile = ({navigation}) => {
         formData.append('email', userEmail);
 
         if (image) {
+          const imageType = image.includes('.png') ? 'image/png' : 'image/jpeg'; // Check if it's PNG
+          const imageName = image.includes('.png')
+            ? 'profile.png'
+            : 'profile.jpg'; 
           formData.append('photo', {
             uri: image,
-            type: 'image/jpeg',
-            name: 'profile.jpg',
+            type: imageType,
+            name: imageName,
           });
         }
 
@@ -302,7 +306,7 @@ const UserProfile = ({navigation}) => {
               fontFamily: typography.fontFamily.Montserrat.Medium,
               fontSize: typography.fontSizes.fs18,
             }}>
-            Wait just a second
+            {i18n.t('Loading.Wait')}
           </Text>
         </View>
       </SafeAreaView>
