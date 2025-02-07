@@ -26,7 +26,9 @@ export const ScanSlice = createSlice({
     },
     ScanSuccess: (state, action) => {
       const {payload} = action;
-      success(payload?.data?.message);
+      console.log('************************************', payload);
+
+      success(payload?.message);
       // toastMessage.success(payload?.data?.message);
 
       state.currentState = payload?.data[1];
