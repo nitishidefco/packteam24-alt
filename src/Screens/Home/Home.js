@@ -59,7 +59,7 @@ const Home = ({navigation, route}) => {
   const [hasNfc, setHasNfc] = useState(false);
   const [List, setList] = useState([]);
   const {state, homecall} = useHomeActions();
-  const {state: states, scanCall} = useScanTagActions();
+  const {state: states, scanCall, bulkScanCall} = useScanTagActions();
   const {Auth, Home} = state;
   const SessionId = Auth.data?.data?.sesssion_id;
   const [refreshing, setRefreshing] = useState(false);
@@ -253,7 +253,23 @@ const Home = ({navigation, route}) => {
       setLoading(false);
     }
   };
-
+  const makeBulkCall = async data => {
+    try {
+      setLoading(true);
+      let formdata = new FormData();
+      formdata.append('session_id', SessionId);
+      formdata.append('device_id', deviceId);
+      formdata.append('nfc_key', uid);
+      formdata.append('lang', globalLanguage);
+      formdata.append('current_date', current_date);
+      formdata.append('current_hour', current_hour);
+      bulkScanCall(formdata);
+    } catch (error) {
+      console.error('Error processing UID:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
   /* --------------------------- most recent tag id --------------------------- */
   const getMostRecentTagId = sessionId => {
     const sessionData = sessions[sessionId];
@@ -314,6 +330,8 @@ const Home = ({navigation, route}) => {
         }
 
         if (storedSessions.length > 0) {
+          console.log(storedSessions);
+          
           for (const [index, item] of storedSessions.entries()) {
             try {
               await getUid(item.tagId, item.current_date, item.current_hour);
@@ -362,10 +380,15 @@ const Home = ({navigation, route}) => {
           current_hour,
         }),
       );
-
-      showNotificationAboutTagScannedWhileOffline(tagId, tagsFromLocalStorage);
+      if (localWorkHistory.length > 0) {
+        showNotificationAboutTagScannedWhileOffline(
+          tagId,
+          tagsFromLocalStorage,
+        );
+      }
       setTagId('');
     };
+console.log('stored session',sessions[SessionId]?.items);
 
     const processTag = async () => {
       const storedSessions = sessions[SessionId]?.items || [];

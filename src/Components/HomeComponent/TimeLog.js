@@ -71,7 +71,7 @@ const TimeLog = ({sessionId, tag, tagsFromLocalStorage}) => {
     const getComparableMode = mode => modeMapping[mode];
     const updatedHistory = [...localWorkHistory];
     console.log('Updated history lenght', updatedHistory.length);
-    
+
     const lastItem = updatedHistory[updatedHistory.length - 1];
     if (newMode === 'work_end') {
       updatedHistory[updatedHistory.length - 1] = {
@@ -82,7 +82,7 @@ const TimeLog = ({sessionId, tag, tagsFromLocalStorage}) => {
       updatedHistory.length === 0 ||
       (updatedHistory.length > 0 && !lastItem?.to?.includes(':'))
     ) {
-      if (lastItem.mode_raw !== getComparableMode(newMode)) {
+      if (lastItem?.mode_raw !== getComparableMode(newMode)) {
         console.log('First try catch');
         if (lastItem) {
           updatedHistory[updatedHistory.length - 1] = {

@@ -61,7 +61,6 @@ export const ScanSlice = createSlice({
       state.isLoading = false;
     },
     SendFailure: (state, action) => {
-      const {payload} = action;
       state.isScanSuccess = FAIL;
       state.message = 'Send Bulk failed';
       state.isLoading = false;

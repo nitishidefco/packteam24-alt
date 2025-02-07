@@ -53,6 +53,7 @@ const languages = {
   UKA: 'ua', // Ukrainian
   ZH: 'cn', //chinese
 };
+
 const Login = ({route}) => {
   // --------------- FUNCTION DECLARATION ---------------
   const navigation = useNavigation();
@@ -88,7 +89,7 @@ const Login = ({route}) => {
       setLoading(false);
       const successToast = `${t('Toast.LoginSuccess')}`;
       success(successToast);
-      navigation.navigate('HomeDrawer');
+      navigation.replace('HomeDrawer');
       setUserEmail(null);
       setUserPassword(null);
     } else if (loading && Auth.isLoginSuccess === false) {

@@ -71,22 +71,35 @@ const WorkStatusBar = ({tagsFromLocalStorage, tag}) => {
     if (isConnected) {
       setWorkMode(currentStatus?.currentState?.work_status_to_display);
     } else {
-      switch (offlineTagMode) {
-        case 'work_start':
-          setWorkMode(i18n.t('Toast.WorkinProgress'));
-          break;
-        case 'break_start':
-          setWorkMode(i18n.t('Toast.BreakinProgress'));
-          break;
-        case 'work_end':
-          setWorkMode(i18n.t('Toast.WorkFinished'));
-          break;
-        default:
-          setWorkMode('Work not started');
-          break;
+      if (localWorkHistory.length > 0) {
+        switch (offlineTagMode) {
+          case 'work_start':
+            console.log('Inside workstart');
+
+            setWorkMode(i18n.t('Toast.WorkinProgress'));
+            break;
+          case 'break_start':
+            setWorkMode(i18n.t('Toast.BreakinProgress'));
+            break;
+          case 'work_end':
+            setWorkMode(i18n.t('Toast.WorkFinished'));
+            break;
+          default:
+            setWorkMode('Work not started');
+            break;
+        }
+      } else {
+        setWorkMode('Work not started');
       }
     }
-  }, [currentStatus, formattedId, isConnected, offlineTagMode, globalLanguage]);
+  }, [
+    currentStatus,
+    formattedId,
+    isConnected,
+    offlineTagMode,
+    globalLanguage,
+    localWorkHistory,
+  ]);
 
   // useEffect(() => {
   //   switch (tagMode) {
@@ -159,16 +172,18 @@ const WorkStatusBar = ({tagsFromLocalStorage, tag}) => {
           return <House size={30} color="#6b7280" />;
       }
     } else {
-      switch (offlineTagMode) {
-        case 'work_start':
-          return <Hammer size={30} color="#22c55e" />;
-        case 'break_start':
-          console.log('insdie break start');
-          return <Coffee size={30} color="#ef4444" />;
-        case 'work_end':
-          return <House size={30} color="#3b82f6" />;
-        default:
-          return <House size={30} color="#6b7280" />;
+      if (localWorkHistory.length > 0) {
+        switch (offlineTagMode) {
+          case 'work_start':
+            return <Hammer size={30} color="#22c55e" />;
+          case 'break_start':
+            console.log('insdie break start');
+            return <Coffee size={30} color="#ef4444" />;
+          case 'work_end':
+            return <House size={30} color="#3b82f6" />;
+          default:
+            return <House size={30} color="#6b7280" />;
+        }
       }
     }
   };
@@ -187,15 +202,17 @@ const WorkStatusBar = ({tagsFromLocalStorage, tag}) => {
           return '#6b7280'; // Gray for default
       }
     } else {
-      switch (offlineTagMode) {
-        case 'work_start':
-          return '#22c55e'; // Green for work mode
-        case 'break_start':
-          return '#ef4444'; // Red for break mode
-        case 'work_end':
-          return '#3b82f6'; // Blue for work ended
-        default:
-          return '#6b7280'; // Gray for default
+      if (localWorkHistory.length > 0) {
+        switch (offlineTagMode) {
+          case 'work_start':
+            return '#22c55e'; // Green for work mode
+          case 'break_start':
+            return '#ef4444'; // Red for break mode
+          case 'work_end':
+            return '#3b82f6'; // Blue for work ended
+          default:
+            return '#6b7280'; // Gray for default
+        }
       }
     }
   }, [workMode]);

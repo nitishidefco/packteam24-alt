@@ -4,6 +4,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const initialState = {
   sessions: {},
+  bulkSessions: {},
   isConnected: true,
   isSyncing: false,
   tagInLocalStorage: '',
@@ -44,6 +45,32 @@ const SaveDataOfflineSlice = createSlice({
     clearOfflineStorage: state => {
       state.sessions = {}; // Reset session storage
     },
+    dataForBulkUpdate: (state, action) => {
+      const {sessionId, nfc_key, date, hour} = action.payload;
+
+      // Ensure the session exists or create it
+      if (!state.bulkSessions[sessionId]) {
+        state.bulkSessions[sessionId] = {sessionId, items: []};
+      }
+
+      // Check only the most recent NFC key to prevent accidental duplicate scans
+      const items = state.bulkSessions[sessionId]?.items;
+      if (items.length > 0) {
+        const mostRecentEntry = items[items.length - 1];
+        if (mostRecentEntry.nfc_key === nfc_key) {
+          console.warn('Preventing duplicate consecutive NFC scan');
+          return; // Prevent consecutive duplicate scans
+        }
+      }
+
+      // Add valid NFC data to bulk storage
+      state.bulkSessions[sessionId].items.push({
+        nfc_key,
+        date,
+        hour,
+      });
+    },
+
     saveTag: (state, action) => {
       console.log('tag===>', action.payload);
 

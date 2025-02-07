@@ -64,7 +64,7 @@ const CustomDrawerContent = props => {
       const successToast = t('Toast.LogoutSuccess');
       success(successToast);
       reduxStorage.removeItem('token');
-      navigation.replace('Login');
+      // navigation.replace('Login');
     } else if (loading && Auth.islogoutSuccess === false) {
       setLoading(false);
     }

@@ -1,14 +1,10 @@
-import {all, call, delay, put, takeEvery} from 'redux-saga/effects';
-
+import {all, call, put, takeEvery} from 'redux-saga/effects';
 import {
-  getScan,
-  ScanSlice,
   ScanFailure,
   ScanSuccess,
   SendSuccess,
   SendFailure,
 } from '../Reducers/ScanSlice';
-
 import API from '../Services/ScanServices';
 import {
   SCAN_REDUCER,
@@ -16,45 +12,48 @@ import {
   WORK_HISTORY_REDUCER,
 } from '../SliceKey';
 
-const scanSaga = function* scanSaga({payload}) {
+// Worker Saga for scanning a tag
+function* scanSaga({payload}) {
   try {
     const response = yield call(API.ScanTag, payload);
     if (response?.data) {
-      yield put(ScanSuccess(response));
-      yield put({
-        type: `${WORKSTATE_REDUCER}/fetchWorkStatus`,
-        payload: payload,
-      });
-      yield put({
-        type: `${WORK_HISTORY_REDUCER}/getWorkHistory`,
-        payload: payload,
-      });
+      yield put(ScanSuccess(response.data)); // Dispatch success action
+      yield put({type: `${WORKSTATE_REDUCER}/fetchWorkStatus`, payload});
+      yield put({type: `${WORK_HISTORY_REDUCER}/getWorkHistory`, payload});
     } else {
-      yield put(ScanFailure(response?.errors));
+      yield put(ScanFailure(response?.errors || 'Scan failed'));
     }
   } catch (error) {
-    yield put(ScanFailure(error));
+    yield put(ScanFailure(error.message || 'Unexpected error'));
   }
-};
+}
 
-function* bulkUpdate({payload}) {
+// Worker Saga for bulk update
+function* bulkUpdateSaga({payload}) {
   try {
     const response = yield call(API.BulkUpdate, payload);
-    console.log('fetch user profile rsponse', response);
+    console.log('Bulk update response:', response);
     if (response?.data) {
-      // Check for data property
       yield put(SendSuccess(response.data));
-    } else if (response?.errors) {
-      yield put(SendFailure(response.errors));
+    } else {
+      yield put(SendFailure(response.errors || 'Bulk update failed'));
     }
   } catch (error) {
-    console.error('Updating bulk history error', error);
-    yield put(SendFailure(error.message));
+    console.error('Bulk update error:', error);
+    yield put(SendFailure(error.message || 'Unexpected error'));
   }
 }
 
-function* scanTagSaga() {
-  yield all([yield takeEvery(`${SCAN_REDUCER}/getScan`, scanSaga)]);
+// Watcher Saga: Watches for actions dispatched to the store
+function* watchScanSaga() {
+  yield takeEvery(`${SCAN_REDUCER}/getScan`, scanSaga);
 }
 
-export default scanTagSaga;
+function* watchBulkUpdateSaga() {
+  yield takeEvery(`${SCAN_REDUCER}/bulkUpdate`, bulkUpdateSaga);
+}
+
+// Root saga that combines all watchers
+export default function* scanTagSaga() {
+  yield all([watchScanSaga(), watchBulkUpdateSaga()]);
+}
