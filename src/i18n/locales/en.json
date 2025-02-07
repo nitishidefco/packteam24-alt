@@ -118,7 +118,8 @@
     "From": "From",
     "mode": "Mode",
     "To": "To",
-    "nohistory": "You have no work history for today"
+    "nohistory": "You have no work history for today",
+    "now": "Now"
   },
   "TagModes": {
     "break_start": "Break",

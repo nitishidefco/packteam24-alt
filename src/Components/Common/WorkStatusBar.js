@@ -23,7 +23,7 @@ const WorkStatusBar = ({tagsFromLocalStorage, tag}) => {
   const {globalLanguage} = useSelector(state => state?.GlobalLanguage);
   const tagMode = findModeByTagId(tagsFromLocalStorage, tag?.id);
   const sessions = useSelector(state => state?.OfflineData?.sessions);
-
+  const {localWorkHistory} = useSelector(state => state?.LocalWorkHistory);
   useEffect(() => {
     const updateWorkStatus = async () => {
       try {
@@ -42,7 +42,11 @@ const WorkStatusBar = ({tagsFromLocalStorage, tag}) => {
     const sessionData = sessions[sessionId];
 
     // Check if sessionData and items are present
-    if (sessionData && sessionData.items) {
+    if (
+      sessionData &&
+      sessionData.items &&
+      !localWorkHistory[localWorkHistory?.length - 1]?.to?.includes(':')
+    ) {
       // Sort the items by time in descending order (latest first)
       const sortedItems = [...sessionData.items].sort((a, b) => {
         const timeA = new Date(a.time);
@@ -56,7 +60,12 @@ const WorkStatusBar = ({tagsFromLocalStorage, tag}) => {
     return null; // If session data or items are not available
   };
   const mostRecentTagId = getMostRecentTagId(SessionId);
-  const offlineTagMode = findModeByTagId(tagsFromLocalStorage, mostRecentTagId);
+  const offlineTagMode = mostRecentTagId
+    ? findModeByTagId(tagsFromLocalStorage, mostRecentTagId)
+    : localWorkHistory?.length > 0
+    ? 'work_end'
+    : mostRecentTagId;
+  console.log('Offline tag mode', offlineTagMode, mostRecentTagId);
 
   useEffect(() => {
     if (isConnected) {
@@ -77,7 +86,7 @@ const WorkStatusBar = ({tagsFromLocalStorage, tag}) => {
           break;
       }
     }
-  }, [currentStatus, formattedId, isConnected, offlineTagMode]);
+  }, [currentStatus, formattedId, isConnected, offlineTagMode, globalLanguage]);
 
   // useEffect(() => {
   //   switch (tagMode) {

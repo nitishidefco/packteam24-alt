@@ -118,7 +118,13 @@
     "From": "从",
     "mode": "模式",
     "To": "至",
-    "nohistory": "您今天没有工作记录"
+    "nohistory": "您今天没有工作记录",
+    "now": "现在"
+  },
+  "TagModes": {
+    "break_start": "休息",
+    "work_start": "工作",
+    "work_end": "工作结束"
   },
   "Loading": {
     "Wait": "等一下",

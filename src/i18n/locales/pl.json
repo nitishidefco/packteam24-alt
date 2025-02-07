@@ -117,7 +117,13 @@
     "From": "Od",
     "mode": "Tryb",
     "To": "Do",
-    "nohistory": "Nie masz historii pracy na dzisiaj"
+    "nohistory": "Nie masz historii pracy na dzisiaj",
+    "now": "Teraz"
+  },
+  "TagModes": {
+    "break_start": "Przerwa",
+    "work_start": "Praca",
+    "work_end": "Koniec Pracy"
   },
   "Loading": {
     "Wait": "Poczekaj chwilę",

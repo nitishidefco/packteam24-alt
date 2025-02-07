@@ -117,7 +117,13 @@
     "From": "Von",
     "mode": "Modus",
     "To": "Bis",
-    "nohistory": "Sie haben heute keine Arbeitshistorie"
+    "nohistory": "Sie haben heute keine Arbeitshistorie",
+    "now": "Jetzt"
+  },
+  "TagModes": {
+    "break_start": "Pause",
+    "work_start": "Arbeit",
+    "work_end": "Arbeit Ende"
   },
   "Loading": {
     "Wait": "Warte einen Moment",

@@ -62,7 +62,7 @@ const TimeLog = ({sessionId, tag, tagsFromLocalStorage}) => {
     }
   }, [tagMode, isConnected]);
   const handleTagScan = async newMode => {
-    const currentTime = moment().format('HH:mm:ss');
+    const currentTime = moment().format('HH:mm:ss:ss');
     const modeMapping = {
       work_start: 'work',
       work_end: 'work_end',
@@ -70,49 +70,34 @@ const TimeLog = ({sessionId, tag, tagsFromLocalStorage}) => {
     };
     const getComparableMode = mode => modeMapping[mode];
     const updatedHistory = [...localWorkHistory];
-
-    try {
-      if (updatedHistory.length > 0) {
-        const lastItem = updatedHistory[updatedHistory.length - 1];
-        if (lastItem.mode_raw !== getComparableMode(newMode)) {
+    const lastItem = updatedHistory[updatedHistory.length - 1];
+    if (newMode === 'work_end') {
+      updatedHistory[updatedHistory.length - 1] = {
+        ...lastItem,
+        to: currentTime,
+      };
+    } else if (
+      updatedHistory.length === 0 ||
+      (updatedHistory.length > 0 && !lastItem?.to?.includes(':'))
+    ) {
+      if (lastItem.mode_raw !== getComparableMode(newMode)) {
+        console.log('First try catch');
+        if (lastItem) {
           updatedHistory[updatedHistory.length - 1] = {
             ...lastItem,
             to: currentTime,
           };
         }
-      }
-    } catch (error) {
-      console.log('error', error);
-    }
-    try {
-      if (updatedHistory.length > 0) {
-        const lastItem = updatedHistory[updatedHistory.length - 1];
-        if (lastItem.mode_raw === getComparableMode(newMode)) {
-          console.log('Preventing duplicate time entry');
-          return;
-        }
-      }
-    } catch (error) {
-      console.log(error);
-    }
-
-    try {
-      if (newMode === 'work_end') {
-        const lastItem = updatedHistory[updatedHistory.length - 1];
-        updatedHistory[updatedHistory.length - 1] = {
-          ...lastItem,
-          to: currentTime,
-        };
-      } else {
         updatedHistory.push({
           from: currentTime,
           mode: i18n.t(`TagModes.${newMode}`),
           mode_raw: getComparableMode(newMode),
           to: 'now',
         });
+      } else if (lastItem.mode_raw === getComparableMode(newMode)) {
+        console.log('Preventing duplicate time entry');
+        return;
       }
-    } catch (error) {
-      error(error);
     }
     // Update the local history state
     dispatch(setLocalWorkHistoryInStorage(updatedHistory));
@@ -144,7 +129,11 @@ const TimeLog = ({sessionId, tag, tagsFromLocalStorage}) => {
                   <View key={index} style={styles.row}>
                     <Text style={styles.cell}>{item.from}</Text>
                     <Text style={styles.cell}>{item.mode}</Text>
-                    <Text style={styles.cell}>{item.to}</Text>
+                    <Text style={styles.cell}>
+                      {['Now', 'now']?.includes(item.to)
+                        ? i18n.t('TimeLog.now')
+                        : item.to}
+                    </Text>
                   </View>
                 ))}
               </>
@@ -171,16 +160,12 @@ const TimeLog = ({sessionId, tag, tagsFromLocalStorage}) => {
               {/* Table Rows */}
               {localWorkHistory.map((item, index) => (
                 <View key={index} style={styles.row}>
-                  <Text style={styles.cell}>
-                    {moment(item?.from).isValid()
-                      ? moment(item?.from).format('HH:mm')
-                      : item?.from}
-                  </Text>
+                  <Text style={styles.cell}>{item?.from}</Text>
                   <Text style={styles.cell}>{item.mode}</Text>
                   <Text style={styles.cell}>
-                    {moment(item?.to).isValid()
-                      ? moment(item?.to).format('HH:mm')
-                      : item?.to}
+                    {['Now', 'now']?.includes(item.to)
+                      ? i18n.t('TimeLog.now')
+                      : item.to}
                   </Text>
                 </View>
               ))}

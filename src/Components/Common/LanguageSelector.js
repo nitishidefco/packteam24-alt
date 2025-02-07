@@ -14,6 +14,7 @@ import {useWorkHistoryActions} from '../../Redux/Hooks/useWorkHistoryActions';
 import {useDispatch, useSelector} from 'react-redux';
 import {setLanguageWithStorage} from '../../Redux/Reducers/LanguageProviderSlice';
 import {useWorkStatusActions} from '../../Redux/Hooks/useWorkStatusActions';
+import {setLocalWorkHistoryInStorage} from '../../Redux/Reducers/LocalWorkHistorySlice';
 
 const LanguageSelector = ({sessionId}) => {
   const [isOpen, setIsOpen] = useState(false);
@@ -24,7 +25,7 @@ const LanguageSelector = ({sessionId}) => {
 
   const {getWorkHistoryCall} = useWorkHistoryActions();
   const {fetchWorkStatusCall} = useWorkStatusActions();
-
+  const {localWorkHistory} = useSelector(state => state?.LocalWorkHistory);
   const languageOptions = [
     {label: '🇬🇧 EN', value: 'en'},
     {label: '🇩🇪 DE', value: 'de'},
@@ -51,7 +52,16 @@ const LanguageSelector = ({sessionId}) => {
     }
     setIsOpen(false);
   };
-
+  useEffect(() => {
+    if (localWorkHistory?.length > 0) {
+      let ldata = localWorkHistory.map(r => {
+        let item = {...r};
+        item.mode = i18n.t(`TagModes.${item.mode_raw}_start`);
+        return item;
+      });
+      dispatch(setLocalWorkHistoryInStorage(ldata));
+    }
+  }, [globalLanguage]);
   return (
     <View
       style={[

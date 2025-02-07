@@ -71,7 +71,7 @@ const Home = ({navigation, route}) => {
   const [tagsFromLocalStorage, setTagsFromLocalStorage] = useState([]);
   const {deviceId} = useSelector(state => state?.Network);
   const {globalLanguage} = useSelector(state => state?.GlobalLanguage);
-
+  const {localWorkHistory} = useSelector(state => state?.LocalWorkHistory);
   // Set session handler values
   setSessionHandler(dispatch, SessionId, deviceId, navigation);
   // let validationResult1 = useValidateTag(tagId, sessionItems);
@@ -259,7 +259,11 @@ const Home = ({navigation, route}) => {
     const sessionData = sessions[sessionId];
 
     // Check if sessionData and items are present
-    if (sessionData && sessionData.items) {
+    if (
+      sessionData &&
+      sessionData.items &&
+      !localWorkHistory[localWorkHistory?.length - 1]?.to?.includes(':')
+    ) {
       // Sort the items by time in descending order (latest first)
       const sortedItems = [...sessionData.items].sort((a, b) => {
         const timeA = new Date(a.time);
@@ -280,7 +284,8 @@ const Home = ({navigation, route}) => {
     return matchingTag ? matchingTag.mode : null;
   }
   const [tagMode, setTagMode] = useState(null);
-  const mode = findModeByTagId(tagsFromLocalStorage, mostRecentTagId);
+  const mode =
+    mostRecentTagId && findModeByTagId(tagsFromLocalStorage, mostRecentTagId);
   useEffect(() => {
     setTagMode(mode);
   }, [mode]);
@@ -303,7 +308,7 @@ const Home = ({navigation, route}) => {
         if (tagId) {
           // Process the current tag when online
           const current_date = moment().format('YYYY-MM-DD');
-          const current_hour = moment().format('HH:mm');
+          const current_hour = moment().format('HH:mm:ss');
           await getUid(tagId, current_date, current_hour);
           setTagId('');
         }
@@ -334,7 +339,11 @@ const Home = ({navigation, route}) => {
     };
 
     const processOfflineTag = () => {
-      if (!tagId) return;
+      if (
+        !tagId ||
+        localWorkHistory[localWorkHistory?.length - 1]?.to?.includes(':')
+      )
+        return;
       setDuplicateTagId(tagId);
 
       // if (!validationResult.valid) {
@@ -342,7 +351,7 @@ const Home = ({navigation, route}) => {
       //   return;
       // }
       const current_date = moment().format('YYYY-MM-DD');
-      const current_hour = moment().format('HH:mm');
+      const current_hour = moment().format('HH:mm:ss');
 
       dispatch(
         addDataToOfflineStorage({

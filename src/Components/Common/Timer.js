@@ -69,20 +69,6 @@ const Timer = ({tag, tagsFromLocalStorage, sessionId}) => {
     }
   };
 
-  // const loadAppState = async () => {
-  //   try {
-  //     return await AsyncStorage.getItem('appState');
-  //   } catch (error) {
-  //     console.error('Error loading app state:', error);
-  //     return null;
-  //   }
-  // };
-
-  // const getTimeDifferenceInSeconds = (time1, time2) => {
-  //   return Math.abs(
-  //     moment(time1, 'HH:mm').unix() - moment(time2, 'HH:mm').unix(),
-  //   );
-  // };
   useEffect(() => {
     console.log('localWorkHistory===>', localWorkHistory);
     setInitialTimer();
