@@ -85,11 +85,11 @@ const WorkStatusBar = ({tagsFromLocalStorage, tag}) => {
             setWorkMode(i18n.t('Toast.WorkFinished'));
             break;
           default:
-            setWorkMode('Work not started');
+            setWorkMode(i18n.t('Toast.WorkNotStarted'));
             break;
         }
       } else {
-        setWorkMode('Work not started');
+        setWorkMode(i18n.t('Toast.WorkNotStarted'));
       }
     }
   }, [

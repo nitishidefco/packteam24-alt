@@ -70,7 +70,7 @@ const Timer = ({tag, tagsFromLocalStorage, sessionId}) => {
   };
 
   useEffect(() => {
-    console.log('localWorkHistory===>', localWorkHistory);
+    // console.log('localWorkHistory===>', localWorkHistory);
     setInitialTimer();
   }, [
     appState,
@@ -80,12 +80,12 @@ const Timer = ({tag, tagsFromLocalStorage, sessionId}) => {
     JSON.stringify(localWorkHistory),
   ]);
   const setInitialTimer = async () => {
-    console.log(
-      'Initializing timer...',
-      tagMode,
-      tagInLocalStorage,
-      workHistoryState.data[workHistoryState.data.length - 1],
-    );
+    // console.log(
+    //   'Initializing timer...',
+    //   tagMode,
+    //   tagInLocalStorage,
+    //   workHistoryState.data[workHistoryState.data.length - 1],
+    // );
     if (isConnected && workHistoryState?.data?.length > 0) {
       const lastEntry =
         workHistoryState.data[workHistoryState.data.length - 1].from;
@@ -143,7 +143,7 @@ const Timer = ({tag, tagsFromLocalStorage, sessionId}) => {
       console.log('No work history available.');
       if (workHistoryState.data.length > 0 || localWorkHistory.length > 0) {
         controlTimer(tagInLocalStorage || tagMode);
-      } else if(tagMode === 'work_start'){
+      } else if (tagMode === 'work_start') {
         controlTimer(tagMode);
       } else {
         stopTimer();
@@ -257,4 +257,3 @@ const styles = StyleSheet.create({
   },
 });
 export default Timer;
-

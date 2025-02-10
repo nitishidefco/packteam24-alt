@@ -110,7 +110,8 @@
     "EnterPassword": "Bitte Passwort eingeben",
     "CheckInternet": "Bitte Internetverbindung überprüfen",
     "LoginUnsuccessful": "Anmeldung fehlgeschlagen",
-    "StartWorkFirst": "Bitte beginnen Sie zuerst mit der Arbeit"
+    "StartWorkFirst": "Bitte beginnen Sie zuerst mit der Arbeit",
+    "WorkNotStarted": "Arbeit nicht begonnen"
   },
   "TimeLog": {
     "title": "Zeiterfassung",

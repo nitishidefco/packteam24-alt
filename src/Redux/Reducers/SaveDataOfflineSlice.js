@@ -4,10 +4,10 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const initialState = {
   sessions: {},
-  bulkSessions: {},
   isConnected: true,
   isSyncing: false,
   tagInLocalStorage: '',
+  bulkSessions: {},
 };
 
 const SaveDataOfflineSlice = createSlice({
@@ -44,31 +44,39 @@ const SaveDataOfflineSlice = createSlice({
 
     clearOfflineStorage: state => {
       state.sessions = {}; // Reset session storage
+      state.bulkSessions = {};
     },
     dataForBulkUpdate: (state, action) => {
       const {sessionId, nfc_key, date, hour} = action.payload;
-
-      // Ensure the session exists or create it
-      if (!state.bulkSessions[sessionId]) {
-        state.bulkSessions[sessionId] = {sessionId, items: []};
-      }
-
-      // Check only the most recent NFC key to prevent accidental duplicate scans
-      const items = state.bulkSessions[sessionId]?.items;
-      if (items.length > 0) {
-        const mostRecentEntry = items[items.length - 1];
-        if (mostRecentEntry.nfc_key === nfc_key) {
-          console.warn('Preventing duplicate consecutive NFC scan');
-          return; // Prevent consecutive duplicate scans
+      try {
+        if (!state.bulkSessions) {
+          state.bulkSessions = {}; // Ensure bulkSessions exists
         }
-      }
 
-      // Add valid NFC data to bulk storage
-      state.bulkSessions[sessionId].items.push({
-        nfc_key,
-        date,
-        hour,
-      });
+        if (!state.bulkSessions[sessionId]) {
+          state.bulkSessions[sessionId] = {sessionId, items: []};
+        }
+
+        // Get current items in the session
+        const items = state.bulkSessions[sessionId]?.items;
+
+        // Check the most recent NFC key to prevent duplicate scans
+        if (items.length > 0) {
+          const mostRecentEntry = items[items.length - 1];
+          if (mostRecentEntry.nfc_key === nfc_key) {
+            return; // Prevent consecutive duplicate scans
+          }
+        }
+
+        // Add valid NFC data to bulk storage
+        state.bulkSessions[sessionId].items.push({
+          nfc_key,
+          date,
+          hour,
+        });
+      } catch (error) {
+        console.error('❌ Error in bulk update reducer:', error);
+      }
     },
 
     saveTag: (state, action) => {
@@ -103,8 +111,12 @@ const SaveDataOfflineSlice = createSlice({
   },
 });
 
-export const {addDataToOfflineStorage, clearOfflineStorage, saveTag} =
-  SaveDataOfflineSlice.actions;
+export const {
+  addDataToOfflineStorage,
+  clearOfflineStorage,
+  saveTag,
+  dataForBulkUpdate,
+} = SaveDataOfflineSlice.actions;
 
 export const saveTagToLocalStorage = tagMode => async dispatch => {
   console.log('save====>', tagMode);

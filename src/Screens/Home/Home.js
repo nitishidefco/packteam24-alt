@@ -24,6 +24,7 @@ import {useWorkStatusActions} from '../../Redux/Hooks/useWorkStatusActions';
 import {
   clearOfflineStorage,
   addDataToOfflineStorage,
+  dataForBulkUpdate,
 } from '../../Redux/Reducers/SaveDataOfflineSlice';
 import {showNotificationAboutTagScannedWhileOffline} from '../../Utlis/NotificationsWhileOffline';
 import {useDispatch, useSelector} from 'react-redux';
@@ -49,7 +50,8 @@ const Home = ({navigation, route}) => {
 
   useNfcStatus();
   const {t, i18n} = useTranslation();
-  const sessions = useSelector(state => state?.OfflineData?.sessions);
+  const {sessions, bulkSessions} = useSelector(state => state?.OfflineData);
+
   const isConnected = useSelector(state => state?.Network?.isConnected);
   const isNfcEnabled = useSelector(state => state?.Network?.isNfcEnabled);
   const [duplicateTagId, setDuplicateTagId] = useState('');
@@ -259,10 +261,9 @@ const Home = ({navigation, route}) => {
       let formdata = new FormData();
       formdata.append('session_id', SessionId);
       formdata.append('device_id', deviceId);
-      formdata.append('nfc_key', uid);
       formdata.append('lang', globalLanguage);
-      formdata.append('current_date', current_date);
-      formdata.append('current_hour', current_hour);
+      formdata.append('data', JSON.stringify(data));
+
       bulkScanCall(formdata);
     } catch (error) {
       console.error('Error processing UID:', error);
@@ -319,7 +320,7 @@ const Home = ({navigation, route}) => {
   useEffect(() => {
     if (!SessionId) return;
 
-    const processOnlineTags = async storedSessions => {
+    const processOnlineTags = async (storedSessions, bulkStoredSessions) => {
       try {
         if (tagId) {
           // Process the current tag when online
@@ -329,24 +330,28 @@ const Home = ({navigation, route}) => {
           setTagId('');
         }
 
-        if (storedSessions.length > 0) {
-          console.log(storedSessions);
-          
-          for (const [index, item] of storedSessions.entries()) {
-            try {
-              await getUid(item.tagId, item.current_date, item.current_hour);
-            } catch (error) {
-              console.error(
-                `Error processing stored tag ${item.tagId}:`,
-                error,
-              );
-            }
+        // if (storedSessions.length > 0) {
+        //   for (const [index, item] of storedSessions.entries()) {
+        //     try {
+        //       await getUid(item.tagId, item.current_date, item.current_hour);
+        //     } catch (error) {
+        //       console.error(
+        //         `Error processing stored tag ${item.tagId}:`,
+        //         error,
+        //       );
+        //     }
 
-            // Add a delay of 6 seconds before the next item (except for the last one)
-            if (index < storedSessions.length - 1) {
-              await new Promise(resolve => setTimeout(resolve, 3000));
-            }
-          }
+        //     // Add a delay of 6 seconds before the next item (except for the last one)
+        //     if (index < storedSessions.length - 1) {
+        //       await new Promise(resolve => setTimeout(resolve, 3000));
+        //     }
+        //   }
+        // }
+
+        if (bulkStoredSessions.length > 0) {
+          console.log('Making the pai call');
+
+          await makeBulkCall(bulkStoredSessions);
         }
 
         // Clear offline storage after processing
@@ -380,6 +385,21 @@ const Home = ({navigation, route}) => {
           current_hour,
         }),
       );
+      try {
+        console.log('Dispathching for bulk update');
+
+        dispatch(
+          dataForBulkUpdate({
+            sessionId: SessionId,
+            nfc_key: tagId,
+            date: current_date,
+            hour: current_hour,
+          }),
+        );
+      } catch (error) {
+        console.log('error', error);
+      }
+
       if (localWorkHistory.length > 0) {
         showNotificationAboutTagScannedWhileOffline(
           tagId,
@@ -388,13 +408,12 @@ const Home = ({navigation, route}) => {
       }
       setTagId('');
     };
-console.log('stored session',sessions[SessionId]?.items);
 
     const processTag = async () => {
       const storedSessions = sessions[SessionId]?.items || [];
-
+      const bulkStoredSessions = bulkSessions[SessionId]?.items || [];
       if (isConnected) {
-        await processOnlineTags(storedSessions);
+        await processOnlineTags(storedSessions, bulkStoredSessions);
       } else {
         processOfflineTag();
       }

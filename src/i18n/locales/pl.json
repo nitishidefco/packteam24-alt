@@ -110,7 +110,8 @@
     "EnterPassword": "Proszę wprowadzić hasło",
     "CheckInternet": "Proszę sprawdzić połączenie z internetem",
     "LoginUnsuccessful": "Logowanie nie powiodło się",
-    "StartWorkFirst": "Proszę najpierw rozpocząć pracę"
+    "StartWorkFirst": "Proszę najpierw rozpocząć pracę",
+    "WorkNotStarted": "Praca nie rozpoczęta"
   },
   "TimeLog": {
     "title": "Dziennik czasu",

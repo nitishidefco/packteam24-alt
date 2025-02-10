@@ -19,7 +19,7 @@ import {toastMessage} from '../../Helpers';
 import {reduxStorage} from '../../Redux/Storage';
 import {useTranslation} from 'react-i18next';
 import {success} from '../../Helpers/ToastMessage';
-import { useSelector } from 'react-redux';
+import {useSelector} from 'react-redux';
 // import DailyListScreen from '../../screens/DailyList/DailyListScreen';
 
 const CustomDrawerContent = props => {
@@ -64,7 +64,7 @@ const CustomDrawerContent = props => {
       const successToast = t('Toast.LogoutSuccess');
       success(successToast);
       reduxStorage.removeItem('token');
-      // navigation.replace('Login');
+      navigation.replace('Login');
     } else if (loading && Auth.islogoutSuccess === false) {
       setLoading(false);
     }
@@ -311,6 +311,7 @@ const styles = StyleSheet.create({
   },
   drawerItem: {
     marginLeft: 0,
+    width: Matrics.screenWidth*0.45
   },
   homeIconIosStyle: {
     width: Matrics.ms(20),

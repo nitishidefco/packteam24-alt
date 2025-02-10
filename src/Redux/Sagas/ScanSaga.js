@@ -30,13 +30,26 @@ function* scanSaga({payload}) {
 
 // Worker Saga for bulk update
 function* bulkUpdateSaga({payload}) {
+  console.log('Bulk update payload:', payload);
+
   try {
+    // Call the BulkUpdate API and get the response
     const response = yield call(API.BulkUpdate, payload);
     console.log('Bulk update response:', response);
-    if (response?.data) {
+
+    // Check if the response indicates success or failure
+    if (response?.success) {
+      // If successful, dispatch the success action with the data
       yield put(SendSuccess(response.data));
+      yield put({type: `${WORKSTATE_REDUCER}/fetchWorkStatus`, payload});
+      yield put({type: `${WORK_HISTORY_REDUCER}/getWorkHistory`, payload});
     } else {
-      yield put(SendFailure(response.errors || 'Bulk update failed'));
+      // If failed, dispatch the failure action with errors
+      yield put(
+        SendFailure(
+          response.errors || response.message || 'Bulk update failed',
+        ),
+      );
     }
   } catch (error) {
     console.error('Bulk update error:', error);
@@ -50,7 +63,7 @@ function* watchScanSaga() {
 }
 
 function* watchBulkUpdateSaga() {
-  yield takeEvery(`${SCAN_REDUCER}/bulkUpdate`, bulkUpdateSaga);
+  yield takeEvery(`${SCAN_REDUCER}/sendBulk`, bulkUpdateSaga);
 }
 
 // Root saga that combines all watchers
