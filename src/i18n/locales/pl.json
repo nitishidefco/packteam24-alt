@@ -132,5 +132,14 @@
   },
   "Session": {
     "SE": "Sesja wygasła"
+  },
+  "Offline": {
+    "NoInternet": "Brak połączenia z Internetem",
+    "FeatureNotAvailable": "Funkcja niedostępna w trybie offline",
+    "OK": "Ok",
+    "CantLogout": "Nie można się wylogować, gdy masz trwającą pracę",
+    "CantLogoutDescription": "Jesteś offline, nie możesz się wylogować, gdy masz trwającą pracę. Zakończ swoją pracę, aby się wylogować.",
+    "AskToLogout": "Czy na pewno chcesz się wylogować?",
+    "ExplainLogout": "Gdy przejdziesz w tryb offline, nie będziesz mógł się zalogować ponownie, dopóki nie uzyskasz dostępu do Internetu."
   }
 }

@@ -43,6 +43,8 @@ const SaveDataOfflineSlice = createSlice({
     },
 
     clearOfflineStorage: state => {
+      console.log('Clearing offline storage');
+      
       state.sessions = {}; // Reset session storage
       state.bulkSessions = {};
     },

@@ -141,7 +141,12 @@ const Timer = ({tag, tagsFromLocalStorage, sessionId}) => {
       }
     } else {
       console.log('No work history available.');
-      if (workHistoryState.data.length > 0 || localWorkHistory.length > 0) {
+      if (tagMode === 'break_start') {
+        stopTimer();
+      } else if (
+        workHistoryState.data.length > 0 ||
+        localWorkHistory.length > 0
+      ) {
         controlTimer(tagInLocalStorage || tagMode);
       } else if (tagMode === 'work_start') {
         controlTimer(tagMode);

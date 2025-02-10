@@ -133,5 +133,14 @@
   },
   "Session": {
     "SE": "Session Expired"
+  },
+  "Offline": {
+    "NoInternet": "No Internet Connection",
+    "FeatureNotAvailable": "Feature not available in offline mode",
+    "OK": "Ok",
+    "CantLogout": "Cannot logout while you have ongoing work",
+    "CantLogoutDescription": "You are offline, you cannot logout while you have ongoing work time. Quit your work to log out.",
+    "AskToLogout": "Are you sure you want to log out?",
+    "ExplainLogout": "Once you are in offline mode, you will not be able to log in again until you have access to the internet."
   }
 }

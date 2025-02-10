@@ -46,6 +46,8 @@ export const AuthSlice = createSlice({
 
     // Logout reducers
     getLogout: state => {
+      console.log('Logout state', state);
+
       return {...state, islogoutSuccess: NULL, error: null, message: ''};
     },
     logoutSuccess: state => {

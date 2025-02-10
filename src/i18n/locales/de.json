@@ -132,5 +132,14 @@
   },
   "Session": {
     "SE": "Sitzung abgelaufen"
+  },
+  "Offline": {
+    "NoInternet": "Keine Internetverbindung",
+    "FeatureNotAvailable": "Funktion im Offline-Modus nicht verfügbar",
+    "OK": "Ok",
+    "CantLogout": "Abmeldung nicht möglich, solange Arbeit läuft",
+    "CantLogoutDescription": "Sie sind offline und können sich nicht abmelden, während eine Arbeit läuft. Beenden Sie Ihre Arbeit, um sich abzumelden.",
+    "AskToLogout": "Sind Sie sicher, dass Sie sich abmelden möchten?",
+    "ExplainLogout": "Sobald Sie sich im Offline-Modus befinden, können Sie sich erst wieder anmelden, wenn Sie eine Internetverbindung haben."
   }
 }

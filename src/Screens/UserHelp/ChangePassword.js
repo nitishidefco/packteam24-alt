@@ -62,35 +62,42 @@ const ChangePassword = ({navigation}) => {
   console.log('Password state', passwordState);
 
   const handlePasswordChange = () => {
-    if (!currentPassword || !newPassword || !confirmNewPassword) {
-      const errorMessage = `${t('ChangePasswordScreen.allFieldsRequired')}`;
-      errorToast(errorMessage);
-      return;
-    }
-
-    Alert.alert(
-      t('ChangePasswordScreen.confirmNewPassword'),
-      t('ChangePasswordScreen.changeConfirmation'),
-      [
-        {
-          text: t('ChangePasswordScreen.no'),
-          style: 'cancel',
-        },
-        {
-          text: t('ChangePasswordScreen.yes'),
-          onPress: () => {
-            const formData = new FormData();
-            formData.append('session_id', SessionId);
-            formData.append('device_id', deviceId);
-            formData.append('lang', globalLanguage);
-            formData.append('current_password', currentPassword);
-            formData.append('new_password', newPassword);
-            formData.append('confirm_new_password', confirmNewPassword);
-            changePasswordCall(formData, navigation);
+    if (isConnected) {
+      if (!currentPassword || !newPassword || !confirmNewPassword) {
+        const errorMessage = `${t('ChangePasswordScreen.allFieldsRequired')}`;
+        errorToast(errorMessage);
+        return;
+      }
+      Alert.alert(
+        t('ChangePasswordScreen.confirmNewPassword'),
+        t('ChangePasswordScreen.changeConfirmation'),
+        [
+          {
+            text: t('ChangePasswordScreen.no'),
+            style: 'cancel',
           },
-        },
-      ],
-    );
+          {
+            text: t('ChangePasswordScreen.yes'),
+            onPress: () => {
+              const formData = new FormData();
+              formData.append('session_id', SessionId);
+              formData.append('device_id', deviceId);
+              formData.append('lang', globalLanguage);
+              formData.append('current_password', currentPassword);
+              formData.append('new_password', newPassword);
+              formData.append('confirm_new_password', confirmNewPassword);
+              changePasswordCall(formData, navigation);
+            },
+          },
+        ],
+      );
+    } else {
+      Alert.alert(
+        'No Internet Connection',
+        'Feature not available in offline mode',
+        [{text: 'OK', onPress: () => navigation.navigate('HomeDrawer')}],
+      );
+    }
   };
 
   const handleCancel = () => {

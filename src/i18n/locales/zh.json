@@ -133,5 +133,14 @@
   },
   "Session": {
     "SE": "会话已过期"
+  },
+  "Offline": {
+    "NoInternet": "无网络连接",
+    "FeatureNotAvailable": "离线模式下无法使用此功能",
+    "OK": "确定",
+    "CantLogout": "您有正在进行的工作，无法注销",
+    "CantLogoutDescription": "您当前处于离线状态，无法在进行中的工作时注销。请结束工作后再注销。",
+    "AskToLogout": "您确定要注销吗？",
+    "ExplainLogout": "进入离线模式后，您将无法重新登录，直到您恢复互联网连接。"
   }
 }

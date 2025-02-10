@@ -70,7 +70,6 @@ const TimeLog = ({sessionId, tag, tagsFromLocalStorage}) => {
     };
     const getComparableMode = mode => modeMapping[mode];
     const updatedHistory = [...localWorkHistory];
-    console.log('Updated history lenght', updatedHistory.length);
 
     const lastItem = updatedHistory[updatedHistory.length - 1];
     if (newMode === 'work_end') {
@@ -78,6 +77,9 @@ const TimeLog = ({sessionId, tag, tagsFromLocalStorage}) => {
         ...lastItem,
         to: currentTime,
       };
+    } else if (updatedHistory.length === 0 && newMode === 'break_start') {
+      console.log('Break before anything else');
+      return;
     } else if (
       updatedHistory.length === 0 ||
       (updatedHistory.length > 0 && !lastItem?.to?.includes(':'))

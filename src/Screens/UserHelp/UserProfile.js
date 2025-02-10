@@ -30,6 +30,7 @@ import {errorToast} from '../../Helpers/ToastMessage';
 
 const UserProfile = ({navigation}) => {
   const {t, i18n} = useTranslation();
+  const isConnected = useSelector(state => state?.Network?.isConnected);
   const language = useSavedLanguage();
   const {
     profileState,
@@ -182,32 +183,42 @@ const UserProfile = ({navigation}) => {
     return true;
   }
   const handleSave = async () => {
-    if (validateInputs()) {
-      try {
-        const formData = new FormData();
-        formData.append('session_id', SessionId);
-        formData.append('device_id', deviceId);
-        formData.append('lang', globalLanguage);
-        formData.append('email', userEmail);
+    if (isConnected) {
+      if (validateInputs()) {
+        try {
+          const formData = new FormData();
+          formData.append('session_id', SessionId);
+          formData.append('device_id', deviceId);
+          formData.append('lang', globalLanguage);
+          formData.append('email', userEmail);
 
-        if (image) {
-          const imageType = image.includes('.png') ? 'image/png' : 'image/jpeg'; // Check if it's PNG
-          const imageName = image.includes('.png')
-            ? 'profile.png'
-            : 'profile.jpg'; 
-          formData.append('photo', {
-            uri: image,
-            type: imageType,
-            name: imageName,
-          });
+          if (image) {
+            const imageType = image.includes('.png')
+              ? 'image/png'
+              : 'image/jpeg'; // Check if it's PNG
+            const imageName = image.includes('.png')
+              ? 'profile.png'
+              : 'profile.jpg';
+            formData.append('photo', {
+              uri: image,
+              type: imageType,
+              name: imageName,
+            });
+          }
+
+          updateUserProfileCall(formData);
+          setCounter(prevCounter => prevCounter + 1);
+          // navigation.replace('HomeDrawer');
+        } catch (error) {
+          console.error('Error updating profile:', error);
         }
-
-        updateUserProfileCall(formData);
-        setCounter(prevCounter => prevCounter + 1);
-        // navigation.replace('HomeDrawer');
-      } catch (error) {
-        console.error('Error updating profile:', error);
       }
+    } else {
+      Alert.alert(
+        'No Internet Connection',
+        'Feature not available in offline mode',
+        [{text: 'OK', onPress: () => navigation.navigate('HomeDrawer')}],
+      );
     }
   };
 
@@ -233,37 +244,45 @@ const UserProfile = ({navigation}) => {
     );
   };
   const handleRemoveProfilePhoto = () => {
-    Alert.alert(
-      t('UserProfileScreen.removeProfilePhoto'),
-      t('UserProfileScreen.rusure'),
-      [
-        {
-          text: t('UserProfileScreen.cancel'),
-          style: 'cancel',
-        },
-        {
-          text: t('UserProfileScreen.remove'),
-          style: 'destructive',
-          onPress: async () => {
-            try {
-              const formData = new FormData();
-              formData.append('session_id', SessionId);
-              formData.append('device_id', deviceId);
-              formData.append('lang', globalLanguage);
-              removeUserProfilePhotoCall(formData);
-              setCounter(prevCounter => prevCounter + 1);
-            } catch (error) {
-              Alert.alert(
-                t('UserProfileScreen.Error'),
-                t('UserProfileScreen.FailedToRemove'),
-                [{text: t('UserProfileScreen.OK')}],
-              );
-              console.error('Error removing profile photo:', error);
-            }
+    if (isConnected) {
+      Alert.alert(
+        t('UserProfileScreen.removeProfilePhoto'),
+        t('UserProfileScreen.rusure'),
+        [
+          {
+            text: t('UserProfileScreen.cancel'),
+            style: 'cancel',
           },
-        },
-      ],
-    );
+          {
+            text: t('UserProfileScreen.remove'),
+            style: 'destructive',
+            onPress: async () => {
+              try {
+                const formData = new FormData();
+                formData.append('session_id', SessionId);
+                formData.append('device_id', deviceId);
+                formData.append('lang', globalLanguage);
+                removeUserProfilePhotoCall(formData);
+                setCounter(prevCounter => prevCounter + 1);
+              } catch (error) {
+                Alert.alert(
+                  t('UserProfileScreen.Error'),
+                  t('UserProfileScreen.FailedToRemove'),
+                  [{text: t('UserProfileScreen.OK')}],
+                );
+                console.error('Error removing profile photo:', error);
+              }
+            },
+          },
+        ],
+      );
+    } else {
+      Alert.alert(
+        'No Internet Connection',
+        'Feature not available in offline mode',
+        [{text: 'OK', onPress: () => navigation.navigate('HomeDrawer')}],
+      );
+    }
   };
   const handleRemoveAccount = () => {
     Alert.alert(

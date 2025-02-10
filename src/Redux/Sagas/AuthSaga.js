@@ -45,6 +45,7 @@ const logoutSaga = function* logoutSaga({payload}) {
       payload.navigation.navigate('Login');
     } else {
       yield put(logoutFailure(response));
+      // payload.navigation.navigate('Login');
     }
   } catch (error) {
     yield put(logoutFailure(error));
