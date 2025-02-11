@@ -371,7 +371,7 @@ const styles = StyleSheet.create({
   },
   drawerItem: {
     marginLeft: 0,
-    width: Matrics.screenWidth * 0.439,
+    width: Matrics.screenWidth * 0.46,
     // backgroundColor: 'red',
   },
   homeIconIosStyle: {
