@@ -141,5 +141,8 @@
     "CantLogoutDescription": "Jesteś offline, nie możesz się wylogować, gdy masz trwającą pracę. Zakończ swoją pracę, aby się wylogować.",
     "AskToLogout": "Czy na pewno chcesz się wylogować?",
     "ExplainLogout": "Gdy przejdziesz w tryb offline, nie będziesz mógł się zalogować ponownie, dopóki nie uzyskasz dostępu do Internetu."
+  },
+  "Timer": {
+    "sync": "Synchronizowanie czasu..."
   }
 }

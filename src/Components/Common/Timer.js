@@ -9,12 +9,13 @@ import {useDispatch, useSelector} from 'react-redux';
 import {getCurrentTime} from '../../Helpers/GetCurrentTime';
 import {findModeByTagId} from '../../Helpers/FindModeByTagId';
 import moment from 'moment';
-import {typography} from '../../Config/AppStyling';
+import {Matrics, typography} from '../../Config/AppStyling';
 import {OffineStatus} from '../../Redux/Reducers/WorkStateSlice';
 import {
   saveTag,
   saveTagToLocalStorage,
 } from '../../Redux/Reducers/SaveDataOfflineSlice';
+import i18n from '../../i18n/i18n';
 
 const Timer = ({tag, tagsFromLocalStorage, sessionId}) => {
   const dispatch = useDispatch();
@@ -29,6 +30,8 @@ const Timer = ({tag, tagsFromLocalStorage, sessionId}) => {
   const {isConnected} = useSelector(state => state?.Network);
   const tagMode = findModeByTagId(tagsFromLocalStorage, tag?.id);
   const {tagInLocalStorage} = useSelector(state => state.OfflineData);
+  const {isLoading} = useSelector(state => state?.Scan);
+  console.log('IsLoading==============>', isLoading);
 
   const nowTranslation = ['Jetzt', 'Now', 'now', 'Сейчас', 'Зараз', 'Teraz'];
   // const [tagMode, setTagMode] = useState(tagModeById);
@@ -237,7 +240,11 @@ const Timer = ({tag, tagsFromLocalStorage, sessionId}) => {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.timerText}>{formatTime(seconds)}</Text>
+      {isLoading ? (
+        <Text style={styles.loadingText}>{i18n.t("Timer.sync")}</Text>
+      ) : (
+        <Text style={styles.timerText}>{formatTime(seconds)}</Text>
+      )}
     </View>
   );
 };
@@ -254,6 +261,11 @@ const styles = StyleSheet.create({
     fontSize: 48,
     fontFamily: typography.fontFamily.Montserrat.Bold,
     marginBottom: 20,
+  },
+  loadingText: {
+    fontSize: typography.fontSizes.fs24,
+    fontFamily: typography.fontFamily.Montserrat.Medium,
+    marginBottom: Matrics.vs(20),
   },
   modeText: {
     fontSize: 16,
