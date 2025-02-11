@@ -58,9 +58,9 @@ const Login = ({route}) => {
   // --------------- FUNCTION DECLARATION ---------------
   const navigation = useNavigation();
   const {t, i18n} = useTranslation();
-  const privacyPolicyUrl = 'https://eda.workflex360.de/api/privacy-policy';
+  const privacyPolicyUrl = 'https://eda.workflex360.de/de/datenschutzerklarung';
   const applicationInformatinoUrl =
-    'https://eda.workflex360.de/api/application-information';
+    'https://eda.workflex360.de/de/technischer-support';
   // --------------- STATE ---------------
 
   // email & password that was static

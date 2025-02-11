@@ -613,12 +613,12 @@
 				CODE_SIGN_ENTITLEMENTS = packteam/packteam.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 23;
-				DEVELOPMENT_TEAM = RFCRATE6EZ;
+				CURRENT_PROJECT_VERSION = 30;
+				DEVELOPMENT_TEAM = 7WN9486P3F;
 				ENABLE_BITCODE = NO;
 				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				INFOPLIST_FILE = packteam/Info.plist;
-				INFOPLIST_KEY_CFBundleDisplayName = "Pack team";
+				INFOPLIST_KEY_CFBundleDisplayName = "EDA - Time Tracker";
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.business";
 				IPHONEOS_DEPLOYMENT_TARGET = 15.1;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -655,11 +655,11 @@
 				CODE_SIGN_ENTITLEMENTS = packteam/packteam.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 23;
-				DEVELOPMENT_TEAM = RFCRATE6EZ;
+				CURRENT_PROJECT_VERSION = 30;
+				DEVELOPMENT_TEAM = 7WN9486P3F;
 				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				INFOPLIST_FILE = packteam/Info.plist;
-				INFOPLIST_KEY_CFBundleDisplayName = "Pack team";
+				INFOPLIST_KEY_CFBundleDisplayName = "EDA - Time Tracker";
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.business";
 				IPHONEOS_DEPLOYMENT_TARGET = 15.1;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -755,10 +755,7 @@
 					"-DFOLLY_CFG_NO_COROUTINES=1",
 					"-DFOLLY_HAVE_CLOCK_GETTIME=1",
 				);
-				OTHER_LDFLAGS = (
-					"$(inherited)",
-					" ",
-				);
+				OTHER_LDFLAGS = "$(inherited)  ";
 				REACT_NATIVE_PATH = "${PODS_ROOT}/../../node_modules/react-native";
 				SDKROOT = iphoneos;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "$(inherited) DEBUG";
@@ -828,10 +825,7 @@
 					"-DFOLLY_CFG_NO_COROUTINES=1",
 					"-DFOLLY_HAVE_CLOCK_GETTIME=1",
 				);
-				OTHER_LDFLAGS = (
-					"$(inherited)",
-					" ",
-				);
+				OTHER_LDFLAGS = "$(inherited)  ";
 				REACT_NATIVE_PATH = "${PODS_ROOT}/../../node_modules/react-native";
 				SDKROOT = iphoneos;
 				USE_HERMES = true;
