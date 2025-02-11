@@ -31,8 +31,7 @@ const Timer = ({tag, tagsFromLocalStorage, sessionId}) => {
   const tagMode = findModeByTagId(tagsFromLocalStorage, tag?.id);
   const {tagInLocalStorage} = useSelector(state => state.OfflineData);
   const {isLoading} = useSelector(state => state?.Scan);
-  console.log('IsLoading==============>', isLoading);
-
+  
   const nowTranslation = ['Jetzt', 'Now', 'now', 'Сейчас', 'Зараз', 'Teraz'];
   // const [tagMode, setTagMode] = useState(tagModeById);
   useEffect(() => {
