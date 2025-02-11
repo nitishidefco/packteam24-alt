@@ -142,5 +142,8 @@
     "CantLogoutDescription": "You are offline, you cannot logout while you have ongoing work time. Quit your work to log out.",
     "AskToLogout": "Are you sure you want to log out?",
     "ExplainLogout": "Once you are in offline mode, you will not be able to log in again until you have access to the internet."
+  },
+  "Timer": {
+    "sync": "Syncing Time..."
   }
 }

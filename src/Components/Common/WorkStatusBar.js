@@ -92,6 +92,7 @@ const WorkStatusBar = ({tagsFromLocalStorage, tag}) => {
         setWorkMode(i18n.t('Toast.WorkNotStarted'));
       }
     }
+    getStatusIcon();
   }, [
     currentStatus,
     formattedId,
