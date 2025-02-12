@@ -62,7 +62,7 @@ const CustomDrawerContent = props => {
       formdata.append('device_id', deviceId);
       logoutCall(formdata);
     } else {
-      if (lastItem.length < 7) {
+      if (lastItem?.length < 7) {
         Alert.alert(
           i18n.t('Offline.CantLogout'),
           i18n.t('Offline.CantLogoutDescription'),

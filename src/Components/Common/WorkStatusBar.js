@@ -24,6 +24,7 @@ const WorkStatusBar = ({tagsFromLocalStorage, tag}) => {
   const tagMode = findModeByTagId(tagsFromLocalStorage, tag?.id);
   const sessions = useSelector(state => state?.OfflineData?.sessions);
   const {localWorkHistory} = useSelector(state => state?.LocalWorkHistory);
+  const [offlineTagMode, setOfflineTagMode] = useState(null);
   useEffect(() => {
     const updateWorkStatus = async () => {
       try {
@@ -60,12 +61,37 @@ const WorkStatusBar = ({tagsFromLocalStorage, tag}) => {
     return null; // If session data or items are not available
   };
   const mostRecentTagId = getMostRecentTagId(SessionId);
-  const offlineTagMode = mostRecentTagId
-    ? findModeByTagId(tagsFromLocalStorage, mostRecentTagId)
-    : localWorkHistory?.length > 0
-    ? 'work_end'
-    : mostRecentTagId;
-  console.log('Offline tag mode', offlineTagMode, mostRecentTagId);
+  // const offlineTagMode = mostRecentTagId
+  //   ? findModeByTagId(tagsFromLocalStorage, mostRecentTagId)
+  //   : localWorkHistory?.length > 0
+  //   ? 'work_end'
+  //   : mostRecentTagId;
+  useEffect(() => {
+    if (!isConnected) {
+      if (
+        localWorkHistory.length > 0 &&
+        localWorkHistory[localWorkHistory.length - 1]?.to?.includes(':')
+      ) {
+        setOfflineTagMode('work_end');
+      } else if (
+        localWorkHistory.length > 0 &&
+        localWorkHistory[localWorkHistory.length - 1]?.mode_raw === 'work'
+      ) {
+        setOfflineTagMode('work_start');
+      } else if (
+        localWorkHistory.length > 0 &&
+        localWorkHistory[localWorkHistory.length - 1]?.mode_raw === 'break'
+      ) {
+        setOfflineTagMode('break_start');
+      }
+    }
+  }, [
+    localWorkHistory.length,
+    localWorkHistory[localWorkHistory.length - 1]?.to,
+    isConnected,
+  ]);
+
+  // console.log('Offline tag mode', offlineTagMode, mostRecentTagId);
 
   useEffect(() => {
     if (isConnected) {
@@ -75,7 +101,6 @@ const WorkStatusBar = ({tagsFromLocalStorage, tag}) => {
         switch (offlineTagMode) {
           case 'work_start':
             console.log('Inside workstart');
-
             setWorkMode(i18n.t('Toast.WorkinProgress'));
             break;
           case 'break_start':
@@ -85,7 +110,13 @@ const WorkStatusBar = ({tagsFromLocalStorage, tag}) => {
             setWorkMode(i18n.t('Toast.WorkFinished'));
             break;
           default:
-            setWorkMode(i18n.t('Toast.WorkNotStarted'));
+            if (
+              localWorkHistory[localWorkHistory.length - 1]?.to?.includes(':')
+            ) {
+              setWorkMode(i18n.t('Toast.WorkFinished'));
+            } else {
+              setWorkMode(i18n.t('Toast.WorkNotStarted'));
+            }
             break;
         }
       } else {
@@ -150,7 +181,7 @@ const WorkStatusBar = ({tagsFromLocalStorage, tag}) => {
           // setWorkMode(currentStatus?.currentState?.work_status_to_display);
           await reduxStorage.setItem(
             'tagForOfflineValidation',
-            currentStatus?.currentState?.work_status,
+            JSON.stringify(currentStatus?.currentState?.work_status),
           );
         } catch (error) {
           console.error('Error saving tag for offline validation:', error);

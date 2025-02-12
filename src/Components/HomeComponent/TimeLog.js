@@ -20,6 +20,7 @@ const TimeLog = ({sessionId, tag, tagsFromLocalStorage}) => {
   const formattedId = addColons(tag?.id);
   const isConnected = useSelector(state => state?.Network?.isConnected);
   const {tagInLocalStorage} = useSelector(state => state.OfflineData);
+  const {bulkSessions} = useSelector(state => state?.OfflineData);
 
   useEffect(() => {
     try {
@@ -61,6 +62,7 @@ const TimeLog = ({sessionId, tag, tagsFromLocalStorage}) => {
       handleTagScan(tagMode);
     }
   }, [tagMode, isConnected]);
+
   const handleTagScan = async newMode => {
     const currentTime = moment().format('HH:mm:ss');
     const modeMapping = {
@@ -70,7 +72,6 @@ const TimeLog = ({sessionId, tag, tagsFromLocalStorage}) => {
     };
     const getComparableMode = mode => modeMapping[mode];
     const updatedHistory = [...localWorkHistory];
-
     const lastItem = updatedHistory[updatedHistory.length - 1];
     if (newMode === 'work_end') {
       updatedHistory[updatedHistory.length - 1] = {
@@ -106,6 +107,7 @@ const TimeLog = ({sessionId, tag, tagsFromLocalStorage}) => {
     // Update the local history state
     dispatch(setLocalWorkHistoryInStorage(updatedHistory));
   };
+  console.log('Bulk sessions', bulkSessions[sessionId]?.items);
 
   return (
     <View style={styles.container}>

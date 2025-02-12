@@ -1,7 +1,6 @@
 import {createSlice} from '@reduxjs/toolkit';
 import {OFFLINE_REDUCER} from '../SliceKey';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-
 const initialState = {
   sessions: {},
   isConnected: true,
@@ -44,7 +43,6 @@ const SaveDataOfflineSlice = createSlice({
 
     clearOfflineStorage: state => {
       console.log('Clearing offline storage');
-      
       state.sessions = {}; // Reset session storage
       state.bulkSessions = {};
     },

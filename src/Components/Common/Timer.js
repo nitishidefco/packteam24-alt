@@ -97,10 +97,10 @@ const Timer = ({tag, tagsFromLocalStorage, sessionId}) => {
       if (intervalRef.current) {
         clearInterval(intervalRef.current);
       }
-      console.log('last Entry...', lastEntry);
+      console.log('last Entry... online mode', lastEntry);
       if (
         nowTranslation.includes(
-          workHistoryState.data[workHistoryState.data.length - 1].to,
+          workHistoryState?.data[workHistoryState?.data?.length - 1]?.to,
         )
       ) {
         setSeconds(elapsedTime);

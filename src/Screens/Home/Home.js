@@ -329,6 +329,7 @@ const Home = ({navigation, route}) => {
           await getUid(tagId, current_date, current_hour);
           setTagId('');
         }
+        console.log('Bulk stored sessions',bulkStoredSessions);
 
         // if (storedSessions.length > 0) {
         //   for (const [index, item] of storedSessions.entries()) {

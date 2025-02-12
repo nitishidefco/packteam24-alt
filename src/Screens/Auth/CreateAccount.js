@@ -55,9 +55,9 @@ const languages = {
 const CreateAccount = () => {
   const navigation = useNavigation();
   const {t, i18n} = useTranslation();
-  const privacyPolicyUrl = 'https://eda.workflex360.de/api/privacy-policy';
+  const privacyPolicyUrl = 'https://eda.workflex360.de/de/datenschutzerklarung';
   const applicationInformatinoUrl =
-    'https://eda.workflex360.de/api/application-information';
+    'https://eda.workflex360.de/de/technischer-support';
   const {dark, theme, toggle} = useContext(ThemeContext);
   const isConnected = useSelector(state => state?.Network?.isConnected);
   const {deviceId, manufacturer} = useSelector(state => state?.Network);
