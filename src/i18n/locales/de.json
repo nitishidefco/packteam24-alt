@@ -111,7 +111,9 @@
     "CheckInternet": "Bitte Internetverbindung überprüfen",
     "LoginUnsuccessful": "Anmeldung fehlgeschlagen",
     "StartWorkFirst": "Bitte beginnen Sie zuerst mit der Arbeit",
-    "WorkNotStarted": "Arbeit nicht begonnen"
+    "WorkNotStarted": "Arbeit nicht begonnen",
+    "Cannotendwork": "Arbeit kann nicht beendet werden, bevor sie begonnen wurde",
+    "Cannottakebreak": "Pause kann nicht gemacht werden, bevor die Arbeit begonnen wurde"
   },
   "TimeLog": {
     "title": "Zeiterfassung",

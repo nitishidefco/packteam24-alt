@@ -111,7 +111,9 @@
     "CheckInternet": "Proszę sprawdzić połączenie z internetem",
     "LoginUnsuccessful": "Logowanie nie powiodło się",
     "StartWorkFirst": "Proszę najpierw rozpocząć pracę",
-    "WorkNotStarted": "Praca nie rozpoczęta"
+    "WorkNotStarted": "Praca nie rozpoczęta",
+    "Cannotendwork": "Nie można zakończyć pracy przed jej rozpoczęciem",
+    "Cannottakebreak": "Nie można zrobić przerwy przed rozpoczęciem pracy"
   },
   "TimeLog": {
     "title": "Dziennik czasu",

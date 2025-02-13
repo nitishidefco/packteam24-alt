@@ -64,16 +64,34 @@ const TimeLog = ({sessionId, tag, tagsFromLocalStorage}) => {
   }, [tagMode, isConnected]);
 
   const handleTagScan = async newMode => {
+    console.log('New Mode:', newMode);
     const currentTime = moment().format('HH:mm:ss');
+    console.log('Current Time:', currentTime);
+    if (newMode === 'work_end' && localWorkHistory.length === 0) {
+      console.log('No work history to end');
+
+      return;
+    } else if (newMode === 'break_start' && localWorkHistory.length === 0) {
+      console.log('No work history to start break');
+
+      return;
+    }
     const modeMapping = {
       work_start: 'work',
       work_end: 'work_end',
       break_start: 'break',
     };
     const getComparableMode = mode => modeMapping[mode];
+    console.log('compareable mode', getComparableMode(newMode));
+
     const updatedHistory = [...localWorkHistory];
     const lastItem = updatedHistory[updatedHistory.length - 1];
+
+    console.log('Updated History:', updatedHistory);
+    console.log('Last Item:', lastItem);
+
     if (newMode === 'work_end') {
+      console.log('Executing: newMode === work_end');
       updatedHistory[updatedHistory.length - 1] = {
         ...lastItem,
         to: currentTime,
@@ -85,14 +103,18 @@ const TimeLog = ({sessionId, tag, tagsFromLocalStorage}) => {
       updatedHistory.length === 0 ||
       (updatedHistory.length > 0 && !lastItem?.to?.includes(':'))
     ) {
+      console.log('Executing: New entry or continuing current mode');
+
       if (lastItem?.mode_raw !== getComparableMode(newMode)) {
-        console.log('First try catch');
+        console.log('Executing: Mode change detected');
         if (lastItem) {
+          console.log('Updating last item with end time');
           updatedHistory[updatedHistory.length - 1] = {
             ...lastItem,
             to: currentTime,
           };
         }
+        console.log('Pushing new history entry');
         updatedHistory.push({
           from: currentTime,
           mode: i18n.t(`TagModes.${newMode}`),
@@ -104,10 +126,11 @@ const TimeLog = ({sessionId, tag, tagsFromLocalStorage}) => {
         return;
       }
     }
+
+    console.log('Final Updated History:', updatedHistory);
     // Update the local history state
     dispatch(setLocalWorkHistoryInStorage(updatedHistory));
   };
-  console.log('Bulk sessions', bulkSessions[sessionId]?.items);
 
   return (
     <View style={styles.container}>

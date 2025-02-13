@@ -44,6 +44,7 @@ import {Matrics, typography} from '../../Config/AppStyling';
 import TimeLog from '../../Components/HomeComponent/TimeLog';
 import {initializeLanguage} from '../../Redux/Reducers/LanguageProviderSlice';
 import {setSessionHandler} from '../../Utlis/SessionHandler';
+import {errorToast} from '../../Helpers/ToastMessage';
 
 const Home = ({navigation, route}) => {
   const dispatch = useDispatch();
@@ -143,7 +144,7 @@ const Home = ({navigation, route}) => {
 
     updateWorkStatus();
     fetchNfcTags();
-  }, [tagDetected, count]);
+  }, [tagDetected, count, isConnected]);
 
   // Get nfc from server and save in local storage
   useEffect(() => {
@@ -329,7 +330,7 @@ const Home = ({navigation, route}) => {
           await getUid(tagId, current_date, current_hour);
           setTagId('');
         }
-        console.log('Bulk stored sessions',bulkStoredSessions);
+        console.log('Bulk stored sessions', bulkStoredSessions);
 
         // if (storedSessions.length > 0) {
         //   for (const [index, item] of storedSessions.entries()) {
@@ -362,13 +363,47 @@ const Home = ({navigation, route}) => {
       }
     };
 
-    const processOfflineTag = () => {
+    const processOfflineTag = bulkStoredSessions => {
+      const tagModeInProcessOfflineTag = findModeByTagId(
+        tagsFromLocalStorage,
+        tagId,
+      );
+      if (tagsFromLocalStorage.length === 0 && tagId) {
+        errorToast(
+          'Connect to internet atleast once',
+          'We cannot detect your tags',
+        );
+        setTagId('');
+        return;
+      }
       if (
+        tagModeInProcessOfflineTag === 'work_end' &&
+        localWorkHistory.length === 0
+      ) {
+        errorToast(i18n.t('Toast.Cannotendwork'));
+        setTagId('');
+        return;
+      } else if (
+        tagModeInProcessOfflineTag === 'break_start' &&
+        localWorkHistory.length === 0
+      ) {
+        errorToast(i18n.t('Toast.Cannottakebreak'));
+        setTagId('');
+        return;
+      } else if (
         !tagId ||
         localWorkHistory[localWorkHistory?.length - 1]?.to?.includes(':')
-      )
+      ) {
+        console.log('tagId', tagId);
+
+        console.log(localWorkHistory[localWorkHistory?.length - 1]?.to);
+
+        console.log('tag id is empty or last item is not ended');
+        setTagId('');
         return;
+      }
       setDuplicateTagId(tagId);
+      console.log('Bulk stored sessions offline', bulkStoredSessions);
 
       // if (!validationResult.valid) {
       //   showNotificationAboutTagScannedWhileOffline(validationResult);
@@ -416,7 +451,7 @@ const Home = ({navigation, route}) => {
       if (isConnected) {
         await processOnlineTags(storedSessions, bulkStoredSessions);
       } else {
-        processOfflineTag();
+        processOfflineTag(bulkStoredSessions);
       }
     };
 
