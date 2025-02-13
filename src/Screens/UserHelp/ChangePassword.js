@@ -43,6 +43,7 @@ const ChangePassword = ({navigation}) => {
   const [passwordError, setPasswordError] = useState('');
   const {deviceId} = useSelector(state => state?.Network);
   const {globalLanguage} = useSelector(state => state?.GlobalLanguage);
+  const isConnected = useSelector(state => state?.Network?.isConnected);
   // Handle input field changes
   const handleChange = (name, value) => {
     switch (name) {
