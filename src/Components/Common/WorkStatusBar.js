@@ -226,7 +226,7 @@ const WorkStatusBar = ({tagsFromLocalStorage, tag}) => {
         return <House size={30} color="#6b7280" />;
     }
   };
-
+  }
   // Memoizing background color to avoid unnecessary recalculations
   const borderColor = useMemo(() => {
     if (isConnected) {
@@ -303,5 +303,4 @@ const styles = StyleSheet.create({
     color: '#111827',
   },
 });
-
 export default WorkStatusBar;
