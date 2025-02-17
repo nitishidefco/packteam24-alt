@@ -192,6 +192,8 @@ const WorkStatusBar = ({tagsFromLocalStorage, tag}) => {
   }, [currentStatus]);
 
   const getStatusIcon = () => {
+    console.log('getting status icon');
+    
     if (isConnected) {
       switch (currentStatus?.currentState?.work_status) {
         case 'work_in_progress':
@@ -205,18 +207,18 @@ const WorkStatusBar = ({tagsFromLocalStorage, tag}) => {
       }
     } else {
       if (localWorkHistory.length > 0) {
-        switch (offlineTagMode) {
-          case 'work_start':
-            return <Hammer size={30} color="#22c55e" />;
-          case 'break_start':
-            console.log('insdie break start');
-            return <Coffee size={30} color="#ef4444" />;
-          case 'work_end':
-            return <House size={30} color="#3b82f6" />;
-          default:
-            return <House size={30} color="#6b7280" />;
+        console.log('inside status icon');
+        if(localWorkHistory[localWorkHistory.length - 1].to.includes(':')){
+          console.log('inside work end icon');
+          return <House size={30} color="#3b82f6" />;
         }
-      }
+        else if(localWorkHistory[localWorkHistory.length - 1].mode_raw === 'break'){
+          return <Coffee size={30} color="#ef4444" />;
+        } else if(localWorkHistory[localWorkHistory.length - 1].mode_raw === 'work'){
+          return <Hammer size={30} color="#22c55e" />;
+        } 
+      } else if(localWorkHistory.length === 0){
+        return <House size={30} color="#6b7280" />;
     }
   };
 
@@ -235,19 +237,25 @@ const WorkStatusBar = ({tagsFromLocalStorage, tag}) => {
       }
     } else {
       if (localWorkHistory.length > 0) {
-        switch (offlineTagMode) {
-          case 'work_start':
-            return '#22c55e'; // Green for work mode
-          case 'break_start':
-            return '#ef4444'; // Red for break mode
-          case 'work_end':
-            return '#3b82f6'; // Blue for work ended
-          default:
-            return '#6b7280'; // Gray for default
-        }
+        
+        if(localWorkHistory[localWorkHistory.length - 1].to.includes(':')){
+          return "#3b82f6";
+        } else if(localWorkHistory[localWorkHistory.length - 1].mode_raw === 'break'){
+          return "#ef4444";
+        } else if(localWorkHistory[localWorkHistory.length - 1].mode_raw === 'work'){
+          return "#22c55e" ;
+        } 
+      } else if(localWorkHistory.length === 0){
+        return "#6b7280";
       }
     }
-  }, [workMode]);
+  }, [workMode,
+    currentStatus,
+    formattedId,
+    isConnected,
+    offlineTagMode,
+    globalLanguage,
+    localWorkHistory]);
 
   return (
     <View style={[styles.container, {borderColor}]}>
