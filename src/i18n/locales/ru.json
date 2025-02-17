@@ -109,7 +109,10 @@
     "StartWorkFirst": "Пожалуйста, начните работу сначала",
     "WorkNotStarted": "Работа не начата",
     "Cannotendwork": "Невозможно закончить работу до её начала",
-    "Cannottakebreak": "Невозможно сделать перерыв до начала работы"
+    "Cannottakebreak": "Невозможно сделать перерыв до начала работы",
+    "Workalreadystarted": "Работа уже начата",
+    "Breakalreadystarted": "Перерыв уже активен",
+    "WorkAlreadyFinished": "Работа уже завершена"
   },
   "TimeLog": {
     "title": "Журнал времени",

@@ -113,7 +113,10 @@
     "StartWorkFirst": "Bitte beginnen Sie zuerst mit der Arbeit",
     "WorkNotStarted": "Arbeit nicht begonnen",
     "Cannotendwork": "Arbeit kann nicht beendet werden, bevor sie begonnen wurde",
-    "Cannottakebreak": "Pause kann nicht gemacht werden, bevor die Arbeit begonnen wurde"
+    "Cannottakebreak": "Pause kann nicht gemacht werden, bevor die Arbeit begonnen wurde",
+    "Workalreadystarted": "Arbeit hat bereits begonnen",
+    "Breakalreadystarted": "Pause ist bereits aktiv",
+    "WorkAlreadyFinished": "Arbeit ist bereits beendet"
   },
   "TimeLog": {
     "title": "Zeiterfassung",

@@ -113,7 +113,10 @@
     "StartWorkFirst": "Proszę najpierw rozpocząć pracę",
     "WorkNotStarted": "Praca nie rozpoczęta",
     "Cannotendwork": "Nie można zakończyć pracy przed jej rozpoczęciem",
-    "Cannottakebreak": "Nie można zrobić przerwy przed rozpoczęciem pracy"
+    "Cannottakebreak": "Nie można zrobić przerwy przed rozpoczęciem pracy",
+    "Workalreadystarted": "Praca już się rozpoczęła",
+    "Breakalreadystarted": "Przerwa jest już aktywna",
+    "WorkAlreadyFinished": "Praca już się zakończyła"
   },
   "TimeLog": {
     "title": "Dziennik czasu",

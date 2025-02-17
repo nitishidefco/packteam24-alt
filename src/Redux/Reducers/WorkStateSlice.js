@@ -21,7 +21,6 @@ const workStateSlice = createSlice({
       state.message = '';
     },
     FetchSuccess: (state, action) => {
-      console.log('Successfully feted the works history');
 
       state.currentState = action.payload?.data;
       state.isFetchSuccess = SUCCESS;

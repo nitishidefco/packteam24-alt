@@ -38,8 +38,6 @@ const TimeLog = ({sessionId, tag, tagsFromLocalStorage}) => {
   /* ---------------------- Updates the localWorkHistory ---------------------- */
   const updateLocalHistoryFromServer = async () => {
     try {
-      console.log('Updating the local work hisotry');
-
       dispatch(setLocalWorkHistoryInStorage(workHistoryState?.data));
     } catch (error) {
       console.log('Error saving local history with data from server', error);

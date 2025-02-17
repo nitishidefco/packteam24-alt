@@ -31,7 +31,7 @@ const Timer = ({tag, tagsFromLocalStorage, sessionId}) => {
   const tagMode = findModeByTagId(tagsFromLocalStorage, tag?.id);
   const {tagInLocalStorage} = useSelector(state => state.OfflineData);
   const {isLoading} = useSelector(state => state?.Scan);
-  
+
   const nowTranslation = ['Jetzt', 'Now', 'now', 'Сейчас', 'Зараз', 'Teraz'];
   // const [tagMode, setTagMode] = useState(tagModeById);
   useEffect(() => {
@@ -240,7 +240,7 @@ const Timer = ({tag, tagsFromLocalStorage, sessionId}) => {
   return (
     <View style={styles.container}>
       {isLoading ? (
-        <Text style={styles.loadingText}>{i18n.t("Timer.sync")}</Text>
+        <Text style={styles.loadingText}>{i18n.t('Timer.sync')}</Text>
       ) : (
         <Text style={styles.timerText}>{formatTime(seconds)}</Text>
       )}

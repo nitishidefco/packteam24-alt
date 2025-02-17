@@ -113,7 +113,10 @@
     "StartWorkFirst": "请先开始工作",
     "WorkNotStarted": "工作未开始",
     "Cannotendwork": "无法在开始工作前结束工作",
-    "Cannottakebreak": "无法在开始工作前休息"
+    "Cannottakebreak": "无法在开始工作前休息",
+    "Workalreadystarted": "工作已开始",
+    "Breakalreadystarted": "休息已激活",
+    "WorkAlreadyFinished": "工作已完成"
   },
   "TimeLog": {
     "title": "时间记录",

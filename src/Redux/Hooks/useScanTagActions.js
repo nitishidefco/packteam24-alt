@@ -9,8 +9,6 @@ export const useScanTagActions = () => {
     dispatch(getScan(params));
   };
   const bulkScanCall = params => {
-    console.log('Bulk update:', params);
-    
     dispatch(sendBulk(params));
   };
   return {state, scanCall, bulkScanCall};

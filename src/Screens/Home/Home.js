@@ -106,6 +106,7 @@ const Home = ({navigation, route}) => {
   useEffect(() => {
     dispatch(initializeLanguage());
   }, []);
+  console.log('Bulk scan states', states.isScanSuccess);
 
   /* ----------------------------- Get device info ---------------------------- */
   useEffect(() => {
@@ -351,13 +352,12 @@ const Home = ({navigation, route}) => {
         // }
 
         if (bulkStoredSessions.length > 0) {
-          console.log('Making the pai call');
+          console.log('Making the api call');
 
-          await makeBulkCall(bulkStoredSessions);
+          const response = await makeBulkCall(bulkStoredSessions);
+          console.log(response);
         }
-
-        // Clear offline storage after processing
-        dispatch(clearOfflineStorage());
+        console.log('bulk stored sessions', bulkStoredSessions);
       } catch (error) {
         console.error('Error processing online tags:', error);
       }
@@ -437,9 +437,12 @@ const Home = ({navigation, route}) => {
       }
 
       if (localWorkHistory.length > 0) {
+        console.log('*******************Shwoing notification**************');
+
         showNotificationAboutTagScannedWhileOffline(
           tagId,
           tagsFromLocalStorage,
+          localWorkHistory,
         );
       }
       setTagId('');

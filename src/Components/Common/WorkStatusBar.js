@@ -66,72 +66,77 @@ const WorkStatusBar = ({tagsFromLocalStorage, tag}) => {
   //   : localWorkHistory?.length > 0
   //   ? 'work_end'
   //   : mostRecentTagId;
-  useEffect(() => {
-    if (!isConnected) {
-      if (
-        localWorkHistory.length > 0 &&
-        localWorkHistory[localWorkHistory.length - 1]?.to?.includes(':')
-      ) {
-        setOfflineTagMode('work_end');
-      } else if (
-        localWorkHistory.length > 0 &&
-        localWorkHistory[localWorkHistory.length - 1]?.mode_raw === 'work'
-      ) {
-        setOfflineTagMode('work_start');
-      } else if (
-        localWorkHistory.length > 0 &&
-        localWorkHistory[localWorkHistory.length - 1]?.mode_raw === 'break'
-      ) {
-        setOfflineTagMode('break_start');
-      }
-    }
-  }, [
-    localWorkHistory.length,
-    localWorkHistory[localWorkHistory.length - 1]?.to,
-    isConnected,
-  ]);
+ useEffect(() => {
+   // First, determine the offline tag mode when not connected
+   if (!isConnected) {
+     if (
+       localWorkHistory.length > 0 &&
+       localWorkHistory[localWorkHistory.length - 1]?.to?.includes(':')
+     ) {
+       console.log('Not connected setting offline mode work end');
+       setOfflineTagMode('work_end');
+     } else if (
+       localWorkHistory.length > 0 &&
+       localWorkHistory[localWorkHistory.length - 1]?.mode_raw === 'work'
+     ) {
+       console.log('Not connected setting offline mode work start');
+       setOfflineTagMode('work_start');
+     } else if (
+       localWorkHistory.length > 0 &&
+       localWorkHistory[localWorkHistory.length - 1]?.mode_raw === 'break'
+     ) {
+       console.log('Not connected setting offline mode work break');
+       setOfflineTagMode('break_start');
+     }
+   }
 
-  // console.log('Offline tag mode', offlineTagMode, mostRecentTagId);
+   // Then, set the work mode based on connection status and current mode
+   if (isConnected) {
+     setWorkMode(currentStatus?.currentState?.work_status_to_display);
+   } else {
+     console.log(
+       'Local Work History inside workstatus bar====>>>>',
+       localWorkHistory,
+       offlineTagMode,
+     );
 
-  useEffect(() => {
-    if (isConnected) {
-      setWorkMode(currentStatus?.currentState?.work_status_to_display);
-    } else {
-      if (localWorkHistory.length > 0) {
-        switch (offlineTagMode) {
-          case 'work_start':
-            console.log('Inside workstart');
-            setWorkMode(i18n.t('Toast.WorkinProgress'));
-            break;
-          case 'break_start':
-            setWorkMode(i18n.t('Toast.BreakinProgress'));
-            break;
-          case 'work_end':
-            setWorkMode(i18n.t('Toast.WorkFinished'));
-            break;
-          default:
-            if (
-              localWorkHistory[localWorkHistory.length - 1]?.to?.includes(':')
-            ) {
-              setWorkMode(i18n.t('Toast.WorkFinished'));
-            } else {
-              setWorkMode(i18n.t('Toast.WorkNotStarted'));
-            }
-            break;
-        }
-      } else {
-        setWorkMode(i18n.t('Toast.WorkNotStarted'));
-      }
-    }
-    getStatusIcon();
-  }, [
-    currentStatus,
-    formattedId,
-    isConnected,
-    offlineTagMode,
-    globalLanguage,
-    localWorkHistory,
-  ]);
+     if (localWorkHistory.length > 0) {
+       switch (offlineTagMode) {
+         case 'work_start':
+           console.log('Inside workstart');
+           setWorkMode(i18n.t('Toast.WorkinProgress'));
+           break;
+         case 'break_start':
+           setWorkMode(i18n.t('Toast.BreakinProgress'));
+           break;
+         case 'work_end':
+           setWorkMode(i18n.t('Toast.WorkFinished'));
+           break;
+         default:
+           if (
+             localWorkHistory[localWorkHistory.length - 1]?.to?.includes(':')
+           ) {
+             setWorkMode(i18n.t('Toast.WorkFinished'));
+           } else {
+             setWorkMode(i18n.t('Toast.WorkNotStarted'));
+           }
+           break;
+       }
+     } else {
+       setWorkMode(i18n.t('Toast.WorkNotStarted'));
+     }
+   }
+
+   // Finally, update the status icon
+   getStatusIcon();
+ }, [
+   localWorkHistory,
+   isConnected,
+   currentStatus,
+   formattedId,
+   offlineTagMode,
+   globalLanguage,
+ ]);
 
   // useEffect(() => {
   //   switch (tagMode) {
