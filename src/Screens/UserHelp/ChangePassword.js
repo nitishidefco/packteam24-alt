@@ -94,8 +94,8 @@ const ChangePassword = ({navigation}) => {
       );
     } else {
       Alert.alert(
-        'No Internet Connection',
-        'Feature not available in offline mode',
+        i18n.t('Offline.NoInternet'),
+        i18n.t('Offline.FeatureNotAvailable'),
         [{text: 'OK', onPress: () => navigation.navigate('HomeDrawer')}],
       );
     }

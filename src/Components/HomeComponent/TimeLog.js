@@ -29,6 +29,8 @@ const TimeLog = ({sessionId, tag, tagsFromLocalStorage}) => {
       formData.append('device_id', deviceId);
       formData.append('lang', globalLanguage);
       if (isConnected) {
+        console.log('Calling for work history call');
+
         getWorkHistoryCall(formData);
       }
     } catch (error) {

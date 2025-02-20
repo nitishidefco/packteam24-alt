@@ -61,7 +61,7 @@ const LanguageSelector = ({sessionId}) => {
       });
       dispatch(setLocalWorkHistoryInStorage(ldata));
     }
-  }, [globalLanguage]);
+  }, [globalLanguage, i18n.language]);
   return (
     <View
       style={[

@@ -136,6 +136,7 @@ const WorkStatusBar = ({tagsFromLocalStorage, tag}) => {
    formattedId,
    offlineTagMode,
    globalLanguage,
+   i18n.language
  ]);
 
   // useEffect(() => {
