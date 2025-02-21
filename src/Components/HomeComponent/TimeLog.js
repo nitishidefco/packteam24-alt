@@ -9,6 +9,8 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import {findModeByTagId} from '../../Helpers/FindModeByTagId';
 import moment from 'moment';
 import {setLocalWorkHistoryInStorage} from '../../Redux/Reducers/LocalWorkHistorySlice';
+import reactotron from '../../../ReactotronConfig';
+import {useScanTagActions} from '../../Redux/Hooks/useScanTagActions';
 
 const TimeLog = ({sessionId, tag, tagsFromLocalStorage}) => {
   const dispatch = useDispatch();
@@ -21,7 +23,9 @@ const TimeLog = ({sessionId, tag, tagsFromLocalStorage}) => {
   const isConnected = useSelector(state => state?.Network?.isConnected);
   const {tagInLocalStorage} = useSelector(state => state.OfflineData);
   const {bulkSessions} = useSelector(state => state?.OfflineData);
+  const {state: scanTagState} = useScanTagActions();
 
+  // No need to call it for tag scanned
   useEffect(() => {
     try {
       const formData = new FormData();
@@ -30,16 +34,19 @@ const TimeLog = ({sessionId, tag, tagsFromLocalStorage}) => {
       formData.append('lang', globalLanguage);
       if (isConnected) {
         console.log('Calling for work history call');
-
+        reactotron.log('Called get work history from time log');
         getWorkHistoryCall(formData);
       }
     } catch (error) {
       console.error('Error fetching the work history', error);
     }
-  }, [formattedId]);
+  }, [scanTagState.currentState]);
   /* ---------------------- Updates the localWorkHistory ---------------------- */
   const updateLocalHistoryFromServer = async () => {
     try {
+      reactotron.log(
+        'Updating local workhistory after fetching data from server',
+      );
       dispatch(setLocalWorkHistoryInStorage(workHistoryState?.data));
     } catch (error) {
       console.log('Error saving local history with data from server', error);
@@ -48,6 +55,8 @@ const TimeLog = ({sessionId, tag, tagsFromLocalStorage}) => {
 
   useEffect(() => {
     const timeoutId = setTimeout(() => {
+      reactotron.log(workHistoryState?.data, isConnected);
+
       if (isConnected) {
         updateLocalHistoryFromServer();
       }
@@ -114,7 +123,7 @@ const TimeLog = ({sessionId, tag, tagsFromLocalStorage}) => {
             to: currentTime,
           };
         }
-        console.log('Pushing new history entry');
+        reactotron.log('Pushing new history entry');
         updatedHistory.push({
           from: currentTime,
           mode: i18n.t(`TagModes.${newMode}`),
@@ -122,12 +131,13 @@ const TimeLog = ({sessionId, tag, tagsFromLocalStorage}) => {
           to: 'now',
         });
       } else if (lastItem.mode_raw === getComparableMode(newMode)) {
-        console.log('Preventing duplicate time entry');
+        reactotron.log('Preventing duplicate time entry');
         return;
       }
     }
 
-    console.log('Final Updated History:', updatedHistory);
+    reactotron.log('Final Updated History:', updatedHistory);
+    reactotron.log('Inside time log handleTagScan');
     // Update the local history state
     dispatch(setLocalWorkHistoryInStorage(updatedHistory));
   };

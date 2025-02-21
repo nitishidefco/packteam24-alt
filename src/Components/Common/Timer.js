@@ -16,11 +16,15 @@ import {
   saveTagToLocalStorage,
 } from '../../Redux/Reducers/SaveDataOfflineSlice';
 import i18n from '../../i18n/i18n';
+import reactotron from '../../../ReactotronConfig';
+import {useScanTagActions} from '../../Redux/Hooks/useScanTagActions';
 
 const Timer = ({tag, tagsFromLocalStorage, sessionId}) => {
   const dispatch = useDispatch();
   const {state: currentStatus, fetchWorkStatusCall} = useWorkStatusActions();
+  const {state: scanTagState} = useScanTagActions();
   const [appState, setAppState] = useState(AppState.currentState);
+  const [randomState, setRandomState] = useState(false);
   const [seconds, setSeconds] = useState(0);
   const intervalRef = useRef(null);
   const {workHistoryState, getWorkHistoryCall} = useWorkHistoryActions();
@@ -40,10 +44,12 @@ const Timer = ({tag, tagsFromLocalStorage, sessionId}) => {
       await saveAppState(nextAppState);
 
       if (nextAppState === 'active') {
-        setInitialTimer();
+        // setInitialTimer();
       } else if (nextAppState === 'background' && intervalRef.current) {
-        clearInterval(intervalRef.current);
-        intervalRef.current = null;
+        reactotron.log('Clearing timer interval ref');
+        // clearInterval(intervalRef.current);
+        // intervalRef.current = null;
+        setRandomState(!randomState);
       }
 
       setAppState(nextAppState);
@@ -72,14 +78,33 @@ const Timer = ({tag, tagsFromLocalStorage, sessionId}) => {
   };
 
   useEffect(() => {
+    reactotron.log(
+      'app state',
+      appState,
+      'localworkhistory',
+      localWorkHistory,
+      'internet status',
+      isConnected,
+      'workHistoryLoading',
+      workHistoryState.workHistoryLoading,
+      'Work History:',
+      workHistoryState?.data,
+    );
+    if (appState !== 'active') return;
+
     // console.log('localWorkHistory===>', localWorkHistory);
     setInitialTimer();
   }, [
     appState,
-    tagMode,
-    tagInLocalStorage,
-    JSON.stringify(workHistoryState?.data),
-    JSON.stringify(localWorkHistory),
+    // tagMode,
+    // tagInLocalStorage,
+    // JSON.stringify(workHistoryState?.data),
+    workHistoryState.workHistoryLoading,
+    // JSON.stringify(localWorkHistory),
+    localWorkHistory?.length,
+    localWorkHistory?.[localWorkHistory?.length - 1]?.to,
+    isConnected,
+    randomState,
   ]);
   const setInitialTimer = async () => {
     // console.log(
@@ -88,7 +113,11 @@ const Timer = ({tag, tagsFromLocalStorage, sessionId}) => {
     //   tagInLocalStorage,
     //   workHistoryState.data[workHistoryState.data.length - 1],
     // );
-    if (isConnected && workHistoryState?.data?.length > 0) {
+    if (
+      isConnected &&
+      workHistoryState?.data?.length > 0 &&
+      !workHistoryState.workHistoryLoading
+    ) {
       const lastEntry =
         workHistoryState.data[workHistoryState.data.length - 1].from;
       const lastEntryMoment = moment(lastEntry, 'HH:mm:ss');
@@ -97,20 +126,42 @@ const Timer = ({tag, tagsFromLocalStorage, sessionId}) => {
       if (intervalRef.current) {
         clearInterval(intervalRef.current);
       }
-      console.log('last Entry... online mode', lastEntry);
+      reactotron.log('last Entry... online mode', lastEntry);
       if (
         nowTranslation.includes(
           workHistoryState?.data[workHistoryState?.data?.length - 1]?.to,
         )
       ) {
+        reactotron.log(
+          'Inside if nowTranslation',
+          currentStatus?.currentState?.work_status,
+          workHistoryState?.data,
+          tagMode,
+        );
         setSeconds(elapsedTime);
-        controlTimer(currentStatus?.currentState?.work_status || tagMode);
+        if (workHistoryState?.data?.length === 1) {
+          controlTimer(
+            workHistoryState?.data[workHistoryState?.data?.length - 1]
+              ?.mode_raw === 'work'
+              ? 'work_in_progress'
+              : 'break_start' || tagMode,
+          );
+        } else {
+          controlTimer(
+            workHistoryState?.data[workHistoryState?.data?.length - 1]
+              ?.mode_raw === 'work'
+              ? 'work_in_progress'
+              : 'break_in_progress' || tagMode,
+          );
+        }
+        // controlTimer(currentStatus?.currentState?.work_status || tagMode);
       } else {
+        reactotron.log('Stopping timer from online mode');
         stopTimer();
       }
     } else if (!isConnected && localWorkHistory?.length > 0) {
       // dispatch(OffineStatus());
-      console.log(
+      reactotron.log(
         'Ofine Last===>',
         localWorkHistory[localWorkHistory.length - 1],
       );
@@ -119,15 +170,10 @@ const Timer = ({tag, tagsFromLocalStorage, sessionId}) => {
         localWorkHistory[localWorkHistory.length - 1].from,
         'HH:mm:ss',
       );
-      console.log(
-        'lastnetry+++>',
-        lastEntryTime,
-        lastEntryTime.format('HH:mm:ss'),
-      );
 
       const now = moment();
       const elapsedTime = Math.abs(now.diff(lastEntryTime, 'seconds'));
-      console.log('elapsedTime+++>', elapsedTime);
+      reactotron.log('elapsedTime+++>', elapsedTime);
       if (intervalRef.current) {
         clearInterval(intervalRef.current);
       }
@@ -137,8 +183,21 @@ const Timer = ({tag, tagsFromLocalStorage, sessionId}) => {
         )
       ) {
         setSeconds(elapsedTime);
-        controlTimer(tagInLocalStorage || tagMode);
+        reactotron.log(
+          'Controlling timer from offlinemode',
+          tagInLocalStorage,
+          tagMode,
+          localWorkHistory[localWorkHistory.length - 1],
+        );
+        controlTimer(
+          tagInLocalStorage ||
+            tagMode ||
+            localWorkHistory[localWorkHistory.length - 1].mode_raw === 'work'
+            ? 'work_in_progress'
+            : 'break_in_progress',
+        );
       } else {
+        reactotron.log('Stopping timer from not connected');
         stopTimer();
       }
     } else {
@@ -150,10 +209,10 @@ const Timer = ({tag, tagsFromLocalStorage, sessionId}) => {
       ) {
         controlTimer(tagInLocalStorage || tagMode);
       } else if (tagMode === 'work_start') {
-        console.log('Tag mode', tagMode);
-
+        reactotron.log('Tag mode', tagMode);
         controlTimer(tagMode);
       } else {
+        reactotron.log('Stopping timer from last else');
         stopTimer();
       }
     }
@@ -164,15 +223,18 @@ const Timer = ({tag, tagsFromLocalStorage, sessionId}) => {
     }
   }, [appState]);
   useEffect(() => {
+    // if (appState !== 'active') return;
+    if (scanTagState.normalScanLoading) return;
     const formData = new FormData();
     formData.append('session_id', sessionId);
     formData.append('device_id', deviceId);
     formData.append('lang', globalLanguage);
     if (isConnected) {
+      reactotron.log('Called get work history from timer', appState);
       getWorkHistoryCall(formData);
       fetchWorkStatusCall(formData);
     }
-  }, [appState]);
+  }, [scanTagState.normalScanLoading, isConnected]);
 
   const [pretag, setPreTag] = useState(null);
   const controlTimer = currentTag => {
@@ -186,6 +248,7 @@ const Timer = ({tag, tagsFromLocalStorage, sessionId}) => {
       return;
     }
     if (!currentTag) {
+      reactotron.log('Stopping timer from no current tag');
       stopTimer();
       return;
     }
@@ -220,7 +283,7 @@ const Timer = ({tag, tagsFromLocalStorage, sessionId}) => {
 
   const stopTimer = () => {
     console.log('stop Work');
-
+    reactotron.log('Inside stop work');
     if (intervalRef.current) {
       clearInterval(intervalRef.current);
     }
@@ -242,6 +305,8 @@ const Timer = ({tag, tagsFromLocalStorage, sessionId}) => {
     <View style={styles.container}>
       {isLoading ? (
         <Text style={styles.loadingText}>{i18n.t('Timer.sync')}</Text>
+      ) : workHistoryState.workHistoryLoading ? (
+        <Text style={styles.timerLoadingText}>Checking time with server</Text>
       ) : (
         <Text style={styles.timerText}>{formatTime(seconds)}</Text>
       )}
@@ -261,6 +326,14 @@ const styles = StyleSheet.create({
     fontSize: 48,
     fontFamily: typography.fontFamily.Montserrat.Bold,
     marginBottom: 20,
+  },
+  timerLoadingText: {
+    fontFamily: typography.fontFamily.Montserrat.Medium,
+    fontSize: typography.fontSizes.fs17,
+    height: Matrics.vs(42),
+    alignSelf: 'center',
+    justifyContent: 'center',
+    marginBottom: Matrics.vs(20),
   },
   loadingText: {
     fontSize: typography.fontSizes.fs24,

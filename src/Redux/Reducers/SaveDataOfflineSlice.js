@@ -80,7 +80,7 @@ const SaveDataOfflineSlice = createSlice({
     },
 
     saveTag: (state, action) => {
-      console.log('tag===>', action.payload);
+      // console.log('tag===>', action.payload);
 
       switch (action.payload) {
         case 'work_start':

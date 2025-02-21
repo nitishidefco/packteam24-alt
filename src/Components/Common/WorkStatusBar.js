@@ -10,6 +10,7 @@ import useSavedLanguage from '../Hooks/useSavedLanguage';
 import {addColons} from '../../Helpers/AddColonsToId';
 import {findModeByTagId} from '../../Helpers/FindModeByTagId';
 import i18n from '../../i18n/i18n';
+import reactotron from '../../../ReactotronConfig';
 
 const WorkStatusBar = ({tagsFromLocalStorage, tag}) => {
   const {state: currentStatus, fetchWorkStatusCall} = useWorkStatusActions();
@@ -25,6 +26,7 @@ const WorkStatusBar = ({tagsFromLocalStorage, tag}) => {
   const sessions = useSelector(state => state?.OfflineData?.sessions);
   const {localWorkHistory} = useSelector(state => state?.LocalWorkHistory);
   const [offlineTagMode, setOfflineTagMode] = useState(null);
+  const {state: scanTagState} = useScanTagActions();
   useEffect(() => {
     const updateWorkStatus = async () => {
       try {
@@ -32,13 +34,14 @@ const WorkStatusBar = ({tagsFromLocalStorage, tag}) => {
         formdata.append('session_id', SessionId);
         formdata.append('device_id', deviceId);
         formdata.append('lang', globalLanguage);
+        reactotron.log('Called work status from work status bar');
         fetchWorkStatusCall(formdata);
       } catch (error) {
         console.error('Error updating work status', error);
       }
     };
     updateWorkStatus();
-  }, [formattedId]);
+  }, [scanTagState?.currentState]);
   const getMostRecentTagId = sessionId => {
     const sessionData = sessions[sessionId];
 
@@ -66,78 +69,78 @@ const WorkStatusBar = ({tagsFromLocalStorage, tag}) => {
   //   : localWorkHistory?.length > 0
   //   ? 'work_end'
   //   : mostRecentTagId;
- useEffect(() => {
-   // First, determine the offline tag mode when not connected
-   if (!isConnected) {
-     if (
-       localWorkHistory.length > 0 &&
-       localWorkHistory[localWorkHistory.length - 1]?.to?.includes(':')
-     ) {
-       console.log('Not connected setting offline mode work end');
-       setOfflineTagMode('work_end');
-     } else if (
-       localWorkHistory.length > 0 &&
-       localWorkHistory[localWorkHistory.length - 1]?.mode_raw === 'work'
-     ) {
-       console.log('Not connected setting offline mode work start');
-       setOfflineTagMode('work_start');
-     } else if (
-       localWorkHistory.length > 0 &&
-       localWorkHistory[localWorkHistory.length - 1]?.mode_raw === 'break'
-     ) {
-       console.log('Not connected setting offline mode work break');
-       setOfflineTagMode('break_start');
-     }
-   }
+  useEffect(() => {
+    // First, determine the offline tag mode when not connected
+    if (!isConnected) {
+      if (
+        localWorkHistory.length > 0 &&
+        localWorkHistory[localWorkHistory.length - 1]?.to?.includes(':')
+      ) {
+        console.log('Not connected setting offline mode work end');
+        setOfflineTagMode('work_end');
+      } else if (
+        localWorkHistory.length > 0 &&
+        localWorkHistory[localWorkHistory.length - 1]?.mode_raw === 'work'
+      ) {
+        console.log('Not connected setting offline mode work start');
+        setOfflineTagMode('work_start');
+      } else if (
+        localWorkHistory.length > 0 &&
+        localWorkHistory[localWorkHistory.length - 1]?.mode_raw === 'break'
+      ) {
+        console.log('Not connected setting offline mode work break');
+        setOfflineTagMode('break_start');
+      }
+    }
 
-   // Then, set the work mode based on connection status and current mode
-   if (isConnected) {
-     setWorkMode(currentStatus?.currentState?.work_status_to_display);
-   } else {
-     console.log(
-       'Local Work History inside workstatus bar====>>>>',
-       localWorkHistory,
-       offlineTagMode,
-     );
+    // Then, set the work mode based on connection status and current mode
+    if (isConnected) {
+      setWorkMode(currentStatus?.currentState?.work_status_to_display);
+    } else {
+      console.log(
+        'Local Work History inside workstatus bar====>>>>',
+        localWorkHistory,
+        offlineTagMode,
+      );
 
-     if (localWorkHistory.length > 0) {
-       switch (offlineTagMode) {
-         case 'work_start':
-           console.log('Inside workstart');
-           setWorkMode(i18n.t('Toast.WorkinProgress'));
-           break;
-         case 'break_start':
-           setWorkMode(i18n.t('Toast.BreakinProgress'));
-           break;
-         case 'work_end':
-           setWorkMode(i18n.t('Toast.WorkFinished'));
-           break;
-         default:
-           if (
-             localWorkHistory[localWorkHistory.length - 1]?.to?.includes(':')
-           ) {
-             setWorkMode(i18n.t('Toast.WorkFinished'));
-           } else {
-             setWorkMode(i18n.t('Toast.WorkNotStarted'));
-           }
-           break;
-       }
-     } else {
-       setWorkMode(i18n.t('Toast.WorkNotStarted'));
-     }
-   }
+      if (localWorkHistory.length > 0) {
+        switch (offlineTagMode) {
+          case 'work_start':
+            console.log('Inside workstart');
+            setWorkMode(i18n.t('Toast.WorkinProgress'));
+            break;
+          case 'break_start':
+            setWorkMode(i18n.t('Toast.BreakinProgress'));
+            break;
+          case 'work_end':
+            setWorkMode(i18n.t('Toast.WorkFinished'));
+            break;
+          default:
+            if (
+              localWorkHistory[localWorkHistory.length - 1]?.to?.includes(':')
+            ) {
+              setWorkMode(i18n.t('Toast.WorkFinished'));
+            } else {
+              setWorkMode(i18n.t('Toast.WorkNotStarted'));
+            }
+            break;
+        }
+      } else {
+        setWorkMode(i18n.t('Toast.WorkNotStarted'));
+      }
+    }
 
-   // Finally, update the status icon
-   getStatusIcon();
- }, [
-   localWorkHistory,
-   isConnected,
-   currentStatus,
-   formattedId,
-   offlineTagMode,
-   globalLanguage,
-   i18n.language
- ]);
+    // Finally, update the status icon
+    getStatusIcon();
+  }, [
+    localWorkHistory,
+    isConnected,
+    currentStatus,
+    formattedId,
+    offlineTagMode,
+    globalLanguage,
+    i18n.language,
+  ]);
 
   // useEffect(() => {
   //   switch (tagMode) {
@@ -198,8 +201,8 @@ const WorkStatusBar = ({tagsFromLocalStorage, tag}) => {
   }, [currentStatus]);
 
   const getStatusIcon = () => {
-    console.log('getting status icon');
-    
+    // console.log('getting status icon');
+
     if (isConnected) {
       switch (currentStatus?.currentState?.work_status) {
         case 'work_in_progress':
@@ -214,20 +217,23 @@ const WorkStatusBar = ({tagsFromLocalStorage, tag}) => {
     } else {
       if (localWorkHistory.length > 0) {
         console.log('inside status icon');
-        if(localWorkHistory[localWorkHistory.length - 1].to.includes(':')){
+        if (localWorkHistory[localWorkHistory.length - 1].to.includes(':')) {
           console.log('inside work end icon');
           return <House size={30} color="#3b82f6" />;
-        }
-        else if(localWorkHistory[localWorkHistory.length - 1].mode_raw === 'break'){
+        } else if (
+          localWorkHistory[localWorkHistory.length - 1].mode_raw === 'break'
+        ) {
           return <Coffee size={30} color="#ef4444" />;
-        } else if(localWorkHistory[localWorkHistory.length - 1].mode_raw === 'work'){
+        } else if (
+          localWorkHistory[localWorkHistory.length - 1].mode_raw === 'work'
+        ) {
           return <Hammer size={30} color="#22c55e" />;
-        } 
-      } else if(localWorkHistory.length === 0){
+        }
+      } else if (localWorkHistory.length === 0) {
         return <House size={30} color="#6b7280" />;
+      }
     }
   };
-  }
   // Memoizing background color to avoid unnecessary recalculations
   const borderColor = useMemo(() => {
     if (isConnected) {
@@ -243,25 +249,30 @@ const WorkStatusBar = ({tagsFromLocalStorage, tag}) => {
       }
     } else {
       if (localWorkHistory.length > 0) {
-        
-        if(localWorkHistory[localWorkHistory.length - 1].to.includes(':')){
-          return "#3b82f6";
-        } else if(localWorkHistory[localWorkHistory.length - 1].mode_raw === 'break'){
-          return "#ef4444";
-        } else if(localWorkHistory[localWorkHistory.length - 1].mode_raw === 'work'){
-          return "#22c55e" ;
-        } 
-      } else if(localWorkHistory.length === 0){
-        return "#6b7280";
+        if (localWorkHistory[localWorkHistory.length - 1].to.includes(':')) {
+          return '#3b82f6';
+        } else if (
+          localWorkHistory[localWorkHistory.length - 1].mode_raw === 'break'
+        ) {
+          return '#ef4444';
+        } else if (
+          localWorkHistory[localWorkHistory.length - 1].mode_raw === 'work'
+        ) {
+          return '#22c55e';
+        }
+      } else if (localWorkHistory.length === 0) {
+        return '#6b7280';
       }
     }
-  }, [workMode,
+  }, [
+    workMode,
     currentStatus,
     formattedId,
     isConnected,
     offlineTagMode,
     globalLanguage,
-    localWorkHistory]);
+    localWorkHistory,
+  ]);
 
   return (
     <View style={[styles.container, {borderColor}]}>

@@ -45,6 +45,7 @@ import TimeLog from '../../Components/HomeComponent/TimeLog';
 import {initializeLanguage} from '../../Redux/Reducers/LanguageProviderSlice';
 import {setSessionHandler} from '../../Utlis/SessionHandler';
 import {errorToast} from '../../Helpers/ToastMessage';
+import reactotron from '../../../ReactotronConfig';
 
 const Home = ({navigation, route}) => {
   const dispatch = useDispatch();
@@ -106,7 +107,7 @@ const Home = ({navigation, route}) => {
   useEffect(() => {
     dispatch(initializeLanguage());
   }, []);
-  console.log('Bulk scan states', states.isScanSuccess);
+  // console.log('Bulk scan states', states.isScanSuccess);
 
   /* ----------------------------- Get device info ---------------------------- */
   useEffect(() => {
@@ -129,6 +130,7 @@ const Home = ({navigation, route}) => {
       formdata.append('session_id', SessionId);
       formdata.append('device_id', deviceId);
       formdata.append('lang', globalLanguage);
+      reactotron.log('Called work status from home');
       fetchWorkStatusCall(formdata);
     } catch (error) {
       console.error('Error updating work status', error);
@@ -143,7 +145,7 @@ const Home = ({navigation, route}) => {
       } catch (error) {}
     };
 
-    updateWorkStatus();
+    // updateWorkStatus();
     fetchNfcTags();
   }, [tagDetected, count, isConnected]);
 
@@ -250,6 +252,7 @@ const Home = ({navigation, route}) => {
       formdata.append('lang', globalLanguage);
       formdata.append('current_date', current_date);
       formdata.append('current_hour', current_hour);
+      reactotron.log('making the scan call');
       scanCall(formdata);
     } catch (error) {
       console.error('Error processing UID:', error);
@@ -331,7 +334,7 @@ const Home = ({navigation, route}) => {
           await getUid(tagId, current_date, current_hour);
           setTagId('');
         }
-        console.log('Bulk stored sessions', bulkStoredSessions);
+        // console.log('Bulk stored sessions', bulkStoredSessions);
 
         // if (storedSessions.length > 0) {
         //   for (const [index, item] of storedSessions.entries()) {
@@ -357,7 +360,7 @@ const Home = ({navigation, route}) => {
           const response = await makeBulkCall(bulkStoredSessions);
           console.log(response);
         }
-        console.log('bulk stored sessions', bulkStoredSessions);
+        // console.log('bulk stored sessions', bulkStoredSessions);
       } catch (error) {
         console.error('Error processing online tags:', error);
       }
@@ -403,7 +406,7 @@ const Home = ({navigation, route}) => {
         return;
       }
       setDuplicateTagId(tagId);
-      console.log('Bulk stored sessions offline', bulkStoredSessions);
+      // console.log('Bulk stored sessions offline', bulkStoredSessions);
 
       // if (!validationResult.valid) {
       //   showNotificationAboutTagScannedWhileOffline(validationResult);
@@ -452,6 +455,7 @@ const Home = ({navigation, route}) => {
       const storedSessions = sessions[SessionId]?.items || [];
       const bulkStoredSessions = bulkSessions[SessionId]?.items || [];
       if (isConnected) {
+        reactotron.log('Processing online rtag')
         await processOnlineTags(storedSessions, bulkStoredSessions);
       } else {
         processOfflineTag(bulkStoredSessions);

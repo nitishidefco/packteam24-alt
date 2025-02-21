@@ -7,8 +7,8 @@ const BASE_URL = Constants.IS_DEVELOPING_MODE
 
 export default {
   WorkHistory: async params => {
-    console.log('API Call:', `${BASE_URL}api/today-work-history`);
-    console.log('Params:', params);
+    // console.log('API Call:', `${BASE_URL}api/today-work-history`);
+    // console.log('Params:', params);
     return fetch(`${BASE_URL}api/today-work-history`, {
       method: 'POST',
       body: params,

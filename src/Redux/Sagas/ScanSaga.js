@@ -13,12 +13,14 @@ import {
 } from '../SliceKey';
 import {AppState} from 'react-native';
 import NetInfo from '@react-native-community/netinfo';
-import { clearOfflineStorage } from '../Reducers/SaveDataOfflineSlice';
+import {clearOfflineStorage} from '../Reducers/SaveDataOfflineSlice';
 
 // Worker Saga for scanning a tag
 function* scanSaga({payload}) {
   try {
     const response = yield call(API.ScanTag, payload);
+    console.log('response', response);
+
     if (response?.data) {
       yield put(ScanSuccess(response.data)); // Dispatch success action
       yield put({type: `${WORKSTATE_REDUCER}/fetchWorkStatus`, payload});
@@ -27,7 +29,9 @@ function* scanSaga({payload}) {
       yield put(ScanFailure(response?.errors || 'Scan failed'));
     }
   } catch (error) {
-    yield put(ScanFailure(error.message || 'Unexpected error'));
+    console.log('errir of scan', error);
+    
+    // yield put(ScanFailure(error.message || 'Unexpected error'));
   }
 }
 
@@ -71,7 +75,6 @@ function* bulkUpdateSaga({payload}) {
       const response = yield call(API.BulkUpdate, payload);
       console.log('Bulk update response:', response);
 
-      // Check if the response indicates success or failure
       if (response?.success) {
         // If successful, dispatch the success action with the data
         yield put(SendSuccess(response.data));

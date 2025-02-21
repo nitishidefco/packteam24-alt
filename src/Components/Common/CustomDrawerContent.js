@@ -94,7 +94,7 @@ const CustomDrawerContent = props => {
     }
   }
   function handleLogoutResponse() {
-    console.log('Auth.islogoutSuccess', Auth.islogoutSuccess);
+    // console.log('Auth.islogoutSuccess', Auth.islogoutSuccess);
 
     // if (loading && Auth.islogoutSuccess === true) {
     if (loading === true) {

@@ -8,11 +8,13 @@ const FAIL = false;
 
 const initialState = {
   currentState: null,
-  isScanSuccess: NULL,
+  isScanSuccess: false,
   error: null,
   message: '',
   data: null,
   isLoading: false,
+  normalScanLoading: false,
+  singleScanError: false,
 };
 
 export const ScanSlice = createSlice({
@@ -20,32 +22,37 @@ export const ScanSlice = createSlice({
   initialState,
   reducers: {
     getScan: state => {
-      state.isScanSuccess = NULL;
-      state.error = null;
+      state.isScanSuccess = false;
+      state.singleScanError = false;
       state.message = '';
+      state.normalScanLoading = true;
     },
     ScanSuccess: (state, action) => {
+      console.log('action payload of scan success', action.payload);
+
       const {payload} = action;
       success(payload?.message);
       // toastMessage.success(payload?.data?.message);
 
-      state.currentState = payload?.data[1];
-      state.isScanSuccess = SUCCESS;
+      state.currentState = payload?.mode;
+      state.isScanSuccess = true;
       state.message = 'Fetch successfully';
       state.data = payload;
+      state.normalScanLoading = false;
+      state.singleScanError = false;
     },
     ScanFailure: (state, action) => {
       const {payload} = action;
       if (payload?.message) {
-        //  error(payload?.errors)
         state.currentState = payload.message;
       } else if (payload?.nfc_key) {
         errorToast(payload?.nfc_key);
-        // toastMessage.error(payload.nfc_key);
       }
-      state.isScanSuccess = FAIL;
+      state.isScanSuccess = false;
       state.error = payload;
+      state.singleScanError = true;
       state.message = 'Something went wrong';
+      state.normalScanLoading = false;
     },
     sendBulk: (state, action) => {
       state.isScanSuccess = NULL;

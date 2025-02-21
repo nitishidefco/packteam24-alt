@@ -15,6 +15,7 @@ import {useDispatch, useSelector} from 'react-redux';
 import {setLanguageWithStorage} from '../../Redux/Reducers/LanguageProviderSlice';
 import {useWorkStatusActions} from '../../Redux/Hooks/useWorkStatusActions';
 import {setLocalWorkHistoryInStorage} from '../../Redux/Reducers/LocalWorkHistorySlice';
+import reactotron from '../../../ReactotronConfig';
 
 const LanguageSelector = ({sessionId}) => {
   const [isOpen, setIsOpen] = useState(false);
@@ -45,7 +46,9 @@ const LanguageSelector = ({sessionId}) => {
 
     dispatch(setLanguageWithStorage(language));
     try {
+      reactotron.log('Called get work history from lanugage selector');
       getWorkHistoryCall(formData);
+      reactotron.log('Called get work status from lanugage selector');
       fetchWorkStatusCall(formData);
     } catch (error) {
       console.log('error', error);

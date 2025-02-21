@@ -11,6 +11,7 @@ const initialState = {
   message: '',
   error: null,
   isFetchWorkHistorySuccess: NULL,
+  workHistoryLoading: false,
 };
 
 export const WorkHistorySlice = createSlice({
@@ -21,6 +22,7 @@ export const WorkHistorySlice = createSlice({
       state.isFetchWorkHistorySuccess = NULL;
       state.error = null;
       state.message = '';
+      state.workHistoryLoading = true;
     },
     FetchWorkHistorySuccess: (state, action) => {
       const {payload} = action;
@@ -28,6 +30,7 @@ export const WorkHistorySlice = createSlice({
       state.isFetchWorkHistorySuccess = SUCCESS;
       state.message = 'Fetch successfull';
       state.data = payload.data;
+      state.workHistoryLoading = false;
     },
     FetchWorkHistoryFailure: (state, action) => {
       const {payload} = action;
@@ -38,6 +41,7 @@ export const WorkHistorySlice = createSlice({
       }
       state.isFetchWorkHistorySuccess = FAIL;
       state.error = payload;
+      state.workHistoryLoading = false;
       state.message = 'Something went wrong';
     },
   },
