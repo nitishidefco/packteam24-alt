@@ -32,7 +32,8 @@
   "HomeScreen": {
     "nfcCardTitle": "准备扫描 NFC 标签",
     "nfcCardSubtitle": "将您的设备靠近 NFC 标签",
-    "nfcButtonText": "开始 NFC 扫描"
+    "nfcButtonText": "开始 NFC 扫描",
+    "checkingTimeWithServer":"正在与服务器校对时间"
   },
   "ChangePasswordScreen": {
     "allFieldsRequired": "所有字段均为必填项",

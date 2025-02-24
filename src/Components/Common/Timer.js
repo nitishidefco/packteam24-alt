@@ -306,7 +306,7 @@ const Timer = ({tag, tagsFromLocalStorage, sessionId}) => {
       {isLoading ? (
         <Text style={styles.loadingText}>{i18n.t('Timer.sync')}</Text>
       ) : workHistoryState.workHistoryLoading ? (
-        <Text style={styles.timerLoadingText}>Checking time with server</Text>
+        <Text style={styles.timerLoadingText}>{i18n.t("HomeScreen.checkingTimeWithServer")}</Text>
       ) : (
         <Text style={styles.timerText}>{formatTime(seconds)}</Text>
       )}

@@ -32,7 +32,8 @@
   "HomeScreen": {
     "nfcCardTitle": "Gotowy do skanowania tagów NFC",
     "nfcCardSubtitle": "Przyłóż swoje urządzenie do tagu NFC",
-    "nfcButtonText": "Rozpocznij skanowanie NFC"
+    "nfcButtonText": "Rozpocznij skanowanie NFC",
+    "checkingTimeWithServer":"Sprawdzanie czasu z serwerem"
   },
   "ChangePasswordScreen": {
     "allFieldsRequired": "Wszystkie pola są wymagane",

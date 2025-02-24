@@ -35,7 +35,7 @@ const CustomDrawerContent = props => {
   const [dropdownAlert, setDropdownAlert] = useState(null);
   const [isIos, setIsIos] = useState(false);
   const {deviceId} = useSelector(state => state?.Network);
-  const lastItem = localWorkHistory[localWorkHistory.length - 1]?.to;
+  const lastItem = localWorkHistory?.[localWorkHistory?.length - 1]?.to;
 
   useEffect(() => {
     if (Platform.OS === 'ios') {

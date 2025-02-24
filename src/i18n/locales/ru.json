@@ -32,7 +32,8 @@
   "HomeScreen": {
     "nfcCardTitle": "Готов к сканированию NFC-меток",
     "nfcCardSubtitle": "Поднесите устройство к NFC-метке",
-    "nfcButtonText": "Начать NFC сканирование"
+    "nfcButtonText": "Начать NFC сканирование",
+    "checkingTimeWithServer":"Проверка времени с сервером"
   },
   "ChangePasswordScreen": {
     "allFieldsRequired": "Все поля обязательны",
