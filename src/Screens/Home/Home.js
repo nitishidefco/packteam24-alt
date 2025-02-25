@@ -46,7 +46,7 @@ import {initializeLanguage} from '../../Redux/Reducers/LanguageProviderSlice';
 import {setSessionHandler} from '../../Utlis/SessionHandler';
 import {errorToast} from '../../Helpers/ToastMessage';
 import reactotron from '../../../ReactotronConfig';
-
+import {DateTime} from 'luxon';
 const Home = ({navigation, route}) => {
   const dispatch = useDispatch();
 
@@ -329,8 +329,13 @@ const Home = ({navigation, route}) => {
       try {
         if (tagId) {
           // Process the current tag when online
-          const current_date = moment().format('YYYY-MM-DD');
-          const current_hour = moment().format('HH:mm:ss');
+           const current_date = DateTime.now()
+             .setZone('Europe/Berlin')
+             .toFormat('yyyy-MM-dd');
+           const current_hour = DateTime.now()
+             .setZone('Europe/Berlin')
+             .toFormat('HH:mm:ss');
+             reactotron.log(current_date, current_hour);
           await getUid(tagId, current_date, current_hour);
           setTagId('');
         }
@@ -412,21 +417,25 @@ const Home = ({navigation, route}) => {
       //   showNotificationAboutTagScannedWhileOffline(validationResult);
       //   return;
       // }
-      const current_date = moment().format('YYYY-MM-DD');
-      const current_hour = moment().format('HH:mm:ss');
 
-      dispatch(
-        addDataToOfflineStorage({
-          sessionId: SessionId,
-          time: moment().format('YYYY-MM-DD HH:mm:ss'),
-          tagId,
-          current_date,
-          current_hour,
-        }),
-      );
       try {
         console.log('Dispathching for bulk update');
-
+        const current_date = DateTime.now()
+          .setZone('Europe/Berlin')
+          .toFormat('yyyy-MM-dd');
+        const current_hour = DateTime.now()
+          .setZone('Europe/Berlin')
+          .toFormat('HH:mm:ss');
+        reactotron.log('current hour====>', current_hour, current_date);
+        dispatch(
+          addDataToOfflineStorage({
+            sessionId: SessionId,
+            time: moment().format('YYYY-MM-DD HH:mm:ss'),
+            tagId,
+            current_date,
+            current_hour,
+          }),
+        );
         dispatch(
           dataForBulkUpdate({
             sessionId: SessionId,
@@ -455,7 +464,7 @@ const Home = ({navigation, route}) => {
       const storedSessions = sessions[SessionId]?.items || [];
       const bulkStoredSessions = bulkSessions[SessionId]?.items || [];
       if (isConnected) {
-        reactotron.log('Processing online rtag')
+        reactotron.log('Processing online rtag');
         await processOnlineTags(storedSessions, bulkStoredSessions);
       } else {
         processOfflineTag(bulkStoredSessions);

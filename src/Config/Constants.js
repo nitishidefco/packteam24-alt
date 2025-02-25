@@ -11,9 +11,9 @@ export default {
 
   IS_TESTDATA: '1',
   activeOpacity: 0.5,
-  IS_DEVELOPING_MODE: false,
+  IS_DEVELOPING_MODE: true,
   BASE_URL: {
-    DEV: 'https://eda.workflex360.de/',
+    DEV: 'https://test-tracker.workflex360.de/',
     PROD: 'https://eda.workflex360.de/',
     // DEV: 'https://nfc.visionvivante.com/',
     // PROD: 'https://nfc.visionvivante.com/',

@@ -11,6 +11,7 @@ import moment from 'moment';
 import {setLocalWorkHistoryInStorage} from '../../Redux/Reducers/LocalWorkHistorySlice';
 import reactotron from '../../../ReactotronConfig';
 import {useScanTagActions} from '../../Redux/Hooks/useScanTagActions';
+import {DateTime} from 'luxon';
 
 const TimeLog = ({sessionId, tag, tagsFromLocalStorage}) => {
   const dispatch = useDispatch();
@@ -74,7 +75,9 @@ const TimeLog = ({sessionId, tag, tagsFromLocalStorage}) => {
 
   const handleTagScan = async newMode => {
     console.log('New Mode:', newMode);
-    const currentTime = moment().format('HH:mm:ss');
+    const currentTime = DateTime.now()
+      .setZone('Europe/Berlin')
+      .toFormat('HH:mm:ss');
     console.log('Current Time:', currentTime);
     if (newMode === 'work_end' && localWorkHistory.length === 0) {
       console.log('No work history to end');
