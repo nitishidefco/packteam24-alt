@@ -29,6 +29,7 @@ import {
 import {showNotificationAboutTagScannedWhileOffline} from '../../Utlis/NotificationsWhileOffline';
 import {useDispatch, useSelector} from 'react-redux';
 import moment from 'moment';
+import momentTimeZone from 'moment-timezone';
 import {setDeviceInfo} from '../../Redux/Reducers/NetworkSlice';
 import DeviceInfo from 'react-native-device-info';
 import {useNfcStatus} from '../../Utlis/CheckNfcStatus';
@@ -46,7 +47,7 @@ import {initializeLanguage} from '../../Redux/Reducers/LanguageProviderSlice';
 import {setSessionHandler} from '../../Utlis/SessionHandler';
 import {errorToast} from '../../Helpers/ToastMessage';
 import reactotron from '../../../ReactotronConfig';
-import {DateTime} from 'luxon';
+
 const Home = ({navigation, route}) => {
   const dispatch = useDispatch();
 
@@ -88,12 +89,7 @@ const Home = ({navigation, route}) => {
   // on every refresh its showing notification
   // Handles the scanned NFC tag and extracts its ID
   const [count, setCount] = useState(0);
-  const onRefresh = React.useCallback(() => {
-    setRefreshing(true);
-    setTimeout(() => {
-      setRefreshing(false);
-    }, 2000);
-  }, []);
+
   const handleNfcTag = async tag => {
     setCount(prevCount => prevCount + 1);
     if (tag?.id) {
@@ -242,7 +238,7 @@ const Home = ({navigation, route}) => {
   }
 
   // Processes the NFC tag ID by sending it to the server
-  const getUid = async (uid, current_date, current_hour) => {
+  const getUid = async uid => {
     try {
       setLoading(true);
       let formdata = new FormData();
@@ -250,8 +246,6 @@ const Home = ({navigation, route}) => {
       formdata.append('device_id', deviceId);
       formdata.append('nfc_key', uid);
       formdata.append('lang', globalLanguage);
-      formdata.append('current_date', current_date);
-      formdata.append('current_hour', current_hour);
       reactotron.log('making the scan call');
       scanCall(formdata);
     } catch (error) {
@@ -328,42 +322,12 @@ const Home = ({navigation, route}) => {
     const processOnlineTags = async (storedSessions, bulkStoredSessions) => {
       try {
         if (tagId) {
-          // Process the current tag when online
-           const current_date = DateTime.now()
-             .setZone('Europe/Berlin')
-             .toFormat('yyyy-MM-dd');
-           const current_hour = DateTime.now()
-             .setZone('Europe/Berlin')
-             .toFormat('HH:mm:ss');
-             reactotron.log(current_date, current_hour);
-          await getUid(tagId, current_date, current_hour);
+          await getUid(tagId);
           setTagId('');
         }
-        // console.log('Bulk stored sessions', bulkStoredSessions);
-
-        // if (storedSessions.length > 0) {
-        //   for (const [index, item] of storedSessions.entries()) {
-        //     try {
-        //       await getUid(item.tagId, item.current_date, item.current_hour);
-        //     } catch (error) {
-        //       console.error(
-        //         `Error processing stored tag ${item.tagId}:`,
-        //         error,
-        //       );
-        //     }
-
-        //     // Add a delay of 6 seconds before the next item (except for the last one)
-        //     if (index < storedSessions.length - 1) {
-        //       await new Promise(resolve => setTimeout(resolve, 3000));
-        //     }
-        //   }
-        // }
 
         if (bulkStoredSessions.length > 0) {
-          console.log('Making the api call');
-
-          const response = await makeBulkCall(bulkStoredSessions);
-          console.log(response);
+          await makeBulkCall(bulkStoredSessions);
         }
         // console.log('bulk stored sessions', bulkStoredSessions);
       } catch (error) {
@@ -411,22 +375,16 @@ const Home = ({navigation, route}) => {
         return;
       }
       setDuplicateTagId(tagId);
-      // console.log('Bulk stored sessions offline', bulkStoredSessions);
-
-      // if (!validationResult.valid) {
-      //   showNotificationAboutTagScannedWhileOffline(validationResult);
-      //   return;
-      // }
 
       try {
-        console.log('Dispathching for bulk update');
-        const current_date = DateTime.now()
-          .setZone('Europe/Berlin')
-          .toFormat('yyyy-MM-dd');
-        const current_hour = DateTime.now()
-          .setZone('Europe/Berlin')
-          .toFormat('HH:mm:ss');
+        const current_date = momentTimeZone()
+          .tz('Europe/Berlin')
+          .format('YYYY-MM-DD');
+        const current_hour = momentTimeZone()
+          .tz('Europe/Berlin')
+          .format('HH:mm:ss');
         reactotron.log('current hour====>', current_hour, current_date);
+
         dispatch(
           addDataToOfflineStorage({
             sessionId: SessionId,
@@ -445,7 +403,7 @@ const Home = ({navigation, route}) => {
           }),
         );
       } catch (error) {
-        console.log('error', error);
+        console.error('error', error);
       }
 
       if (localWorkHistory.length > 0) {

@@ -8,7 +8,7 @@ import {useWorkStatusActions} from '../../Redux/Hooks/useWorkStatusActions';
 import {useDispatch, useSelector} from 'react-redux';
 import {getCurrentTime} from '../../Helpers/GetCurrentTime';
 import {findModeByTagId} from '../../Helpers/FindModeByTagId';
-import moment from 'moment';
+import moment from 'moment-timezone';
 import {Matrics, typography} from '../../Config/AppStyling';
 import {OffineStatus} from '../../Redux/Reducers/WorkStateSlice';
 import {
@@ -78,41 +78,17 @@ const Timer = ({tag, tagsFromLocalStorage, sessionId}) => {
   };
 
   useEffect(() => {
-    reactotron.log(
-      'app state',
-      appState,
-      'localworkhistory',
-      localWorkHistory,
-      'internet status',
-      isConnected,
-      'workHistoryLoading',
-      workHistoryState.workHistoryLoading,
-      'Work History:',
-      workHistoryState?.data,
-    );
     if (appState !== 'active') return;
-
-    // console.log('localWorkHistory===>', localWorkHistory);
     setInitialTimer();
   }, [
     appState,
-    // tagMode,
-    // tagInLocalStorage,
-    // JSON.stringify(workHistoryState?.data),
     workHistoryState.workHistoryLoading,
-    // JSON.stringify(localWorkHistory),
     localWorkHistory?.length,
     localWorkHistory?.[localWorkHistory?.length - 1]?.to,
     isConnected,
     randomState,
   ]);
   const setInitialTimer = async () => {
-    // console.log(
-    //   'Initializing timer...',
-    //   tagMode,
-    //   tagInLocalStorage,
-    //   workHistoryState.data[workHistoryState.data.length - 1],
-    // );
     if (
       isConnected &&
       workHistoryState?.data?.length > 0 &&
@@ -121,8 +97,12 @@ const Timer = ({tag, tagsFromLocalStorage, sessionId}) => {
       const lastEntry =
         workHistoryState.data[workHistoryState.data.length - 1].from;
       const lastEntryMoment = moment(lastEntry, 'HH:mm:ss');
-      const now = moment();
+      const nowString = moment().tz('Europe/Berlin').format('HH:mm:ss');
+      const now = moment(nowString, 'HH:mm:ss');
+
       const elapsedTime = Math.abs(now.diff(lastEntryMoment, 'seconds'));
+      reactotron.log('Elapsed Time', elapsedTime);
+
       if (intervalRef.current) {
         clearInterval(intervalRef.current);
       }
@@ -171,7 +151,8 @@ const Timer = ({tag, tagsFromLocalStorage, sessionId}) => {
         'HH:mm:ss',
       );
 
-      const now = moment();
+      const nowString = moment().tz('Europe/Berlin').format('HH:mm:ss');
+      const now = moment(nowString, 'HH:mm:ss');
       const elapsedTime = Math.abs(now.diff(lastEntryTime, 'seconds'));
       reactotron.log('elapsedTime+++>', elapsedTime);
       if (intervalRef.current) {
@@ -306,7 +287,9 @@ const Timer = ({tag, tagsFromLocalStorage, sessionId}) => {
       {isLoading ? (
         <Text style={styles.loadingText}>{i18n.t('Timer.sync')}</Text>
       ) : workHistoryState.workHistoryLoading ? (
-        <Text style={styles.timerLoadingText}>{i18n.t("HomeScreen.checkingTimeWithServer")}</Text>
+        <Text style={styles.timerLoadingText}>
+          {i18n.t('HomeScreen.checkingTimeWithServer')}
+        </Text>
       ) : (
         <Text style={styles.timerText}>{formatTime(seconds)}</Text>
       )}
