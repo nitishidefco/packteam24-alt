@@ -34,7 +34,7 @@ const WorkStatusBar = ({tagsFromLocalStorage, tag}) => {
         formdata.append('session_id', SessionId);
         formdata.append('device_id', deviceId);
         formdata.append('lang', globalLanguage);
-        reactotron.log('Called work status from work status bar');
+
         fetchWorkStatusCall(formdata);
       } catch (error) {
         console.error('Error updating work status', error);

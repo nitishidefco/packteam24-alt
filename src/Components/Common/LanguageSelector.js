@@ -46,9 +46,6 @@ const LanguageSelector = ({sessionId}) => {
 
     dispatch(setLanguageWithStorage(language));
     try {
-      reactotron.log('Called get work history from lanugage selector');
-      getWorkHistoryCall(formData);
-      reactotron.log('Called get work status from lanugage selector');
       fetchWorkStatusCall(formData);
     } catch (error) {
       console.log('error', error);

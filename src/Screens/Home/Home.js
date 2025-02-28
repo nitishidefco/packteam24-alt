@@ -47,6 +47,7 @@ import {initializeLanguage} from '../../Redux/Reducers/LanguageProviderSlice';
 import {setSessionHandler} from '../../Utlis/SessionHandler';
 import {errorToast} from '../../Helpers/ToastMessage';
 import reactotron from '../../../ReactotronConfig';
+import RealTime from '../../Components/HomeComponent/RealTime';
 
 const Home = ({navigation, route}) => {
   const dispatch = useDispatch();
@@ -126,7 +127,7 @@ const Home = ({navigation, route}) => {
       formdata.append('session_id', SessionId);
       formdata.append('device_id', deviceId);
       formdata.append('lang', globalLanguage);
-      reactotron.log('Called work status from home');
+
       fetchWorkStatusCall(formdata);
     } catch (error) {
       console.error('Error updating work status', error);
@@ -246,7 +247,7 @@ const Home = ({navigation, route}) => {
       formdata.append('device_id', deviceId);
       formdata.append('nfc_key', uid);
       formdata.append('lang', globalLanguage);
-      reactotron.log('making the scan call');
+
       scanCall(formdata);
     } catch (error) {
       console.error('Error processing UID:', error);
@@ -383,7 +384,6 @@ const Home = ({navigation, route}) => {
         const current_hour = momentTimeZone()
           .tz('Europe/Berlin')
           .format('HH:mm:ss');
-        reactotron.log('current hour====>', current_hour, current_date);
 
         dispatch(
           addDataToOfflineStorage({
@@ -422,7 +422,6 @@ const Home = ({navigation, route}) => {
       const storedSessions = sessions[SessionId]?.items || [];
       const bulkStoredSessions = bulkSessions[SessionId]?.items || [];
       if (isConnected) {
-        reactotron.log('Processing online rtag');
         await processOnlineTags(storedSessions, bulkStoredSessions);
       } else {
         processOfflineTag(bulkStoredSessions);
@@ -557,17 +556,6 @@ const Home = ({navigation, route}) => {
                   </Text>
                 )}
               </View>
-              {/* <View style={{marginTop: Matrics.ms(40)}}>
-                <Text
-                  style={{
-                    fontFamily: typography.fontFamily.Montserrat.SemiBold,
-                    fontSize: typography.fontSizes.fs15,
-                  }}>
-                  {Platform.OS === 'android'
-                    ? 'Scroll to see the Time Log'
-                    : ''}
-                </Text>
-              </View> */}
             </View>
           </View>
           <View style={styles.timeLogContainer}>

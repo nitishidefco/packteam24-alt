@@ -18,7 +18,9 @@ import {
 import i18n from '../../i18n/i18n';
 import reactotron from '../../../ReactotronConfig';
 import {useScanTagActions} from '../../Redux/Hooks/useScanTagActions';
-
+import ntpClient from '@ruanitto/react-native-ntp-sync';
+import ntpSync from '@ruanitto/react-native-ntp-sync';
+import {reduxStorage} from '../../Redux/Storage';
 const Timer = ({tag, tagsFromLocalStorage, sessionId}) => {
   const dispatch = useDispatch();
   const {state: currentStatus, fetchWorkStatusCall} = useWorkStatusActions();
@@ -44,11 +46,7 @@ const Timer = ({tag, tagsFromLocalStorage, sessionId}) => {
       await saveAppState(nextAppState);
 
       if (nextAppState === 'active') {
-        // setInitialTimer();
       } else if (nextAppState === 'background' && intervalRef.current) {
-        reactotron.log('Clearing timer interval ref');
-        // clearInterval(intervalRef.current);
-        // intervalRef.current = null;
         setRandomState(!randomState);
       }
 
@@ -94,30 +92,50 @@ const Timer = ({tag, tagsFromLocalStorage, sessionId}) => {
       workHistoryState?.data?.length > 0 &&
       !workHistoryState.workHistoryLoading
     ) {
+      console.log('*******************************************************');
+      const serverDate = await reduxStorage.getItem('trueDate');
       const lastEntry =
         workHistoryState.data[workHistoryState.data.length - 1].from;
-      const lastEntryMoment = moment(lastEntry, 'HH:mm:ss');
-      const nowString = moment().tz('Europe/Berlin').format('HH:mm:ss');
-      const now = moment(nowString, 'HH:mm:ss');
+      const lastEntryMoment = moment.tz(
+        `${serverDate}${lastEntry}`,
+        'YYYY-MM-DD HH:mm:ss',
+        'Europe/Berlin',
+      );
 
-      const elapsedTime = Math.abs(now.diff(lastEntryMoment, 'seconds'));
-      reactotron.log('Elapsed Time', elapsedTime);
+      const response = await fetch(
+        'https://api.api-ninjas.com/v1/worldtime?timezone=europe/berlin',
+        {
+          method: 'GET',
+          headers: {
+            'x-api-key': 'SZ/zOVovpgPKJes25Efr0w==8z8QOT4apepJLwWH',
+          },
+        },
+      );
+
+      const data = await response.json();
+      const nowMoment = moment.tz(
+        `${data.datetime}`,
+        'YYYY-MM-DD HH:mm:ss',
+        'Europe/Berlin',
+      );
+      const elapsedTime = nowMoment.diff(lastEntryMoment, 'seconds');
+      reactotron.log(
+        'Elapsed time',
+        elapsedTime,
+        lastEntryMoment,
+        lastEntry,
+        data,
+        serverDate,
+      );
 
       if (intervalRef.current) {
         clearInterval(intervalRef.current);
       }
-      reactotron.log('last Entry... online mode', lastEntry);
       if (
         nowTranslation.includes(
           workHistoryState?.data[workHistoryState?.data?.length - 1]?.to,
         )
       ) {
-        reactotron.log(
-          'Inside if nowTranslation',
-          currentStatus?.currentState?.work_status,
-          workHistoryState?.data,
-          tagMode,
-        );
         setSeconds(elapsedTime);
         if (workHistoryState?.data?.length === 1) {
           controlTimer(
@@ -136,25 +154,19 @@ const Timer = ({tag, tagsFromLocalStorage, sessionId}) => {
         }
         // controlTimer(currentStatus?.currentState?.work_status || tagMode);
       } else {
-        reactotron.log('Stopping timer from online mode');
         stopTimer();
       }
     } else if (!isConnected && localWorkHistory?.length > 0) {
       // dispatch(OffineStatus());
-      reactotron.log(
-        'Ofine Last===>',
-        localWorkHistory[localWorkHistory.length - 1],
-      );
 
-      const lastEntryTime = moment(
+      const lastEntryTime = moment.tz(
         localWorkHistory[localWorkHistory.length - 1].from,
         'HH:mm:ss',
+        'Europe/Berlin',
       );
 
-      const nowString = moment().tz('Europe/Berlin').format('HH:mm:ss');
-      const now = moment(nowString, 'HH:mm:ss');
+      const now = moment.tz('Europe/Berlin');
       const elapsedTime = Math.abs(now.diff(lastEntryTime, 'seconds'));
-      reactotron.log('elapsedTime+++>', elapsedTime);
       if (intervalRef.current) {
         clearInterval(intervalRef.current);
       }
@@ -164,12 +176,7 @@ const Timer = ({tag, tagsFromLocalStorage, sessionId}) => {
         )
       ) {
         setSeconds(elapsedTime);
-        reactotron.log(
-          'Controlling timer from offlinemode',
-          tagInLocalStorage,
-          tagMode,
-          localWorkHistory[localWorkHistory.length - 1],
-        );
+
         controlTimer(
           tagInLocalStorage ||
             tagMode ||
@@ -178,7 +185,6 @@ const Timer = ({tag, tagsFromLocalStorage, sessionId}) => {
             : 'break_in_progress',
         );
       } else {
-        reactotron.log('Stopping timer from not connected');
         stopTimer();
       }
     } else {
@@ -190,10 +196,8 @@ const Timer = ({tag, tagsFromLocalStorage, sessionId}) => {
       ) {
         controlTimer(tagInLocalStorage || tagMode);
       } else if (tagMode === 'work_start') {
-        reactotron.log('Tag mode', tagMode);
         controlTimer(tagMode);
       } else {
-        reactotron.log('Stopping timer from last else');
         stopTimer();
       }
     }
@@ -211,7 +215,6 @@ const Timer = ({tag, tagsFromLocalStorage, sessionId}) => {
     formData.append('device_id', deviceId);
     formData.append('lang', globalLanguage);
     if (isConnected) {
-      reactotron.log('Called get work history from timer', appState);
       getWorkHistoryCall(formData);
       fetchWorkStatusCall(formData);
     }
@@ -229,7 +232,6 @@ const Timer = ({tag, tagsFromLocalStorage, sessionId}) => {
       return;
     }
     if (!currentTag) {
-      reactotron.log('Stopping timer from no current tag');
       stopTimer();
       return;
     }
@@ -264,7 +266,6 @@ const Timer = ({tag, tagsFromLocalStorage, sessionId}) => {
 
   const stopTimer = () => {
     console.log('stop Work');
-    reactotron.log('Inside stop work');
     if (intervalRef.current) {
       clearInterval(intervalRef.current);
     }

@@ -7,11 +7,10 @@ import i18n from '../../i18n/i18n';
 import {useDispatch, useSelector} from 'react-redux';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {findModeByTagId} from '../../Helpers/FindModeByTagId';
-import moment from 'moment';
+import moment, {utc} from 'moment-timezone';
 import {setLocalWorkHistoryInStorage} from '../../Redux/Reducers/LocalWorkHistorySlice';
 import reactotron from '../../../ReactotronConfig';
 import {useScanTagActions} from '../../Redux/Hooks/useScanTagActions';
-import momentTimeZone from 'moment-timezone';
 
 const TimeLog = ({sessionId, tag, tagsFromLocalStorage}) => {
   const dispatch = useDispatch();
@@ -74,9 +73,9 @@ const TimeLog = ({sessionId, tag, tagsFromLocalStorage}) => {
   }, [tagMode, isConnected]);
 
   const handleTagScan = async newMode => {
-    console.log('New Mode:', newMode);
-    const currentTime = momentTimeZone().tz('Europe/Berlin').format('HH:mm:ss');
-    reactotron.log('Current Time:', currentTime);
+    const currentTime = moment.utc().tz('Europe/Berlin').format('HH:mm:ss');
+
+
     if (newMode === 'work_end' && localWorkHistory.length === 0) {
       console.log('No work history to end');
 

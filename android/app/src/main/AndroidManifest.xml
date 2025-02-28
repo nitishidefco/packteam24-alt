@@ -35,8 +35,6 @@
         <category android:name="android.intent.category.DEFAULT"/>
       </intent-filter>
 
-      <!-- NDEF Discovered Action (for NFC tags containing NDEF data) -->
-
 
     </activity>
   </application>

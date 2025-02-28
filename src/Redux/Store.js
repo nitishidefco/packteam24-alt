@@ -6,7 +6,6 @@ import {configureStore} from '@reduxjs/toolkit';
 import rootSaga from './Sagas';
 import rootReducer from './Reducers';
 import {reduxStorage} from './Storage';
-import reactotron from '../../ReactotronConfig';
 
 // Root reducer with persist config
 const reducers = persistReducer(
@@ -38,8 +37,6 @@ export const Store = configureStore({
     getDefaultMiddleware({serializableCheck: false}).concat(sagaMiddleware),
   enhancers: createEnhancers,
 });
-
-reactotron.log('Store initialized:', Store.getState());
 
 // Persistor contains all the data from store ----->>>>>
 export const Persistor = persistStore(Store);

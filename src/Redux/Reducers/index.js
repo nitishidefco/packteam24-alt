@@ -25,7 +25,7 @@ let appReducer = combineReducers({
   ChangePassword: PasswordChangeReducer,
   WorkHistory: WorkHistoryReducer,
   GlobalLanguage: LanguageProviderReducer,
-  LocalWorkHistory: LocalWorkHistoryReducer
+  LocalWorkHistory: LocalWorkHistoryReducer,
 });
 
 const rootReducer = (state, action) => {

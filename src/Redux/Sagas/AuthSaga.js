@@ -25,6 +25,8 @@ const loginSaga = function* loginSaga({payload}) {
 
     if (response?.data?.sesssion_id && response?.message == 'OK') {
       reduxStorage.setItem('token', response?.data?.sesssion_id);
+      reduxStorage.setItem('trueTime', response?.data?.current_time);
+      reduxStorage.setItem('trueDate', response?.data?.current_date);
       yield put(loginSuccess(response));
     } else {
       yield put(loginFailure(response));
