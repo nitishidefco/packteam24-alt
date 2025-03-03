@@ -18,9 +18,8 @@ import {
 import i18n from '../../i18n/i18n';
 import reactotron from '../../../ReactotronConfig';
 import {useScanTagActions} from '../../Redux/Hooks/useScanTagActions';
-import ntpClient from '@ruanitto/react-native-ntp-sync';
-import ntpSync from '@ruanitto/react-native-ntp-sync';
 import {reduxStorage} from '../../Redux/Storage';
+
 const Timer = ({tag, tagsFromLocalStorage, sessionId}) => {
   const dispatch = useDispatch();
   const {state: currentStatus, fetchWorkStatusCall} = useWorkStatusActions();
@@ -29,7 +28,13 @@ const Timer = ({tag, tagsFromLocalStorage, sessionId}) => {
   const [randomState, setRandomState] = useState(false);
   const [seconds, setSeconds] = useState(0);
   const intervalRef = useRef(null);
-  const {workHistoryState, getWorkHistoryCall} = useWorkHistoryActions();
+  const {
+    workHistoryState,
+    getWorkHistoryCall,
+    getRealTimeCall,
+    realTime,
+    realTimeLoading,
+  } = useWorkHistoryActions();
   const {deviceId} = useSelector(state => state?.Network);
   const {globalLanguage} = useSelector(state => state?.GlobalLanguage);
   const {localWorkHistory} = useSelector(state => state?.LocalWorkHistory);
@@ -76,6 +81,12 @@ const Timer = ({tag, tagsFromLocalStorage, sessionId}) => {
   };
 
   useEffect(() => {
+    reactotron.log('Real time called', realTime, realTimeLoading);
+
+    getRealTimeCall();
+  }, [appState, localWorkHistory?.length, isConnected]);
+
+  useEffect(() => {
     if (appState !== 'active') return;
     setInitialTimer();
   }, [
@@ -85,6 +96,7 @@ const Timer = ({tag, tagsFromLocalStorage, sessionId}) => {
     localWorkHistory?.[localWorkHistory?.length - 1]?.to,
     isConnected,
     randomState,
+    realTimeLoading,
   ]);
   const setInitialTimer = async () => {
     if (
@@ -96,38 +108,31 @@ const Timer = ({tag, tagsFromLocalStorage, sessionId}) => {
       const serverDate = await reduxStorage.getItem('trueDate');
       const lastEntry =
         workHistoryState.data[workHistoryState.data.length - 1].from;
+      reactotron.log('real time', realTime);
       const lastEntryMoment = moment.tz(
         `${serverDate}${lastEntry}`,
         'YYYY-MM-DD HH:mm:ss',
         'Europe/Berlin',
       );
 
-      const response = await fetch(
-        'https://api.api-ninjas.com/v1/worldtime?timezone=europe/berlin',
-        {
-          method: 'GET',
-          headers: {
-            'x-api-key': 'SZ/zOVovpgPKJes25Efr0w==8z8QOT4apepJLwWH',
-          },
-        },
-      );
+      // const response = await fetch(
+      //   'https://api.api-ninjas.com/v1/worldtime?timezone=europe/berlin',
+      //   {
+      //     method: 'GET',
+      //     headers: {
+      //       'x-api-key': 'SZ/zOVovpgPKJes25Efr0w==8z8QOT4apepJLwWH',
+      //     },
+      //   },
+      // );
 
-      const data = await response.json();
+      // const data = await response.json();
       const nowMoment = moment.tz(
-        `${data.datetime}`,
+        `${realTime}`,
         'YYYY-MM-DD HH:mm:ss',
         'Europe/Berlin',
       );
       const elapsedTime = nowMoment.diff(lastEntryMoment, 'seconds');
-      reactotron.log(
-        'Elapsed time',
-        elapsedTime,
-        lastEntryMoment,
-        lastEntry,
-        data,
-        serverDate,
-      );
-
+      reactotron.log('Elapsed time', elapsedTime);
       if (intervalRef.current) {
         clearInterval(intervalRef.current);
       }
@@ -287,7 +292,7 @@ const Timer = ({tag, tagsFromLocalStorage, sessionId}) => {
     <View style={styles.container}>
       {isLoading ? (
         <Text style={styles.loadingText}>{i18n.t('Timer.sync')}</Text>
-      ) : workHistoryState.workHistoryLoading ? (
+      ) : workHistoryState.workHistoryLoading || realTimeLoading ? (
         <Text style={styles.timerLoadingText}>
           {i18n.t('HomeScreen.checkingTimeWithServer')}
         </Text>

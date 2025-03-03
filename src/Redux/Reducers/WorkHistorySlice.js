@@ -1,6 +1,7 @@
 import {createSlice} from '@reduxjs/toolkit';
 import {WORK_HISTORY_REDUCER} from '../SliceKey';
 import {errorToast, success} from '../../Helpers/ToastMessage';
+import reactotron from '../../../ReactotronConfig';
 
 const NULL = null;
 const SUCCESS = true;
@@ -12,6 +13,8 @@ const initialState = {
   error: null,
   isFetchWorkHistorySuccess: NULL,
   workHistoryLoading: false,
+  realTimeLoading: false,
+  realTime: '',
 };
 
 export const WorkHistorySlice = createSlice({
@@ -44,6 +47,18 @@ export const WorkHistorySlice = createSlice({
       state.workHistoryLoading = false;
       state.message = 'Something went wrong';
     },
+    getRealTime: state => {
+      state.realTimeLoading = true;
+      state.realTime = '';
+    },
+    GetRealTimeSuccess: (state, action) => {
+      state.realTimeLoading = false;
+      state.realTime = action.payload.data.current_time;
+    },
+    GetRealTimeFailure: (state, action) => {
+      state.realTimeLoading = false;
+      state.realTime = '';
+    },
   },
 });
 
@@ -51,6 +66,9 @@ export const {
   getWorkHistory,
   FetchWorkHistorySuccess,
   FetchWorkHistoryFailure,
+  getRealTime,
+  GetRealTimeSuccess,
+  GetRealTimeFailure,
 } = WorkHistorySlice.actions;
 const WorkHistoryReducer = WorkHistorySlice.reducer;
 export default WorkHistoryReducer;

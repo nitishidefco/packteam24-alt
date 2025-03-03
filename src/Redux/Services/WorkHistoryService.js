@@ -22,4 +22,18 @@ export default {
         return data;
       });
   },
+  GetRealTimeFromServer: async params => {
+    return fetch(`${BASE_URL}api/current-time`, {
+      method: 'POST',
+      body: params,
+      headers: {
+        Accept: 'multipart/form-data',
+        // 'Content-Type': "application/json"
+      },
+    })
+      .then(response => Ajax.handleResponse(response))
+      .then(data => {
+        return data;
+      });
+  },
 };
