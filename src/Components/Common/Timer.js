@@ -42,6 +42,7 @@ const Timer = ({tag, tagsFromLocalStorage, sessionId}) => {
   const tagMode = findModeByTagId(tagsFromLocalStorage, tag?.id);
   const {tagInLocalStorage} = useSelector(state => state.OfflineData);
   const {isLoading} = useSelector(state => state?.Scan);
+  const currentTime = useSelector(state => state.TrueTime.currentTime);
 
   const nowTranslation = ['Jetzt', 'Now', 'now', 'Сейчас', 'Зараз', 'Teraz'];
   // const [tagMode, setTagMode] = useState(tagModeById);
@@ -82,6 +83,7 @@ const Timer = ({tag, tagsFromLocalStorage, sessionId}) => {
 
   useEffect(() => {
     reactotron.log('Real time called', realTime, realTimeLoading);
+    reactotron.log('current time', currentTime);
 
     getRealTimeCall();
   }, [appState, localWorkHistory?.length, isConnected]);
@@ -114,24 +116,12 @@ const Timer = ({tag, tagsFromLocalStorage, sessionId}) => {
         'YYYY-MM-DD HH:mm:ss',
         'Europe/Berlin',
       );
-
-      // const response = await fetch(
-      //   'https://api.api-ninjas.com/v1/worldtime?timezone=europe/berlin',
-      //   {
-      //     method: 'GET',
-      //     headers: {
-      //       'x-api-key': 'SZ/zOVovpgPKJes25Efr0w==8z8QOT4apepJLwWH',
-      //     },
-      //   },
-      // );
-
-      // const data = await response.json();
-      const nowMoment = moment.tz(
-        `${realTime}`,
+      const now = moment.tz(
+        `${currentTime.date} ${currentTime.time}`,
         'YYYY-MM-DD HH:mm:ss',
         'Europe/Berlin',
       );
-      const elapsedTime = nowMoment.diff(lastEntryMoment, 'seconds');
+      const elapsedTime = now.diff(lastEntryMoment, 'seconds');
       reactotron.log('Elapsed time', elapsedTime);
       if (intervalRef.current) {
         clearInterval(intervalRef.current);
@@ -170,7 +160,11 @@ const Timer = ({tag, tagsFromLocalStorage, sessionId}) => {
         'Europe/Berlin',
       );
 
-      const now = moment.tz('Europe/Berlin');
+      const now = moment.tz(
+        `${currentTime.date} ${currentTime.time}`,
+        'YYYY-MM-DD HH:mm:ss',
+        'Europe/Berlin',
+      );
       const elapsedTime = Math.abs(now.diff(lastEntryTime, 'seconds'));
       if (intervalRef.current) {
         clearInterval(intervalRef.current);

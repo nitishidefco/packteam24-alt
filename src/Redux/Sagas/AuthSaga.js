@@ -15,7 +15,7 @@ import {AUTH_REDUCER} from '../SliceKey';
 import {reduxStorage} from '../Storage/index';
 import {errorToast, success} from '../../Helpers/ToastMessage';
 import i18n from '../../i18n/i18n';
-
+import ElapsedTime from '../../../spec/NativeElapsedTime';
 const loginSaga = function* loginSaga({payload}) {
   console.log('payload', payload);
 
@@ -24,9 +24,27 @@ const loginSaga = function* loginSaga({payload}) {
     console.log('Login response', response);
 
     if (response?.data?.sesssion_id && response?.message == 'OK') {
-      reduxStorage.setItem('token', response?.data?.sesssion_id);
-      reduxStorage.setItem('trueTime', response?.data?.current_time);
-      reduxStorage.setItem('trueDate', response?.data?.current_date);
+      const elapsedTimeMs = yield call([
+        ElapsedTime,
+        ElapsedTime.getElapsedTime,
+      ]);
+      yield call(reduxStorage.setItem, 'token', response?.data?.sesssion_id);
+      yield call(
+        reduxStorage.setItem,
+        'trueTime',
+        response?.data?.current_time,
+      );
+      yield call(
+        reduxStorage.setItem,
+        'trueDate',
+        response?.data?.current_date,
+      );
+      yield call(
+        reduxStorage.setItem,
+        'realTimeDiffAtLogin',
+        elapsedTimeMs.toString(),
+      );
+     
       yield put(loginSuccess(response));
     } else {
       yield put(loginFailure(response));

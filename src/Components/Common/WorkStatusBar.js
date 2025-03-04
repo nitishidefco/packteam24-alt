@@ -216,7 +216,6 @@ const WorkStatusBar = ({tagsFromLocalStorage, tag}) => {
       }
     } else {
       if (localWorkHistory.length > 0) {
-        console.log('inside status icon');
         if (localWorkHistory[localWorkHistory.length - 1].to.includes(':')) {
           console.log('inside work end icon');
           return <House size={30} color="#3b82f6" />;

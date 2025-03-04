@@ -11,7 +11,6 @@ import {
   AppState,
   TouchableOpacity,
   ScrollView,
-  RefreshControl,
 } from 'react-native';
 import {useHomeActions} from '../../Redux/Hooks';
 import DrawerSceneWrapper from '../../Components/Common/DrawerSceneWrapper';
@@ -20,9 +19,7 @@ import {Images} from '../../Config';
 import NfcManager, {NfcTech, NfcEvents} from 'react-native-nfc-manager';
 import {useScanTagActions} from '../../Redux/Hooks/useScanTagActions';
 import {useWorkStatusActions} from '../../Redux/Hooks/useWorkStatusActions';
-// import NetworkStatusComponent from '../../Components/Common/NetworkStatus';
 import {
-  clearOfflineStorage,
   addDataToOfflineStorage,
   dataForBulkUpdate,
 } from '../../Redux/Reducers/SaveDataOfflineSlice';
@@ -34,11 +31,8 @@ import {setDeviceInfo} from '../../Redux/Reducers/NetworkSlice';
 import DeviceInfo from 'react-native-device-info';
 import {useNfcStatus} from '../../Utlis/CheckNfcStatus';
 import WorkStatusBar from '../../Components/Common/WorkStatusBar';
-import useValidateTag from '../../Components/Hooks/useValidateTag';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import {useFetchNfcTagsActions} from '../../Redux/Hooks/useFetchNfcTagsActions';
 import {reduxStorage} from '../../Redux/Storage';
-import useSavedLanguage from '../../Components/Hooks/useSavedLanguage';
 import LanguageSelector from '../../Components/Common/LanguageSelector';
 import Timer from '../../Components/Common/Timer';
 import {Matrics, typography} from '../../Config/AppStyling';
@@ -46,7 +40,6 @@ import TimeLog from '../../Components/HomeComponent/TimeLog';
 import {initializeLanguage} from '../../Redux/Reducers/LanguageProviderSlice';
 import {setSessionHandler} from '../../Utlis/SessionHandler';
 import {errorToast} from '../../Helpers/ToastMessage';
-import reactotron from '../../../ReactotronConfig';
 import RealTime from '../../Components/HomeComponent/RealTime';
 
 const Home = ({navigation, route}) => {
@@ -55,6 +48,7 @@ const Home = ({navigation, route}) => {
   useNfcStatus();
   const {t, i18n} = useTranslation();
   const {sessions, bulkSessions} = useSelector(state => state?.OfflineData);
+  const realTime = useSelector(state => state.TrueTime.currentTime);
 
   const isConnected = useSelector(state => state?.Network?.isConnected);
   const isNfcEnabled = useSelector(state => state?.Network?.isNfcEnabled);
@@ -68,10 +62,7 @@ const Home = ({navigation, route}) => {
   const {state: states, scanCall, bulkScanCall} = useScanTagActions();
   const {Auth, Home} = state;
   const SessionId = Auth.data?.data?.sesssion_id;
-  const [refreshing, setRefreshing] = useState(false);
-  const CurrentMode = states?.data?.data?.mode;
   const [appState, setAppState] = useState(AppState.currentState);
-  const [validationResult, setValidationResult] = useState(null);
   const {fetchTagsCall} = useFetchNfcTagsActions();
   const {fetchWorkStatusCall} = useWorkStatusActions();
   const [tagsFromLocalStorage, setTagsFromLocalStorage] = useState([]);
@@ -80,15 +71,6 @@ const Home = ({navigation, route}) => {
   const {localWorkHistory} = useSelector(state => state?.LocalWorkHistory);
   // Set session handler values
   setSessionHandler(dispatch, SessionId, deviceId, navigation);
-  // let validationResult1 = useValidateTag(tagId, sessionItems);
-  // useEffect(() => {
-  //   setValidationResult(validationResult1);
-  // }, []);
-  //
-
-  //
-  // on every refresh its showing notification
-  // Handles the scanned NFC tag and extracts its ID
   const [count, setCount] = useState(0);
 
   const handleNfcTag = async tag => {
@@ -378,12 +360,8 @@ const Home = ({navigation, route}) => {
       setDuplicateTagId(tagId);
 
       try {
-        const current_date = momentTimeZone()
-          .tz('Europe/Berlin')
-          .format('YYYY-MM-DD');
-        const current_hour = momentTimeZone()
-          .tz('Europe/Berlin')
-          .format('HH:mm:ss');
+        const current_date = realTime.date;
+        const current_hour = realTime.time;
 
         dispatch(
           addDataToOfflineStorage({
@@ -557,6 +535,7 @@ const Home = ({navigation, route}) => {
                 )}
               </View>
             </View>
+            <RealTime />
           </View>
           <View style={styles.timeLogContainer}>
             <TimeLog

@@ -23,6 +23,8 @@ const TimeLog = ({sessionId, tag, tagsFromLocalStorage}) => {
   const isConnected = useSelector(state => state?.Network?.isConnected);
   const {tagInLocalStorage} = useSelector(state => state.OfflineData);
   const {bulkSessions} = useSelector(state => state?.OfflineData);
+  const realTime = useSelector(state => state.TrueTime.currentTime);
+
   const {state: scanTagState} = useScanTagActions();
 
   // No need to call it for tag scanned
@@ -73,8 +75,10 @@ const TimeLog = ({sessionId, tag, tagsFromLocalStorage}) => {
   }, [tagMode, isConnected]);
 
   const handleTagScan = async newMode => {
-    const currentTime = moment.utc().tz('Europe/Berlin').format('HH:mm:ss');
+    console.log('Inside handle tag scan');
 
+    console.log('Current time', realTime.time);
+    const currentTime = realTime.time;
 
     if (newMode === 'work_end' && localWorkHistory.length === 0) {
       console.log('No work history to end');
