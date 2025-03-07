@@ -1,4 +1,7 @@
 // App.js
+if (__DEV__) {
+  require('../ReactotronConfig');
+}
 
 import React, {useState, useEffect} from 'react';
 import {NavigationContainer} from '@react-navigation/native';

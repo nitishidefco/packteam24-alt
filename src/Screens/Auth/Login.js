@@ -50,16 +50,17 @@ const languages = {
   GER: 'de', // German
   UK: 'en', // English
   RUS: 'ru', // Russian
-  UKA: 'uk', // Ukrainian
+  UKA: 'ua', // Ukrainian
   ZH: 'cn', //chinese
 };
+
 const Login = ({route}) => {
   // --------------- FUNCTION DECLARATION ---------------
   const navigation = useNavigation();
   const {t, i18n} = useTranslation();
-  const privacyPolicyUrl = 'https://eda.workflex360.de/api/privacy-policy';
+  const privacyPolicyUrl = 'https://eda.workflex360.de/de/datenschutzerklarung';
   const applicationInformatinoUrl =
-    'https://eda.workflex360.de/api/application-information';
+    'https://eda.workflex360.de/de/technischer-support';
   // --------------- STATE ---------------
 
   // email & password that was static
@@ -81,14 +82,14 @@ const Login = ({route}) => {
   const {Auth} = useSelector(state => state);
   const [activeLanguage, setActiveLanguage] = useState(null);
   const {globalLanguage} = useSelector(state => state?.GlobalLanguage);
-  
+
   // --------------- LIFECYCLE ---------------
   useEffect(() => {
     if (loading && Auth.isLoginSuccess === true) {
       setLoading(false);
       const successToast = `${t('Toast.LoginSuccess')}`;
       success(successToast);
-      navigation.navigate('HomeDrawer');
+      navigation.replace('HomeDrawer');
       setUserEmail(null);
       setUserPassword(null);
     } else if (loading && Auth.isLoginSuccess === false) {
@@ -170,7 +171,7 @@ const Login = ({route}) => {
     );
   };
   function validateInputs() {
-    if (userEmail == '' || userEmail == null) {
+    if (userEmail === '' || userEmail == null) {
       errorToast(i18n.t('Toast.EnterEmail'));
       return false;
     }
@@ -179,7 +180,9 @@ const Login = ({route}) => {
 
       return false;
     }
-    if (userPassword === '') {
+    if (userPassword === '' || userPassword === null) {
+      console.log('validate password');
+
       errorToast(i18n.t('Toast.EnterPassword'));
       return false;
     }
@@ -193,7 +196,7 @@ const Login = ({route}) => {
       if (validateInputs('Enter Email')) {
         // changeLanguage('pl');
         loginAPI();
-      }
+      } 
     }
   };
   const onForgotPasswordPress = () => {
@@ -333,7 +336,7 @@ const Login = ({route}) => {
             <TouchableOpacity
               style={styles.forgotPasswordStyle}
               activeOpacity={0.5}
-              onPress={() => navigation.navigate('ForgotPass')}>
+              onPress={() => navigation.replace('ForgotPass')}>
               <Text style={styles.forgotPasswordText}>
                 {t('Login.forgotPassword')}
               </Text>
@@ -341,7 +344,7 @@ const Login = ({route}) => {
             <TouchableOpacity
               style={styles.forgotPasswordStyle}
               activeOpacity={0.5}
-              onPress={() => navigation.navigate('CreateAccount')}>
+              onPress={() => navigation.replace('CreateAccount')}>
               <Text style={styles.forgotPasswordText}>
                 {/* {t('Login.forgotPassword')} */}
                 {t('Login.ca')}

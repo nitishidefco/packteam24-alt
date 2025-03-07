@@ -13,6 +13,9 @@ import {useTranslation} from 'react-i18next';
 import {useWorkHistoryActions} from '../../Redux/Hooks/useWorkHistoryActions';
 import {useDispatch, useSelector} from 'react-redux';
 import {setLanguageWithStorage} from '../../Redux/Reducers/LanguageProviderSlice';
+import {useWorkStatusActions} from '../../Redux/Hooks/useWorkStatusActions';
+import {setLocalWorkHistoryInStorage} from '../../Redux/Reducers/LocalWorkHistorySlice';
+import reactotron from '../../../ReactotronConfig';
 
 const LanguageSelector = ({sessionId}) => {
   const [isOpen, setIsOpen] = useState(false);
@@ -20,15 +23,15 @@ const LanguageSelector = ({sessionId}) => {
   const dispatch = useDispatch();
   const {deviceId} = useSelector(state => state?.Network);
   const {globalLanguage} = useSelector(state => state?.GlobalLanguage);
-  console.log(globalLanguage);
 
   const {getWorkHistoryCall} = useWorkHistoryActions();
-
+  const {fetchWorkStatusCall} = useWorkStatusActions();
+  const {localWorkHistory} = useSelector(state => state?.LocalWorkHistory);
   const languageOptions = [
     {label: '🇬🇧 EN', value: 'en'},
     {label: '🇩🇪 DE', value: 'de'},
     {label: '🇷🇺 RU', value: 'ru'},
-    {label: '🇺🇦 UK', value: 'uk'},
+    {label: '🇺🇦 UA', value: 'ua'},
     {label: '🇵🇱 PL', value: 'pl'},
     {label: '🇨🇳 CN', value: 'cn'},
   ];
@@ -42,10 +45,23 @@ const LanguageSelector = ({sessionId}) => {
     formData.append('lang', language);
 
     dispatch(setLanguageWithStorage(language));
-    getWorkHistoryCall(formData);
+    try {
+      fetchWorkStatusCall(formData);
+    } catch (error) {
+      console.log('error', error);
+    }
     setIsOpen(false);
   };
-
+  useEffect(() => {
+    if (localWorkHistory?.length > 0) {
+      let ldata = localWorkHistory.map(r => {
+        let item = {...r};
+        item.mode = i18n.t(`TagModes.${item.mode_raw}_start`);
+        return item;
+      });
+      dispatch(setLocalWorkHistoryInStorage(ldata));
+    }
+  }, [globalLanguage, i18n.language]);
   return (
     <View
       style={[

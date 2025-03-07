@@ -11,7 +11,7 @@ export default {
     let header = {
       Accept: 'multipart/form-data',
     };
-    return fetch('https://eda.workflex360.de/api/dashboard', {
+    return fetch(`${BASE_URL}api/dashboard`, {
       method: 'POST',
       body: params,
     })

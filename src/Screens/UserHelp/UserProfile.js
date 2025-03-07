@@ -11,6 +11,7 @@ import {
   ScrollView,
   KeyboardAvoidingView,
   Alert,
+  ActivityIndicator,
 } from 'react-native';
 import {launchImageLibrary} from 'react-native-image-picker';
 import React, {useEffect, useState} from 'react';
@@ -18,15 +19,18 @@ import useSavedLanguage from '../../Components/Hooks/useSavedLanguage';
 import {loginStyle} from '../Auth/styles';
 import {COLOR, Matrics, typography} from '../../Config/AppStyling';
 import {useTranslation} from 'react-i18next';
-import {Images} from '../../Config';
-import {SafeAreaView} from 'react-native-safe-area-context';
+import {Images, setHeader} from '../../Config';
+import {SafeAreaProvider, SafeAreaView} from 'react-native-safe-area-context';
 import colors from '../../Config/AppStyling/colors';
 import {useUserProfileActions} from '../../Redux/Hooks/useUserProfileActions';
 import {useHomeActions} from '../../Redux/Hooks';
 import {useSelector} from 'react-redux';
+import {Validator} from '../../Helpers';
+import {errorToast} from '../../Helpers/ToastMessage';
 
 const UserProfile = ({navigation}) => {
   const {t, i18n} = useTranslation();
+  const isConnected = useSelector(state => state?.Network?.isConnected);
   const language = useSavedLanguage();
   const {
     profileState,
@@ -44,6 +48,8 @@ const UserProfile = ({navigation}) => {
   const [image, setImage] = useState(null);
   const {deviceId} = useSelector(state => state?.Network);
   const {globalLanguage} = useSelector(state => state?.GlobalLanguage);
+  const [error, setError] = useState(null);
+
   const requestAndroidPermission = async () => {
     try {
       // For Android 13 and above (API 33+)
@@ -93,7 +99,7 @@ const UserProfile = ({navigation}) => {
 
     const options = {
       mediaType: 'photo',
-      includeBase64: false,
+      includeBase64: true,
       maxHeight: 800,
       maxWidth: 800,
     };
@@ -119,42 +125,100 @@ const UserProfile = ({navigation}) => {
     formData.append('session_id', SessionId);
     formData.append('device_id', deviceId);
     formData.append('lang', globalLanguage);
+
     fetchUserProfileCall(formData);
-  }, [counter]);
+  }, [profileState?.isLoading]);
 
   /* --------------------------- Set data of profile -------------------------- */
+  console.log('Profile state', profileState?.isLoading);
+
   useEffect(() => {
-    setImage(profileState?.data?.photo);
-    setUserEmail(profileState?.data?.email);
+    try {
+      const photoData = profileState?.data?.photo;
+
+      // Reset error state at the start of each effect
+      setError(null);
+
+      // Check if photo is an object (error case) or string (success case)
+      if (typeof photoData === 'object' && photoData !== null) {
+        // Handle error case
+        const errorMessage = Array.isArray(photoData.photo)
+          ? photoData.photo[0]
+          : 'Invalid image format';
+        setError(errorMessage);
+        setImage(null);
+      } else if (typeof photoData === 'string') {
+        // Handle success case
+        setImage(photoData);
+      } else {
+        // Handle undefined or null case
+        setImage(null);
+        setError('No image available');
+      }
+
+      // Set email if available
+      setUserEmail(profileState?.data?.email || null);
+    } catch (error) {
+      console.error('Error processing profile data:', error);
+      setError('Error loading profile data');
+      setImage(null);
+    }
   }, [profileState, counter]);
 
   /* ----------------------------- Handle changes ----------------------------- */
-  const handleSave = async () => {
-    if (!userEmail) {
-      console.error('Email is required!');
-      return;
+  function validateInputs() {
+    console.log('inside validate');
+
+    if (userEmail === '' || userEmail === null) {
+      console.log('Not emila');
+
+      errorToast(i18n.t('Toast.EnterEmail'));
+      return false;
     }
+    if (!Validator.validateEmail(userEmail)) {
+      errorToast(i18n.t('Toast.ValidEmail'));
 
-    try {
-      const formData = new FormData();
-      formData.append('session_id', SessionId);
-      formData.append('device_id', deviceId);
-      formData.append('lang', globalLanguage);
-      formData.append('email', userEmail);
+      return false;
+    }
+    return true;
+  }
+  const handleSave = async () => {
+    if (isConnected) {
+      if (validateInputs()) {
+        try {
+          const formData = new FormData();
+          formData.append('session_id', SessionId);
+          formData.append('device_id', deviceId);
+          formData.append('lang', globalLanguage);
+          formData.append('email', userEmail);
 
-      if (image) {
-        formData.append('photo', {
-          uri: image,
-          type: 'image/jpeg',
-          name: 'profile.jpg',
-        });
+          if (image) {
+            const imageType = image.includes('.png')
+              ? 'image/png'
+              : 'image/jpeg'; // Check if it's PNG
+            const imageName = image.includes('.png')
+              ? 'profile.png'
+              : 'profile.jpg';
+            formData.append('photo', {
+              uri: image,
+              type: imageType,
+              name: imageName,
+            });
+          }
+
+          updateUserProfileCall(formData);
+          setCounter(prevCounter => prevCounter + 1);
+          // navigation.replace('HomeDrawer');
+        } catch (error) {
+          console.error('Error updating profile:', error);
+        }
       }
-
-      updateUserProfileCall(formData);
-      setCounter(prevCounter => prevCounter + 1);
-      navigation.replace('HomeDrawer');
-    } catch (error) {
-      console.error('Error updating profile:', error);
+    } else {
+      Alert.alert(
+        i18n.t('Offline.NoInternet'),
+        i18n.t('Offline.FeatureNotAvailable'),
+        [{text: 'OK', onPress: () => navigation.navigate('HomeDrawer')}],
+      );
     }
   };
 
@@ -180,37 +244,45 @@ const UserProfile = ({navigation}) => {
     );
   };
   const handleRemoveProfilePhoto = () => {
-    Alert.alert(
-      t('UserProfileScreen.removeProfilePhoto'),
-      t('UserProfileScreen.rusure'),
-      [
-        {
-          text: t('UserProfileScreen.cancel'),
-          style: 'cancel',
-        },
-        {
-          text: t('UserProfileScreen.remove'),
-          style: 'destructive',
-          onPress: async () => {
-            try {
-              const formData = new FormData();
-              formData.append('session_id', SessionId);
-              formData.append('device_id', deviceId);
-              formData.append('lang', globalLanguage);
-              removeUserProfilePhotoCall(formData);
-              setCounter(prevCounter => prevCounter + 1);
-            } catch (error) {
-              Alert.alert(
-                t('UserProfileScreen.Error'),
-                t('UserProfileScreen.FailedToRemove'),
-                [{text: t('UserProfileScreen.OK')}],
-              );
-              console.error('Error removing profile photo:', error);
-            }
+    if (isConnected) {
+      Alert.alert(
+        t('UserProfileScreen.removeProfilePhoto'),
+        t('UserProfileScreen.rusure'),
+        [
+          {
+            text: t('UserProfileScreen.cancel'),
+            style: 'cancel',
           },
-        },
-      ],
-    );
+          {
+            text: t('UserProfileScreen.remove'),
+            style: 'destructive',
+            onPress: async () => {
+              try {
+                const formData = new FormData();
+                formData.append('session_id', SessionId);
+                formData.append('device_id', deviceId);
+                formData.append('lang', globalLanguage);
+                removeUserProfilePhotoCall(formData);
+                setCounter(prevCounter => prevCounter + 1);
+              } catch (error) {
+                Alert.alert(
+                  t('UserProfileScreen.Error'),
+                  t('UserProfileScreen.FailedToRemove'),
+                  [{text: t('UserProfileScreen.OK')}],
+                );
+                console.error('Error removing profile photo:', error);
+              }
+            },
+          },
+        ],
+      );
+    } else {
+      Alert.alert(
+        i18n.t('Offline.NoInternet'),
+        i18n.t('Offline.FeatureNotAvailable'),
+        [{text: 'OK', onPress: () => navigation.navigate('HomeDrawer')}],
+      );
+    }
   };
   const handleRemoveAccount = () => {
     Alert.alert(
@@ -242,7 +314,23 @@ const UserProfile = ({navigation}) => {
       i18n.changeLanguage(language); // Change language once it's loaded
     }
   }, [language]);
-  return (
+  return profileState?.fetchProfileLoading ? (
+    <SafeAreaProvider>
+      <SafeAreaView style={[styles.loadingContainer, styles.horizontal]}>
+        <View style={{alignItems: 'center', marginTop: 10}}>
+          <ActivityIndicator size="large" color={COLOR.AUDIO_PLAYER_BG} />
+          <Text
+            style={{
+              marginTop: 5,
+              fontFamily: typography.fontFamily.Montserrat.Medium,
+              fontSize: typography.fontSizes.fs18,
+            }}>
+            {i18n.t('Loading.Wait')}
+          </Text>
+        </View>
+      </SafeAreaView>
+    </SafeAreaProvider>
+  ) : (
     <SafeAreaView style={styles.safeArea}>
       <View style={styles.header}>
         <Text style={styles.headerTitle}>{t('UserProfileScreen.title')}</Text>
@@ -258,25 +346,25 @@ const UserProfile = ({navigation}) => {
           <View style={styles.mainContainer}>
             <View>
               <View style={styles.container}>
-                <View
-                  // onPress={pickImage}
-                  style={styles.imageContainer}>
+                <View style={styles.imageContainer}>
                   {image ? (
                     <Image
                       source={{uri: image}}
                       style={styles.image}
                       resizeMode="cover"
+                      onError={() => setError('Failed to load image')}
                     />
                   ) : (
                     <View style={styles.placeholderContainer}>
                       <View style={styles.placeholder}>
                         <Text style={styles.placeholderText}>
-                          Dummy avatar will be added if no photo
+                          {error || 'Dummy avatar will be added if no photo'}
                         </Text>
                       </View>
                     </View>
                   )}
                 </View>
+                {/* {error && <Text style={styles.errorText}>{error}</Text>} */}
                 <View style={styles.imageActionButton}>
                   <TouchableOpacity onPress={pickImage} style={styles.button}>
                     <Text style={styles.buttonText}>
@@ -359,6 +447,13 @@ const UserProfile = ({navigation}) => {
 };
 
 const styles = StyleSheet.create({
+  loadingContainer: {
+    flex: 1,
+    justifyContent: 'center',
+  },
+  activityIndicator: {
+    color: '#0000ff',
+  },
   keyboardAvoidingView: {
     flex: 1,
     backgroundColor: '#EBF0FA',
@@ -374,6 +469,12 @@ const styles = StyleSheet.create({
   mainContainer: {
     flex: 1,
     justifyContent: 'space-between',
+  },
+  errorText: {
+    color: '#ff6b6b',
+    fontSize: 12,
+    marginTop: 5,
+    textAlign: 'center',
   },
   header: {
     height: 56,

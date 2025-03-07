@@ -1,0 +1,126 @@
+import {View, Text, StyleSheet} from 'react-native';
+import React, {useEffect} from 'react';
+import {reduxStorage} from '../../Redux/Storage';
+import {Matrics, typography} from '../../Config/AppStyling';
+import dayjs from 'dayjs';
+import ElapsedTime from '../../../spec/NativeElapsedTime';
+import {setCurrentTime} from '../../Redux/Reducers/TimeSlice';
+import {useDispatch, useSelector} from 'react-redux';
+
+const RealTime = () => {
+  const dispatch = useDispatch();
+  const currentTime = useSelector(state => state.TrueTime.currentTime);
+
+  const initializeClock = async () => {
+    try {
+      const storedTime = await reduxStorage.getItem('trueTime');
+      const storedDate = await reduxStorage.getItem('trueDate');
+      const realTimeDiffAtLogin = await reduxStorage.getItem(
+        'realTimeDiffAtLogin',
+      );
+      console.log(storedDate, storedTime);
+      if (!storedTime || !storedDate) {
+        console.error('Stored time or date not found');
+        return null;
+      }
+
+      const baseDate = dayjs(
+        `${storedDate} ${storedTime}`,
+        'YYYY-MM-DD HH:mm:ss',
+      );
+      const initialRealTimeDiff = parseInt(realTimeDiffAtLogin, 10);
+      if (!baseDate.isValid()) {
+        console.error('Invalid stored date or time');
+        return null;
+      }
+
+      return {baseDate, initialRealTimeDiff};
+    } catch (error) {
+      console.error('Error initializing clock:', error);
+      return null;
+    }
+  };
+
+  const updateTime = async ({baseDate, initialRealTimeDiff}) => {
+    try {
+      const elapsedTimeMs = await ElapsedTime.getElapsedTime();
+      const elapsedSinceLoginMs = elapsedTimeMs - initialRealTimeDiff;
+      const updatedDate = baseDate.add(elapsedSinceLoginMs, 'millisecond');
+      const formattedDate = updatedDate.format('YYYY-MM-DD');
+      const formattedTime = updatedDate.format('HH:mm:ss');
+
+      dispatch(
+        setCurrentTime({
+          date: formattedDate,
+          time: formattedTime,
+        }),
+      );
+      
+    } catch (error) {
+      console.error('Error updating time:', error);
+    }
+  };
+
+  useEffect(() => {
+    let intervalId = null;
+
+    const startClock = async () => {
+      const baseDate = await initializeClock();
+      if (!baseDate) {
+        return;
+      }
+
+      await updateTime(baseDate);
+      intervalId = setInterval(() => updateTime(baseDate), 1000);
+    };
+
+    startClock();
+
+    return () => {
+      if (intervalId) {
+        clearInterval(intervalId);
+        console.log('Interval cleared');
+      }
+    };
+  }, []);
+
+  return (
+    <View style={styles.mainContainer}>
+      <Text style={styles.headingStyle}>
+        The time zone matches your location:
+      </Text>
+      <View style={styles.secondaryContainer}>
+        <Text style={styles.dateTimeStyles}>
+          {currentTime ? currentTime.date : 'Loading...'}
+        </Text>
+        <Text style={styles.dateTimeStyles}>
+          {currentTime ? currentTime.time : 'Loading...'}
+        </Text>
+      </View>
+    </View>
+  );
+};
+
+export default RealTime;
+
+const styles = StyleSheet.create({
+  headingStyle: {
+    fontFamily: typography.fontFamily.Montserrat.Regular,
+    fontSize: typography.fontSizes.fs16,
+    textAlign: 'center',
+  },
+  dateTimeStyles: {
+    fontFamily: typography.fontFamily.Montserrat.Bold,
+    fontSize: typography.fontSizes.fs16,
+    textAlign: 'center',
+  },
+  mainContainer: {
+    width: Matrics.screenWidth * 0.9,
+    margin: 'auto',
+  },
+  secondaryContainer: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    gap: 5,
+  },
+});

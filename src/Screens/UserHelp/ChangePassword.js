@@ -9,10 +9,11 @@ import {
   TouchableOpacity,
   Image,
   Alert,
+  ActivityIndicator,
 } from 'react-native';
 import React, {useState, useEffect, useContext} from 'react';
 import {ThemeContext} from '../../Components/Provider/ThemeProvider';
-import {Matrics, typography} from '../../Config/AppStyling';
+import {COLOR, Matrics, typography} from '../../Config/AppStyling';
 import colors from '../../Config/AppStyling/colors';
 import {Images} from '../../Config';
 import {useChangePasswordActions} from '../../Redux/Hooks/useChangePasswordActions';
@@ -42,6 +43,7 @@ const ChangePassword = ({navigation}) => {
   const [passwordError, setPasswordError] = useState('');
   const {deviceId} = useSelector(state => state?.Network);
   const {globalLanguage} = useSelector(state => state?.GlobalLanguage);
+  const isConnected = useSelector(state => state?.Network?.isConnected);
   // Handle input field changes
   const handleChange = (name, value) => {
     switch (name) {
@@ -58,38 +60,45 @@ const ChangePassword = ({navigation}) => {
         console.warn(`Unhandled input name: ${name}`);
     }
   };
+  console.log('Password state', passwordState);
 
   const handlePasswordChange = () => {
-    if (!currentPassword || !newPassword || !confirmNewPassword) {
-      const errorMessage = `${t('ChangePasswordScreen.allFieldsRequired')}`;
-      errorToast(errorMessage);
-      return;
-    }
-
-    Alert.alert(
-      t('ChangePasswordScreen.confirmNewPassword'),
-      t('ChangePasswordScreen.changeConfirmation'),
-      [
-        {
-          text: t('ChangePasswordScreen.no'),
-          style: 'cancel',
-        },
-        {
-          text: t('ChangePasswordScreen.yes'),
-          onPress: () => {
-            const formData = new FormData();
-            formData.append('session_id', SessionId);
-            formData.append('device_id', deviceId);
-            formData.append('lang', globalLanguage);
-            formData.append('current_password', currentPassword);
-            formData.append('new_password', newPassword);
-            formData.append('confirm_new_password', confirmNewPassword);
-            changePasswordCall(formData);
-            navigation.replace('HomeDrawer');
+    if (isConnected) {
+      if (!currentPassword || !newPassword || !confirmNewPassword) {
+        const errorMessage = `${t('ChangePasswordScreen.allFieldsRequired')}`;
+        errorToast(errorMessage);
+        return;
+      }
+      Alert.alert(
+        t('ChangePasswordScreen.confirmNewPassword'),
+        t('ChangePasswordScreen.changeConfirmation'),
+        [
+          {
+            text: t('ChangePasswordScreen.no'),
+            style: 'cancel',
           },
-        },
-      ],
-    );
+          {
+            text: t('ChangePasswordScreen.yes'),
+            onPress: () => {
+              const formData = new FormData();
+              formData.append('session_id', SessionId);
+              formData.append('device_id', deviceId);
+              formData.append('lang', globalLanguage);
+              formData.append('current_password', currentPassword);
+              formData.append('new_password', newPassword);
+              formData.append('confirm_new_password', confirmNewPassword);
+              changePasswordCall(formData, navigation);
+            },
+          },
+        ],
+      );
+    } else {
+      Alert.alert(
+        i18n.t('Offline.NoInternet'),
+        i18n.t('Offline.FeatureNotAvailable'),
+        [{text: 'OK', onPress: () => navigation.navigate('HomeDrawer')}],
+      );
+    }
   };
 
   const handleCancel = () => {
@@ -164,7 +173,26 @@ const ChangePassword = ({navigation}) => {
   const eyeIconStyle = passwordError
     ? {transform: [{translateY: -10}]}
     : {transform: [{translateY: 3}]};
-  return (
+  return passwordState?.isLoading ? (
+    <SafeAreaView style={{flex: 1}}>
+      <View
+        style={{
+          flex: 1,
+          alignItems: 'center',
+          justifyContent: 'center',
+        }}>
+        <ActivityIndicator size={'large'} color={COLOR.AUDIO_PLAYER_BG} />
+        <Text
+          style={{
+            fontFamily: typography.fontFamily.Montserrat.Medium,
+            fontSize: typography.fontSizes.fs18,
+            textAlign: 'center',
+          }}>
+          {i18n.t('Loading.PassWait')}
+        </Text>
+      </View>
+    </SafeAreaView>
+  ) : (
     <KeyboardAvoidingView
       style={styles.keyboardAvoidingView}
       behavior={Platform.OS === 'android' ? 'height' : 'padding'}
@@ -301,10 +329,11 @@ const styles = StyleSheet.create({
   },
   mainBody: theme => ({
     flex: 1,
-    justifyContent: 'center',
+
     backgroundColor: '#EBF0FA',
     alignContent: 'center',
     marginHorizontal: Matrics.s(15),
+    marginVertical: Matrics.s(10),
   }),
   headerTitle: {
     color: '#fff',
@@ -349,8 +378,7 @@ const styles = StyleSheet.create({
     color: colors.BLACK,
     fontFamily: typography.fontFamily.Montserrat.Medium,
     fontSize: typography.fontSizes.fs15,
-    fontStyle: 'normal',
-    height: Matrics.vs(35),
+    height: Matrics.vs(40),
   },
   actionButtonContainer: {
     flexDirection: 'row',

@@ -1,121 +1,154 @@
 {
-     "Login": {
-      "title": "登录到您的帐户",
-      "subtitle": "输入您的电子邮件和密码以登录",
-      "email": "电子邮件地址",
-      "emailPlaceHolder": "电子邮件",
-      "emptyEmailError": "请输入电子邮件地址！",
-      "invalidEmailError": "请输入有效的电子邮件地址！",
-      "password": "密码",
-      "passwordPlaceHolder": "密码",
-      "forgotPassword": "忘记密码？",
-      "loginButton": "登录",
-      "pp": "隐私政策",
-      "ai": "应用信息",
-      "ca": "创建帐户"
-    },
-    "CreateAccount": {
-      "title": "创建帐户",
-      "subt": "输入电子邮件和密码以创建帐户",
-      "createAccButton": "创建帐户",
-      "btl": "返回登录",
-      "removeAccount": "移除帐户"
-    },
-     "ForgotPassword": {
-      "title": "重置密码",
-      "subtitle": "提供您用于登录应用程序的电子邮件地址 - 我们将向您发送重置密码的说明。",
-      "email": "电子邮件地址",
-      "emailPlaceHolder": "电子邮件",
-      "resetButton": "发送密码重置链接",
-      "backToLogin": "返回"
-    },
-    "HomeScreen": {
-      "nfcCardTitle": "准备扫描 NFC 标签",
-      "nfcCardSubtitle": "将您的设备靠近 NFC 标签",
-      "nfcButtonText": "开始 NFC 扫描"
-    },
-    "ChangePasswordScreen": {
-      "allFieldsRequired": "所有字段均为必填项",
-      "currentPassword": "当前密码",
-      "newPassword": "新密码",
-      "confirmNewPassword": "确认新密码",
-      "save": "保存",
-      "cancel": "取消",
-      "changePasswordHeader": "更改密码",
-      "cancelChanges": "取消更改",
-      "confirmationCancel": "您确定要取消密码更改吗？",
-      "no": "否",
-      "yes": "是",
-      "confirmPasswordChange": "确认密码更改",
-      "changeConfirmation": "您确定要更改密码吗？",
-      "passwordError": "密码不匹配"
-    },
-    "WorkStatusCard": {
-      "workStart": "工作中",
-      "workEnd": "工作已完成",
-      "breakStart": "休息中",
-      "workNotStarted": "工作未开始"
-    },
-    "SideMenuBar": {
-      "dashboard": "仪表盘",
-      "Logout": "登出",
-      "ChangePassword": "更改密码",
-      "UserProflie": "用户资料",
-      "ChangeLanguage": "更改语言"
-    },
-    "UserProfileScreen": {
-      "title": "用户资料",
-      "EditPhoto": "编辑照片",
-      "SelectPhoto": "选择照片",
-      "RemovePhoto": "移除照片",
-      "email": "电子邮件地址",
-      "emailPlaceHolder": "电子邮件",
-      "cancel": "取消",
-      "save": "保存",
-      "cancelTitle": "取消更改",
-      "cancelConfirmation": "您确定要取消吗？所有未保存的更改都将丢失。",
-      "keepEditing": "继续编辑",
-      "discardChanges": "放弃更改",
-      "removeProfilePhoto": "移除头像",
-      "rusure": "您确定要移除您的头像吗？",
-      "remove": "移除",
-      "Error": "错误",
-      "FailedToRemove": "移除头像失败。请重试。",
-      "OK": "确定",
-      "confirmAccountRemoval": "确认删除帐户",
-      "confirmAccountRemovalDesc": "您确定要删除该帐户吗？此操作无法撤消。",
-      "no": "否",
-      "yes": "是"
-    },
-    "ResetPassword": {
-      "passwordResetSuccess": "我们已通过电子邮件发送了您的密码重置链接！",
-      "emptyEmailValidation": "请输入电子邮件地址！",
-      "invalidEmail": "请输入有效的电子邮件地址"
-    },
-    "Toast": {
-      "LogoutSuccess": "登出成功",
-      "AccountCreatedSuccessfull": "帐户创建成功",
-      "PasswordChangeSuccessfull": "密码更改成功",
-      "ProfileUpdated": "个人资料更新成功",
-      "PhotoRemovedSuccessfully": "头像移除成功",
-      "LoginSuccess": "登录成功",
-      "WorkinProgress": "工作中",
-      "BreakinProgress": "休息中",
-      "WorkFinished": "工作已完成",
-      "ErrorUpdatingProfile": "更新个人资料时出错",
-      "ErrorRemovingProfilePhoto": "移除头像时出错",
-      "EnterEmail": "请输入电子邮件地址",
-      "ValidEmail": "请输入有效的电子邮件地址",
-      "EnterPassword": "请输入密码",
-      "CheckInternet": "请检查您的互联网连接",
-      "LoginUnsuccessful": "登录失败"
-    },
-    "TimeLog": {
-      "title": "时间记录",
-      "From": "从",
-      "mode": "模式",
-      "To": "至",
-      "nohistory": "您今天没有工作记录"
-    }
-
+  "Login": {
+    "title": "登录到您的帐户",
+    "subtitle": "输入您的电子邮件和密码以登录",
+    "email": "电子邮件地址",
+    "emailPlaceHolder": "电子邮件",
+    "emptyEmailError": "请输入电子邮件地址！",
+    "invalidEmailError": "请输入有效的电子邮件地址！",
+    "password": "密码",
+    "passwordPlaceHolder": "密码",
+    "forgotPassword": "忘记密码？",
+    "loginButton": "登录",
+    "pp": "隐私政策",
+    "ai": "应用信息",
+    "ca": "创建帐户"
+  },
+  "CreateAccount": {
+    "title": "创建帐户",
+    "subt": "输入电子邮件和密码以创建帐户",
+    "createAccButton": "创建帐户",
+    "btl": "返回登录",
+    "removeAccount": "移除帐户"
+  },
+  "ForgotPassword": {
+    "title": "重置密码",
+    "subtitle": "提供您用于登录应用程序的电子邮件地址 - 我们将向您发送重置密码的说明。",
+    "email": "电子邮件地址",
+    "emailPlaceHolder": "电子邮件",
+    "resetButton": "发送密码重置链接",
+    "backToLogin": "返回"
+  },
+  "HomeScreen": {
+    "nfcCardTitle": "准备扫描 NFC 标签",
+    "nfcCardSubtitle": "将您的设备靠近 NFC 标签",
+    "nfcButtonText": "开始 NFC 扫描",
+    "checkingTimeWithServer":"正在与服务器校对时间"
+  },
+  "ChangePasswordScreen": {
+    "allFieldsRequired": "所有字段均为必填项",
+    "currentPassword": "当前密码",
+    "newPassword": "新密码",
+    "confirmNewPassword": "确认新密码",
+    "save": "保存",
+    "cancel": "取消",
+    "changePasswordHeader": "更改密码",
+    "cancelChanges": "取消更改",
+    "confirmationCancel": "您确定要取消密码更改吗？",
+    "no": "否",
+    "yes": "是",
+    "confirmPasswordChange": "确认密码更改",
+    "changeConfirmation": "您确定要更改密码吗？",
+    "passwordError": "密码不匹配"
+  },
+  "WorkStatusCard": {
+    "workStart": "工作中",
+    "workEnd": "工作已完成",
+    "breakStart": "休息中",
+    "workNotStarted": "工作未开始"
+  },
+  "SideMenuBar": {
+    "dashboard": "仪表盘",
+    "Logout": "登出",
+    "ChangePassword": "更改密码",
+    "UserProflie": "用户资料",
+    "ChangeLanguage": "更改语言"
+  },
+  "UserProfileScreen": {
+    "title": "用户资料",
+    "EditPhoto": "编辑照片",
+    "SelectPhoto": "选择照片",
+    "RemovePhoto": "移除照片",
+    "email": "电子邮件地址",
+    "emailPlaceHolder": "电子邮件",
+    "cancel": "返回",
+    "save": "保存",
+    "cancelTitle": "取消更改",
+    "cancelConfirmation": "您确定要取消吗？所有未保存的更改都将丢失。",
+    "keepEditing": "继续编辑",
+    "discardChanges": "放弃更改",
+    "removeProfilePhoto": "移除头像",
+    "rusure": "您确定要移除您的头像吗？",
+    "remove": "移除",
+    "Error": "错误",
+    "FailedToRemove": "移除头像失败。请重试。",
+    "OK": "确定",
+    "confirmAccountRemoval": "确认删除帐户",
+    "confirmAccountRemovalDesc": "您确定要删除该帐户吗？此操作无法撤消。",
+    "no": "否",
+    "yes": "是"
+  },
+  "ResetPassword": {
+    "passwordResetSuccess": "我们已通过电子邮件发送了您的密码重置链接！",
+    "emptyEmailValidation": "请输入电子邮件地址！",
+    "invalidEmail": "请输入有效的电子邮件地址"
+  },
+  "Toast": {
+    "LogoutSuccess": "登出成功",
+    "AccountCreatedSuccessfull": "帐户创建成功",
+    "AccountCreatedSuccessfullSubtitle": "我们将通过电子邮件发送进一步的信息",
+    "PasswordChangeSuccessfull": "密码更改成功",
+    "ProfileUpdated": "个人资料更新成功",
+    "PhotoRemovedSuccessfully": "头像移除成功",
+    "LoginSuccess": "登录成功",
+    "WorkinProgress": "工作中",
+    "BreakinProgress": "休息中",
+    "WorkFinished": "工作已完成",
+    "ErrorUpdatingProfile": "更新个人资料时出错",
+    "ErrorRemovingProfilePhoto": "移除头像时出错",
+    "EnterEmail": "请输入电子邮件地址",
+    "ValidEmail": "请输入有效的电子邮件地址",
+    "EnterPassword": "请输入密码",
+    "CheckInternet": "请检查您的互联网连接",
+    "LoginUnsuccessful": "登录失败",
+    "StartWorkFirst": "请先开始工作",
+    "WorkNotStarted": "工作未开始",
+    "Cannotendwork": "无法在开始工作前结束工作",
+    "Cannottakebreak": "无法在开始工作前休息",
+    "Workalreadystarted": "工作已开始",
+    "Breakalreadystarted": "休息已激活",
+    "WorkAlreadyFinished": "工作已完成"
+  },
+  "TimeLog": {
+    "title": "时间记录",
+    "From": "从",
+    "mode": "模式",
+    "To": "至",
+    "nohistory": "您今天没有工作记录",
+    "now": "现在"
+  },
+  "TagModes": {
+    "break_start": "休息",
+    "work_start": "工作",
+    "work_end": "工作结束"
+  },
+  "Loading": {
+    "Wait": "等一下",
+    "PassWait": "确保您的密码安全"
+  },
+  "Session": {
+    "SE": "会话已过期"
+  },
+  "Offline": {
+    "NoInternet": "无网络连接",
+    "FeatureNotAvailable": "离线模式下无法使用此功能",
+    "OK": "确定",
+    "CantLogout": "您有正在进行的工作，无法注销",
+    "CantLogoutDescription": "您当前处于离线状态，无法在进行中的工作时注销。请结束工作后再注销。",
+    "AskToLogout": "您确定要注销吗？",
+    "ExplainLogout": "进入离线模式后，您将无法重新登录，直到您恢复互联网连接。"
+  },
+  "Timer": {
+    "sync": "时间同步中..."
+  }
 }

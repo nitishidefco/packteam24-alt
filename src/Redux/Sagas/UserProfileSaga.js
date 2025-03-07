@@ -1,6 +1,5 @@
 import {all, call, put, take, takeEvery} from 'redux-saga/effects';
 import API from '../Services/UserProfileService';
-import LOGOUT_API from '../Services/AuthServices';
 import {USER_PROFILE_REDUCER, AUTH_REDUCER} from '../SliceKey';
 import {
   fetchUserProfileSuccess,
@@ -16,8 +15,11 @@ import {errorToast, success} from '../../Helpers/ToastMessage';
 import i18n from '../../i18n/i18n';
 // Fetch Profile Saga
 function* fetchUserProfileSaga({payload}) {
+  console.log('fetch user profile payload', payload);
+
   try {
     const response = yield call(API.Profile, payload);
+    console.log('fetch user profile rsponse', response);
     if (response?.data) {
       // Check for data property
       yield put(fetchUserProfileSuccess(response.data));
@@ -66,7 +68,6 @@ function* removeProfilePhotoSaga({payload}) {
 function* removeUserAccountSaga({payload}) {
   try {
     const response = yield call(API.RemoveAccount, payload.payload);
-    console.log('remove user account response', response);
 
     if (response?.data) {
       yield put(removeAccountSuccess(response.data));
@@ -81,7 +82,6 @@ function* removeUserAccountSaga({payload}) {
       // errorToast(i18n.t('Toast.ErrorRemovingProfilePhoto'));
     }
   } catch (error) {
-    console.error('Error removing profile photo', error);
     yield put(removeAccountFail(error.message));
     yield put({type: `${USER_PROFILE_REDUCER}/fetchUserProfile`, payload});
   }

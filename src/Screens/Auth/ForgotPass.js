@@ -68,7 +68,7 @@ const ForgotPass = () => {
       setUserPassword(null);
     } else if (loading && Auth.isLoginSuccess === false) {
       setLoading(false);
-      errorToast(i18n.t(Toast.LoginUnsuccessful));
+      errorToast(i18n.t('Toast.LoginUnsuccessful'));
     }
   }, [Auth?.isLoginSuccess]);
   // ---------------Getting Device info---------------
@@ -252,7 +252,7 @@ const ForgotPass = () => {
                 {t('ForgotPassword.resetButton')}
               </Text>
             </TouchableOpacity>
-            <TouchableOpacity onPress={() => navigation.navigate('Login')}>
+            <TouchableOpacity onPress={() => navigation.replace('Login')}>
               <Text style={inLineStyles.goBack}>
                 {t('ForgotPassword.backToLogin')}
               </Text>

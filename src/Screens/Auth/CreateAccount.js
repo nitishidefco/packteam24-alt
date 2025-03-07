@@ -49,15 +49,15 @@ const languages = {
   GER: 'de', // German
   UK: 'en', // English
   RUS: 'ru', // Russian
-  UKA: 'uk', // Ukrainian
+  UKA: 'ua', // Ukrainian
   ZH: 'cn', //chinese
 };
 const CreateAccount = () => {
   const navigation = useNavigation();
   const {t, i18n} = useTranslation();
-  const privacyPolicyUrl = 'https://eda.workflex360.de/api/privacy-policy';
+  const privacyPolicyUrl = 'https://eda.workflex360.de/de/datenschutzerklarung';
   const applicationInformatinoUrl =
-    'https://eda.workflex360.de/api/application-information';
+    'https://eda.workflex360.de/de/technischer-support';
   const {dark, theme, toggle} = useContext(ThemeContext);
   const isConnected = useSelector(state => state?.Network?.isConnected);
   const {deviceId, manufacturer} = useSelector(state => state?.Network);
@@ -289,7 +289,7 @@ const CreateAccount = () => {
             <TouchableOpacity
               style={styles.forgotPasswordStyle}
               activeOpacity={0.5}
-              onPress={() => navigation.navigate('Login')}>
+              onPress={() => navigation.replace('Login')}>
               <Text style={styles.forgotPasswordText}>
                 {/* {t('Login.forgotPassword')} */}
                 {t('CreateAccount.btl')}

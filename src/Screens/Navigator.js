@@ -37,7 +37,7 @@ function UnAuthRoutes() {
         component={ForgotPass}
         options={{headerShown: false}}
       />
-     
+
       <Stack.Screen
         name="CreateAccount"
         component={CreateAccount}
@@ -46,7 +46,6 @@ function UnAuthRoutes() {
     </Stack.Navigator>
   );
 }
-
 
 function AfterAuthRoutes() {
   return (
@@ -101,11 +100,7 @@ export default function Navigator() {
   }, [reduxStorage]);
   return (
     <NavigationContainer>
-      {userToken != null || userToken != null ? (
-        <AfterAuthRoutes />
-      ) : (
-        <UnAuthRoutes />
-      )}
+      {userToken != null ? <AfterAuthRoutes /> : <UnAuthRoutes />}
     </NavigationContainer>
   );
 }

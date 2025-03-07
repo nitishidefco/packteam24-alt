@@ -11,7 +11,6 @@ import {
   AppState,
   TouchableOpacity,
   ScrollView,
-  RefreshControl,
 } from 'react-native';
 import {useHomeActions} from '../../Redux/Hooks';
 import DrawerSceneWrapper from '../../Components/Common/DrawerSceneWrapper';
@@ -20,37 +19,37 @@ import {Images} from '../../Config';
 import NfcManager, {NfcTech, NfcEvents} from 'react-native-nfc-manager';
 import {useScanTagActions} from '../../Redux/Hooks/useScanTagActions';
 import {useWorkStatusActions} from '../../Redux/Hooks/useWorkStatusActions';
-// import NetworkStatusComponent from '../../Components/Common/NetworkStatus';
 import {
-  clearOfflineStorage,
   addDataToOfflineStorage,
+  dataForBulkUpdate,
 } from '../../Redux/Reducers/SaveDataOfflineSlice';
 import {showNotificationAboutTagScannedWhileOffline} from '../../Utlis/NotificationsWhileOffline';
 import {useDispatch, useSelector} from 'react-redux';
 import moment from 'moment';
+import momentTimeZone from 'moment-timezone';
 import {setDeviceInfo} from '../../Redux/Reducers/NetworkSlice';
 import DeviceInfo from 'react-native-device-info';
 import {useNfcStatus} from '../../Utlis/CheckNfcStatus';
 import WorkStatusBar from '../../Components/Common/WorkStatusBar';
-import useValidateTag from '../../Components/Hooks/useValidateTag';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import {useFetchNfcTagsActions} from '../../Redux/Hooks/useFetchNfcTagsActions';
 import {reduxStorage} from '../../Redux/Storage';
-import useSavedLanguage from '../../Components/Hooks/useSavedLanguage';
 import LanguageSelector from '../../Components/Common/LanguageSelector';
 import Timer from '../../Components/Common/Timer';
 import {Matrics, typography} from '../../Config/AppStyling';
 import TimeLog from '../../Components/HomeComponent/TimeLog';
-import TimerNew from '../../Components/Common/TimerNew';
 import {initializeLanguage} from '../../Redux/Reducers/LanguageProviderSlice';
 import {setSessionHandler} from '../../Utlis/SessionHandler';
+import {errorToast} from '../../Helpers/ToastMessage';
+import RealTime from '../../Components/HomeComponent/RealTime';
 
 const Home = ({navigation, route}) => {
   const dispatch = useDispatch();
 
   useNfcStatus();
   const {t, i18n} = useTranslation();
-  const sessions = useSelector(state => state?.OfflineData?.sessions);
+  const {sessions, bulkSessions} = useSelector(state => state?.OfflineData);
+  const realTime = useSelector(state => state.TrueTime.currentTime);
+
   const isConnected = useSelector(state => state?.Network?.isConnected);
   const isNfcEnabled = useSelector(state => state?.Network?.isNfcEnabled);
   const [duplicateTagId, setDuplicateTagId] = useState('');
@@ -60,37 +59,20 @@ const Home = ({navigation, route}) => {
   const [hasNfc, setHasNfc] = useState(false);
   const [List, setList] = useState([]);
   const {state, homecall} = useHomeActions();
-  const {state: states, scanCall} = useScanTagActions();
+  const {state: states, scanCall, bulkScanCall} = useScanTagActions();
   const {Auth, Home} = state;
   const SessionId = Auth.data?.data?.sesssion_id;
-  const [refreshing, setRefreshing] = useState(false);
-  const CurrentMode = states?.data?.data?.mode;
   const [appState, setAppState] = useState(AppState.currentState);
-  const [validationResult, setValidationResult] = useState(null);
   const {fetchTagsCall} = useFetchNfcTagsActions();
   const {fetchWorkStatusCall} = useWorkStatusActions();
   const [tagsFromLocalStorage, setTagsFromLocalStorage] = useState([]);
   const {deviceId} = useSelector(state => state?.Network);
   const {globalLanguage} = useSelector(state => state?.GlobalLanguage);
-
+  const {localWorkHistory} = useSelector(state => state?.LocalWorkHistory);
   // Set session handler values
   setSessionHandler(dispatch, SessionId, deviceId, navigation);
-  // let validationResult1 = useValidateTag(tagId, sessionItems);
-  // useEffect(() => {
-  //   setValidationResult(validationResult1);
-  // }, []);
-  //
-
-  //
-  // on every refresh its showing notification
-  // Handles the scanned NFC tag and extracts its ID
   const [count, setCount] = useState(0);
-  const onRefresh = React.useCallback(() => {
-    setRefreshing(true);
-    setTimeout(() => {
-      setRefreshing(false);
-    }, 2000);
-  }, []);
+
   const handleNfcTag = async tag => {
     setCount(prevCount => prevCount + 1);
     if (tag?.id) {
@@ -104,6 +86,7 @@ const Home = ({navigation, route}) => {
   useEffect(() => {
     dispatch(initializeLanguage());
   }, []);
+  // console.log('Bulk scan states', states.isScanSuccess);
 
   /* ----------------------------- Get device info ---------------------------- */
   useEffect(() => {
@@ -120,6 +103,18 @@ const Home = ({navigation, route}) => {
     getDeviceInfo();
   }, []);
   // fetching nfc tags stored in local storage
+  const updateWorkStatus = async () => {
+    try {
+      let formdata = new FormData();
+      formdata.append('session_id', SessionId);
+      formdata.append('device_id', deviceId);
+      formdata.append('lang', globalLanguage);
+
+      fetchWorkStatusCall(formdata);
+    } catch (error) {
+      console.error('Error updating work status', error);
+    }
+  };
   useEffect(() => {
     const fetchNfcTags = async () => {
       try {
@@ -128,20 +123,10 @@ const Home = ({navigation, route}) => {
         setTagsFromLocalStorage(parsedTags);
       } catch (error) {}
     };
-    const updateWorkStatus = async () => {
-      try {
-        let formdata = new FormData();
-        formdata.append('session_id', SessionId);
-        formdata.append('device_id', deviceId);
-        formdata.append('lang', globalLanguage);
-        fetchWorkStatusCall(formdata);
-      } catch (error) {
-        console.error('Error updating work status', error);
-      }
-    };
-    updateWorkStatus();
+
+    // updateWorkStatus();
     fetchNfcTags();
-  }, [tagDetected, count]);
+  }, [tagDetected, count, isConnected]);
 
   // Get nfc from server and save in local storage
   useEffect(() => {
@@ -244,7 +229,6 @@ const Home = ({navigation, route}) => {
       formdata.append('device_id', deviceId);
       formdata.append('nfc_key', uid);
       formdata.append('lang', globalLanguage);
-      console.log('Home screen tag scan', globalLanguage);
 
       scanCall(formdata);
     } catch (error) {
@@ -253,13 +237,32 @@ const Home = ({navigation, route}) => {
       setLoading(false);
     }
   };
+  const makeBulkCall = async data => {
+    try {
+      setLoading(true);
+      let formdata = new FormData();
+      formdata.append('session_id', SessionId);
+      formdata.append('device_id', deviceId);
+      formdata.append('lang', globalLanguage);
+      formdata.append('data', JSON.stringify(data));
 
+      bulkScanCall(formdata);
+    } catch (error) {
+      console.error('Error processing UID:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
   /* --------------------------- most recent tag id --------------------------- */
   const getMostRecentTagId = sessionId => {
     const sessionData = sessions[sessionId];
 
     // Check if sessionData and items are present
-    if (sessionData && sessionData.items) {
+    if (
+      sessionData &&
+      sessionData.items &&
+      !localWorkHistory[localWorkHistory?.length - 1]?.to?.includes(':')
+    ) {
       // Sort the items by time in descending order (latest first)
       const sortedItems = [...sessionData.items].sort((a, b) => {
         const timeA = new Date(a.time);
@@ -280,7 +283,8 @@ const Home = ({navigation, route}) => {
     return matchingTag ? matchingTag.mode : null;
   }
   const [tagMode, setTagMode] = useState(null);
-  const mode = findModeByTagId(tagsFromLocalStorage, mostRecentTagId);
+  const mode =
+    mostRecentTagId && findModeByTagId(tagsFromLocalStorage, mostRecentTagId);
   useEffect(() => {
     setTagMode(mode);
   }, [mode]);
@@ -298,69 +302,107 @@ const Home = ({navigation, route}) => {
   useEffect(() => {
     if (!SessionId) return;
 
-    const processOnlineTags = async storedSessions => {
+    const processOnlineTags = async (storedSessions, bulkStoredSessions) => {
       try {
         if (tagId) {
-          // Process the current tag when online
           await getUid(tagId);
           setTagId('');
         }
 
-        if (storedSessions.length > 0) {
-          for (const [index, item] of storedSessions.entries()) {
-            try {
-              await getUid(item.tagId);
-            } catch (error) {
-              console.error(
-                `Error processing stored tag ${item.tagId}:`,
-                error,
-              );
-            }
-
-            // Add a delay of 6 seconds before the next item (except for the last one)
-            if (index < storedSessions.length - 1) {
-              await new Promise(resolve => setTimeout(resolve, 6000));
-            }
-          }
+        if (bulkStoredSessions.length > 0) {
+          await makeBulkCall(bulkStoredSessions);
         }
-
-        // Clear offline storage after processing
-        dispatch(clearOfflineStorage());
+        // console.log('bulk stored sessions', bulkStoredSessions);
       } catch (error) {
         console.error('Error processing online tags:', error);
       }
     };
 
-    const processOfflineTag = () => {
-      if (!tagId) return;
+    const processOfflineTag = bulkStoredSessions => {
+      const tagModeInProcessOfflineTag = findModeByTagId(
+        tagsFromLocalStorage,
+        tagId,
+      );
+      if (tagsFromLocalStorage.length === 0 && tagId) {
+        errorToast(
+          'Connect to internet atleast once',
+          'We cannot detect your tags',
+        );
+        setTagId('');
+        return;
+      }
+      if (
+        tagModeInProcessOfflineTag === 'work_end' &&
+        localWorkHistory.length === 0
+      ) {
+        errorToast(i18n.t('Toast.Cannotendwork'));
+        setTagId('');
+        return;
+      } else if (
+        tagModeInProcessOfflineTag === 'break_start' &&
+        localWorkHistory.length === 0
+      ) {
+        errorToast(i18n.t('Toast.Cannottakebreak'));
+        setTagId('');
+        return;
+      } else if (
+        !tagId ||
+        localWorkHistory[localWorkHistory?.length - 1]?.to?.includes(':')
+      ) {
+        console.log('tagId', tagId);
+
+        console.log(localWorkHistory[localWorkHistory?.length - 1]?.to);
+
+        console.log('tag id is empty or last item is not ended');
+        setTagId('');
+        return;
+      }
       setDuplicateTagId(tagId);
 
-      // if (!validationResult.valid) {
-      //   showNotificationAboutTagScannedWhileOffline(validationResult);
-      //   return;
-      // }
+      try {
+        const current_date = realTime.date;
+        const current_hour = realTime.time;
 
-      dispatch(
-        addDataToOfflineStorage({
-          sessionId: SessionId,
-          time: moment().format('YYYY-MM-DD HH:mm:ss'),
+        dispatch(
+          addDataToOfflineStorage({
+            sessionId: SessionId,
+            time: moment().format('YYYY-MM-DD HH:mm:ss'),
+            tagId,
+            current_date,
+            current_hour,
+          }),
+        );
+        dispatch(
+          dataForBulkUpdate({
+            sessionId: SessionId,
+            nfc_key: tagId,
+            date: current_date,
+            hour: current_hour,
+          }),
+        );
+      } catch (error) {
+        console.error('error', error);
+      }
+
+      if (localWorkHistory.length > 0) {
+        console.log('*******************Shwoing notification**************');
+
+        showNotificationAboutTagScannedWhileOffline(
           tagId,
-          // initialScanTime,
-          // initialTagMode,
-        }),
-      );
-
-      showNotificationAboutTagScannedWhileOffline(tagId, tagsFromLocalStorage);
+          tagsFromLocalStorage,
+          localWorkHistory,
+        );
+      }
       setTagId('');
     };
 
     const processTag = async () => {
       const storedSessions = sessions[SessionId]?.items || [];
-
+      const bulkStoredSessions = bulkSessions[SessionId]?.items || [];
       if (isConnected) {
-        await processOnlineTags(storedSessions);
+        await processOnlineTags(storedSessions, bulkStoredSessions);
       } else {
-        processOfflineTag();
+        processOfflineTag(bulkStoredSessions);
       }
     };
 
@@ -433,11 +475,7 @@ const Home = ({navigation, route}) => {
     <DrawerSceneWrapper>
       <SafeAreaView style={{backgroundColor: '#EBF0FA', flex: 1}}>
         <CustomHeader />
-        <ScrollView
-          style={{backgroundColor: '#EBF0FA', flex: 1}}
-          refreshControl={
-            <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-          }>
+        <ScrollView style={{backgroundColor: '#EBF0FA', flex: 1}}>
           <View
             style={[
               Platform.OS === 'android'
@@ -470,7 +508,10 @@ const Home = ({navigation, route}) => {
             <View style={styles.container}>
               <View>
                 {/* <NetworkStatusComponent /> */}
-                <WorkStatusBar tagMode={tagMode} tag={tagDetected} />
+                <WorkStatusBar
+                  tagsFromLocalStorage={tagsFromLocalStorage}
+                  tag={tagDetected}
+                />
               </View>
               <View style={styles.nfcPromptContainer}>
                 <Image source={Images.NFC} style={styles.userIcon} />
@@ -493,21 +534,15 @@ const Home = ({navigation, route}) => {
                   </Text>
                 )}
               </View>
-              {/* <View style={{marginTop: Matrics.ms(40)}}>
-                <Text
-                  style={{
-                    fontFamily: typography.fontFamily.Montserrat.SemiBold,
-                    fontSize: typography.fontSizes.fs15,
-                  }}>
-                  {Platform.OS === 'android'
-                    ? 'Scroll to see the Time Log'
-                    : ''}
-                </Text>
-              </View> */}
             </View>
+            <RealTime />
           </View>
           <View style={styles.timeLogContainer}>
-            <TimeLog sessionId={SessionId} tag={tagDetected} />
+            <TimeLog
+              sessionId={SessionId}
+              tag={tagDetected}
+              tagsFromLocalStorage={tagsFromLocalStorage}
+            />
           </View>
         </ScrollView>
       </SafeAreaView>

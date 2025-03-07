@@ -1,11 +1,9 @@
 // Splash.js
 import React, {useEffect, useState} from 'react';
 import {View, StyleSheet, Image} from 'react-native';
-
 import {useNavigation} from '@react-navigation/native';
 import Images from './Config/Images';
 import {reduxStorage} from './Redux/Storage';
-import {useDispatch, useSelector} from 'react-redux';
 const Splash = () => {
   const [userToken, setuserToken] = useState(null);
   

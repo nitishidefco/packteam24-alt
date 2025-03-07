@@ -15,14 +15,36 @@ import {AUTH_REDUCER} from '../SliceKey';
 import {reduxStorage} from '../Storage/index';
 import {errorToast, success} from '../../Helpers/ToastMessage';
 import i18n from '../../i18n/i18n';
-
+import ElapsedTime from '../../../spec/NativeElapsedTime';
 const loginSaga = function* loginSaga({payload}) {
+  console.log('payload', payload);
+
   try {
     const response = yield call(API.Login, payload);
     console.log('Login response', response);
 
     if (response?.data?.sesssion_id && response?.message == 'OK') {
-      reduxStorage.setItem('token', response?.data?.sesssion_id);
+      const elapsedTimeMs = yield call([
+        ElapsedTime,
+        ElapsedTime.getElapsedTime,
+      ]);
+      yield call(reduxStorage.setItem, 'token', response?.data?.sesssion_id);
+      yield call(
+        reduxStorage.setItem,
+        'trueTime',
+        response?.data?.current_time,
+      );
+      yield call(
+        reduxStorage.setItem,
+        'trueDate',
+        response?.data?.current_date,
+      );
+      yield call(
+        reduxStorage.setItem,
+        'realTimeDiffAtLogin',
+        elapsedTimeMs.toString(),
+      );
+     
       yield put(loginSuccess(response));
     } else {
       yield put(loginFailure(response));
@@ -43,6 +65,7 @@ const logoutSaga = function* logoutSaga({payload}) {
       payload.navigation.navigate('Login');
     } else {
       yield put(logoutFailure(response));
+      // payload.navigation.navigate('Login');
     }
   } catch (error) {
     yield put(logoutFailure(error));
@@ -52,10 +75,13 @@ const logoutSaga = function* logoutSaga({payload}) {
 const forgotPasswordSaga = function* forgotPasswordSaga({payload}) {
   try {
     const response = yield call(API.ForgotPassword, payload);
-    if (response) {
-      success(i18n.t('ResetPassword.passwordResetSuccess')); //Toast message
+    if (!response?.errors?.email) {
+      console.log('forgot password response', response);
+
       yield put(forgotPasswordSuccess(response));
+      success(response?.message);
     } else {
+      errorToast(response?.errors?.email);
       yield put(forgotPasswordFailure(response));
     }
   } catch (error) {
@@ -66,15 +92,20 @@ const forgotPasswordSaga = function* forgotPasswordSaga({payload}) {
 const createAccountSaga = function* createAccountSaga({payload}) {
   try {
     const response = yield call(API.CreateAccount, payload.payload);
-    if (response) {
+    if (response.message === 'OK') {
       // const success = `${t(ResetPassword.passwordResetSuccess)}`;
       success(
         i18n.t('Toast.AccountCreatedSuccessfull'),
         i18n.t('Toast.AccountCreatedSuccessfullSubtitle'),
       );
+
       yield put(createAccountSuccess(response));
       payload.navigation.navigate('Login');
-    } else {
+    } else if (response.errors.email) {
+      errorToast(response.errors.email);
+      yield put(createAccountFailure(response));
+    } else if (response.errors.password) {
+      errorToast(response.errors.password);
       yield put(createAccountFailure(response));
     }
   } catch (error) {
