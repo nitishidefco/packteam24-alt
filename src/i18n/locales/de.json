@@ -33,7 +33,10 @@
     "nfcCardTitle": "Bereit zum Scannen von NFC-Tags",
     "nfcCardSubtitle": "Halten Sie Ihr Gerät an einen NFC-Tag",
     "nfcButtonText": "NFC-Scan starten",
-    "checkingTimeWithServer":"Überprüfung der Zeit mit dem Server"
+    "checkingTimeWithServer": "Überprüfung der Zeit mit dem Server",
+    "timeZoneMatches": "Die Zeitzone stimmt mit deinem Standort überein:",
+    "loading": "Laden",
+    "importantNotice": "Bitte stellen Sie Datum und Uhrzeit Ihres Telefons auf automatisch, um die App weiterhin zu nutzen"
   },
   "ChangePasswordScreen": {
     "allFieldsRequired": "Alle Felder sind erforderlich",
@@ -150,5 +153,13 @@
   },
   "Timer": {
     "sync": "Zeit wird synchronisiert..."
+  },
+  "timeSyncError": {
+    "title": "Zeitsynchronisierungsfehler",
+    "description": "Die Zeit Ihres Geräts ist früher eingestellt als die Serverzeit, was nicht erlaubt ist. Diese Abweichung deutet darauf hin, dass die Gerätezeit manuell geändert wurde.",
+    "instructions_intro": "Um eine genaue Funktionalität und Sicherheit zu gewährleisten, aktivieren Sie bitte die automatischen Datum- und Uhrzeiteinstellungen auf Ihrem Gerät:",
+    "instruction_step1": "Gehen Sie zu Einstellungen > Datum & Uhrzeit",
+    "instruction_step2": "Aktivieren Sie 'Automatisches Datum und Uhrzeit' (oder 'Zeit automatisch einstellen')",
+    "warning": "Die App funktioniert erst, wenn dies korrigiert wurde."
   }
 }

@@ -1,5 +1,6 @@
 import {createSlice} from '@reduxjs/toolkit';
 import {AUTH_REDUCER} from '../SliceKey';
+import {errorToast} from '../../Helpers/ToastMessage';
 
 const NULL = null;
 const SUCCESS = true;
@@ -16,12 +17,19 @@ export const AuthSlice = createSlice({
     data: null,
     error: null,
     message: '',
+    loginLoading: false,
   },
   reducers: {
     // Login reducers
     getLogin: state => {
       console.log('reducer login state', state);
-      return {...state, isLoginSuccess: NULL, error: null, message: ''};
+      return {
+        ...state,
+        isLoginSuccess: NULL,
+        error: null,
+        message: '',
+        loginLoading: true,
+      };
     },
     loginSuccess: (state, action) => {
       console.log('login success', action.payload);
@@ -31,16 +39,20 @@ export const AuthSlice = createSlice({
         isLoginSuccess: SUCCESS,
         message: 'Login successful',
         data: action.payload,
+        loginLoading: false,
       };
     },
     loginFailure: (state, action) => {
       console.log('login Fail', action.payload);
+      const error = action.payload.TypeError;
+      errorToast('Network Request Failed');
       return {
         ...state,
         isAuthenticated: FAIL, // Ensure user is unauthenticated on failure
         isLoginSuccess: FAIL,
         error: action.payload,
         message: 'Login failed',
+        loginLoading: false,
       };
     },
 
@@ -85,6 +97,8 @@ export const AuthSlice = createSlice({
       };
     },
     forgotPasswordFailure: (state, action) => {
+      console.log('Action .payload', action.payload);
+
       return {
         ...state,
         isForgotPasswordSuccess: FAIL,

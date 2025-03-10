@@ -30,10 +30,13 @@
     "backToLogin": "Go Back"
   },
   "HomeScreen": {
-    "nfcCardTitle": "Ready to Scan NFC Tags",
-    "nfcCardSubtitle": "Hold your device near and NFC Tag",
+    "nfcCardTitle": "Ready to Scan the Tag",
+    "nfcCardSubtitle": "Hold your device near a NFC Tag",
     "nfcButtonText": "Start NFC Scan",
-    "checkingTimeWithServer":"Checking time with server"
+    "checkingTimeWithServer": "Checking time with server",
+    "timeZoneMatches": "The time zone matches your location:",
+    "loading": "Loading",
+    "importantNotice":"Please set Phone's Date and Time to automatic to continue using the app"
   },
   "ChangePasswordScreen": {
     "allFieldsRequired": "All fields are requied",
@@ -150,5 +153,13 @@
   },
   "Timer": {
     "sync": "Syncing Time..."
+  },
+  "timeSyncError": {
+    "title": "Time Synchronization Error",
+    "description": "Your device's time is set earlier than the server time, which is not allowed. This discrepancy suggests your device time may have been manually altered.",
+    "instructions_intro": "To ensure accurate functionality and security, please enable automatic date and time settings in your device:",
+    "instruction_step1": "Go to Settings > Date & Time",
+    "instruction_step2": "Enable 'Automatic date and time' (or 'Set time automatically')",
+    "warning": "The app will not function until this is corrected."
   }
 }

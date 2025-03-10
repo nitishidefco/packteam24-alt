@@ -11,6 +11,7 @@ import {
   AppState,
   TouchableOpacity,
   ScrollView,
+  Alert,
 } from 'react-native';
 import {useHomeActions} from '../../Redux/Hooks';
 import DrawerSceneWrapper from '../../Components/Common/DrawerSceneWrapper';
@@ -35,12 +36,13 @@ import {useFetchNfcTagsActions} from '../../Redux/Hooks/useFetchNfcTagsActions';
 import {reduxStorage} from '../../Redux/Storage';
 import LanguageSelector from '../../Components/Common/LanguageSelector';
 import Timer from '../../Components/Common/Timer';
-import {Matrics, typography} from '../../Config/AppStyling';
+import {COLOR, Matrics, typography} from '../../Config/AppStyling';
 import TimeLog from '../../Components/HomeComponent/TimeLog';
 import {initializeLanguage} from '../../Redux/Reducers/LanguageProviderSlice';
 import {setSessionHandler} from '../../Utlis/SessionHandler';
 import {errorToast} from '../../Helpers/ToastMessage';
 import RealTime from '../../Components/HomeComponent/RealTime';
+import {setIsTimeValid} from '../../Redux/Reducers/TimeSlice';
 
 const Home = ({navigation, route}) => {
   const dispatch = useDispatch();
@@ -48,6 +50,9 @@ const Home = ({navigation, route}) => {
   useNfcStatus();
   const {t, i18n} = useTranslation();
   const {sessions, bulkSessions} = useSelector(state => state?.OfflineData);
+  const isTimeValid = useSelector(state => state.TrueTime.isTimeValid);
+
+  // Current time from the server time
   const realTime = useSelector(state => state.TrueTime.currentTime);
 
   const isConnected = useSelector(state => state?.Network?.isConnected);
@@ -64,11 +69,11 @@ const Home = ({navigation, route}) => {
   const SessionId = Auth.data?.data?.sesssion_id;
   const [appState, setAppState] = useState(AppState.currentState);
   const {fetchTagsCall} = useFetchNfcTagsActions();
-  const {fetchWorkStatusCall} = useWorkStatusActions();
   const [tagsFromLocalStorage, setTagsFromLocalStorage] = useState([]);
   const {deviceId} = useSelector(state => state?.Network);
   const {globalLanguage} = useSelector(state => state?.GlobalLanguage);
   const {localWorkHistory} = useSelector(state => state?.LocalWorkHistory);
+  const currentTime = useSelector(state => state.TrueTime.currentTime);
   // Set session handler values
   setSessionHandler(dispatch, SessionId, deviceId, navigation);
   const [count, setCount] = useState(0);
@@ -86,7 +91,43 @@ const Home = ({navigation, route}) => {
   useEffect(() => {
     dispatch(initializeLanguage());
   }, []);
-  // console.log('Bulk scan states', states.isScanSuccess);
+
+  useEffect(() => {
+    const deviceMoment = moment().tz('Europe/Berlin');
+    const serverMoment = moment.tz(
+      `${currentTime?.date} ${currentTime?.time}`,
+      'YYYY-MM-DD HH:mm:ss',
+      'Europe/Berlin',
+    );
+if(appState !== 'active'){
+  return;
+}
+    try {
+      if (deviceMoment.isBefore(serverMoment)) {
+        dispatch(setIsTimeValid(false));
+        Alert.alert(
+          i18n.t('timeSyncError.title'), 
+          `${i18n.t('timeSyncError.description')}\n\n` +
+          `${i18n.t('timeSyncError.instructions_intro')}\n` +
+          `- ${i18n.t('timeSyncError.instruction_step1')}\n` +
+          `- ${i18n.t('timeSyncError.instruction_step2')}\n\n` +
+          `${i18n.t('timeSyncError.warning')}`,
+          [
+            {
+              text: 'OK',
+              onPress: () => console.log('User acknowledged the alert'),
+              style: 'default',
+            },
+          ],
+          { cancelable: false }
+        );
+      } else {
+        dispatch(setIsTimeValid(true));
+      }
+    } catch (error) {
+      console.error('Error some', error);
+    }
+  }, [appState, tagDetected]);
 
   /* ----------------------------- Get device info ---------------------------- */
   useEffect(() => {
@@ -102,19 +143,7 @@ const Home = ({navigation, route}) => {
     };
     getDeviceInfo();
   }, []);
-  // fetching nfc tags stored in local storage
-  const updateWorkStatus = async () => {
-    try {
-      let formdata = new FormData();
-      formdata.append('session_id', SessionId);
-      formdata.append('device_id', deviceId);
-      formdata.append('lang', globalLanguage);
 
-      fetchWorkStatusCall(formdata);
-    } catch (error) {
-      console.error('Error updating work status', error);
-    }
-  };
   useEffect(() => {
     const fetchNfcTags = async () => {
       try {
@@ -160,8 +189,8 @@ const Home = ({navigation, route}) => {
   // Initializes NFC for Android and sets up event listeners
   const initAndroidNfc = useCallback(async () => {
     try {
-      await NfcManager.registerTagEvent(); // Register for NFC tag events
-      NfcManager.setEventListener(NfcEvents.DiscoverTag, handleNfcTag); // Handle tag discovery
+      await NfcManager.registerTagEvent();
+      NfcManager.setEventListener(NfcEvents.DiscoverTag, handleNfcTag);
     } catch (error) {
       console.warn('Error initializing Android NFC:', error);
     }
@@ -273,7 +302,7 @@ const Home = ({navigation, route}) => {
       return sortedItems[0]?.tagId;
     }
 
-    return null; // If session data or items are not available
+    return null;
   };
   const mostRecentTagId = getMostRecentTagId(SessionId);
   /* -------------------------- get tag mode from id -------------------------- */
@@ -289,27 +318,18 @@ const Home = ({navigation, route}) => {
     setTagMode(mode);
   }, [mode]);
 
-  // const updateLastEffectiveTagMode = async (tagMode) => {
-  //   await reduxStorage.setItem('tagForOfflineValidation', tagMode);
-  // };
-
-  // useEffect(() => {
-  //   updateLastEffectiveTagMode();
-  // }, [tagMode]);
-  //
-
   /* ------------------- Processing online and offline tags ------------------- */
   useEffect(() => {
     if (!SessionId) return;
 
     const processOnlineTags = async (storedSessions, bulkStoredSessions) => {
       try {
-        if (tagId) {
+        if (tagId && isTimeValid) {
           await getUid(tagId);
           setTagId('');
         }
 
-        if (bulkStoredSessions.length > 0) {
+        if (bulkStoredSessions.length > 0 && isTimeValid) {
           await makeBulkCall(bulkStoredSessions);
         }
         // console.log('bulk stored sessions', bulkStoredSessions);
@@ -356,32 +376,33 @@ const Home = ({navigation, route}) => {
         console.log('tag id is empty or last item is not ended');
         setTagId('');
         return;
-      }
-      setDuplicateTagId(tagId);
+      } else if (isTimeValid) {
+        setDuplicateTagId(tagId);
 
-      try {
-        const current_date = realTime.date;
-        const current_hour = realTime.time;
+        try {
+          const current_date = realTime.date;
+          const current_hour = realTime.time;
 
-        dispatch(
-          addDataToOfflineStorage({
-            sessionId: SessionId,
-            time: moment().format('YYYY-MM-DD HH:mm:ss'),
-            tagId,
-            current_date,
-            current_hour,
-          }),
-        );
-        dispatch(
-          dataForBulkUpdate({
-            sessionId: SessionId,
-            nfc_key: tagId,
-            date: current_date,
-            hour: current_hour,
-          }),
-        );
-      } catch (error) {
-        console.error('error', error);
+          dispatch(
+            addDataToOfflineStorage({
+              sessionId: SessionId,
+              time: moment().format('YYYY-MM-DD HH:mm:ss'),
+              tagId,
+              current_date,
+              current_hour,
+            }),
+          );
+          dispatch(
+            dataForBulkUpdate({
+              sessionId: SessionId,
+              nfc_key: tagId,
+              date: current_date,
+              hour: current_hour,
+            }),
+          );
+        } catch (error) {
+          console.error('error', error);
+        }
       }
 
       if (localWorkHistory.length > 0) {
@@ -482,13 +503,15 @@ const Home = ({navigation, route}) => {
                 ? styles.topContainer
                 : styles.topContainerios,
             ]}>
+              {!isTimeValid && <Text style={{ fontFamily: typography.fontFamily.Montserrat.SemiBold, color: COLOR.ERROR, textAlign: 'center', paddingHorizontal: Matrics.s(10), marginBottom: Matrics.vs(5)}}>{i18n.t('HomeScreen.importantNotice')}</Text>}
             <View
               style={{
                 position: 'relative',
                 alignItems: 'flex-end',
-                marginRight: Matrics.ms(20),
+                paddingHorizontal: Matrics.s(10),
                 marginBottom: Matrics.vs(30),
               }}>
+                
               <LanguageSelector sessionId={SessionId} />
             </View>
             <View
@@ -522,6 +545,7 @@ const Home = ({navigation, route}) => {
                 {Platform.OS === 'ios' && (
                   <TouchableOpacity
                     style={styles.scanButton}
+                    disabled={!isTimeValid}
                     onPress={() => initNfcScan()}>
                     <Text style={styles.buttonText}>
                       {t('HomeScreen.nfcButtonText')}

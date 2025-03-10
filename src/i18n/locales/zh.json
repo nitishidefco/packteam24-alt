@@ -33,7 +33,10 @@
     "nfcCardTitle": "准备扫描 NFC 标签",
     "nfcCardSubtitle": "将您的设备靠近 NFC 标签",
     "nfcButtonText": "开始 NFC 扫描",
-    "checkingTimeWithServer":"正在与服务器校对时间"
+    "checkingTimeWithServer": "正在与服务器校对时间",
+    "timeZoneMatches": "时区与您的位置相符：",
+    "loading": "加载中",
+    "importantNotice": "请将手机的日期和时间设置为自动，以继续使用该应用"
   },
   "ChangePasswordScreen": {
     "allFieldsRequired": "所有字段均为必填项",
@@ -150,5 +153,13 @@
   },
   "Timer": {
     "sync": "时间同步中..."
+  },
+  "timeSyncError": {
+    "title": "时间同步错误",
+    "description": "您的设备时间早于服务器时间，这是不允许的。这种差异表明您的设备时间可能被手动更改。",
+    "instructions_intro": "为确保准确的功能和安全性，请在您的设备上启用自动日期和时间设置：",
+    "instruction_step1": "前往 设置 > 日期与时间",
+    "instruction_step2": "启用 '自动日期和时间'（或 '自动设置时间'）",
+    "warning": "在更正此问题之前，应用将无法运行。"
   }
 }

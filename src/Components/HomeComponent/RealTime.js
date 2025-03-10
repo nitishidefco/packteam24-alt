@@ -8,20 +8,17 @@ import {setCurrentTime} from '../../Redux/Reducers/TimeSlice';
 import {useDispatch, useSelector} from 'react-redux';
 
 const RealTime = () => {
+  const [appState, setAppState] = useState(AppState.currentState);
   const dispatch = useDispatch();
   const currentTime = useSelector(state => state.TrueTime.currentTime);
-  const [appState, setAppState] = useState(AppState.currentState);
   useEffect(() => {
     const handleAppStateChange = async nextAppState => {
-      // console.log('App State changed to:', nextAppState);
       if (nextAppState === 'active') {
       } else if (nextAppState === 'background' && intervalRef.current) {
         setRandomState(!randomState);
       }
 
       setAppState(nextAppState);
-      setTagMode(null);
-      // setSeconds(0);
     };
 
     const subscription = AppState.addEventListener(
@@ -40,7 +37,6 @@ const RealTime = () => {
       const realTimeDiffAtLogin = await reduxStorage.getItem(
         'realTimeDiffAtLogin',
       );
-      console.log(storedDate, storedTime);
       if (!storedTime || !storedDate) {
         console.error('Stored time or date not found');
         return null;
@@ -80,7 +76,6 @@ const RealTime = () => {
           time: formattedTime,
         }),
       );
-      
     } catch (error) {
       console.error('Error updating time:', error);
     }
