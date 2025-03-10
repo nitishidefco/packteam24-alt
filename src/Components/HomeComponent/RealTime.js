@@ -7,6 +7,7 @@ import ElapsedTime from '../../../spec/NativeElapsedTime';
 import {setCurrentTime} from '../../Redux/Reducers/TimeSlice';
 import {useDispatch, useSelector} from 'react-redux';
 import i18n from '../../i18n/i18n';
+import reactotron from '../../../ReactotronConfig';
 
 const RealTime = () => {
   const [appState, setAppState] = useState(AppState.currentState);
@@ -62,15 +63,19 @@ const RealTime = () => {
 
   const updateTime = async ({baseDate, initialRealTimeDiff}) => {
     console.log('App state changed', appState);
-    
-    try {
-      const elapsedTimeMs = await ElapsedTime.getElapsedTime();  
-      const elapsedSinceLoginMs = elapsedTimeMs - initialRealTimeDiff;
 
-      const updatedDate = baseDate.add(elapsedSinceLoginMs, 'second');
+    try {
+      const elapsedTimeMs = await ElapsedTime.getElapsedTime();
+      const elapsedSinceLoginMs = elapsedTimeMs - initialRealTimeDiff;
+      reactotron.log('elapsedSinceLoginMs', elapsedSinceLoginMs);
+
+      const updatedDate = baseDate.add(
+        elapsedSinceLoginMs,
+        Platform.OS === 'ios' ? 'second' : 'millisecond',
+      );
       const formattedDate = updatedDate.format('YYYY-MM-DD');
       const formattedTime = updatedDate.format('HH:mm:ss');
-
+      reactotron.log(formattedDate, formattedTime);
       dispatch(
         setCurrentTime({
           date: formattedDate,
@@ -108,7 +113,7 @@ const RealTime = () => {
   return (
     <View style={styles.mainContainer}>
       <Text style={styles.headingStyle}>
-       {i18n.t('HomeScreen.timeZoneMatches')}
+        {i18n.t('HomeScreen.timeZoneMatches')}
       </Text>
       <View style={styles.secondaryContainer}>
         <Text style={styles.dateTimeStyles}>

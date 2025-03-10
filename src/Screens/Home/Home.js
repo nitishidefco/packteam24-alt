@@ -99,19 +99,19 @@ const Home = ({navigation, route}) => {
       'YYYY-MM-DD HH:mm:ss',
       'Europe/Berlin',
     );
-if(appState !== 'active'){
-  return;
-}
+    if (Platform.OS === 'ios' && appState !== 'active') {
+      return;
+    }
     try {
       if (deviceMoment.isBefore(serverMoment)) {
         dispatch(setIsTimeValid(false));
         Alert.alert(
-          i18n.t('timeSyncError.title'), 
+          i18n.t('timeSyncError.title'),
           `${i18n.t('timeSyncError.description')}\n\n` +
-          `${i18n.t('timeSyncError.instructions_intro')}\n` +
-          `- ${i18n.t('timeSyncError.instruction_step1')}\n` +
-          `- ${i18n.t('timeSyncError.instruction_step2')}\n\n` +
-          `${i18n.t('timeSyncError.warning')}`,
+            `${i18n.t('timeSyncError.instructions_intro')}\n` +
+            `- ${i18n.t('timeSyncError.instruction_step1')}\n` +
+            `- ${i18n.t('timeSyncError.instruction_step2')}\n\n` +
+            `${i18n.t('timeSyncError.warning')}`,
           [
             {
               text: 'OK',
@@ -119,7 +119,7 @@ if(appState !== 'active'){
               style: 'default',
             },
           ],
-          { cancelable: false }
+          {cancelable: false},
         );
       } else {
         dispatch(setIsTimeValid(true));
@@ -503,7 +503,26 @@ if(appState !== 'active'){
                 ? styles.topContainer
                 : styles.topContainerios,
             ]}>
-              {!isTimeValid && <Text style={{ fontFamily: typography.fontFamily.Montserrat.SemiBold, color: COLOR.ERROR, textAlign: 'center', paddingHorizontal: Matrics.s(10), marginBottom: Matrics.vs(5)}}>{i18n.t('HomeScreen.importantNotice')}</Text>}
+            {!isTimeValid && (
+              <Text
+                style={[
+                  {
+                    fontFamily: typography.fontFamily.Montserrat.SemiBold,
+                    textAlign: 'center',
+                    paddingHorizontal: Matrics.s(10),
+                    marginBottom: Matrics.vs(5),
+                    color: COLOR.ERROR,
+                  },
+                  Platform.OS === 'ios'
+                    ? {} // iOS-specific styles
+                    : {
+                        marginTop: Matrics.vs(15),
+                        marginBottom: Matrics.vs(0),
+                      }, // Android-specific styles
+                ]}>
+                {i18n.t('HomeScreen.importantNotice')}
+              </Text>
+            )}
             <View
               style={{
                 position: 'relative',
@@ -511,7 +530,6 @@ if(appState !== 'active'){
                 paddingHorizontal: Matrics.s(10),
                 marginBottom: Matrics.vs(30),
               }}>
-                
               <LanguageSelector sessionId={SessionId} />
             </View>
             <View
