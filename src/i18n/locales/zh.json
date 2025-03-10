@@ -33,7 +33,9 @@
     "nfcCardTitle": "准备扫描 NFC 标签",
     "nfcCardSubtitle": "将您的设备靠近 NFC 标签",
     "nfcButtonText": "开始 NFC 扫描",
-    "checkingTimeWithServer":"正在与服务器校对时间"
+    "checkingTimeWithServer": "正在与服务器校对时间",
+    "timeZoneMatches": "时区与您的位置相符：",
+    "loading": "加载中"
   },
   "ChangePasswordScreen": {
     "allFieldsRequired": "所有字段均为必填项",

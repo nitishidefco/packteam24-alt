@@ -15,7 +15,11 @@ export default {
       method: 'POST',
       body: params,
     })
-      .then(response => Ajax.handleResponse(response))
+      .then(response => {
+        console.log('Respnse', response);
+
+        return Ajax.handleResponse(response);
+      })
       .then(data => {
         return data;
       });

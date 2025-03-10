@@ -33,7 +33,9 @@
     "nfcCardTitle": "Bereit zum Scannen von NFC-Tags",
     "nfcCardSubtitle": "Halten Sie Ihr Gerät an einen NFC-Tag",
     "nfcButtonText": "NFC-Scan starten",
-    "checkingTimeWithServer":"Überprüfung der Zeit mit dem Server"
+    "checkingTimeWithServer": "Überprüfung der Zeit mit dem Server",
+    "timeZoneMatches": "Die Zeitzone stimmt mit deinem Standort überein:",
+    "loading": "Laden"
   },
   "ChangePasswordScreen": {
     "allFieldsRequired": "Alle Felder sind erforderlich",

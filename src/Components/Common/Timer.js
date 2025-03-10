@@ -160,11 +160,7 @@ const Timer = ({tag, tagsFromLocalStorage, sessionId}) => {
         'Europe/Berlin',
       );
 
-      const now = moment.tz(
-        `${currentTime.date} ${currentTime.time}`,
-        'YYYY-MM-DD HH:mm:ss',
-        'Europe/Berlin',
-      );
+      const now = moment.tz(`${currentTime.time}`, 'HH:mm:ss', 'Europe/Berlin');
       const elapsedTime = Math.abs(now.diff(lastEntryTime, 'seconds'));
       if (intervalRef.current) {
         clearInterval(intervalRef.current);

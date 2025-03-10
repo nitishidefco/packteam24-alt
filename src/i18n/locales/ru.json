@@ -33,7 +33,9 @@
     "nfcCardTitle": "Готов к сканированию NFC-меток",
     "nfcCardSubtitle": "Поднесите устройство к NFC-метке",
     "nfcButtonText": "Начать NFC сканирование",
-    "checkingTimeWithServer":"Проверка времени с сервером"
+    "checkingTimeWithServer": "Проверка времени с сервером",
+    "timeZoneMatches": "Часовой пояс соответствует вашему местоположению:",
+    "loading": "Загрузка"
   },
   "ChangePasswordScreen": {
     "allFieldsRequired": "Все поля обязательны",
