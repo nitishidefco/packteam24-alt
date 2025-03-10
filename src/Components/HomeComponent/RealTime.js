@@ -6,6 +6,7 @@ import dayjs from 'dayjs';
 import ElapsedTime from '../../../spec/NativeElapsedTime';
 import {setCurrentTime} from '../../Redux/Reducers/TimeSlice';
 import {useDispatch, useSelector} from 'react-redux';
+import i18n from '../../i18n/i18n';
 
 const RealTime = () => {
   const [appState, setAppState] = useState(AppState.currentState);
@@ -107,14 +108,14 @@ const RealTime = () => {
   return (
     <View style={styles.mainContainer}>
       <Text style={styles.headingStyle}>
-        The time zone matches your location:
+       {i18n.t('HomeScreen.timeZoneMatches')}
       </Text>
       <View style={styles.secondaryContainer}>
         <Text style={styles.dateTimeStyles}>
-          {currentTime ? currentTime.date : 'Loading...'}
+          {currentTime ? currentTime.date : i18n.t('HomeScreen.loading')}
         </Text>
         <Text style={styles.dateTimeStyles}>
-          {currentTime ? currentTime.time : 'Loading...'}
+          {currentTime ? currentTime.time : i18n.t('HomeScreen.loading')}
         </Text>
       </View>
     </View>
