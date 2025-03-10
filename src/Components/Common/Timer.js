@@ -161,8 +161,8 @@ const Timer = ({tag, tagsFromLocalStorage, sessionId}) => {
       );
 
       const now = moment.tz(
-        `${currentTime.date} ${currentTime.time}`,
-        'YYYY-MM-DD HH:mm:ss',
+        `${currentTime.time}`,
+        'HH:mm:ss',
         'Europe/Berlin',
       );
       const elapsedTime = Math.abs(now.diff(lastEntryTime, 'seconds'));

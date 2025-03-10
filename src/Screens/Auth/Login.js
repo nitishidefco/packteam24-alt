@@ -21,9 +21,9 @@ import {
   ScrollView,
   Linking,
   Button,
+  NativeModules
 } from 'react-native';
 import {useTranslation} from 'react-i18next';
-
 import {loginStyle as styles} from './styles';
 import {FullScreenSpinner} from '../../Components/HOC';
 import {useNavigation} from '@react-navigation/native';

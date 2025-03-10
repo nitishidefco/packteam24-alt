@@ -1,5 +1,5 @@
-import {View, Text, StyleSheet} from 'react-native';
-import React, {useEffect} from 'react';
+import {View, Text, StyleSheet, AppState} from 'react-native';
+import React, {useEffect, useState} from 'react';
 import {reduxStorage} from '../../Redux/Storage';
 import {Matrics, typography} from '../../Config/AppStyling';
 import dayjs from 'dayjs';
@@ -10,7 +10,29 @@ import {useDispatch, useSelector} from 'react-redux';
 const RealTime = () => {
   const dispatch = useDispatch();
   const currentTime = useSelector(state => state.TrueTime.currentTime);
+  const [appState, setAppState] = useState(AppState.currentState);
+  useEffect(() => {
+    const handleAppStateChange = async nextAppState => {
+      // console.log('App State changed to:', nextAppState);
+      if (nextAppState === 'active') {
+      } else if (nextAppState === 'background' && intervalRef.current) {
+        setRandomState(!randomState);
+      }
 
+      setAppState(nextAppState);
+      setTagMode(null);
+      // setSeconds(0);
+    };
+
+    const subscription = AppState.addEventListener(
+      'change',
+      handleAppStateChange,
+    );
+
+    return () => {
+      subscription.remove();
+    };
+  }, []);
   const initializeClock = async () => {
     try {
       const storedTime = await reduxStorage.getItem('trueTime');
@@ -42,10 +64,13 @@ const RealTime = () => {
   };
 
   const updateTime = async ({baseDate, initialRealTimeDiff}) => {
+    console.log('App state changed', appState);
+    
     try {
-      const elapsedTimeMs = await ElapsedTime.getElapsedTime();
+      const elapsedTimeMs = await ElapsedTime.getElapsedTime();  
       const elapsedSinceLoginMs = elapsedTimeMs - initialRealTimeDiff;
-      const updatedDate = baseDate.add(elapsedSinceLoginMs, 'millisecond');
+
+      const updatedDate = baseDate.add(elapsedSinceLoginMs, 'second');
       const formattedDate = updatedDate.format('YYYY-MM-DD');
       const formattedTime = updatedDate.format('HH:mm:ss');
 
@@ -82,7 +107,7 @@ const RealTime = () => {
         console.log('Interval cleared');
       }
     };
-  }, []);
+  }, [appState]);
 
   return (
     <View style={styles.mainContainer}>

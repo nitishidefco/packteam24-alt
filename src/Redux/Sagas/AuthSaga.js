@@ -15,19 +15,25 @@ import {AUTH_REDUCER} from '../SliceKey';
 import {reduxStorage} from '../Storage/index';
 import {errorToast, success} from '../../Helpers/ToastMessage';
 import i18n from '../../i18n/i18n';
-import ElapsedTime from '../../../spec/NativeElapsedTime';
+import NativeElapsedTime from '../../../spec/NativeElapsedTime';
+
 const loginSaga = function* loginSaga({payload}) {
   console.log('payload', payload);
 
   try {
     const response = yield call(API.Login, payload);
     console.log('Login response', response);
+console.log('Native elapsed time', NativeElapsedTime);
 
     if (response?.data?.sesssion_id && response?.message == 'OK') {
-      const elapsedTimeMs = yield call([
-        ElapsedTime,
-        ElapsedTime.getElapsedTime,
-      ]);
+     
+        // const elapsedTimeMs = yield call([
+        //   ElapsedTime,
+        //   ElapsedTime.getElapsedTime(),
+        // ]);
+        const elapsedTimeMs = yield call([NativeElapsedTime, 'getElapsedTime']);
+        console.log('Elapsed time:', elapsedTimeMs);
+    
       yield call(reduxStorage.setItem, 'token', response?.data?.sesssion_id);
       yield call(
         reduxStorage.setItem,
