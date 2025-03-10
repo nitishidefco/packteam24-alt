@@ -17,12 +17,19 @@ export const AuthSlice = createSlice({
     data: null,
     error: null,
     message: '',
+    loginLoading: false,
   },
   reducers: {
     // Login reducers
     getLogin: state => {
       console.log('reducer login state', state);
-      return {...state, isLoginSuccess: NULL, error: null, message: ''};
+      return {
+        ...state,
+        isLoginSuccess: NULL,
+        error: null,
+        message: '',
+        loginLoading: true,
+      };
     },
     loginSuccess: (state, action) => {
       console.log('login success', action.payload);
@@ -32,6 +39,7 @@ export const AuthSlice = createSlice({
         isLoginSuccess: SUCCESS,
         message: 'Login successful',
         data: action.payload,
+        loginLoading: false,
       };
     },
     loginFailure: (state, action) => {
@@ -44,6 +52,7 @@ export const AuthSlice = createSlice({
         isLoginSuccess: FAIL,
         error: action.payload,
         message: 'Login failed',
+        loginLoading: false,
       };
     },
 

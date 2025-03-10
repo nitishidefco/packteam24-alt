@@ -1,5 +1,5 @@
-import {View, Text, StyleSheet} from 'react-native';
-import React, {useEffect} from 'react';
+import {View, Text, StyleSheet, AppState} from 'react-native';
+import React, {useEffect, useState} from 'react';
 import {reduxStorage} from '../../Redux/Storage';
 import {Matrics, typography} from '../../Config/AppStyling';
 import dayjs from 'dayjs';
@@ -8,9 +8,28 @@ import {setCurrentTime} from '../../Redux/Reducers/TimeSlice';
 import {useDispatch, useSelector} from 'react-redux';
 
 const RealTime = () => {
+  const [appState, setAppState] = useState(AppState.currentState);
   const dispatch = useDispatch();
   const currentTime = useSelector(state => state.TrueTime.currentTime);
+  useEffect(() => {
+    const handleAppStateChange = async nextAppState => {
+      if (nextAppState === 'active') {
+      } else if (nextAppState === 'background' && intervalRef.current) {
+        setRandomState(!randomState);
+      }
 
+      setAppState(nextAppState);
+    };
+
+    const subscription = AppState.addEventListener(
+      'change',
+      handleAppStateChange,
+    );
+
+    return () => {
+      subscription.remove();
+    };
+  }, []);
   const initializeClock = async () => {
     try {
       const storedTime = await reduxStorage.getItem('trueTime');
@@ -18,7 +37,6 @@ const RealTime = () => {
       const realTimeDiffAtLogin = await reduxStorage.getItem(
         'realTimeDiffAtLogin',
       );
-      console.log(storedDate, storedTime);
       if (!storedTime || !storedDate) {
         console.error('Stored time or date not found');
         return null;
@@ -55,7 +73,6 @@ const RealTime = () => {
           time: formattedTime,
         }),
       );
-      
     } catch (error) {
       console.error('Error updating time:', error);
     }
@@ -82,7 +99,7 @@ const RealTime = () => {
         console.log('Interval cleared');
       }
     };
-  }, []);
+  }, [appState]);
 
   return (
     <View style={styles.mainContainer}>

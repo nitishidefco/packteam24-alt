@@ -4,9 +4,13 @@ import {View, StyleSheet, Image} from 'react-native';
 import {useNavigation} from '@react-navigation/native';
 import Images from './Config/Images';
 import {reduxStorage} from './Redux/Storage';
+import {useWorkHistoryActions} from './Redux/Hooks/useWorkHistoryActions';
+
 const Splash = () => {
+  const {getRealTimeCall} = useWorkHistoryActions();
+
   const [userToken, setuserToken] = useState(null);
-  
+
   // fetch user token initally
   useEffect(() => {
     async function getToken() {
@@ -22,6 +26,8 @@ const Splash = () => {
   // Set the nfc tags to local storage
 
   useEffect(() => {
+    getRealTimeCall();
+
     const timer = setTimeout(() => {
       {
         userToken != null

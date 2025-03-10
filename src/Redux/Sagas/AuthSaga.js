@@ -17,11 +17,8 @@ import {errorToast, success} from '../../Helpers/ToastMessage';
 import i18n from '../../i18n/i18n';
 import ElapsedTime from '../../../spec/NativeElapsedTime';
 const loginSaga = function* loginSaga({payload}) {
-  console.log('payload', payload);
-
   try {
     const response = yield call(API.Login, payload);
-    console.log('Login response', response);
 
     if (response?.data?.sesssion_id && response?.message == 'OK') {
       const elapsedTimeMs = yield call([

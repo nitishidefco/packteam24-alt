@@ -21,6 +21,7 @@ import {
   ScrollView,
   Linking,
   Button,
+  ActivityIndicator,
 } from 'react-native';
 import {useTranslation} from 'react-i18next';
 
@@ -41,10 +42,14 @@ import FlagComponent from '../../Components/Common/FlagComponent';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as RNLocalize from 'react-native-localize';
 import {errorToast, success} from '../../Helpers/ToastMessage';
+
 import {
   initializeLanguage,
   setLanguageWithStorage,
 } from '../../Redux/Reducers/LanguageProviderSlice';
+import {useWorkHistoryActions} from '../../Redux/Hooks/useWorkHistoryActions';
+import moment from 'moment-timezone';
+import checkDeviceTime from '../../Helpers/TimeValidation';
 const languages = {
   POL: 'pl', // Polish
   GER: 'de', // German
@@ -61,23 +66,22 @@ const Login = ({route}) => {
   const privacyPolicyUrl = 'https://eda.workflex360.de/de/datenschutzerklarung';
   const applicationInformatinoUrl =
     'https://eda.workflex360.de/de/technischer-support';
+  const {getRealTimeCall, realTime, realTimeLoading} = useWorkHistoryActions();
+
   // --------------- STATE ---------------
 
   // email & password that was static
   // biuro@mhcode.pl  das4you123
 
-  const {dark, theme, toggle} = useContext(ThemeContext);
+  const {theme} = useContext(ThemeContext);
   const isConnected = useSelector(state => state?.Network?.isConnected);
-  const {deviceId, manufacturer} = useSelector(state => state?.Network);
-  const [errortext, setErrortext] = useState('');
+  const {deviceId} = useSelector(state => state?.Network);
   const passwordInputRef = createRef();
   const dispatch = useDispatch();
-  const [emailError, setEmailError] = useState('');
   const [userEmail, setUserEmail] = useState(null);
   const [userPassword, setUserPassword] = useState(null);
   const [loading, setLoading] = useState(false);
   const [keyboardVisible, setKeyboardVisible] = useState(false);
-  const [dropdownAlert, setDropdownAlert] = useState(null);
   const {state, loginCall, forgotPasswordCall} = useAuthActions();
   const {Auth} = useSelector(state => state);
   const [activeLanguage, setActiveLanguage] = useState(null);
@@ -120,6 +124,9 @@ const Login = ({route}) => {
       );
     };
     getDeviceInfo();
+    console.log('Getting real time');
+
+    getRealTimeCall();
   }, []);
 
   // --------------- METHODS ---------------
@@ -190,13 +197,15 @@ const Login = ({route}) => {
   }
 
   const onLoginPress = () => {
-    if (!isConnected) {
+    console.log('Real Time', realTime);
+    if (!checkDeviceTime(realTime)) {
+      return;
+    } else if (!isConnected) {
       errorToast(i18n.t('Toast.CheckInternet'));
     } else {
       if (validateInputs('Enter Email')) {
-        // changeLanguage('pl');
         loginAPI();
-      } 
+      }
     }
   };
   const onForgotPasswordPress = () => {
@@ -328,10 +337,23 @@ const Login = ({route}) => {
             <TouchableOpacity
               style={styles.buttonStyle}
               activeOpacity={0.5}
-              onPress={onLoginPress}>
-              <Text style={styles.buttonTextStyle}>
-                {t('Login.loginButton')}
-              </Text>
+              onPress={onLoginPress}
+              disabled={loading}>
+              {loading ? (
+                <View
+                  style={{
+                    height: '100%',
+                    width: '30%',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                  }}>
+                  <ActivityIndicator size={'large'} color={'white'} />
+                </View>
+              ) : (
+                <Text style={styles.buttonTextStyle}>
+                  {t('Login.loginButton')}
+                </Text>
+              )}
             </TouchableOpacity>
             <TouchableOpacity
               style={styles.forgotPasswordStyle}
