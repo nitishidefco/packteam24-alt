@@ -23,6 +23,7 @@ const Timer = ({tag, tagsFromLocalStorage, sessionId}) => {
   const dispatch = useDispatch();
   const {state: currentStatus, fetchWorkStatusCall} = useWorkStatusActions();
   const {state: scanTagState} = useScanTagActions();
+
   const [appState, setAppState] = useState(AppState.currentState);
   const [randomState, setRandomState] = useState(false);
   const [seconds, setSeconds] = useState(0);
@@ -56,8 +57,6 @@ const Timer = ({tag, tagsFromLocalStorage, sessionId}) => {
       }
 
       setAppState(nextAppState);
-      setTagMode(null);
-      // setSeconds(0);
     };
 
     const subscription = AppState.addEventListener(
@@ -86,7 +85,13 @@ const Timer = ({tag, tagsFromLocalStorage, sessionId}) => {
 
   useEffect(() => {
     if (appState !== 'active') return;
-    setInitialTimer();
+    if (
+      !workHistoryState?.workHistoryLoading &&
+      !realTimeLoading &&
+      !scanTagState.normalScanLoading
+    ) {
+      setInitialTimer();
+    }
   }, [
     appState,
     workHistoryState.workHistoryLoading,
@@ -119,7 +124,8 @@ const Timer = ({tag, tagsFromLocalStorage, sessionId}) => {
       isConnected &&
       workHistoryState?.data?.length > 0 &&
       !workHistoryState.workHistoryLoading &&
-      isTimeValid
+      isTimeValid &&
+      !scanTagState.normalScanLoading
     ) {
       console.log('*******************************************************');
       const serverDate = await reduxStorage.getItem('trueDate');
@@ -145,35 +151,45 @@ const Timer = ({tag, tagsFromLocalStorage, sessionId}) => {
           workHistoryState?.data[workHistoryState?.data?.length - 1]?.to,
         )
       ) {
-        setSeconds(elapsedTime);
+        if (elapsedTime < 0) {
+          setSeconds(elapsedTime + 1);
+        } else {
+          setSeconds(elapsedTime);
+        }
         if (workHistoryState?.data?.length === 1 && isTimeValid) {
+          reactotron.log(
+            'controlTimer called with: work_in_progress or break_start',
+          );
           controlTimer(
-            workHistoryState?.data[workHistoryState?.data?.length - 1]
+            workHistoryState?.data?.[workHistoryState?.data?.length - 1]
               ?.mode_raw === 'work'
               ? 'work_in_progress'
               : 'break_start' || tagMode,
           );
-        } else if (isTimeValid) {
+        } else if (
+          isTimeValid &&
+          !scanTagState.normalScanLoading &&
+          !workHistoryState?.workHistoryLoading
+        ) {
+          reactotron.log(
+            'controlTimer called with: work_in_progress or break_in_progress',
+          );
           controlTimer(
-            workHistoryState?.data[workHistoryState?.data?.length - 1]
+            workHistoryState?.data?.[workHistoryState?.data?.length - 1]
               ?.mode_raw === 'work'
               ? 'work_in_progress'
               : 'break_in_progress' || tagMode,
           );
         }
-        // controlTimer(currentStatus?.currentState?.work_status || tagMode);
       } else {
         stopTimer();
       }
     } else if (!isConnected && localWorkHistory?.length > 0 && isTimeValid) {
-      // dispatch(OffineStatus());
-
       const lastEntryTime = moment.tz(
         localWorkHistory[localWorkHistory.length - 1].from,
         'HH:mm:ss',
         'Europe/Berlin',
       );
-
       const now = moment.tz(`${currentTime.time}`, 'HH:mm:ss', 'Europe/Berlin');
       const elapsedTime = Math.abs(now.diff(lastEntryTime, 'seconds'));
       if (intervalRef.current) {
@@ -185,7 +201,9 @@ const Timer = ({tag, tagsFromLocalStorage, sessionId}) => {
         )
       ) {
         setSeconds(elapsedTime);
-
+        reactotron.log(
+          'controlTimer called with: work_in_progress or break_in_progress (offline)',
+        );
         controlTimer(
           tagInLocalStorage ||
             tagMode ||
@@ -203,14 +221,23 @@ const Timer = ({tag, tagsFromLocalStorage, sessionId}) => {
         (workHistoryState.data.length > 0 || localWorkHistory.length > 0) &&
         isTimeValid
       ) {
+        reactotron.log(
+          'controlTimer called with: tagInLocalStorage or tagMode',
+        );
         controlTimer(tagInLocalStorage || tagMode);
-      } else if (tagMode === 'work_start' && isTimeValid) {
+      } else if (
+        tagMode === 'work_start' &&
+        isTimeValid &&
+        !scanTagState.error
+      ) {
+        reactotron.log('controlTimer called with: work_start');
         controlTimer(tagMode);
       } else {
         stopTimer();
       }
     }
   };
+
   useEffect(() => {
     if (!isConnected) {
       dispatch(saveTagToLocalStorage(tagMode));

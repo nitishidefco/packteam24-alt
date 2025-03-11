@@ -62,12 +62,9 @@ const RealTime = () => {
   };
 
   const updateTime = async ({baseDate, initialRealTimeDiff}) => {
-    console.log('App state changed', appState);
-
     try {
       const elapsedTimeMs = await ElapsedTime.getElapsedTime();
       const elapsedSinceLoginMs = elapsedTimeMs - initialRealTimeDiff;
-      reactotron.log('elapsedSinceLoginMs', elapsedSinceLoginMs);
 
       const updatedDate = baseDate.add(
         elapsedSinceLoginMs,
@@ -75,7 +72,6 @@ const RealTime = () => {
       );
       const formattedDate = updatedDate.format('YYYY-MM-DD');
       const formattedTime = updatedDate.format('HH:mm:ss');
-      reactotron.log(formattedDate, formattedTime);
       dispatch(
         setCurrentTime({
           date: formattedDate,

@@ -36,7 +36,6 @@ const TimeLog = ({sessionId, tag, tagsFromLocalStorage}) => {
       formData.append('lang', globalLanguage);
       if (isConnected) {
         console.log('Calling for work history call');
-        reactotron.log('Called get work history from time log');
         getWorkHistoryCall(formData);
       }
     } catch (error) {
@@ -46,9 +45,6 @@ const TimeLog = ({sessionId, tag, tagsFromLocalStorage}) => {
   /* ---------------------- Updates the localWorkHistory ---------------------- */
   const updateLocalHistoryFromServer = async () => {
     try {
-      reactotron.log(
-        'Updating local workhistory after fetching data from server',
-      );
       dispatch(setLocalWorkHistoryInStorage(workHistoryState?.data));
     } catch (error) {
       console.log('Error saving local history with data from server', error);
@@ -57,7 +53,6 @@ const TimeLog = ({sessionId, tag, tagsFromLocalStorage}) => {
 
   useEffect(() => {
     const timeoutId = setTimeout(() => {
-      reactotron.log(workHistoryState?.data, isConnected);
 
       if (isConnected) {
         updateLocalHistoryFromServer();
@@ -127,7 +122,6 @@ const TimeLog = ({sessionId, tag, tagsFromLocalStorage}) => {
             to: currentTime,
           };
         }
-        reactotron.log('Pushing new history entry');
         updatedHistory.push({
           from: currentTime,
           mode: i18n.t(`TagModes.${newMode}`),
@@ -135,13 +129,9 @@ const TimeLog = ({sessionId, tag, tagsFromLocalStorage}) => {
           to: 'now',
         });
       } else if (lastItem.mode_raw === getComparableMode(newMode)) {
-        reactotron.log('Preventing duplicate time entry');
         return;
       }
     }
-
-    reactotron.log('Final Updated History:', updatedHistory);
-    reactotron.log('Inside time log handleTagScan');
     // Update the local history state
     dispatch(setLocalWorkHistoryInStorage(updatedHistory));
   };

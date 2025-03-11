@@ -12,6 +12,7 @@ import {
   TouchableOpacity,
   ScrollView,
   Alert,
+  RefreshControl,
 } from 'react-native';
 import {useHomeActions} from '../../Redux/Hooks';
 import DrawerSceneWrapper from '../../Components/Common/DrawerSceneWrapper';
@@ -19,7 +20,6 @@ import CustomHeader from '../../Components/Common/CustomHeader';
 import {Images} from '../../Config';
 import NfcManager, {NfcTech, NfcEvents} from 'react-native-nfc-manager';
 import {useScanTagActions} from '../../Redux/Hooks/useScanTagActions';
-import {useWorkStatusActions} from '../../Redux/Hooks/useWorkStatusActions';
 import {
   addDataToOfflineStorage,
   dataForBulkUpdate,
@@ -27,7 +27,6 @@ import {
 import {showNotificationAboutTagScannedWhileOffline} from '../../Utlis/NotificationsWhileOffline';
 import {useDispatch, useSelector} from 'react-redux';
 import moment from 'moment';
-import momentTimeZone from 'moment-timezone';
 import {setDeviceInfo} from '../../Redux/Reducers/NetworkSlice';
 import DeviceInfo from 'react-native-device-info';
 import {useNfcStatus} from '../../Utlis/CheckNfcStatus';
@@ -492,11 +491,25 @@ const Home = ({navigation, route}) => {
     }
   }
 
+  const [refreshing, setRefreshing] = useState(false);
+
+  const onRefresh = useCallback(() => {
+    setRefreshing(true);
+    setTimeout(() => {
+      navigation.replace('HomeDrawer', {}, {animationEnabled: false});
+      setRefreshing(false);
+    }, 2000);
+  }, [navigation]);
+
   return (
     <DrawerSceneWrapper>
       <SafeAreaView style={{backgroundColor: '#EBF0FA', flex: 1}}>
         <CustomHeader />
-        <ScrollView style={{backgroundColor: '#EBF0FA', flex: 1}}>
+        <ScrollView
+          style={{backgroundColor: '#EBF0FA', flex: 1}}
+          refreshControl={
+            <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+          }>
           <View
             style={[
               Platform.OS === 'android'

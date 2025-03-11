@@ -43,9 +43,12 @@ export const ScanSlice = createSlice({
     },
     ScanFailure: (state, action) => {
       const {payload} = action;
+      console.log('Scan failure payload', payload);
+
       if (payload?.message) {
         state.currentState = payload.message;
       } else if (payload?.nfc_key) {
+        
         errorToast(payload?.nfc_key);
       }
       state.isScanSuccess = false;
