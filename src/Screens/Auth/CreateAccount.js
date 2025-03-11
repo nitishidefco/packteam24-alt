@@ -20,6 +20,7 @@ import {
   ScrollView,
   Linking,
   Button,
+  ActivityIndicator,
 } from 'react-native';
 import {useTranslation} from 'react-i18next';
 
@@ -60,8 +61,6 @@ const CreateAccount = () => {
     'https://eda.workflex360.de/de/technischer-support';
   const {dark, theme, toggle} = useContext(ThemeContext);
   const isConnected = useSelector(state => state?.Network?.isConnected);
-  const {deviceId, manufacturer} = useSelector(state => state?.Network);
-  const [errortext, setErrortext] = useState('');
   const passwordInputRef = createRef();
   const dispatch = useDispatch();
   const [emailError, setEmailError] = useState('');
@@ -69,11 +68,11 @@ const CreateAccount = () => {
   const [userPassword, setUserPassword] = useState(null);
   const [loading, setLoading] = useState(false);
   const [keyboardVisible, setKeyboardVisible] = useState(false);
-  const [dropdownAlert, setDropdownAlert] = useState(null);
   const {createAccountCall} = useAuthActions();
   const {Auth} = useSelector(state => state);
   const [activeLanguage, setActiveLanguage] = useState(null);
   const {globalLanguage} = useSelector(state => state?.GlobalLanguage);
+  console.log('Auth', Auth.isAccountCreateSuccess);
 
   useEffect(() => {
     dispatch(initializeLanguage());
@@ -131,7 +130,7 @@ const CreateAccount = () => {
       formdata.append('lang', globalLanguage);
       createAccountCall(formdata, navigation);
     } finally {
-      // setLoading(false);
+      setLoading(false);
       // navigation.navigate('Login');
     }
   };
@@ -278,13 +277,26 @@ const CreateAccount = () => {
               />
             </View>
             <TouchableOpacity
-              style={styles.buttonStyle}
-              activeOpacity={0.5}
+              style={[
+                styles.buttonStyle,
+                {opacity: Auth.signUpLoading ? 0.5 : 1},
+              ]}
+              // activeOpacity={0.5}
+              disabled={Auth.signUpLoading}
               onPress={onCreateAccountPress}>
-              <Text style={styles.buttonTextStyle}>
-                {/* {t('Login.loginButton')} */}
-                {t('CreateAccount.createAccButton')}
-              </Text>
+              {Auth.signUpLoading ? (
+                <View
+                  style={{
+                    height: '100%',
+                    justifyContent: 'center',
+                  }}>
+                  <ActivityIndicator size={'large'} color={'white'} />
+                </View>
+              ) : (
+                <Text style={styles.buttonTextStyle}>
+                  {t('CreateAccount.createAccButton')}
+                </Text>
+              )}
             </TouchableOpacity>
             <TouchableOpacity
               style={styles.forgotPasswordStyle}

@@ -15,6 +15,7 @@ import {
   StatusBar,
   ScrollView,
   StyleSheet,
+  ActivityIndicator,
 } from 'react-native';
 import {loginStyle as styles} from './styles';
 import {FullScreenSpinner} from '../../Components/HOC';
@@ -247,10 +248,21 @@ const ForgotPass = () => {
                 {width: containerWidth, height: longTextHeight},
               ]}
               activeOpacity={0.5}
-              onPress={onForgotPasswordPress}>
-              <Text style={[styles.buttonTextStyle, {fontSize: fontSize}]}>
-                {t('ForgotPassword.resetButton')}
-              </Text>
+              onPress={onForgotPasswordPress}
+              disabled={Auth?.forgotPasswordLoading}>
+              {Auth?.forgotPasswordLoading ? (
+                <View
+                  style={{
+                    height: '100%',
+                    justifyContent: 'center',
+                  }}>
+                  <ActivityIndicator size={'large'} color={'white'} />
+                </View>
+              ) : (
+                <Text style={[styles.buttonTextStyle, {fontSize: fontSize}]}>
+                  {t('ForgotPassword.resetButton')}
+                </Text>
+              )}
             </TouchableOpacity>
             <TouchableOpacity onPress={() => navigation.replace('Login')}>
               <Text style={inLineStyles.goBack}>

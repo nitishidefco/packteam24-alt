@@ -13,11 +13,13 @@ export const AuthSlice = createSlice({
     isLoginSuccess: NULL,
     islogoutSuccess: NULL,
     isForgotPasswordSuccess: NULL,
-    isAccountCreateSuccess: NULL,
+    isAccountCreateSuccess: FAIL,
     data: null,
     error: null,
     message: '',
     loginLoading: false,
+    signUpLoading: false,
+    forgotPasswordLoading: false,
   },
   reducers: {
     // Login reducers
@@ -86,6 +88,7 @@ export const AuthSlice = createSlice({
         isForgotPasswordSuccess: NULL,
         error: null,
         message: '',
+        forgotPasswordLoading: true,
       };
     },
     forgotPasswordSuccess: (state, action) => {
@@ -94,6 +97,7 @@ export const AuthSlice = createSlice({
         isForgotPasswordSuccess: SUCCESS,
         message: 'Password reset successful',
         data: action.payload,
+        forgotPasswordLoading: false,
       };
     },
     forgotPasswordFailure: (state, action) => {
@@ -104,12 +108,19 @@ export const AuthSlice = createSlice({
         isForgotPasswordSuccess: FAIL,
         error: action.payload,
         message: 'Password reset failed',
+        forgotPasswordLoading: false,
       };
     },
 
     // Create Account reducers
     createAccount: state => {
-      return {...state, isAccountCreateSuccess: NULL, error: null, message: ''};
+      return {
+        ...state,
+        isAccountCreateSuccess: FAIL,
+        error: null,
+        message: '',
+        signUpLoading: true,
+      };
     },
     createAccountSuccess: (state, action) => {
       return {
@@ -117,6 +128,7 @@ export const AuthSlice = createSlice({
         isAccountCreateSuccess: SUCCESS,
         message: 'Account created successfully',
         data: action.payload,
+        signUpLoading: false,
       };
     },
     createAccountFailure: (state, action) => {
@@ -125,6 +137,7 @@ export const AuthSlice = createSlice({
         isAccountCreateSuccess: FAIL,
         error: action.payload,
         message: 'Account creation failed',
+        signUpLoading: false,
       };
     },
 
