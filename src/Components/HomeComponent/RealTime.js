@@ -20,7 +20,7 @@ const RealTime = () => {
         setRandomState(!randomState);
       }
 
-      setAppState(nextAppState);
+      setAppState(nextAppState);  
     };
 
     const subscription = AppState.addEventListener(
