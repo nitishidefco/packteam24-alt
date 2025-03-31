@@ -61,16 +61,16 @@ const App = () => {
                 component={ForgotPass}
                 options={{headerShown: false}}
               />
-              <Stack.Screen
+              {/* <Stack.Screen
                 name="ChangePassword"
                 component={ChangePassword}
                 options={{headerShown: false}}
-              />
-              <Stack.Screen
+              /> */}
+              {/* <Stack.Screen
                 name="UserProfile"
                 component={UserProfile}
                 options={{headerShown: false}}
-              />
+              /> */}
               <Stack.Screen
                 name="HomeDrawer"
                 component={HomeDrawer}

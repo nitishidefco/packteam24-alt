@@ -45,6 +45,7 @@ import {
   initializeLanguage,
   setLanguageWithStorage,
 } from '../../Redux/Reducers/LanguageProviderSlice';
+import Footer from '../../Components/Common/Footer';
 const languages = {
   POL: 'pl', // Polish
   GER: 'de', // German
@@ -308,27 +309,7 @@ const CreateAccount = () => {
               </Text>
             </TouchableOpacity>
 
-            <View style={styles.FlagContainer}>
-              {Object.keys(languages).map(country => (
-                <TouchableOpacity
-                  key={country}
-                  onPress={() => handleLanguageChange(country)}
-                  style={[
-                    styles.touchable,
-                    globalLanguage &&
-                      globalLanguage !== languages[country] &&
-                      styles.inactive,
-                  ]}>
-                  <FlagComponent Country={country} />
-                </TouchableOpacity>
-              ))}
-            </View>
-            <View style={{marginBottom: Matrics.ms(20)}}>
-              <OpenURLText url={privacyPolicyUrl}>{t('Login.pp')}</OpenURLText>
-              <OpenURLText url={applicationInformatinoUrl}>
-                {t('Login.ai')}
-              </OpenURLText>
-            </View>
+            <Footer />
           </View>
         </ScrollView>
       </KeyboardAvoidingView>

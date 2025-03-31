@@ -101,7 +101,7 @@ export const AuthSlice = createSlice({
       };
     },
     forgotPasswordFailure: (state, action) => {
-      console.log('Action .payload', action.payload);
+      console.log('Action .payload password failure', action.payload);
 
       return {
         ...state,

@@ -110,7 +110,7 @@ const CustomDrawerContent = props => {
 
   const handleChangePasswordClick = () => {
     if (isConnected) {
-      navigation.replace('ChangePassword');
+      navigation.navigate('HomeDrawer', {screen: 'ChangePassword'});
     } else {
       Alert.alert(
         i18n.t('Offline.NoInternet'),
@@ -121,7 +121,7 @@ const CustomDrawerContent = props => {
 
   const handleUserProfileClick = () => {
     if (isConnected) {
-      navigation.replace('UserProfile');
+      navigation.navigate('HomeDrawer', {screen: 'UserProfile'});
     } else {
       Alert.alert(
         i18n.t('Offline.NoInternet'),

@@ -27,6 +27,9 @@ import {useHomeActions} from '../../Redux/Hooks';
 import {useSelector} from 'react-redux';
 import {Validator} from '../../Helpers';
 import {errorToast} from '../../Helpers/ToastMessage';
+import DrawerSceneWrapper from '../../Components/Common/DrawerSceneWrapper';
+import CustomHeader from '../../Components/Common/CustomHeader';
+import LanguageSelector from '../../Components/Common/LanguageSelector';
 
 const UserProfile = ({navigation}) => {
   const {t, i18n} = useTranslation();
@@ -331,118 +334,130 @@ const UserProfile = ({navigation}) => {
       </SafeAreaView>
     </SafeAreaProvider>
   ) : (
-    <SafeAreaView style={styles.safeArea}>
-      <View style={styles.header}>
-        <Text style={styles.headerTitle}>{t('UserProfileScreen.title')}</Text>
-      </View>
-      <KeyboardAvoidingView
-        style={styles.keyboardAvoidingView}
-        behavior={Platform.OS === 'android' ? 'height' : 'padding'}
-        enabled>
-        <ScrollView
-          contentContainerStyle={{flexGrow: 1}}
-          keyboardShouldPersistTaps="handled"
-          showsVerticalScrollIndicator={false}>
-          <View style={styles.mainContainer}>
-            <View>
-              <View style={styles.container}>
-                <View style={styles.imageContainer}>
-                  {image ? (
-                    <Image
-                      source={{uri: image}}
-                      style={styles.image}
-                      resizeMode="cover"
-                      onError={() => setError('Failed to load image')}
-                    />
-                  ) : (
-                    <View style={styles.placeholderContainer}>
-                      <View style={styles.placeholder}>
-                        <Text style={styles.placeholderText}>
-                          {error || 'Dummy avatar will be added if no photo'}
-                        </Text>
+    <DrawerSceneWrapper>
+      <SafeAreaView style={styles.safeArea}>
+        <CustomHeader />
+        <View style={styles.header}>
+          <Text style={styles.headerTitle}>{t('UserProfileScreen.title')}</Text>
+        </View>
+        <View
+          style={{
+            position: 'relative',
+            alignItems: 'flex-end',
+            paddingHorizontal: Matrics.s(10),
+            marginBottom: Matrics.vs(70),
+          }}>
+          <LanguageSelector sessionId={SessionId} />
+        </View>
+        <KeyboardAvoidingView
+          style={styles.keyboardAvoidingView}
+          behavior={Platform.OS === 'android' ? 'height' : 'padding'}
+          enabled>
+          <ScrollView
+            contentContainerStyle={{flexGrow: 1}}
+            keyboardShouldPersistTaps="handled"
+            showsVerticalScrollIndicator={false}>
+            <View style={styles.mainContainer}>
+              <View>
+                <View style={styles.container}>
+                  <View style={styles.imageContainer}>
+                    {image ? (
+                      <Image
+                        source={{uri: image}}
+                        style={styles.image}
+                        resizeMode="cover"
+                        onError={() => setError('Failed to load image')}
+                      />
+                    ) : (
+                      <View style={styles.placeholderContainer}>
+                        <View style={styles.placeholder}>
+                          <Text style={styles.placeholderText}>
+                            {error || 'Dummy avatar will be added if no photo'}
+                          </Text>
+                        </View>
                       </View>
-                    </View>
-                  )}
-                </View>
-                {/* {error && <Text style={styles.errorText}>{error}</Text>} */}
-                <View style={styles.imageActionButton}>
-                  <TouchableOpacity onPress={pickImage} style={styles.button}>
-                    <Text style={styles.buttonText}>
-                      {image
-                        ? t('UserProfileScreen.EditPhoto')
-                        : t('UserProfileScreen.SelectPhoto')}
-                    </Text>
-                  </TouchableOpacity>
-                  {image && (
-                    <TouchableOpacity
-                      onPress={() => handleRemoveProfilePhoto()}
-                      style={styles.button}>
+                    )}
+                  </View>
+                  {/* {error && <Text style={styles.errorText}>{error}</Text>} */}
+                  <View style={styles.imageActionButton}>
+                    <TouchableOpacity onPress={pickImage} style={styles.button}>
                       <Text style={styles.buttonText}>
-                        {t('UserProfileScreen.RemovePhoto')}
+                        {image
+                          ? t('UserProfileScreen.EditPhoto')
+                          : t('UserProfileScreen.SelectPhoto')}
                       </Text>
                     </TouchableOpacity>
-                  )}
+                    {image && (
+                      <TouchableOpacity
+                        onPress={() => handleRemoveProfilePhoto()}
+                        style={styles.button}>
+                        <Text style={styles.buttonText}>
+                          {t('UserProfileScreen.RemovePhoto')}
+                        </Text>
+                      </TouchableOpacity>
+                    )}
+                  </View>
+                </View>
+                <View style={[loginStyle.SectionStyle]}>
+                  <Text
+                    style={{
+                      position: 'absolute',
+                      bottom: Matrics.ms(50),
+                      fontFamily: typography.fontFamily.Montserrat.Regular,
+                      color: '#555555',
+                    }}>
+                    {t('UserProfileScreen.email')}
+                  </Text>
+                  <Image
+                    source={Images.EMAIL}
+                    resizeMode={'center'}
+                    style={loginStyle.loginInputIconStyle}
+                  />
+                  <TextInput
+                    style={loginStyle.inputStyle}
+                    onChangeText={setUserEmail}
+                    value={userEmail}
+                    placeholder={t('UserProfileScreen.emailPlaceHolder')}
+                    placeholderTextColor={'gray'}
+                    autoCapitalize="none"
+                    keyboardType="email-address"
+                    returnKeyType="next"
+                  />
                 </View>
               </View>
-              <View style={[loginStyle.SectionStyle]}>
-                <Text
-                  style={{
-                    position: 'absolute',
-                    bottom: Matrics.ms(50),
-                    fontFamily: typography.fontFamily.Montserrat.Regular,
-                    color: '#555555',
-                  }}>
-                  {t('UserProfileScreen.email')}
-                </Text>
-                <Image
-                  source={Images.EMAIL}
-                  resizeMode={'center'}
-                  style={loginStyle.loginInputIconStyle}
-                />
-                <TextInput
-                  style={loginStyle.inputStyle}
-                  onChangeText={setUserEmail}
-                  value={userEmail}
-                  placeholder={t('UserProfileScreen.emailPlaceHolder')}
-                  placeholderTextColor={'gray'}
-                  autoCapitalize="none"
-                  keyboardType="email-address"
-                  returnKeyType="next"
-                />
-              </View>
-            </View>
-            <View>
-              <View style={styles.actionContainer}>
-                <TouchableOpacity
-                  style={[styles.actionButton, styles.cancelButton]}
-                  onPress={handleCancel}>
-                  <Text style={styles.cancelButtonText}>
-                    {t('UserProfileScreen.cancel')}
-                  </Text>
-                </TouchableOpacity>
-
-                <TouchableOpacity
-                  style={[styles.actionButton, styles.saveButton]}
-                  onPress={handleSave}>
-                  <Text style={styles.saveButtonText}>
-                    {t('UserProfileScreen.save')}
-                  </Text>
-                </TouchableOpacity>
-              </View>
               <View>
-                <TouchableOpacity
-                  style={[styles.actionButton, styles.removeAccountButton]}
-                  onPress={handleRemoveAccount}>
-                  <Text style={styles.saveButtonText}>
-                    {t('CreateAccount.removeAccount')}
-                  </Text>
-                </TouchableOpacity>
+                <View style={styles.actionContainer}>
+                  <TouchableOpacity
+                    style={[styles.actionButton, styles.cancelButton]}
+                    onPress={handleCancel}>
+                    <Text style={styles.cancelButtonText}>
+                      {t('UserProfileScreen.cancel')}
+                    </Text>
+                  </TouchableOpacity>
+
+                  <TouchableOpacity
+                    style={[styles.actionButton, styles.saveButton]}
+                    onPress={handleSave}>
+                    <Text style={styles.saveButtonText}>
+                      {t('UserProfileScreen.save')}
+                    </Text>
+                  </TouchableOpacity>
+                </View>
+                <View>
+                  <TouchableOpacity
+                    style={[styles.actionButton, styles.removeAccountButton]}
+                    onPress={handleRemoveAccount}>
+                    <Text style={styles.saveButtonText}>
+                      {t('CreateAccount.removeAccount')}
+                    </Text>
+                  </TouchableOpacity>
+                </View>
               </View>
             </View>
-          </View>
-        </ScrollView>
-      </KeyboardAvoidingView>
-    </SafeAreaView>
+          </ScrollView>
+        </KeyboardAvoidingView>
+      </SafeAreaView>
+    </DrawerSceneWrapper>
   );
 };
 

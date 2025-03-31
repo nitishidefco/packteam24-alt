@@ -20,7 +20,7 @@ import {
 import {loginStyle as styles} from './styles';
 import {FullScreenSpinner} from '../../Components/HOC';
 import {useNavigation} from '@react-navigation/native';
-import {Matrics, typography} from '../../Config/AppStyling';
+import {COLOR, Matrics, typography} from '../../Config/AppStyling';
 import Images from '../../Config/Images';
 import {ThemeContext} from '../../Components/Provider/ThemeProvider';
 import {useDispatch, useSelector} from 'react-redux';
@@ -32,6 +32,8 @@ import {setDeviceInfo} from '../../Redux/Reducers/NetworkSlice';
 import DeviceInfo from 'react-native-device-info';
 import useSavedLanguage from '../../Components/Hooks/useSavedLanguage';
 import {errorToast, success} from '../../Helpers/ToastMessage';
+import Footer from '../../Components/Common/Footer';
+import ResetPasswordButton from '../../Components/Common/ForgotPasswordButton';
 const ForgotPass = () => {
   const navigation = useNavigation();
   const {t, i18n} = useTranslation();
@@ -40,9 +42,9 @@ const ForgotPass = () => {
 
   // email & password that was static
   // biuro@mhcode.pl  das4you123
+  const isConnected = useSelector(state => state?.Network?.isConnected);
 
   const {dark, theme, toggle} = useContext(ThemeContext);
-  const isConnected = useSelector(state => state?.Network?.isConnected);
   const {deviceId, manufacturer} = useSelector(state => state?.Network);
   const [errortext, setErrortext] = useState('');
   const passwordInputRef = createRef();
@@ -59,19 +61,19 @@ const ForgotPass = () => {
   const language = useSavedLanguage();
   const {globalLanguage} = useSelector(state => state?.GlobalLanguage);
   // --------------- LIFECYCLE ---------------
-  useEffect(() => {
-    if (loading && Auth.isLoginSuccess === true) {
-      setLoading(false);
-      const successToast = `${t('Toast.LoginSuccess')}`;
-      success(successToast);
-      navigation.navigate('HomeDrawerStack', {screen: 'HomeDrawer'});
-      setUserEmail(null);
-      setUserPassword(null);
-    } else if (loading && Auth.isLoginSuccess === false) {
-      setLoading(false);
-      errorToast(i18n.t('Toast.LoginUnsuccessful'));
-    }
-  }, [Auth?.isLoginSuccess]);
+  // useEffect(() => {
+  //   if (loading && Auth.isForgotPasswordSuccess === true) {
+  //     setLoading(false);
+  //     // const successToast = `${t('Toast.LoginSuccess')}`;
+  //     // success(successToast);
+  //     // navigation.navigate('HomeDrawerStack', {screen: 'HomeDrawer'});
+  //     setUserEmail(null);
+  //     // setUserPassword(null);
+  //   } else if (loading && Auth.isForgotPasswordSuccess === false) {
+  //     setLoading(false);
+  //     errorToast(i18n.t('Toast.LoginUnsuccessful'));
+  //   }
+  // }, [Auth?.isForgotPasswordSuccess]);
   // ---------------Getting Device info---------------
   useEffect(() => {
     const getDeviceInfo = async () => {
@@ -87,19 +89,7 @@ const ForgotPass = () => {
     getDeviceInfo();
   }, []);
   // --------------- METHODS ---------------
-  const loginAPI = () => {
-    try {
-      setLoading(true);
-      let formdata = new FormData();
-      formdata.append('email', userEmail);
-      formdata.append('password', userPassword);
-      formdata.append('device_id', deviceId);
-      formdata.append('lang', globalLanguage);
-      loginCall(formdata);
-    } finally {
-      // setLoading(false);
-    }
-  };
+
   const forgotPasswordAPI = () => {
     try {
       setLoading(true);
@@ -108,36 +98,27 @@ const ForgotPass = () => {
       formdata.append('lang', globalLanguage);
       forgotPasswordCall(formdata);
     } catch (error) {
-      setLoading(false);
+      // setLoading(false);
     }
   };
-  function validateInputs() {
-    if (userEmail == '' || userEmail == null) {
-      const message = `${t('ResetPassword.emptyEmailValidation')}`;
-      errorToast(message);
-      return false;
-    }
-    if (!Validator.validateEmail(userEmail)) {
-      const message = `${t('ResetPassword.invalidEmail')}`;
-      errorToast(message);
-
-      return false;
-    }
-    if (userPassword === '') {
-      errorToast(i18n.t('Toast.EnterPassword'));
-      return false;
-    }
-    return true;
-  }
 
   const onForgotPasswordPress = () => {
     if (!isConnected) {
       errorToast(i18n.t('Toast.CheckInternet'));
-    } else {
-      if (validateInputs('Enter Email')) {
-        forgotPasswordAPI();
-      }
+      return;
     }
+
+    if (!userEmail) {
+      errorToast(t('ResetPassword.emptyEmailValidation'));
+      return;
+    }
+
+    if (!Validator.validateEmail(userEmail)) {
+      errorToast(t('ResetPassword.invalidEmail'));
+      return;
+    }
+
+    forgotPasswordAPI();
   };
   const hideStatusBar = () => {
     StatusBar.setHidden(true);
@@ -241,34 +222,15 @@ const ForgotPass = () => {
                 blurOnSubmit={false}
               />
             </View>
-
-            <TouchableOpacity
-              style={[
-                styles.buttonStyle,
-                {width: containerWidth, height: longTextHeight},
-              ]}
-              activeOpacity={0.5}
-              onPress={onForgotPasswordPress}
-              disabled={Auth?.forgotPasswordLoading}>
-              {Auth?.forgotPasswordLoading ? (
-                <View
-                  style={{
-                    height: '100%',
-                    justifyContent: 'center',
-                  }}>
-                  <ActivityIndicator size={'large'} color={'white'} />
-                </View>
-              ) : (
-                <Text style={[styles.buttonTextStyle, {fontSize: fontSize}]}>
-                  {t('ForgotPassword.resetButton')}
-                </Text>
-              )}
-            </TouchableOpacity>
+            <ResetPasswordButton
+              onForgotPasswordPress={onForgotPasswordPress}
+            />
             <TouchableOpacity onPress={() => navigation.replace('Login')}>
               <Text style={inLineStyles.goBack}>
                 {t('ForgotPassword.backToLogin')}
               </Text>
             </TouchableOpacity>
+            <Footer />
           </View>
         </ScrollView>
       </KeyboardAvoidingView>
@@ -278,9 +240,10 @@ const ForgotPass = () => {
 
 const inLineStyles = StyleSheet.create({
   goBack: {
+    color: '#307ecc',
     textAlign: 'center',
-    fontSize: typography.fontSizes.fs17,
-    fontWeight: 'bold',
+    fontSize: 18,
+    textDecorationLine: 'underline',
   },
   loginText2: {
     fontSize: typography.fontSizes.fs15,
@@ -300,10 +263,6 @@ const inLineStyles = StyleSheet.create({
   },
   mainBodyContainer: {
     // marginHorizontal: Matrics.ms(2),
-  },
-  buttontextStyle: {
-    // flexWrap: 'wrap',
-    // textAlign: 'center',
   },
 });
 

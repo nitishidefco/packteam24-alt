@@ -7,6 +7,8 @@ import Home from '../../Screens/Home/Home';
 import CustomHeader from './CustomHeader';
 import colors from '../../Config/AppStyling/colors';
 import DailyListScreen from '../../Screens/DailyList/DailyListScreen';
+import ChangePassword from '../../Screens/UserHelp/ChangePassword';
+import UserProfile from '../../Screens/UserHelp/UserProfile';
 
 const Drawer = createDrawerNavigator();
 
@@ -35,6 +37,20 @@ const HomeDrawer = () => {
       <Drawer.Screen
         name="DailyListScreen"
         component={DailyListScreen}
+        options={{
+          headerShown: false,
+        }}
+      />
+      <Drawer.Screen
+        name="ChangePassword"
+        component={ChangePassword}
+        options={{
+          headerShown: false,
+        }}
+      />
+      <Drawer.Screen
+        name="UserProfile"
+        component={UserProfile}
         options={{
           headerShown: false,
         }}
