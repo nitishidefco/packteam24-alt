@@ -42,6 +42,7 @@ import {setSessionHandler} from '../../Utlis/SessionHandler';
 import {errorToast} from '../../Helpers/ToastMessage';
 import RealTime from '../../Components/HomeComponent/RealTime';
 import {setIsTimeValid} from '../../Redux/Reducers/TimeSlice';
+import NotificationComponent from './NotificationComponent';
 
 const Home = ({navigation, route}) => {
   const dispatch = useDispatch();
@@ -485,6 +486,7 @@ const Home = ({navigation, route}) => {
             <Text style={styles.hint}>
               After enabling NFC, return to this screen to continue
             </Text>
+            <NotificationComponent />
           </View>
         </DrawerSceneWrapper>
       );
@@ -599,6 +601,7 @@ const Home = ({navigation, route}) => {
               tagsFromLocalStorage={tagsFromLocalStorage}
             />
           </View>
+          <NotificationComponent />
         </ScrollView>
       </SafeAreaView>
     </DrawerSceneWrapper>

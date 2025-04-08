@@ -1,16 +1,25 @@
 // Splash.js
 import React, {useEffect, useState} from 'react';
-import {View, StyleSheet, Image} from 'react-native';
+import {View, StyleSheet, Image, PermissionsAndroid} from 'react-native';
 import {useNavigation} from '@react-navigation/native';
 import Images from './Config/Images';
 import {reduxStorage} from './Redux/Storage';
 import {useWorkHistoryActions} from './Redux/Hooks/useWorkHistoryActions';
-
+import {useNotificationActions} from './Redux/Hooks/useNotificationActions';
+import { useSelector } from 'react-redux';
+import { useAuthActions } from './Redux/Hooks';
 const Splash = () => {
   const {getRealTimeCall} = useWorkHistoryActions();
+  
 
   const [userToken, setuserToken] = useState(null);
+  useEffect(() => {
+    PermissionsAndroid.request(
+      PermissionsAndroid.PERMISSIONS.POST_NOTIFICATIONS,
+    );
+  }, []);
 
+  
   // fetch user token initally
   useEffect(() => {
     async function getToken() {

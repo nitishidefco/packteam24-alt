@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "1023003329165",
+    "project_id": "edapackteam",
+    "storage_bucket": "edapackteam.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1023003329165:android:d7cf957126118e26b998c4",
+        "android_client_info": {
+          "package_name": "com.packteam"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBr2ialax4XZUDwabrnS-dOnoR9YDoFmOI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

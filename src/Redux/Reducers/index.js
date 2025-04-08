@@ -13,6 +13,8 @@ import WorkHistoryReducer from './WorkHistorySlice';
 import LanguageProviderReducer from './LanguageProviderSlice';
 import LocalWorkHistoryReducer from './LocalWorkHistorySlice';
 import TimeReducer from './TimeSlice';
+import NotificationReducer from './NotificationSlice';
+
 let appReducer = combineReducers({
   Auth: AuthReducer,
   Home: HomeReducer,
@@ -28,6 +30,7 @@ let appReducer = combineReducers({
   GlobalLanguage: LanguageProviderReducer,
   LocalWorkHistory: LocalWorkHistoryReducer,
   TrueTime: TimeReducer,
+  Notification: NotificationReducer,
 });
 
 const rootReducer = (state, action) => {

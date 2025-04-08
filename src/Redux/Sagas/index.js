@@ -8,6 +8,9 @@ import fetchWorkStatusFromServerSaga from './WorkStatusSaga';
 import userProfileSaga from './UserProfileSaga';
 import passwordSaga from './ChangePasswordSaga';
 import fetchWorkHistoryFromServer from './WorkHistorySaga';
+import notificationSagaExport from './NotificationSaga';
+// import notificationSaga from './NotificationSaga';
+
 
 //Main Root Saga
 const rootSaga = function* rootSaga() {
@@ -21,6 +24,7 @@ const rootSaga = function* rootSaga() {
     userProfileSaga(),
     passwordSaga(),
     fetchWorkHistoryFromServer(),
+    notificationSagaExport(),
   ]);
 };
 export default rootSaga;
