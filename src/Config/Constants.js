@@ -28,8 +28,8 @@ export default {
     THANKS: 'thanks',
     NORMAL: 'normal',
   },
-  USER_AGENT: Platform.OS == 'android' ? 'Android' : 'iOS',
-  DEVICE_TYPE: Platform.OS == 'android' ? 1 : 0,
+  USER_AGENT: Platform.OS === 'android' ? 'Android' : 'iOS',
+  DEVICE_TYPE: Platform.OS === 'android' ? 1 : 0,
   REPORT_MAIL: 'support@test.com',
   NO_INTERNET_MESSAGE: 'No internet connection!!',
   USER_ROLE: {

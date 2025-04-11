@@ -41,8 +41,10 @@ import {initializeLanguage} from '../../Redux/Reducers/LanguageProviderSlice';
 import {setSessionHandler} from '../../Utlis/SessionHandler';
 import {errorToast} from '../../Helpers/ToastMessage';
 import RealTime from '../../Components/HomeComponent/RealTime';
-import {setIsTimeValid} from '../../Redux/Reducers/TimeSlice';
-import NotificationComponent from './NotificationComponent';
+import {
+  fetchMessagesStart,
+  fetchUnreadCountStart,
+} from '../../Redux/Reducers/MessageSlice';
 
 const Home = ({navigation, route}) => {
   const dispatch = useDispatch();
@@ -50,13 +52,11 @@ const Home = ({navigation, route}) => {
   useNfcStatus();
   const {t, i18n} = useTranslation();
   const {sessions, bulkSessions} = useSelector(state => state?.OfflineData);
-  const isTimeValid = useSelector(state => state.TrueTime.isTimeValid);
 
   // Current time from the server time
   const realTime = useSelector(state => state.TrueTime.currentTime);
 
   const isConnected = useSelector(state => state?.Network?.isConnected);
-  const isNfcEnabled = useSelector(state => state?.Network?.isNfcEnabled);
   const [duplicateTagId, setDuplicateTagId] = useState('');
   const [tagDetected, setTagDetected] = useState();
   const [tagId, setTagId] = useState('');
@@ -74,6 +74,8 @@ const Home = ({navigation, route}) => {
   const {globalLanguage} = useSelector(state => state?.GlobalLanguage);
   const {localWorkHistory} = useSelector(state => state?.LocalWorkHistory);
   const currentTime = useSelector(state => state.TrueTime.currentTime);
+  const messageState = useSelector(state => state.Messages);
+
   // Set session handler values
   setSessionHandler(dispatch, SessionId, deviceId, navigation);
   const [count, setCount] = useState(0);
@@ -101,31 +103,6 @@ const Home = ({navigation, route}) => {
     );
     if (Platform.OS === 'ios' && appState !== 'active') {
       return;
-    }
-    try {
-      if (deviceMoment.isBefore(serverMoment)) {
-        dispatch(setIsTimeValid(false));
-        Alert.alert(
-          i18n.t('timeSyncError.title'),
-          `${i18n.t('timeSyncError.description')}\n\n` +
-            `${i18n.t('timeSyncError.instructions_intro')}\n` +
-            `- ${i18n.t('timeSyncError.instruction_step1')}\n` +
-            `- ${i18n.t('timeSyncError.instruction_step2')}\n\n` +
-            `${i18n.t('timeSyncError.warning')}`,
-          [
-            {
-              text: 'OK',
-              onPress: () => console.log('User acknowledged the alert'),
-              style: 'default',
-            },
-          ],
-          {cancelable: false},
-        );
-      } else {
-        dispatch(setIsTimeValid(true));
-      }
-    } catch (error) {
-      console.error('Error some', error);
     }
   }, [appState, tagDetected]);
 
@@ -211,7 +188,15 @@ const Home = ({navigation, route}) => {
       subscription.remove();
     };
   }, [appState, initAndroidNfc]);
+  const [refreshing, setRefreshing] = useState(false);
 
+  const onRefresh = useCallback(() => {
+    setRefreshing(true);
+    setTimeout(() => {
+      navigation.replace('HomeDrawer', {}, {animationEnabled: false});
+      setRefreshing(false);
+    }, 2000);
+  }, [navigation]);
   // Sets up NFC on component mount and cleans up on unmount
   useEffect(() => {
     const setupNfc = async () => {
@@ -324,12 +309,12 @@ const Home = ({navigation, route}) => {
 
     const processOnlineTags = async (storedSessions, bulkStoredSessions) => {
       try {
-        if (tagId && isTimeValid) {
+        if (tagId) {
           await getUid(tagId);
           setTagId('');
         }
 
-        if (bulkStoredSessions.length > 0 && isTimeValid) {
+        if (bulkStoredSessions.length > 0) {
           await makeBulkCall(bulkStoredSessions);
         }
         // console.log('bulk stored sessions', bulkStoredSessions);
@@ -376,7 +361,7 @@ const Home = ({navigation, route}) => {
         console.log('tag id is empty or last item is not ended');
         setTagId('');
         return;
-      } else if (isTimeValid) {
+      } else {
         setDuplicateTagId(tagId);
 
         try {
@@ -447,61 +432,16 @@ const Home = ({navigation, route}) => {
     }
     setLoading(false);
   }, [Home]);
-
-  // Render fallback UI if the device does not support NFC
-  // if (!hasNfc) {
-  //   return (
-  //     <DrawerSceneWrapper>
-  //       <SafeAreaView style={styles.centeredContainer}>
-  //         <CustomHeader />
-  //         <View style={styles.centeredContainer}>
-  //           <Text style={styles.errorText}>
-  //             Your device does not support NFC! If your device supports NFC turn
-  //             it on from settings and restart the App
-  //           </Text>
-  //         </View>
-  //       </SafeAreaView>
-  //     </DrawerSceneWrapper>
-  //   );
-  // }
-  if (Platform.OS === 'android') {
-    if (!isNfcEnabled) {
-      return (
-        <DrawerSceneWrapper>
-          <CustomHeader />
-
-          <View style={styles.container}>
-            <Text style={styles.title}>NFC is Required</Text>
-            <Text style={styles.description}>
-              Near Field Communication (NFC) allows your phone to communicate
-              with nearby devices. You'll need to enable it to use this feature.
-            </Text>
-
-            <TouchableOpacity
-              style={styles.scanButton}
-              onPress={() => NfcManager.goToNfcSetting()}>
-              <Text style={styles.buttonText}>Open NFC Settings</Text>
-            </TouchableOpacity>
-
-            <Text style={styles.hint}>
-              After enabling NFC, return to this screen to continue
-            </Text>
-            <NotificationComponent />
-          </View>
-        </DrawerSceneWrapper>
-      );
-    }
-  }
-
-  const [refreshing, setRefreshing] = useState(false);
-
-  const onRefresh = useCallback(() => {
-    setRefreshing(true);
-    setTimeout(() => {
-      navigation.replace('HomeDrawer', {}, {animationEnabled: false});
-      setRefreshing(false);
-    }, 2000);
-  }, [navigation]);
+  useEffect(() => {
+    const formData = new FormData();
+    formData.append('session_id', SessionId);
+    formData.append('device_id', deviceId);
+    formData.append('lang', globalLanguage);
+    formData.append('page', 1);
+    dispatch(fetchMessagesStart({payload: formData}));
+    dispatch(fetchUnreadCountStart({payload: formData}));
+  }, []);
+  // Log the state to verify
 
   return (
     <DrawerSceneWrapper>
@@ -518,7 +458,7 @@ const Home = ({navigation, route}) => {
                 ? styles.topContainer
                 : styles.topContainerios,
             ]}>
-            {!isTimeValid && (
+            {/* {!isTimeValid && (
               <Text
                 style={[
                   {
@@ -537,7 +477,7 @@ const Home = ({navigation, route}) => {
                 ]}>
                 {i18n.t('HomeScreen.importantNotice')}
               </Text>
-            )}
+            )} */}
             <View
               style={{
                 position: 'relative',
@@ -578,7 +518,6 @@ const Home = ({navigation, route}) => {
                 {Platform.OS === 'ios' && (
                   <TouchableOpacity
                     style={styles.scanButton}
-                    disabled={!isTimeValid}
                     onPress={() => initNfcScan()}>
                     <Text style={styles.buttonText}>
                       {t('HomeScreen.nfcButtonText')}
@@ -601,7 +540,7 @@ const Home = ({navigation, route}) => {
               tagsFromLocalStorage={tagsFromLocalStorage}
             />
           </View>
-          <NotificationComponent />
+          {/* <NotificationComponent /> */}
         </ScrollView>
       </SafeAreaView>
     </DrawerSceneWrapper>

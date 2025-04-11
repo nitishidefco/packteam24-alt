@@ -1,5 +1,4 @@
 import {Constants} from '../../Config';
-import {Tools} from '../../Helpers';
 import Ajax from './base';
 
 const BASE_URL = Constants.IS_DEVELOPING_MODE

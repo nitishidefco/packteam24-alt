@@ -1,15 +1,13 @@
 import {createSlice} from '@reduxjs/toolkit';
 import {NOTIFICATION_REDUCER} from '../SliceKey';
 
-const NULL = null;
-const SUCCESS = true;
-const FAIL = false;
-
 const notificationSlice = createSlice({
   name: NOTIFICATION_REDUCER,
   initialState: {
     data: null,
     isLoading: null,
+    notifications: [],
+    unreadCount: 0,
   },
   reducers: {
     notification: state => {
@@ -22,11 +20,27 @@ const notificationSlice = createSlice({
     notificationFail: (state, action) => {
       state.isLoading = false;
     },
+    setNotification: (state, action) => {
+      console.log('State notifications', state.notifications, action.p);
+
+      state.notifications.push(action.payload);
+      state.unreadCount += 1;
+    },
+    // Add: Clear notifications (optional, for resetting the state)
+    clearNotifications: state => {
+      state.notifications = [];
+      state.unreadCount = 0;
+    },
   },
 });
 
-export const {notification, notificationSuccess, notificationFail} =
-  notificationSlice.actions;
+export const {
+  notification,
+  notificationSuccess,
+  notificationFail,
+  setNotification,
+  clearNotifications,
+} = notificationSlice.actions;
 
 const NotificationReducer = notificationSlice.reducer;
 export default NotificationReducer;

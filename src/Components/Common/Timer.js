@@ -17,7 +17,6 @@ import i18n from '../../i18n/i18n';
 import reactotron from '../../../ReactotronConfig';
 import {useScanTagActions} from '../../Redux/Hooks/useScanTagActions';
 import {reduxStorage} from '../../Redux/Storage';
-import {setIsTimeValid} from '../../Redux/Reducers/TimeSlice';
 
 const Timer = ({tag, tagsFromLocalStorage, sessionId}) => {
   const dispatch = useDispatch();
@@ -43,7 +42,6 @@ const Timer = ({tag, tagsFromLocalStorage, sessionId}) => {
   const {tagInLocalStorage} = useSelector(state => state.OfflineData);
   const {isLoading} = useSelector(state => state?.Scan);
   const currentTime = useSelector(state => state.TrueTime.currentTime);
-  const isTimeValid = useSelector(state => state.TrueTime.isTimeValid);
   const nowTranslation = ['Jetzt', 'Now', 'now', 'Сейчас', 'Зараз', 'Teraz'];
   // const [tagMode, setTagMode] = useState(tagModeById);
   useEffect(() => {
@@ -101,30 +99,12 @@ const Timer = ({tag, tagsFromLocalStorage, sessionId}) => {
     randomState,
     realTimeLoading,
   ]);
-  useEffect(() => {
-    const deviceMoment = moment().tz('Europe/Berlin');
-    const serverMoment = moment.tz(
-      `${currentTime?.date} ${currentTime?.time}`,
-      'YYYY-MM-DD HH:mm:ss',
-      'Europe/Berlin',
-    );
 
-    try {
-      if (deviceMoment.isBefore(serverMoment)) {
-        dispatch(setIsTimeValid(false));
-      } else {
-        dispatch(setIsTimeValid(true));
-      }
-    } catch (error) {
-      console.error('Error some', error);
-    }
-  }, [appState]);
   const setInitialTimer = async () => {
     if (
       isConnected &&
       workHistoryState?.data?.length > 0 &&
       !workHistoryState.workHistoryLoading &&
-      isTimeValid &&
       !scanTagState.normalScanLoading
     ) {
       console.log('*******************************************************');
@@ -156,7 +136,7 @@ const Timer = ({tag, tagsFromLocalStorage, sessionId}) => {
         } else {
           setSeconds(elapsedTime);
         }
-        if (workHistoryState?.data?.length === 1 && isTimeValid) {
+        if (workHistoryState?.data?.length === 1) {
           reactotron.log(
             'controlTimer called with: work_in_progress or break_start',
           );
@@ -167,7 +147,6 @@ const Timer = ({tag, tagsFromLocalStorage, sessionId}) => {
               : 'break_start' || tagMode,
           );
         } else if (
-          isTimeValid &&
           !scanTagState.normalScanLoading &&
           !workHistoryState?.workHistoryLoading
         ) {
@@ -184,7 +163,7 @@ const Timer = ({tag, tagsFromLocalStorage, sessionId}) => {
       } else {
         stopTimer();
       }
-    } else if (!isConnected && localWorkHistory?.length > 0 && isTimeValid) {
+    } else if (!isConnected && localWorkHistory?.length > 0) {
       const lastEntryTime = moment.tz(
         localWorkHistory[localWorkHistory.length - 1].from,
         'HH:mm:ss',
@@ -218,18 +197,14 @@ const Timer = ({tag, tagsFromLocalStorage, sessionId}) => {
       if (tagMode === 'break_start') {
         stopTimer();
       } else if (
-        (workHistoryState.data.length > 0 || localWorkHistory.length > 0) &&
-        isTimeValid
+        workHistoryState.data.length > 0 ||
+        localWorkHistory.length > 0
       ) {
         reactotron.log(
           'controlTimer called with: tagInLocalStorage or tagMode',
         );
         controlTimer(tagInLocalStorage || tagMode);
-      } else if (
-        tagMode === 'work_start' &&
-        isTimeValid &&
-        !scanTagState.error
-      ) {
+      } else if (tagMode === 'work_start' && !scanTagState.error) {
         reactotron.log('controlTimer called with: work_start');
         controlTimer(tagMode);
       } else {
@@ -319,10 +294,9 @@ const Timer = ({tag, tagsFromLocalStorage, sessionId}) => {
 
   return (
     <View style={styles.container}>
-      {isLoading && !isTimeValid ? (
+      {isLoading ? (
         <Text style={styles.loadingText}>{i18n.t('Timer.sync')}</Text>
-      ) : (workHistoryState.workHistoryLoading || realTimeLoading) &&
-        isTimeValid ? (
+      ) : workHistoryState.workHistoryLoading || realTimeLoading ? (
         <Text style={styles.timerLoadingText}>
           {i18n.t('HomeScreen.checkingTimeWithServer')}
         </Text>

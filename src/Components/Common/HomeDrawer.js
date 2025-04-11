@@ -9,6 +9,7 @@ import colors from '../../Config/AppStyling/colors';
 import DailyListScreen from '../../Screens/DailyList/DailyListScreen';
 import ChangePassword from '../../Screens/UserHelp/ChangePassword';
 import UserProfile from '../../Screens/UserHelp/UserProfile';
+import NotificationScreen from '../../Screens/Home/NotificationScreen';
 
 const Drawer = createDrawerNavigator();
 
@@ -55,7 +56,13 @@ const HomeDrawer = () => {
           headerShown: false,
         }}
       />
-
+      <Drawer.Screen
+        name="NotificationScreen"
+        component={NotificationScreen}
+        options={{
+          headerShown: false,
+        }}
+      />
       {/* Add more drawer screens here */}
     </Drawer.Navigator>
   );

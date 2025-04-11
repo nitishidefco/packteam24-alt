@@ -3,7 +3,7 @@ if (__DEV__) {
   require('../ReactotronConfig');
 }
 
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect, useRef} from 'react';
 import {NavigationContainer} from '@react-navigation/native';
 import {createStackNavigator} from '@react-navigation/stack';
 import {I18nextProvider} from 'react-i18next';
@@ -26,25 +26,32 @@ import ForgotPass from './Screens/Auth/ForgotPass';
 import ChangePassword from './Screens/UserHelp/ChangePassword';
 import UserProfile from './Screens/UserHelp/UserProfile';
 import CreateAccount from './Screens/Auth/CreateAccount';
+import NotificationService from './Services/NotificationService';
 
 const Stack = createStackNavigator();
-// LogBox.ignoreLogs(['Warning: ...']);
-// LogBox.ignoreAllLogs();
-// LogBox.ignoreAllLogs();
+
 const App = () => {
-  // check network status
+  const navigationRef = useRef(null);
   useEffect(() => {
     const unsubscribe = monitorNetworkStatus(Store.dispatch);
-    //
-
-    return () => unsubscribe(); // Cleanup listener on unmount
+    return () => unsubscribe();
   }, []);
+
+  useEffect(() => {
+    console.log('Inside useEffect', navigationRef.current);
+
+    if (navigationRef.current) {
+      console.log('Initiliziseing notification service');
+
+      NotificationService.initialize(navigationRef.current);
+    }
+  }, [navigationRef.current]);
 
   return (
     <Provider store={Store}>
       <SafeAreaProvider>
         <I18nextProvider i18n={i18n}>
-          <NavigationContainer>
+          <NavigationContainer ref={navigationRef}>
             <Stack.Navigator>
               <Stack.Screen
                 name="Splash"

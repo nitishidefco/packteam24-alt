@@ -43,7 +43,14 @@ export default {
   ARCHIVE: require('../Assets/Icons/archive.png'),
   CLOSE: require('../Assets/Icons/close.png'),
   EYE: require('../Assets/Icons/eye.png'),
-
+  ARCHIVE_ICON: require('../Assets/Icons/box.png'),
+  BACK_ICON: require('../Assets/Icons/famicons--chevron-back-outline.png'),
+  UP_ARROW: require('../Assets/Icons/arrow-up.png'),
+  TICK_ICON: require('../Assets/Icons/flowbite--check-outline.png'),
+  FILTER: require('../Assets/Icons/filter.png'),
+  CROSS: require('../Assets/Icons/cross.png'),
+  SEARCH: require('../Assets/Icons/search.png'),
+  MOVE_TO_ARCHIVE: require('../Assets/Icons/move-to-archive.png'),
   /* ------------------------------ Country Flags ----------------------------- */
   RUS: require('../Assets/Flags/russian.png'),
   UK: require('../Assets/Flags/english.png'),
@@ -54,4 +61,7 @@ export default {
   /* ---------------------------- Password helpers ---------------------------- */
   EYE_OPEN: require('../Assets/Icons/eye-new.png'),
   EYE_CLOSE: require('../Assets/Icons/eye-off.png'),
+
+  // Notification
+  NOTIFICATION_ICON: require('../Assets/Icons/basil--notification-outline.png'),
 };

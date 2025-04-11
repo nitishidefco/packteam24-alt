@@ -7,7 +7,7 @@ export default {
   PRIMARY: '#D95721',
   USERCHAT: '#83512A',
   BLUE: '#2D4FA6',
-  PURPLE: '#211623',
+  PURPLE: '#061439',
   GRAY1: '#E5E6F0',
   GRAY1_50: '#E5E6F080',
   GRAY2: '#A0BEAB',
