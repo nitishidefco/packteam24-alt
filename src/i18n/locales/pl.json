@@ -89,7 +89,8 @@
     "confirmAccountRemoval": "Potwierdź usunięcie konta",
     "confirmAccountRemovalDesc": "Czy na pewno chcesz usunąć konto? Tej czynności nie można cofnąć.",
     "no": "Nie",
-    "yes": "Tak"
+    "yes": "Tak",
+    "langConfig": "Konfigurowanie języka wiadomości z aplikacji do mnie"
   },
   "ResetPassword": {
     "passwordResetSuccess": "Wysłaliśmy Ci link do resetowania hasła!",
@@ -161,5 +162,60 @@
     "instruction_step1": "Przejdź do Ustawienia > Data i godzina",
     "instruction_step2": "Włącz 'Automatyczna data i godzina' (lub 'Ustaw czas automatycznie')",
     "warning": "Aplikacja nie będzie działać, dopóki to nie zostanie poprawione."
+  },
+  "NotificationScreen": {
+    "searchPlaceholder": "Szukaj według słowa kluczowego",
+    "filterNotifications": "Filtruj powiadomienia",
+    "filterAll": "Wszystkie",
+    "filterRead": "Przeczytane",
+    "filterUnread": "Nieprzeczytane",
+    "filterCancel": "Anuluj",
+    "filterLabel": "Filtr",
+    "confirmArchiveTitle": "Potwierdź archiwizację",
+    "confirmArchiveBody": "Czy na pewno chcesz przenieść {{count}} wybraną wiadomość do archiwum?",
+    "confirmArchiveBody_plural": "Czy na pewno chcesz przenieść {{count}} wybranych wiadomości do archiwum?",
+    "confirmArchiveButton": "Potwierdź",
+    "markAsReadLabel": "Oznacz jako przeczytane",
+    "markAsUnreadLabel": "Oznacz jako nieprzeczytane",
+    "archiveLabel": "Archiwizuj",
+    "selectedCount": "{{count}} wybrane",
+    "noNotifications": "Brak powiadomień",
+    "confirmMarkReadTitle": "Potwierdź oznaczenie jako przeczytane",
+    "confirmMarkUnreadTitle": "Potwierdź oznaczenie jako nieprzeczytane",
+    "confirmMarkBody": "Czy na pewno chcesz oznaczyć {{count}} wybraną wiadomość jako {{status}}?",
+    "confirmMarkBody_plural": "Czy na pewno chcesz oznaczyć {{count}} wybranych wiadomości jako {{status}}?",
+    "read": "przeczytana",
+    "unread": "nieprzeczytana",
+    "closeButton": "Zamknij",
+    "moveToArchiveButton": "Przenieś do archiwum",
+    "selectedLabel": "Wybrane"
+  },
+  "ArchiveScreen": {
+    "title": "Archiwum",
+    "searchPlaceholder": "Wyszukaj słowo kluczowe",
+    "filterNotifications": "Filtruj powiadomienia",
+    "filterAll": "Wszystkie",
+    "filterRead": "Przeczytane",
+    "filterUnread": "Nieprzeczytane",
+    "filterCancel": "Anuluj",
+    "filterLabel": "Filtr",
+    "selectedCount": ":count wybranych",
+    "markAsReadLabel": "Oznacz jako przeczytane",
+    "markAsUnreadLabel": "Oznacz jako nieprzeczytane",
+    "deleteLabel": "Usuń",
+    "noArchivedMessages": "Brak zarchiwizowanych wiadomości",
+    "confirmDeleteTitle": "Potwierdź usunięcie",
+    "confirmDeleteBody": "Czy na pewno chcesz usunąć {{count}} wybraną wiadomość?",
+    "confirmDeleteBody_plural": "Czy na pewno chcesz usunąć {{count}} wybranych wiadomości?",
+    "confirmDeleteButton": "Potwierdź",
+    "confirmRestoreTitle": "Potwierdź przywrócenie",
+    "confirmRestoreBody": "Czy na pewno chcesz przywrócić {{count}} wybraną wiadomość?",
+    "confirmRestoreBody_plural": "Czy na pewno chcesz przywrócić {{count}} wybranych wiadomości?",
+    "confirmRestoreButton": "Potwierdź",
+    "moveToMessageCenterButton": "Przenieś do centrum wiadomości"
+  },
+  "CustomHeader": {
+    "MessageCenter": "Centrum wiadomości",
+    "Archives": "Archiwa"
   }
 }

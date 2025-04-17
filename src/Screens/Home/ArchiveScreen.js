@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
-// src/Screens/NotificationScreen.js
 import React, {memo, useEffect, useRef, useState} from 'react';
 import {
   View,
@@ -19,37 +17,46 @@ import {useTranslation} from 'react-i18next';
 import CustomHeader from '../../Components/Common/CustomHeader';
 import DrawerSceneWrapper from '../../Components/Common/DrawerSceneWrapper';
 import {useDispatch, useSelector} from 'react-redux';
+import {useFocusEffect} from '@react-navigation/native';
 import moment from 'moment';
 import {Matrics, COLOR, typography} from '../../Config/AppStyling';
 import {Images} from '../../Config';
 import {
-  filterMessages,
   setCurrentPage,
-  archiveMessage,
   markAsRead,
   markAsUnread,
-  setPreviewMessage,
-  fetchMessagesStart,
-  toggleMessageSelection,
-  clearMessageSelection,
-  moveToArchiveStart,
+  moveToMessagesStart,
+  deleteMessagesStart,
+  fetchArchivedMessagesStart,
+  toggleArchiveSelection,
+  clearArchiveSelection,
   multipleMarkMessages,
-  searchMessagesStart,
-} from '../../Redux/Reducers/MessageSlice';
-import {useFocusEffect} from '@react-navigation/native';
-const NotificationItem = memo(({item, onLongPress, onPress, isSelected}) => {
+  searchArchivedMessagesStart,
+} from '../../Redux/Reducers/ArchiveSlice';
+
+const ArchiveItem = memo(({item, onLongPress, onPress, isSelected}) => {
   // Precompute expensive operations outside render
   const cleanedContent = item.content
-    .replace(/<\/?[^>]+(>|$)/g, '')
-    .replace(/\s+/g, ' ')
-    .trim();
-  const formattedDate = moment(item.created_at).format('DD-MMM HH:mm');
+    ? item.content
+        .replace(/<\/?[^>]+(>|$)/g, '')
+        .replace(/\s+/g, ' ')
+        .trim()
+    : '';
+  const formattedDate = item.created_at
+    ? moment(item.created_at).format('DD-MMM HH:mm')
+    : 'N/A';
+  const topicFirstLetter =
+    item.topic && item.topic.length > 0
+      ? item.topic.charAt(0).toUpperCase()
+      : 'N/A';
   const truncatedTopic =
-    item.topic.length > 30 ? `${item.topic.slice(0, 40)}...` : item.topic;
+    item.topic && item.topic.length > 30
+      ? `${item.topic.slice(0, 40)}...`
+      : item.topic || 'No Topic';
   const truncatedContent =
     cleanedContent.length > 30
       ? `${cleanedContent.slice(0, 70)}...`
-      : cleanedContent;
+      : cleanedContent || 'No Content';
 
   return (
     <TouchableOpacity
@@ -72,9 +79,7 @@ const NotificationItem = memo(({item, onLongPress, onPress, isSelected}) => {
         {isSelected ? (
           <Image source={Images.TICK_ICON} style={styles.tickIcon} />
         ) : (
-          <Text style={styles.roundElementText}>
-            {item.topic.charAt(0).toUpperCase()}
-          </Text>
+          <Text style={styles.roundElementText}>{topicFirstLetter}</Text>
         )}
       </View>
       <View style={styles.notificationContent}>
@@ -97,19 +102,17 @@ const NotificationItem = memo(({item, onLongPress, onPress, isSelected}) => {
     </TouchableOpacity>
   );
 });
-const NotificationScreen = () => {
+const ArchiveScreen = () => {
   const {t} = useTranslation();
   const dispatch = useDispatch();
   const {
-    messages,
-    filteredMessages,
+    archivedMessages,
+    filteredArchivedMessages,
     currentPage,
     totalPages,
-    unreadCount,
-    previewMessage,
     isLoading,
-    selectedMessages,
-  } = useSelector(initialState => initialState.Messages);
+    archivedSelectedMessages,
+  } = useSelector(state => state.Archive);
 
   const deviceId = useSelector(state => state?.Network?.deviceId);
   const authState = useSelector(state => state?.Auth);
@@ -119,16 +122,27 @@ const NotificationScreen = () => {
   );
 
   useEffect(() => {
-    setIsSelectionMode(selectedMessages?.length > 0);
-  }, [selectedMessages]);
+    setIsSelectionMode(archivedSelectedMessages?.length > 0);
+  }, [archivedSelectedMessages, filteredArchivedMessages]);
+
+  useFocusEffect(
+    React.useCallback(() => {
+      dispatch(setCurrentPage(1));
+      const formData = new FormData();
+      formData.append('page', '1');
+      formData.append('device_id', deviceId);
+      formData.append('session_id', sessionId);
+      formData.append('lang', globalLanguage);
+      dispatch(fetchArchivedMessagesStart({payload: formData}));
+    }, [deviceId, sessionId, globalLanguage, dispatch]),
+  );
 
   const handleLoadMore = () => {
-    if (filteredMessages.length === 0) {
-      console.log('Loading more');
-
+    if (filteredArchivedMessages.length === 0) {
       return;
     }
     if (currentPage < totalPages && !isLoading) {
+      console.log('Loading3');
       const nextPage = currentPage + 1;
       dispatch(setCurrentPage(nextPage));
       const formData = new FormData();
@@ -141,146 +155,174 @@ const NotificationScreen = () => {
       } else if (filterType === 'unread') {
         formData.append('status', 0);
       }
-      dispatch(fetchMessagesStart({payload: formData}));
+      dispatch(fetchArchivedMessagesStart({payload: formData}));
     }
   };
-  useEffect(() => {
-    dispatch(setCurrentPage(1));
-  }, []);
+
   const renderFooter = () => {
-    if (!isLoading) {
-      return null;
-    }
+    if (!isLoading) return null;
     return (
       <View style={styles.footer}>
         <ActivityIndicator size="small" color={COLOR.PURPLE} />
       </View>
     );
   };
+
   const [searchQuery, setSearchQuery] = useState('');
   const [filterType, setFilterType] = useState('all');
   const [showScrollToTop, setShowScrollToTop] = useState(false);
   const scrollThreshold = Matrics.screenHeight * 1.2;
   const [isSelectionMode, setIsSelectionMode] = useState(false);
   const [showFilterModal, setShowFilterModal] = useState(false);
-  const [showArchiveModal, setShowArchiveModal] = useState(false);
-  const [archiveMessageId, setArchiveMessageId] = useState(null);
-  const [showMarkReadModal, setShowMarkReadModal] = useState(false);
-  const [isMarkAsUnread, setIsMarkAsUnread] = useState(false);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [showRestoreModal, setShowRestoreModal] = useState(false);
+  const [previewMessage, setPreviewMessage] = useState(null);
   const [showOptionsModal, setShowOptionsModal] = useState(false);
   const flatListRef = useRef(null);
   const slideAnim = useRef(new Animated.Value(300)).current;
   const backdropOpacity = useRef(new Animated.Value(0)).current;
 
   const handleLongPress = id => {
-    if (selectedMessages.length === 0) {
-      Vibration.vibrate(70); // Vibrate for 50ms when the first item is selected
+    if (archivedSelectedMessages.length === 0) {
+      Vibration.vibrate(70);
     }
-    dispatch(toggleMessageSelection(id));
+    dispatch(toggleArchiveSelection(id));
   };
 
   const handlePress = id => {
     if (isSelectionMode) {
-      dispatch(toggleMessageSelection(id));
+      dispatch(toggleArchiveSelection(id));
     } else {
-      const selectedMessage = filteredMessages.find(item => item.id === id);
+      const selectedMessage = filteredArchivedMessages.find(
+        item => item.id === id,
+      );
       if (selectedMessage) {
-        dispatch(setPreviewMessage(selectedMessage));
+        setPreviewMessage(selectedMessage);
         if (selectedMessage.read === 0) {
           const formData = new FormData();
-          formData.append('id', id);
+          formData.append('multiple_ids', id);
           formData.append('device_id', deviceId);
           formData.append('session_id', sessionId);
           formData.append('lang', globalLanguage);
+          formData.append('updater', '1');
+          formData.append('read', '1');
           dispatch(markAsRead({payload: formData}));
         }
       }
     }
   };
 
-  const handleMoveToArchive = () => {
-    if (selectedMessages.length > 0) {
-      setArchiveMessageId(null);
-      setShowArchiveModal(true);
+  const handleMultipleMarkMessages = () => {
+    if (archivedSelectedMessages.length > 0) {
+      const selected = archivedMessages.filter(msg =>
+        archivedSelectedMessages.includes(msg.id),
+      );
+      const allUnread = selected.every(msg => msg.read === 0);
+      const allRead = selected.every(msg => msg.read === 1);
+      if (allUnread || allRead) {
+        const formData = new FormData();
+        formData.append('multiple_ids', archivedSelectedMessages.join(', '));
+        formData.append('device_id', deviceId);
+        formData.append('session_id', sessionId);
+        formData.append('lang', globalLanguage);
+        formData.append('updater', '1');
+        formData.append(allUnread ? 'read' : 'unread', '1');
+        dispatch(
+          multipleMarkMessages({
+            payload: formData,
+            messageIds: archivedSelectedMessages,
+            read: allUnread,
+          }),
+        );
+      }
     }
   };
 
-  const handlePreviewArchive = () => {
-    if (previewMessage) {
-      setArchiveMessageId(previewMessage.id);
-      setShowArchiveModal(true);
+  const handleDeleteMessages = () => {
+    if (archivedSelectedMessages.length > 0) {
+      setShowDeleteModal(true);
     }
   };
 
-  const confirmArchive = () => {
+  const confirmDeleteMessages = () => {
     const formData = new FormData();
-    if (archiveMessageId) {
-      formData.append('ids', archiveMessageId);
-    } else {
-      formData.append('ids', selectedMessages.join(', '));
-    }
+    formData.append('ids', archivedSelectedMessages.join(', '));
     formData.append('device_id', deviceId);
     formData.append('session_id', sessionId);
     formData.append('lang', globalLanguage);
-    dispatch(moveToArchiveStart({payload: formData}));
-    setShowArchiveModal(false);
-    setArchiveMessageId(null);
-    if (archiveMessageId) {
-      dispatch(setPreviewMessage(null));
+    dispatch(
+      deleteMessagesStart({
+        payload: formData,
+        messageIds: archivedSelectedMessages,
+      }),
+    );
+    setShowDeleteModal(false);
+  };
+
+  const cancelDeleteMessages = () => {
+    setShowDeleteModal(false);
+  };
+
+  const handleRestoreMessages = () => {
+    if (archivedSelectedMessages.length > 0) {
+      setShowRestoreModal(true);
     }
   };
 
-  const cancelArchive = () => {
-    setShowArchiveModal(false);
-    setArchiveMessageId(null);
-  };
-
   const getSelectedMessagesStatus = () => {
-    const selected = messages.filter(msg => selectedMessages.includes(msg.id));
+    const selected = archivedMessages.filter(msg =>
+      archivedSelectedMessages.includes(msg.id),
+    );
     const allUnread = selected.every(msg => msg.read === 0);
     const allRead = selected.every(msg => msg.read === 1);
     return {allUnread, allRead};
   };
 
-  const handleMultipleMarkMessages = () => {
-    if (selectedMessages.length > 0) {
-      const {allUnread, allRead} = getSelectedMessagesStatus();
-      if (allUnread) {
-        setIsMarkAsUnread(false);
-        setShowMarkReadModal(true);
-      } else if (allRead) {
-        setIsMarkAsUnread(true);
-        setShowMarkReadModal(true);
-      }
-    }
+  const confirmRestoreMessages = () => {
+    const formData = new FormData();
+    formData.append('restore_id', archivedSelectedMessages.join(', '));
+    formData.append('device_id', deviceId);
+    formData.append('session_id', sessionId);
+    formData.append('lang', globalLanguage);
+    formData.append('restore', '1');
+    dispatch(
+      moveToMessagesStart({
+        payload: formData,
+        messageIds: archivedSelectedMessages,
+      }),
+    );
+    setShowRestoreModal(false);
   };
 
-  const confirmMarkMessages = () => {
+  const cancelRestoreMessages = () => {
+    setShowRestoreModal(false);
+  };
+
+  const handleMoveToMessages = messageId => {
     const formData = new FormData();
-    formData.append('multiple_ids', selectedMessages.join(', '));
+    formData.append('restore_id', messageId);
+    formData.append('device_id', deviceId);
+    formData.append('session_id', sessionId);
+    formData.append('lang', globalLanguage);
+    formData.append('restore', '1');
+    dispatch(moveToMessagesStart({payload: formData, messageIds: [messageId]}));
+    setPreviewMessage(null);
+  };
+
+  const handleMarkAsUnread = messageId => {
+    const formData = new FormData();
+    formData.append('multiple_ids', messageId);
     formData.append('device_id', deviceId);
     formData.append('session_id', sessionId);
     formData.append('lang', globalLanguage);
     formData.append('updater', '1');
-    formData.append(isMarkAsUnread ? 'unread' : 'read', '1');
-
-    dispatch(
-      multipleMarkMessages({
-        payload: formData,
-        messageIds: selectedMessages,
-        read: !isMarkAsUnread,
-      }),
-    );
-
-    setShowMarkReadModal(false);
+    formData.append('unread', '1');
+    dispatch(markAsUnread({payload: formData, messageId}));
   };
 
-  const cancelMarkMessages = () => {
-    setShowMarkReadModal(false);
-  };
   const handleScroll = event => {
     const offsetY = event.nativeEvent.contentOffset.y;
-    setShowScrollToTop(offsetY > scrollThreshold); // Show button after scrolling 120% of screen height
+    setShowScrollToTop(offsetY > scrollThreshold);
   };
 
   const scrollToTop = () => {
@@ -288,14 +330,18 @@ const NotificationScreen = () => {
   };
 
   const handleSearch = () => {
+    console.log('Seach query', searchQuery);
+
     if (searchQuery) {
       const formData = new FormData();
       formData.append('device_id', deviceId);
       formData.append('session_id', sessionId);
       formData.append('lang', globalLanguage);
-      formData.append('archived', '0');
+      formData.append('archived', '1');
       formData.append('keyword', searchQuery);
-      dispatch(searchMessagesStart({payload: formData, keyword: searchQuery}));
+      dispatch(
+        searchArchivedMessagesStart({payload: formData, keyword: searchQuery}),
+      );
     } else {
       dispatch(setCurrentPage(1));
       const formData = new FormData();
@@ -303,7 +349,7 @@ const NotificationScreen = () => {
       formData.append('device_id', deviceId);
       formData.append('session_id', sessionId);
       formData.append('lang', globalLanguage);
-      dispatch(fetchMessagesStart({payload: formData}));
+      dispatch(fetchArchivedMessagesStart({payload: formData}));
     }
   };
 
@@ -313,39 +359,15 @@ const NotificationScreen = () => {
     const formData = new FormData();
     formData.append('device_id', deviceId);
     formData.append('session_id', sessionId);
+    formData.append('archived', '1');
     if (value === 'read') {
       formData.append('status', 1);
     } else if (value === 'unread') {
       formData.append('status', 0);
     }
-    dispatch(fetchMessagesStart({payload: formData}));
+    dispatch(fetchArchivedMessagesStart({payload: formData}));
     setShowFilterModal(false);
   };
-
-  const handlePageChange = newPage => {
-    if (newPage >= 1 && newPage <= totalPages) {
-      dispatch(setCurrentPage(newPage));
-      const formData = new FormData();
-      formData.append('page', newPage.toString());
-      formData.append('device_id', deviceId);
-      formData.append('session_id', sessionId);
-      formData.append('lang', globalLanguage);
-      dispatch(fetchMessagesStart({payload: formData}));
-    }
-  };
-  useFocusEffect(
-    React.useCallback(() => {
-      setSearchQuery('');
-
-      dispatch(setCurrentPage(1));
-      const formData = new FormData();
-      formData.append('page', '1');
-      formData.append('device_id', deviceId);
-      formData.append('session_id', sessionId);
-      formData.append('lang', globalLanguage);
-      dispatch(fetchMessagesStart({payload: formData}));
-    }, [deviceId, sessionId, globalLanguage, dispatch]),
-  );
 
   const openModal = () => {
     setShowFilterModal(true);
@@ -377,27 +399,27 @@ const NotificationScreen = () => {
       }),
     ]).start(() => setShowFilterModal(false));
   };
-
   const renderItem = ({item}) => {
-    const isSelecteds = selectedMessages?.includes(item.id);
+    const isSelected = archivedSelectedMessages?.includes(item.id);
     return (
-      <NotificationItem
+      <ArchiveItem
         item={item}
         onLongPress={handleLongPress}
         onPress={handlePress}
-        isSelected={isSelecteds}
+        isSelected={isSelected}
       />
     );
   };
+
   return (
     <DrawerSceneWrapper>
       <SafeAreaView style={styles.container}>
-        <CustomHeader />
+        <CustomHeader title={t('ArchiveScreen.title')} />
         <View style={styles.headerContainer}>
           <View style={styles.searchFilterContainer}>
             <TextInput
               style={styles.searchInput}
-              placeholder={t('NotificationScreen.searchPlaceholder')}
+              placeholder={t('ArchiveScreen.searchPlaceholder')}
               placeholderTextColor={'black'}
               onChangeText={text => {
                 console.log('TextInput onChangeText:', text);
@@ -424,12 +446,12 @@ const NotificationScreen = () => {
                     styles.flatListHeaderText,
                     {marginLeft: Matrics.s(5)},
                   ]}>
-                  {t('NotificationScreen.filterLabel')}
+                  {t('ArchiveScreen.filterLabel')}
                 </Text>
               </View>
             </TouchableOpacity>
           </View>
-          {selectedMessages?.length > 0 && (
+          {archivedSelectedMessages?.length > 0 && (
             <View
               style={{
                 flexDirection: 'row',
@@ -444,7 +466,7 @@ const NotificationScreen = () => {
               <View>
                 <TouchableOpacity
                   activeOpacity={0.7}
-                  onPress={() => dispatch(clearMessageSelection())}
+                  onPress={() => dispatch(clearArchiveSelection())}
                   style={{flexDirection: 'row', alignItems: 'center', gap: 5}}>
                   <Image
                     source={Images.CROSS}
@@ -458,16 +480,13 @@ const NotificationScreen = () => {
                       styles.flatListHeaderText,
                       {fontSize: typography.fontSizes.fs17},
                     ]}>
-                    {/* {t('NotificationScreen.selectedCount', {
-                      count: selectedMessages?.length,
-                    })} */}
-                    {selectedMessages.length}{' '}
+                    {archivedSelectedMessages.length}{' '}
                     {t('NotificationScreen.selectedLabel')}
                   </Text>
                 </TouchableOpacity>
               </View>
               <View
-                style={{flexDirection: 'row', alignItems: 'center', gap: 5}}>
+                style={{flexDirection: 'row', alignItems: 'center', gap: 10}}>
                 <TouchableOpacity
                   activeOpacity={0.7}
                   onPress={() => setShowOptionsModal(true)}
@@ -483,12 +502,13 @@ const NotificationScreen = () => {
         </View>
         <FlatList
           ref={flatListRef}
-          data={filteredMessages}
+          data={filteredArchivedMessages}
           renderItem={renderItem}
-          keyExtractor={item => item.id}
+          keyExtractor={item => item.id.toString()}
+          // ListHeaderComponent={renderHeader}
           ListEmptyComponent={
             <Text style={styles.emptyText}>
-              {t('NotificationScreen.noNotifications')}
+              {t('ArchiveScreen.noArchivedMessages')}
             </Text>
           }
           contentContainerStyle={[styles.listContent]}
@@ -498,9 +518,7 @@ const NotificationScreen = () => {
           onScroll={handleScroll}
           scrollEventThrottle={16}
           removeClippedSubviews={true}
-          maintainVisibleContentPosition={{
-            minIndexForVisible: 0,
-          }}
+          maintainVisibleContentPosition={{minIndexForVisible: 0}}
         />
         {showScrollToTop && (
           <TouchableOpacity
@@ -510,133 +528,14 @@ const NotificationScreen = () => {
             <Image source={Images.UP_ARROW} style={styles.scrollToTopIcon} />
           </TouchableOpacity>
         )}
-
-        <Modal
-          visible={showArchiveModal}
-          transparent={true}
-          animationType="fade"
-          onRequestClose={cancelArchive}>
-          <View style={styles.modalOverlay}>
-            <View style={styles.modalContent}>
-              <Text style={styles.modalTitle}>
-                {t('NotificationScreen.confirmArchiveTitle')}
-              </Text>
-              <Text style={styles.modalBody}>
-                {t('NotificationScreen.confirmArchiveBody', {
-                  count: selectedMessages.length,
-                })}
-              </Text>
-              <View style={{gap: 10}}>
-                <TouchableOpacity style={{}} onPress={cancelArchive}>
-                  <Text style={[styles.modalButtonText, {textAlign: 'center'}]}>
-                    {t('NotificationScreen.filterCancel')}
-                  </Text>
-                </TouchableOpacity>
-                <TouchableOpacity
-                  style={{
-                    backgroundColor: COLOR.PURPLE,
-                    paddingVertical: Matrics.vs(10),
-                    borderRadius: Matrics.s(5),
-                  }}
-                  onPress={confirmArchive}>
-                  <Text
-                    style={[
-                      styles.modalButtonText,
-                      {color: COLOR.WHITE, textAlign: 'center'},
-                    ]}>
-                    {t('NotificationScreen.confirmArchiveButton')}
-                  </Text>
-                </TouchableOpacity>
-              </View>
-            </View>
-          </View>
-        </Modal>
-        <Modal
-          visible={showMarkReadModal}
-          transparent={true}
-          animationType="fade"
-          onRequestClose={cancelMarkMessages}>
-          <View style={styles.modalOverlay}>
-            <View style={styles.modalContent}>
-              <Text style={styles.modalTitle}>
-                {isMarkAsUnread
-                  ? t('NotificationScreen.confirmMarkUnreadTitle')
-                  : t('NotificationScreen.confirmMarkReadTitle')}
-              </Text>
-              <Text style={styles.modalBody}>
-                {t('NotificationScreen.confirmMarkBody', {
-                  count: selectedMessages.length,
-                  status: isMarkAsUnread
-                    ? t('NotificationScreen.unread')
-                    : t('NotificationScreen.read'),
-                })}
-              </Text>
-              <View style={{gap: 10}}>
-                <TouchableOpacity style={{}} onPress={cancelMarkMessages}>
-                  <Text style={[styles.modalButtonText, {textAlign: 'center'}]}>
-                    {t('NotificationScreen.filterCancel')}
-                  </Text>
-                </TouchableOpacity>
-                <TouchableOpacity
-                  style={{
-                    backgroundColor: COLOR.PURPLE,
-                    paddingVertical: Matrics.vs(10),
-                    borderRadius: Matrics.s(5),
-                  }}
-                  onPress={confirmMarkMessages}>
-                  <Text
-                    style={[
-                      styles.modalButtonText,
-                      {color: COLOR.WHITE, textAlign: 'center'},
-                    ]}>
-                    {t('NotificationScreen.confirmArchiveButton')}
-                  </Text>
-                </TouchableOpacity>
-              </View>
-            </View>
-          </View>
-        </Modal>
-        <Modal
-          visible={!!previewMessage}
-          transparent
-          animationType="slide"
-          onRequestClose={() => dispatch(setPreviewMessage(null))}>
-          <View style={styles.modalOverlay}>
-            <View style={styles.modalContent}>
-              <Text style={styles.modalTitle}>{previewMessage?.topic}</Text>
-              <Text style={styles.modalDate}>
-                {previewMessage &&
-                  moment(previewMessage.created_at).format(
-                    'YYYY-MM-DD HH:mm:ss',
-                  )}
-              </Text>
-              <Text style={styles.modalBody}>
-                {previewMessage?.content.replace(/<\/?[^>]+(>|$)/g, '')}
-              </Text>
-              <View style={styles.modalButtonContainer}>
-                <TouchableOpacity
-                  style={[
-                    styles.closeButton,
-                    {
-                      backgroundColor: COLOR.LIGHT_GRAY,
-                    },
-                  ]}
-                  onPress={() => dispatch(setPreviewMessage(null))}>
-                  <Text style={styles.closeButtonText}>
-                    {t('NotificationScreen.closeButton')}
-                  </Text>
-                </TouchableOpacity>
-                <TouchableOpacity
-                  style={[styles.closeButton]}
-                  onPress={handlePreviewArchive}>
-                  <Text style={[styles.closeButtonText, {color: COLOR.WHITE}]}>
-                    {t('NotificationScreen.moveToArchiveButton')}
-                  </Text>
-                </TouchableOpacity>
-              </View>
-            </View>
-          </View>
-        </Modal>
+        {archivedSelectedMessages.length > 0 && (
+          <TouchableOpacity
+            style={styles.floatingRestoreButton}
+            activeOpacity={0.7}
+            onPress={handleRestoreMessages}>
+            <Image source={Images.RESTORE} style={styles.floatingRestoreIcon} />
+          </TouchableOpacity>
+        )}
         <Modal
           visible={showFilterModal}
           transparent={true}
@@ -645,7 +544,7 @@ const NotificationScreen = () => {
           <Animated.View
             style={{
               flex: 1,
-              backgroundColor: 'rgba(0,0,0,0)',
+              backgroundColor: 'rgba(0,0,0,0.6)',
               opacity: backdropOpacity,
             }}>
             <TouchableOpacity
@@ -661,8 +560,7 @@ const NotificationScreen = () => {
                   width: '100%',
                   alignItems: 'center',
                   transform: [{translateY: slideAnim}],
-                }}
-                onPress={() => {}}>
+                }}>
                 <Text
                   style={{
                     fontSize: typography.fontSizes.fs16,
@@ -670,7 +568,7 @@ const NotificationScreen = () => {
                     color: '#000',
                     marginBottom: Matrics.s(20),
                   }}>
-                  {t('NotificationScreen.filterNotifications')}
+                  {t('ArchiveScreen.filterNotifications')}
                 </Text>
                 <TouchableOpacity
                   style={{
@@ -688,7 +586,7 @@ const NotificationScreen = () => {
                       color: filterType === 'all' ? '#fff' : '#000',
                       fontFamily: typography.fontFamily.Montserrat.Regular,
                     }}>
-                    {t('NotificationScreen.filterAll')}
+                    {t('ArchiveScreen.filterAll')}
                   </Text>
                 </TouchableOpacity>
                 <TouchableOpacity
@@ -708,7 +606,7 @@ const NotificationScreen = () => {
                       color: filterType === 'read' ? '#fff' : '#000',
                       fontFamily: typography.fontFamily.Montserrat.Regular,
                     }}>
-                    {t('NotificationScreen.filterRead')}
+                    {t('ArchiveScreen.filterRead')}
                   </Text>
                 </TouchableOpacity>
                 <TouchableOpacity
@@ -727,7 +625,7 @@ const NotificationScreen = () => {
                       color: filterType === 'unread' ? '#fff' : '#000',
                       fontFamily: typography.fontFamily.Montserrat.Regular,
                     }}>
-                    {t('NotificationScreen.filterUnread')}
+                    {t('ArchiveScreen.filterUnread')}
                   </Text>
                 </TouchableOpacity>
                 <TouchableOpacity
@@ -744,12 +642,138 @@ const NotificationScreen = () => {
                       color: COLOR.PURPLE,
                       fontFamily: typography.fontFamily.Montserrat.SemiBold,
                     }}>
-                    {t('NotificationScreen.filterCancel')}
+                    {t('ArchiveScreen.filterCancel')}
                   </Text>
                 </TouchableOpacity>
               </Animated.View>
             </TouchableOpacity>
           </Animated.View>
+        </Modal>
+        <Modal
+          visible={showDeleteModal}
+          transparent={true}
+          animationType="fade"
+          onRequestClose={cancelDeleteMessages}>
+          <View style={styles.modalOverlay}>
+            <View style={styles.modalContent}>
+              <Text style={styles.modalTitle}>
+                {t('ArchiveScreen.confirmDeleteTitle')}
+              </Text>
+              <Text style={styles.modalBody}>
+                {t('ArchiveScreen.confirmDeleteBody', {
+                  count: archivedSelectedMessages.length,
+                })}
+              </Text>
+              <View style={styles.modalButtonContainer}>
+                <TouchableOpacity
+                  style={[styles.modalButton, styles.cancelButton]}
+                  onPress={cancelDeleteMessages}>
+                  <Text style={styles.modalButtonText}>
+                    {t('ArchiveScreen.filterCancel')}
+                  </Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  style={[styles.modalButton, styles.confirmButton]}
+                  onPress={confirmDeleteMessages}>
+                  <Text style={[styles.modalButtonText, {color: COLOR.WHITE}]}>
+                    {t('ArchiveScreen.confirmDeleteButton')}
+                  </Text>
+                </TouchableOpacity>
+              </View>
+            </View>
+          </View>
+        </Modal>
+        <Modal
+          visible={showRestoreModal}
+          transparent={true}
+          animationType="fade"
+          onRequestClose={cancelRestoreMessages}>
+          <View style={styles.modalOverlay}>
+            <View style={styles.modalContent}>
+              <Text style={styles.modalTitle}>
+                {t('ArchiveScreen.confirmRestoreTitle')}
+              </Text>
+              <Text style={styles.modalBody}>
+                {t('ArchiveScreen.confirmRestoreBody', {
+                  count: archivedSelectedMessages.length,
+                })}
+              </Text>
+              <View style={styles.modalButtonContainer}>
+                <TouchableOpacity
+                  style={[styles.modalButton, styles.cancelButton]}
+                  onPress={cancelRestoreMessages}>
+                  <Text style={styles.modalButtonText}>
+                    {t('ArchiveScreen.filterCancel')}
+                  </Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  style={[styles.modalButton, styles.confirmButton]}
+                  onPress={confirmRestoreMessages}>
+                  <Text style={[styles.modalButtonText, {color: COLOR.WHITE}]}>
+                    {t('ArchiveScreen.confirmRestoreButton')}
+                  </Text>
+                </TouchableOpacity>
+              </View>
+            </View>
+          </View>
+        </Modal>
+        <Modal
+          visible={!!previewMessage}
+          transparent
+          animationType="slide"
+          onRequestClose={() => setPreviewMessage(null)}>
+          <View style={styles.modalOverlay}>
+            <View style={styles.modalContent}>
+              <View style={styles.modalHeader}>
+                <Text style={styles.modalTitle}>{previewMessage?.topic}</Text>
+                <TouchableOpacity onPress={() => setPreviewMessage(null)}>
+                  <Image
+                    source={Images.CLOSE}
+                    style={{
+                      width: Matrics.s(20),
+                      height: Matrics.vs(20),
+                      tintColor: COLOR.BLACK,
+                    }}
+                  />
+                </TouchableOpacity>
+              </View>
+              <Text style={styles.modalDate}>
+                {previewMessage &&
+                  moment(previewMessage.created_at).format(
+                    'YYYY-MM-DD HH:mm:ss',
+                  )}
+              </Text>
+              <Text style={styles.modalBody}>
+                {previewMessage?.content.replace(/<\/?[^>]+(>|$)/g, '')}
+              </Text>
+              <View style={styles.modalButtonContainer}>
+                {previewMessage?.read === 1 && (
+                  <TouchableOpacity
+                    style={[
+                      styles.closeButton,
+                      {
+                        backgroundColor: COLOR.LIGHT_GRAY,
+                      },
+                    ]}
+                    onPress={() => {
+                      handleMarkAsUnread(previewMessage.id);
+                    }}>
+                    <Text
+                      style={[styles.closeButtonText, {color: COLOR.BLACK}]}>
+                      {t('ArchiveScreen.markAsUnreadLabel')}
+                    </Text>
+                  </TouchableOpacity>
+                )}
+                <TouchableOpacity
+                  style={[styles.closeButton]}
+                  onPress={() => handleMoveToMessages(previewMessage.id)}>
+                  <Text style={[styles.closeButtonText, {color: COLOR.WHITE}]}>
+                    {t('ArchiveScreen.moveToMessageCenterButton')}
+                  </Text>
+                </TouchableOpacity>
+              </View>
+            </View>
+          </View>
         </Modal>
         <Modal
           visible={showOptionsModal}
@@ -761,8 +785,12 @@ const NotificationScreen = () => {
             activeOpacity={1}
             onPress={() => setShowOptionsModal(false)}>
             <View style={styles.optionsModal}>
-              {(getSelectedMessagesStatus().allUnread ||
-                getSelectedMessagesStatus().allRead) && (
+              {(archivedMessages
+                .filter(msg => archivedSelectedMessages.includes(msg.id))
+                .every(msg => msg.read === 0) ||
+                archivedMessages
+                  .filter(msg => archivedSelectedMessages.includes(msg.id))
+                  .every(msg => msg.read === 1)) && (
                 <TouchableOpacity
                   activeOpacity={0.8}
                   style={styles.optionItem}
@@ -779,9 +807,11 @@ const NotificationScreen = () => {
                       styles.flatListHeaderText,
                       {fontSize: typography.fontSizes.fs12},
                     ]}>
-                    {getSelectedMessagesStatus().allUnread
-                      ? t('NotificationScreen.markAsReadLabel')
-                      : t('NotificationScreen.markAsUnreadLabel')}
+                    {archivedMessages
+                      .filter(msg => archivedSelectedMessages.includes(msg.id))
+                      .every(msg => msg.read === 0)
+                      ? t('ArchiveScreen.markAsReadLabel')
+                      : t('ArchiveScreen.markAsUnreadLabel')}
                   </Text>
                 </TouchableOpacity>
               )}
@@ -789,15 +819,15 @@ const NotificationScreen = () => {
                 activeOpacity={0.8}
                 style={styles.optionItem}
                 onPress={() => {
-                  handleMoveToArchive();
+                  handleDeleteMessages();
                   setShowOptionsModal(false);
                 }}>
                 <Image
-                  source={Images.MOVE_TO_ARCHIVE}
+                  source={Images.DELETE}
                   style={[styles.flatListHeaderIcon, {width: 25, height: 25}]}
                 />
                 <Text style={styles.flatListHeaderText}>
-                  {t('NotificationScreen.archiveLabel')}
+                  {t('ArchiveScreen.deleteLabel')}
                 </Text>
               </TouchableOpacity>
             </View>
@@ -810,7 +840,7 @@ const NotificationScreen = () => {
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: '#FFFFFF', // White background for the screen
+    backgroundColor: '#FFFFFF',
     flex: 1,
   },
   searchFilterContainer: {
@@ -831,7 +861,6 @@ const styles = StyleSheet.create({
   },
   filterPicker: {
     flex: 1,
-    // height: Matrics.vs(40),
     backgroundColor: '#FFFFFF',
     borderWidth: 1,
     borderColor: COLOR.LIGHT_GRAY,
@@ -841,13 +870,8 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   listContent: {
-    // padding: Matrics.s(5),
     paddingHorizontal: Matrics.s(10),
     marginTop: Matrics.vs(5),
-    // paddingBottom: Matrics.vs(20),
-  },
-  selectedItem: {
-    backgroundColor: COLOR.LIGHT_GRAY,
   },
   selectedRoundElement: {
     backgroundColor: COLOR.GREEN,
@@ -863,8 +887,7 @@ const styles = StyleSheet.create({
     tintColor: COLOR.WHITE,
   },
   notificationItem: {
-    backgroundColor: '#FFFFFF', // White background for each item
-    // paddingHorizontal: Matrics.s(10),
+    backgroundColor: '#FFFFFF',
     paddingVertical: Matrics.vs(5),
     paddingHorizontal: Matrics.s(5),
     borderRadius: Matrics.s(5),
@@ -892,19 +915,11 @@ const styles = StyleSheet.create({
     marginTop: Matrics.vs(4),
   },
   actions: {
-    flexDirection: 'row',
-    alignItems: 'center',
     backgroundColor: COLOR.PURPLE,
     width: Matrics.s(7),
     height: Matrics.vs(7),
     marginRight: Matrics.s(10),
     borderRadius: Matrics.s(20),
-  },
-  actionIcon: {
-    width: Matrics.s(20),
-    height: Matrics.s(20),
-    marginLeft: Matrics.s(15),
-    tintColor: COLOR.PURPLE, // Purple color for icons
   },
   emptyText: {
     color: COLOR.GRAY,
@@ -913,103 +928,9 @@ const styles = StyleSheet.create({
     marginVertical: Matrics.vs(30),
     fontStyle: 'italic',
   },
-  bottomContainer: {
-    padding: Matrics.s(15),
-    backgroundColor: '#FFFFFF',
-    borderTopWidth: 1,
-    borderTopColor: COLOR.LIGHT_GRAY,
-  },
-  markAllButton: {
-    backgroundColor: COLOR.PURPLE, // Purple background for the button
-    paddingVertical: Matrics.vs(10),
-    paddingHorizontal: Matrics.s(20),
-    borderRadius: Matrics.s(8),
-    alignSelf: 'center',
-    marginBottom: Matrics.vs(10),
-  },
-  markAllButtonText: {
-    color: COLOR.WHITE,
-    fontSize: Matrics.s(16),
-    fontWeight: '600',
-  },
-  paginationContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
+  footer: {
+    padding: Matrics.vs(20),
     alignItems: 'center',
-  },
-  button: {
-    backgroundColor: COLOR.PURPLE, // Purple background for pagination buttons
-    paddingVertical: Matrics.vs(8),
-    paddingHorizontal: Matrics.s(15),
-    borderRadius: Matrics.s(8),
-  },
-  disabled: {
-    backgroundColor: COLOR.LIGHT_GRAY,
-  },
-  buttonText: {
-    color: COLOR.WHITE,
-    fontSize: Matrics.s(14),
-    fontWeight: '500',
-  },
-  pageText: {
-    fontSize: Matrics.s(14),
-    color: COLOR.BLACK,
-    fontWeight: '500',
-  },
-  modalOverlay: {
-    flex: 1,
-    backgroundColor: 'rgba(0, 0, 0, 0.6)',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  modalContent: {
-    backgroundColor: '#FFFFFF',
-    width: '90%',
-    maxHeight: '80%',
-    padding: Matrics.s(20),
-    borderRadius: Matrics.s(5),
-    shadowColor: '#000',
-    shadowOffset: {width: 0, height: 2},
-    shadowOpacity: 0.3,
-    shadowRadius: 5,
-    elevation: 5,
-  },
-  modalTitle: {
-    color: COLOR.BLACK,
-    fontSize: Matrics.s(18),
-    fontFamily: typography.fontFamily.Montserrat.Bold,
-    marginBottom: Matrics.vs(8),
-  },
-  modalDate: {
-    color: COLOR.GRAY,
-    fontSize: Matrics.s(14),
-    marginBottom: Matrics.vs(12),
-    fontFamily: typography.fontFamily.Montserrat.Medium,
-    // textAlign: 'center',
-  },
-  modalBody: {
-    color: COLOR.BLACK,
-    fontSize: Matrics.s(16),
-    lineHeight: Matrics.s(22),
-    marginBottom: Matrics.vs(20),
-    fontFamily: typography.fontFamily.Montserrat.Regular,
-  },
-  closeButton: {
-    backgroundColor: COLOR.PURPLE, // Purple background for the close button
-    paddingVertical: Matrics.vs(10),
-    paddingHorizontal: Matrics.s(20),
-    borderRadius: Matrics.s(8),
-    alignSelf: 'center',
-  },
-  closeButtonText: {
-    color: COLOR.BLACK,
-    fontSize: Matrics.s(16),
-    fontFamily: typography.fontFamily.Montserrat.SemiBold,
-    textAlign: 'center',
-  },
-  notificationDescription: {
-    fontFamily: typography.fontFamily.Montserrat.Regular,
-    fontSize: typography.fontSizes.fs12,
   },
   scrollToTopButton: {
     position: 'absolute',
@@ -1033,38 +954,69 @@ const styles = StyleSheet.create({
     height: Matrics.s(20),
     tintColor: COLOR.WHITE,
   },
-  roundElement: {
-    width: Matrics.s(40),
-    height: Matrics.s(40),
-    borderRadius: Matrics.s(20),
+  floatingRestoreButton: {
+    position: 'absolute',
+    bottom: Matrics.vs(20),
+    right: Matrics.s(20),
     backgroundColor: COLOR.PURPLE,
+    borderRadius: Matrics.s(30),
+    width: Matrics.s(60),
+    height: Matrics.s(60),
     justifyContent: 'center',
     alignItems: 'center',
-    marginRight: Matrics.s(10),
+    shadowColor: '#000',
+    shadowOffset: {width: 0, height: 2},
+    shadowOpacity: 0.3,
+    shadowRadius: 3,
+    elevation: 5,
   },
-  notificationBody: {
+  floatingRestoreIcon: {
+    width: Matrics.s(30),
+    height: Matrics.s(30),
+    tintColor: COLOR.WHITE,
+  },
+  modalOverlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0, 0, 0, 0.6)',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  modalContent: {
+    backgroundColor: '#FFFFFF',
+    width: '90%',
+    padding: Matrics.s(20),
+    borderRadius: Matrics.s(15),
+    shadowColor: '#000',
+    shadowOffset: {width: 0, height: 2},
+    shadowOpacity: 0.3,
+    shadowRadius: 5,
+    elevation: 5,
+  },
+  modalHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: Matrics.vs(12),
+  },
+  modalTitle: {
+    color: COLOR.BLACK,
+    fontSize: Matrics.s(18),
+    fontFamily: typography.fontFamily.Montserrat.Bold,
+    flex: 1,
+  },
+  modalDate: {
+    color: COLOR.GRAY,
+    fontSize: Matrics.s(14),
+    marginBottom: Matrics.vs(12),
+    fontFamily: typography.fontFamily.Montserrat.Medium,
+  },
+  modalBody: {
+    color: COLOR.BLACK,
+    fontSize: Matrics.s(16),
+    lineHeight: Matrics.s(22),
+    marginBottom: Matrics.vs(20),
     fontFamily: typography.fontFamily.Montserrat.Regular,
   },
-  unreadBody: {
-    fontFamily: typography.fontFamily.Montserrat.Medium,
-  },
-  flatListHeaderIcon: {
-    width: Matrics.s(30),
-    height: Matrics.vs(30),
-    resizeMode: 'contain',
-  },
-  flatListHeaderText: {
-    fontFamily: typography.fontFamily.Montserrat.SemiBold,
-    fontSize: typography.fontSizes.fs12,
-  },
-  placeholderStyle: {
-    fontFamily: typography.fontFamily.Montserrat.Medium,
-    marginLeft: 10,
-  },
-  selectedNumberOfItems: {
-    fontSize: typography.fontSizes.fs16,
-  },
-
   modalButtonContainer: {
     flexDirection: 'column', // Stack buttons vertically
     gap: Matrics.vs(10), // Add spacing between buttons
@@ -1072,7 +1024,7 @@ const styles = StyleSheet.create({
   },
   modalButton: {
     flex: 1,
-    paddingVertical: Matrics.vs(20),
+    paddingVertical: Matrics.vs(10),
     borderRadius: Matrics.s(8),
     alignItems: 'center',
     marginHorizontal: Matrics.s(5),
@@ -1087,6 +1039,38 @@ const styles = StyleSheet.create({
     fontSize: Matrics.s(16),
     fontFamily: typography.fontFamily.Montserrat.SemiBold,
     color: COLOR.BLACK,
+    textAlign: 'center',
+  },
+  closeButton: {
+    backgroundColor: COLOR.PURPLE,
+    paddingVertical: Matrics.vs(10),
+    paddingHorizontal: Matrics.s(20),
+    borderRadius: Matrics.s(8),
+    alignItems: 'center',
+  },
+  closeButtonText: {
+    color: COLOR.WHITE,
+    fontSize: Matrics.s(16),
+    fontFamily: typography.fontFamily.Montserrat.SemiBold,
+    textAlign: 'center',
+  },
+  flatListHeaderIcon: {
+    width: Matrics.s(30),
+    height: Matrics.vs(30),
+    resizeMode: 'contain',
+  },
+  flatListHeaderText: {
+    fontFamily: typography.fontFamily.Montserrat.SemiBold,
+    fontSize: typography.fontSizes.fs12,
+  },
+  roundElement: {
+    width: Matrics.s(40),
+    height: Matrics.s(40),
+    borderRadius: Matrics.s(20),
+    backgroundColor: COLOR.PURPLE,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginRight: Matrics.s(10),
   },
   modalBackdrop: {
     flex: 1,
@@ -1112,6 +1096,12 @@ const styles = StyleSheet.create({
     paddingVertical: Matrics.vs(5),
     gap: 5,
   },
+  unreadBody: {
+    fontFamily: typography.fontFamily.Montserrat.Medium,
+  },
+  notificationBody: {
+    fontFamily: typography.fontFamily.Montserrat.Regular,
+  },
 });
 
-export default NotificationScreen;
+export default ArchiveScreen;

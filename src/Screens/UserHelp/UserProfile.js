@@ -13,6 +13,8 @@ import {
   Alert,
   ActivityIndicator,
 } from 'react-native';
+import {Picker} from '@react-native-picker/picker';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import {launchImageLibrary} from 'react-native-image-picker';
 import React, {useEffect, useState} from 'react';
 import useSavedLanguage from '../../Components/Hooks/useSavedLanguage';
@@ -52,7 +54,60 @@ const UserProfile = ({navigation}) => {
   const {deviceId} = useSelector(state => state?.Network);
   const {globalLanguage} = useSelector(state => state?.GlobalLanguage);
   const [error, setError] = useState(null);
+  const [notificationLanguage, setNotificationLanguage] = useState('de');
+  const languageOptions = [
+    {label: 'English', value: 'en'},
+    {label: 'Polish', value: 'pl'},
+    {label: 'German', value: 'de'},
+    {label: 'Russian', value: 'ru'},
+    {label: 'Ukrainian', value: 'ua'},
+    {label: 'Chinese', value: 'zh'},
+  ];
+  const NOTIFICATION_LANGUAGE_KEY = 'notificationLanguage';
 
+  const saveNotificationLanguage = async lang => {
+    try {
+      await AsyncStorage.setItem(NOTIFICATION_LANGUAGE_KEY, lang);
+      console.log('Notification language saved to AsyncStorage:', lang);
+    } catch (error) {
+      console.error(
+        'Error saving notification language to AsyncStorage:',
+        error,
+      );
+    }
+  };
+
+  // Added: Function to load notification language from AsyncStorage
+  const loadNotificationLanguage = async () => {
+    try {
+      const savedLanguage = await AsyncStorage.getItem(
+        NOTIFICATION_LANGUAGE_KEY,
+      );
+      console.log(
+        'Loaded notification language from AsyncStorage:',
+        savedLanguage,
+      );
+      if (
+        savedLanguage &&
+        languageOptions.some(option => option.value === savedLanguage)
+      ) {
+        setNotificationLanguage(savedLanguage);
+      } else {
+        setNotificationLanguage('de'); // Default to German if no valid saved language
+      }
+    } catch (error) {
+      console.error(
+        'Error loading notification language from AsyncStorage:',
+        error,
+      );
+      setNotificationLanguage('de'); // Default to German on error
+    }
+  };
+
+  // Added: Load saved notification language on component mount
+  useEffect(() => {
+    loadNotificationLanguage();
+  }, []);
   const requestAndroidPermission = async () => {
     try {
       // For Android 13 and above (API 33+)
@@ -133,7 +188,6 @@ const UserProfile = ({navigation}) => {
   }, [profileState?.isLoading]);
 
   /* --------------------------- Set data of profile -------------------------- */
-  console.log('Profile state', profileState?.isLoading);
 
   useEffect(() => {
     try {
@@ -194,7 +248,7 @@ const UserProfile = ({navigation}) => {
           formData.append('device_id', deviceId);
           formData.append('lang', globalLanguage);
           formData.append('email', userEmail);
-
+          formData.append('language', notificationLanguage);
           if (image) {
             const imageType = image.includes('.png')
               ? 'image/png'
@@ -423,6 +477,42 @@ const UserProfile = ({navigation}) => {
                     keyboardType="email-address"
                     returnKeyType="next"
                   />
+                </View>
+                <View style={[loginStyle.SectionStyle]}>
+                  <Text
+                    style={{
+                      position: 'absolute',
+                      bottom: Matrics.ms(50),
+                      fontFamily: typography.fontFamily.Montserrat.Regular,
+                      color: '#555555',
+                      width: Matrics.screenWidth,
+                    }}>
+                    Configuring the language of messages from the app to me
+                  </Text>
+                  <Picker
+                    selectedValue={notificationLanguage}
+                    onValueChange={value => {
+                      setNotificationLanguage(value);
+                      saveNotificationLanguage(value); // Added: Save the selected language to AsyncStorage
+                    }}
+                    style={[
+                      loginStyle.inputStyle,
+                      styles.languagePicker,
+                      {
+                        fontFamily: typography.fontFamily.Montserrat.Regular,
+                      },
+                    ]}>
+                    {languageOptions.map(option => (
+                      <Picker.Item
+                        key={option.value}
+                        label={option.label}
+                        value={option.value}
+                        style={{
+                          fontFamily: typography.fontFamily.Montserrat.Regular,
+                        }}
+                      />
+                    ))}
+                  </Picker>
                 </View>
               </View>
               <View>

@@ -15,6 +15,7 @@ import LocalWorkHistoryReducer from './LocalWorkHistorySlice';
 import TimeReducer from './TimeSlice';
 import NotificationReducer from './NotificationSlice';
 import MessageReducer from './MessageSlice';
+import ArchiveReducer from './ArchiveSlice';
 
 let appReducer = combineReducers({
   Auth: AuthReducer,
@@ -33,6 +34,7 @@ let appReducer = combineReducers({
   TrueTime: TimeReducer,
   Notification: NotificationReducer,
   Messages: MessageReducer,
+  Archive: ArchiveReducer,
 });
 
 const rootReducer = (state, action) => {

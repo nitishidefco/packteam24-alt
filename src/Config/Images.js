@@ -51,6 +51,9 @@ export default {
   CROSS: require('../Assets/Icons/cross.png'),
   SEARCH: require('../Assets/Icons/search.png'),
   MOVE_TO_ARCHIVE: require('../Assets/Icons/move-to-archive.png'),
+  MARK_AS_READ: require('../Assets/Icons/mark-as-read.png'),
+  RESTORE: require('../Assets/Icons/restore.png'),
+  THREE_DOTS: require('../Assets/Icons/three-dots.png'),
   /* ------------------------------ Country Flags ----------------------------- */
   RUS: require('../Assets/Flags/russian.png'),
   UK: require('../Assets/Flags/english.png'),

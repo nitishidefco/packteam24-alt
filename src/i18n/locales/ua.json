@@ -85,7 +85,8 @@
     "remove": "Видалити",
     "Error": "Помилка",
     "FailedToRemove": "Не вдалося видалити фото профілю. Спробуйте ще раз.",
-    "OK": "OK"
+    "OK": "OK",
+    "langConfig": "Налаштування мови повідомлень від додатка до мене"
   },
   "ResetPassword": {
     "passwordResetSuccess": "Ми надіслали вам посилання для скидання пароля!",
@@ -157,5 +158,60 @@
     "instruction_step1": "Перейдіть до Налаштування > Дата і час",
     "instruction_step2": "Увімкніть 'Автоматична дата і час' (або 'Встановити час автоматично')",
     "warning": "Додаток не працюватиме, доки це не буде виправлено."
+  },
+  "NotificationScreen": {
+    "searchPlaceholder": "Пошук за ключовим словом",
+    "filterNotifications": "Фільтрувати повідомлення",
+    "filterAll": "Усі",
+    "filterRead": "Прочитані",
+    "filterUnread": "Непрочитані",
+    "filterCancel": "Скасувати",
+    "filterLabel": "Фільтр",
+    "confirmArchiveTitle": "Підтвердити архівування",
+    "confirmArchiveBody": "Ви впевнені, що хочете перемістити {{count}} вибране повідомлення до архіву?",
+    "confirmArchiveBody_plural": "Ви впевнені, що хочете перемістити {{count}} вибраних повідомлень до архіву?",
+    "confirmArchiveButton": "Підтвердити",
+    "markAsReadLabel": "Позначити як прочитане",
+    "markAsUnreadLabel": "Позначити як непрочитане",
+    "archiveLabel": "Архівувати",
+    "selectedCount": "{{count}} вибрано",
+    "noNotifications": "Немає повідомлень",
+    "confirmMarkReadTitle": "Підтвердити позначку як прочитане",
+    "confirmMarkUnreadTitle": "Підтвердити позначку як непрочитане",
+    "confirmMarkBody": "Ви впевнені, що хочете позначити {{count}} вибране повідомлення як {{status}}?",
+    "confirmMarkBody_plural": "Ви впевнені, що хочете позначити {{count}} вибраних повідомлень як {{status}}?",
+    "read": "прочитане",
+    "unread": "непрочитане",
+    "closeButton": "Закрити",
+    "moveToArchiveButton": "Перемістити до архіву",
+    "selectedLabel": "Вибрано"
+  },
+  "ArchiveScreen": {
+    "title": "Архів",
+    "searchPlaceholder": "Пошук за ключовим словом",
+    "filterNotifications": "Фільтрувати сповіщення",
+    "filterAll": "Усі",
+    "filterRead": "Прочитані",
+    "filterUnread": "Непрочитані",
+    "filterCancel": "Скасувати",
+    "filterLabel": "Фільтр",
+    "selectedCount": ":count вибрано",
+    "markAsReadLabel": "Позначити як прочитане",
+    "markAsUnreadLabel": "Позначити як непрочитане",
+    "deleteLabel": "Видалити",
+    "noArchivedMessages": "Немає заархівованих повідомлень",
+    "confirmDeleteTitle": "Підтвердити видалення",
+    "confirmDeleteBody": "Ви впевнені, що хочете видалити {{count}} вибране повідомлення?",
+    "confirmDeleteBody_plural": "Ви впевнені, що хочете видалити {{count}} вибраних повідомлень?",
+    "confirmDeleteButton": "Підтвердити",
+    "confirmRestoreTitle": "Підтвердити відновлення",
+    "confirmRestoreBody": "Ви впевнені, що хочете відновити {{count}} вибране повідомлення?",
+    "confirmRestoreBody_plural": "Ви впевнені, що хочете відновити {{count}} вибраних повідомлень?",
+    "confirmRestoreButton": "Підтвердити",
+    "moveToMessageCenterButton": "Перенести до центру повідомлень"
+  },
+  "CustomHeader": {
+    "MessageCenter": "Центр повідомлень",
+    "Archives": "Архіви"
   }
 }

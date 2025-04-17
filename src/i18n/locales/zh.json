@@ -89,7 +89,8 @@
     "confirmAccountRemoval": "确认删除帐户",
     "confirmAccountRemovalDesc": "您确定要删除该帐户吗？此操作无法撤消。",
     "no": "否",
-    "yes": "是"
+    "yes": "是",
+    "langConfig": "配置从应用程序发送给我的消息语言"
   },
   "ResetPassword": {
     "passwordResetSuccess": "我们已通过电子邮件发送了您的密码重置链接！",
@@ -161,5 +162,60 @@
     "instruction_step1": "前往 设置 > 日期与时间",
     "instruction_step2": "启用 '自动日期和时间'（或 '自动设置时间'）",
     "warning": "在更正此问题之前，应用将无法运行。"
+  },
+  "NotificationScreen": {
+    "searchPlaceholder": "搜索关键字",
+    "filterNotifications": "过滤通知",
+    "filterAll": "全部",
+    "filterRead": "已读",
+    "filterUnread": "未读",
+    "filterCancel": "取消",
+    "filterLabel": "筛选",
+    "confirmArchiveTitle": "确认归档",
+    "confirmArchiveBody": "您确定要将{{count}}条选中的消息移到档案吗？",
+    "confirmArchiveBody_plural": "您确定要将{{count}}条选中的消息移到档案吗？",
+    "confirmArchiveButton": "确认",
+    "markAsReadLabel": "标记为已读",
+    "markAsUnreadLabel": "标记为未读",
+    "archiveLabel": "归档",
+    "selectedCount": "{{count}} 已选择",
+    "noNotifications": "无通知",
+    "confirmMarkReadTitle": "确认标记为已读",
+    "confirmMarkUnreadTitle": "确认标记为未读",
+    "confirmMarkBody": "您确定要将{{count}}条选中的消息标记为{{status}}吗？",
+    "confirmMarkBody_plural": "您确定要将{{count}}条选中的消息标记为{{status}}吗？",
+    "read": "已读",
+    "unread": "未读",
+    "closeButton": "关闭",
+    "moveToArchiveButton": "移到档案",
+    "selectedLabel": "已选择"
+  },
+  "ArchiveScreen": {
+    "title": "归档",
+    "searchPlaceholder": "搜索关键字",
+    "filterNotifications": "过滤通知",
+    "filterAll": "全部",
+    "filterRead": "已读",
+    "filterUnread": "未读",
+    "filterCancel": "取消",
+    "filterLabel": "过滤器",
+    "selectedCount": ":count 已选中",
+    "markAsReadLabel": "标记为已读",
+    "markAsUnreadLabel": "标记为未读",
+    "deleteLabel": "删除",
+    "noArchivedMessages": "没有归档消息",
+    "confirmDeleteTitle": "确认删除",
+    "confirmDeleteBody": "您确定要删除{{count}}条选中的消息吗？",
+    "confirmDeleteBody_plural": "您确定要删除{{count}}条选中的消息吗？",
+    "confirmDeleteButton": "确认",
+    "confirmRestoreTitle": "确认恢复",
+    "confirmRestoreBody": "您确定要恢复{{count}}条选中的消息吗？",
+    "confirmRestoreBody_plural": "您确定要恢复{{count}}条选中的消息吗？",
+    "confirmRestoreButton": "确认",
+    "moveToMessageCenterButton": "移至消息中心"
+  },
+  "CustomHeader": {
+    "MessageCenter": "消息中心",
+    "Archives": "档案"
   }
 }

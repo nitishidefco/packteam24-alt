@@ -27,7 +27,6 @@ const languageProviderSlice = createSlice({
 
 export const {setGlobalLanguage} = languageProviderSlice.actions;
 export const initializeLanguage = () => async dispatch => {
-
   try {
     const savedLang = await AsyncStorage.getItem('language');
     if (savedLang) {
@@ -50,7 +49,6 @@ export const initializeLanguage = () => async dispatch => {
 
 // Set language with storage and i18n
 export const setLanguageWithStorage = language => async dispatch => {
-
   try {
     await AsyncStorage.setItem('language', language);
     dispatch(setGlobalLanguage(language));

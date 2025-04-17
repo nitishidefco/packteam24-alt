@@ -85,7 +85,8 @@
     "remove": "Удалить",
     "Error": "Ошибка",
     "FailedToRemove": "Не удалось удалить фото профиля. Попробуйте еще раз.",
-    "OK": "OK"
+    "OK": "OK",
+    "langConfig": "Настройка языка сообщений от приложения ко мне"
   },
   "ResetPassword": {
     "passwordResetSuccess": "Мы отправили вам ссылку для сброса пароля!",
@@ -157,5 +158,59 @@
     "instruction_step1": "Перейдите в Настройки > Дата и время",
     "instruction_step2": "Включите 'Автоматическая дата и время' (или 'Установить время автоматически')",
     "warning": "Приложение не будет работать, пока это не будет исправлено."
+  },
+  "NotificationScreen": {
+    "searchPlaceholder": "Поиск по ключевому слову",
+    "filterNotifications": "Фильтровать уведомления",
+    "filterAll": "Все",
+    "filterRead": "Прочитанные",
+    "filterUnread": "Непрочитанные",
+    "filterCancel": "Отмена",
+    "filterLabel": "Фильтр",
+    "confirmArchiveTitle": "Подтвердить архивирование",
+    "confirmArchiveBody": "Вы уверены, что хотите переместить {{count}} выбранное сообщение в архив?",
+    "confirmArchiveBody_plural": "Вы уверены, что хотите переместить {{count}} выбранных сообщений в архив?",
+    "confirmArchiveButton": "Подтвердить",
+    "markAsReadLabel": "Отметить как прочитанное",
+    "markAsUnreadLabel": "Отметить как непрочитанное",
+    "archiveLabel": "Архивировать",
+    "selectedCount": "{{count}} выбрано",
+    "noNotifications": "Нет уведомлений",
+    "confirmMarkReadTitle": "Подтвердить отметку как прочитанное",
+    "confirmMarkUnreadTitle": "Подтвердить отметку как непрочитанное",
+    "confirmMarkBody": "Вы уверены, что хотите пометить {{count}} выбранное сообщение как {{status}}?",
+    "confirmMarkBody_plural": "Вы уверены, что хотите пометить {{count}} выбранных сообщений как {{status}}?",
+    "read": "прочитанное",
+    "unread": "непрочитанное",
+    "closeButton": "Закрыть",
+    "moveToArchiveButton": "Переместить в архив",
+    "selectedLabel": "Выбрано"
+  },
+  "ArchiveScreen": {
+    "title": "Архив",
+    "searchPlaceholder": "Поиск по ключевому слову",
+    "filterNotifications": "Фильтровать уведомления",
+    "filterAll": "Все",
+    "filterRead": "Прочитанные",
+    "filterUnread": "Непрочитанные",
+    "filterCancel": "Отмена",
+    "filterLabel": "Фильтр",
+    "selectedCount": ":count выбрано",
+    "markAsReadLabel": "Отметить как прочитанное",
+    "markAsUnreadLabel": "Отметить как непрочитанное",
+    "deleteLabel": "Удалить",
+    "noArchivedMessages": "Нет заархивированных сообщений",
+    "confirmDeleteTitle": "Подтвердить удаление",
+    "confirmDeleteBody": "Вы уверены, что хотите удалить :count выбранных сообщений:plural?",
+    "confirmDeleteButton": "Подтвердить",
+    "confirmRestoreTitle": "Подтвердить восстановление",
+    "confirmRestoreBody": "Вы уверены, что хотите восстановить {{count}} выбранное сообщение?",
+    "confirmRestoreBody_plural": "Вы уверены, что хотите восстановить {{count}} выбранных сообщений?",
+    "confirmRestoreButton": "Подтвердить",
+    "moveToMessageCenterButton": "Переместить в центр сообщений"
+  },
+  "CustomHeader": {
+    "MessageCenter": "Центр сообщений",
+    "Archives": "Архивы"
   }
 }

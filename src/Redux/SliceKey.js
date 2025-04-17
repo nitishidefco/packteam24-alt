@@ -14,3 +14,4 @@ export const LANGUAGE_REDUCER = 'language_reducer';
 export const LOCAL_WORK_HISTORY_REDUCER = 'local_work_history_reducer';
 export const NOTIFICATION_REDUCER = 'notification_reducer';
 export const MESSAGE_REUCER = 'message_reducer';
+export const ARCHIVE_REDUCER = 'archive_reducer';

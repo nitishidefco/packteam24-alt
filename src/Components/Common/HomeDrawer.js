@@ -10,6 +10,7 @@ import DailyListScreen from '../../Screens/DailyList/DailyListScreen';
 import ChangePassword from '../../Screens/UserHelp/ChangePassword';
 import UserProfile from '../../Screens/UserHelp/UserProfile';
 import NotificationScreen from '../../Screens/Home/NotificationScreen';
+import ArchiveScreen from '../../Screens/Home/ArchiveScreen';
 
 const Drawer = createDrawerNavigator();
 
@@ -59,6 +60,13 @@ const HomeDrawer = () => {
       <Drawer.Screen
         name="NotificationScreen"
         component={NotificationScreen}
+        options={{
+          headerShown: false,
+        }}
+      />
+      <Drawer.Screen
+        name="ArchiveScreen"
+        component={ArchiveScreen}
         options={{
           headerShown: false,
         }}

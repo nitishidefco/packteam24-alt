@@ -6,38 +6,37 @@ import {
   TouchableOpacity,
   Modal,
   Text,
-  TouchableWithoutFeedback,
   SafeAreaView,
-  Platform,
 } from 'react-native';
 import {Images} from '../../Config';
 import {Matrics, COLOR, typography} from '../../Config/AppStyling';
 import {useNavigation, useRoute} from '@react-navigation/native';
-import DrawerSceneWrapper from './DrawerSceneWrapper';
-import DropdownAlert from 'react-native-dropdownalert';
 import {useAuthActions} from '../../Redux/Hooks';
-import {toastMessage} from '../../Helpers';
-import {reduxStorage} from '../../Redux/Storage';
-import {useUserProfileActions} from '../../Redux/Hooks/useUserProfileActions';
 import {success} from '../../Helpers/ToastMessage';
 import {useTranslation} from 'react-i18next';
 import {useDispatch, useSelector} from 'react-redux';
 import {FlatList} from 'react-native-gesture-handler';
 import moment from 'moment';
 import {clearMessageSelection} from '../../Redux/Reducers/MessageSlice';
+import {reduxStorage} from '../../Redux/Storage';
+import {clearArchiveSelection} from '../../Redux/Reducers/ArchiveSlice';
+import i18n from '../../i18n/i18n';
 
-const CustomHeader = ({onUserPress, title = 'Message Center'}) => {
+const CustomHeader = ({
+  onUserPress,
+  title = i18n.t('CustomHeader.MessageCenter'),
+}) => {
   const navigation = useNavigation();
   const route = useRoute();
   const isNotificationScreen = route.name === 'NotificationScreen';
+  const isArchiveScreen = route.name === 'ArchiveScreen';
   const dispatch = useDispatch();
   const {t} = useTranslation();
   const [dropdownAlert, setDropdownAlert] = useState(null);
   const [loading, setLoading] = useState(false);
   const {state, logoutCall} = useAuthActions();
-  // const {profileState} = useUserProfileActions();
   const {Auth} = state;
-  const SessionId = Auth.data?.data?.sesssion_id;
+  const SessionId = Auth.data?.data?.session_id;
   const unreadCount = useSelector(state => state.Messages?.unreadCount || 0);
   const messages = useSelector(state => state.Messages?.messages || []);
   const [modalVisible, setModalVisible] = useState(false);
@@ -61,6 +60,7 @@ const CustomHeader = ({onUserPress, title = 'Message Center'}) => {
     formdata.append('device_id', '123');
     logoutCall(formdata);
   }
+
   function handleLogoutResponse() {
     if (loading && Auth.islogoutSuccess === true) {
       setLoading(false);
@@ -72,7 +72,9 @@ const CustomHeader = ({onUserPress, title = 'Message Center'}) => {
       setLoading(false);
     }
   }
+
   const recentMessages = messages.slice(0, 15);
+
   const renderMessageItem = ({item}) => {
     return (
       <View style={styles.messageItem}>
@@ -87,6 +89,7 @@ const CustomHeader = ({onUserPress, title = 'Message Center'}) => {
       </View>
     );
   };
+
   return (
     <SafeAreaView style={{backgroundColor: '#091242'}}>
       <View style={[styles.headerContainer]}>
@@ -95,6 +98,9 @@ const CustomHeader = ({onUserPress, title = 'Message Center'}) => {
             if (isNotificationScreen) {
               dispatch(clearMessageSelection());
               navigation.goBack();
+            } else if (isArchiveScreen) {
+              dispatch(clearArchiveSelection());
+              navigation.navigate('HomeDrawer', {screen: 'NotificationScreen'});
             } else {
               navigation.openDrawer();
             }
@@ -107,19 +113,39 @@ const CustomHeader = ({onUserPress, title = 'Message Center'}) => {
             flexDirection: 'row',
           }}>
           <Image
-            source={isNotificationScreen ? Images.BACK_ICON : Images.SIDEMENU} // Back icon or menu icon
+            source={
+              isNotificationScreen || isArchiveScreen
+                ? Images.BACK_ICON
+                : Images.SIDEMENU
+            }
             resizeMode={'contain'}
             style={[
               styles.drawerIconStyle,
               {
-                width: isNotificationScreen ? Matrics.s(25) : Matrics.scale(15),
-                height: isNotificationScreen ? Matrics.vs(25) : Matrics.vs(15),
+                width:
+                  isNotificationScreen || isArchiveScreen
+                    ? Matrics.s(25)
+                    : Matrics.scale(15),
+                height:
+                  isNotificationScreen || isArchiveScreen
+                    ? Matrics.vs(25)
+                    : Matrics.vs(15),
               },
             ]}
           />
         </TouchableOpacity>
         {isNotificationScreen ? (
           <Text style={styles.headerTitle}>{title}</Text>
+        ) : isArchiveScreen ? (
+          <Text
+            style={[
+              styles.headerTitle,
+              {
+                marginRight: 50,
+              },
+            ]}>
+            {t('CustomHeader.Archives')}
+          </Text>
         ) : (
           <Image
             source={Images.NEW_APP_LOGO}
@@ -127,105 +153,108 @@ const CustomHeader = ({onUserPress, title = 'Message Center'}) => {
             style={styles.logoStyle}
           />
         )}
-
-        <TouchableOpacity
-          onPress={() => {
-            if (isNotificationScreen) {
-              navigation.navigate('HomeDrawer', {screen: 'ArchiveScreen'});
-            } else {
-              navigation.navigate('HomeDrawer', {screen: 'NotificationScreen'});
-            }
-          }}
-          style={styles.userIconContainer}>
-          <Image
-            source={
-              isNotificationScreen
-                ? Images.ARCHIVE_ICON
-                : Images.NOTIFICATION_ICON
-            }
-            style={styles.userIconStyle}
-          />
-          {/* Show unread count badge only for the notification icon (not archive icon) */}
-          {!isNotificationScreen && unreadCount > 0 && (
-            <View
-              style={{
-                position: 'absolute',
-                backgroundColor: 'red',
-                padding: Matrics.s(1),
-                borderRadius: Matrics.s(5),
-                top: -3,
-                right: -3,
-              }}>
-              <Text
-                style={{
-                  color: 'white',
-                  fontFamily: typography.fontFamily.Montserrat.Medium,
-                  fontSize: typography.fontSizes.fs10,
-                }}>
-                {unreadCount > 99 ? '99+' : unreadCount}
-              </Text>
-            </View>
-          )}
-        </TouchableOpacity>
-        {/* Modal */}
-        <Modal
-          visible={modalVisible} // Use modalVisible state instead of true
-          transparent
-          animationType="fade"
-          onRequestClose={() => setModalVisible(false)}>
-          <View style={styles.modalOverlay}>
-            <View style={styles.modalContent}>
+        {!isArchiveScreen && (
+          <TouchableOpacity
+            onPress={() => {
+              if (isNotificationScreen) {
+                navigation.navigate('HomeDrawer', {screen: 'ArchiveScreen'});
+              } else {
+                navigation.navigate('HomeDrawer', {
+                  screen: 'NotificationScreen',
+                });
+              }
+            }}
+            style={styles.userIconContainer}>
+            <Image
+              source={
+                isNotificationScreen
+                  ? Images.ARCHIVE_ICON
+                  : Images.NOTIFICATION_ICON
+              }
+              style={styles.userIconStyle}
+            />
+            {!isNotificationScreen && unreadCount > 0 && (
               <View
                 style={{
-                  flexDirection: 'row',
-                  justifyContent: 'space-between',
-                  alignItems: 'center',
-                  paddingVertical: Matrics.vs(10),
-                  paddingHorizontal: Matrics.s(20),
-                  marginBottom: Matrics.vs(10),
-                  // textAlign: 'center',
-                  backgroundColor: COLOR.PURPLE,
-                  borderTopLeftRadius: Matrics.s(10),
-                  borderTopRightRadius: Matrics.s(10),
+                  position: 'absolute',
+                  backgroundColor: 'red',
+                  padding: Matrics.s(1),
+                  borderRadius: Matrics.s(5),
+                  top: -3,
+                  right: -3,
                 }}>
-                <Text style={styles.modalTitle}>Message Center</Text>
+                <Text
+                  style={{
+                    color: 'white',
+                    fontFamily: typography.fontFamily.Montserrat.Medium,
+                    fontSize: typography.fontSizes.fs10,
+                  }}>
+                  {unreadCount > 99 ? '99+' : unreadCount}
+                </Text>
+              </View>
+            )}
+          </TouchableOpacity>
+        )}
+        {modalVisible && !isNotificationScreen && !isArchiveScreen && (
+          <Modal
+            visible={modalVisible}
+            transparent
+            animationType="fade"
+            onRequestClose={() => setModalVisible(false)}>
+            <View style={styles.modalOverlay}>
+              <View style={styles.modalContent}>
+                <View
+                  style={{
+                    flexDirection: 'row',
+                    justifyContent: 'space-between',
+                    alignItems: 'center',
+                    paddingVertical: Matrics.vs(10),
+                    paddingHorizontal: Matrics.s(20),
+                    marginBottom: Matrics.vs(10),
+                    backgroundColor: COLOR.PURPLE,
+                    borderTopLeftRadius: Matrics.s(10),
+                    borderTopRightRadius: Matrics.s(10),
+                  }}>
+                  <Text style={styles.modalTitle}>
+                    {t('Header.MessageCenter')}
+                  </Text>
+                  <TouchableOpacity
+                    onPress={() => setModalVisible(false)}
+                    activeOpacity={0.5}>
+                    <Image
+                      source={Images.CLOSE}
+                      style={{
+                        width: Matrics.s(20),
+                        height: Matrics.vs(20),
+                        resizeMode: 'contain',
+                      }}
+                    />
+                  </TouchableOpacity>
+                </View>
+                <FlatList
+                  data={recentMessages}
+                  renderItem={renderMessageItem}
+                  keyExtractor={item => item.id.toString()}
+                  ListEmptyComponent={
+                    <Text style={styles.emptyText}>No messages</Text>
+                  }
+                  style={styles.messageList}
+                />
                 <TouchableOpacity
-                  onPress={() => setModalVisible(false)}
+                  style={styles.seeAllButton}
+                  onPress={() => {
+                    setModalVisible(false);
+                    navigation.navigate('HomeDrawer', {
+                      screen: 'NotificationScreen',
+                    });
+                  }}
                   activeOpacity={0.5}>
-                  <Image
-                    source={Images.CLOSE}
-                    style={{
-                      width: Matrics.s(20),
-                      height: Matrics.vs(20),
-                      resizeMode: 'contain',
-                    }}
-                  />
+                  <Text style={styles.seeAllButtonText}>See all messages</Text>
                 </TouchableOpacity>
               </View>
-              <FlatList
-                data={recentMessages}
-                renderItem={renderMessageItem}
-                keyExtractor={item => item.id.toString()}
-                ListEmptyComponent={
-                  <Text style={styles.emptyText}>No messages</Text>
-                }
-                style={styles.messageList}
-              />
-
-              <TouchableOpacity
-                style={styles.seeAllButton}
-                onPress={() => {
-                  setModalVisible(false);
-                  navigation.navigate('HomeDrawer', {
-                    screen: 'NotificationScreen',
-                  });
-                }}
-                activeOpacity={0.5}>
-                <Text style={styles.seeAllButtonText}>See all messages</Text>
-              </TouchableOpacity>
             </View>
-          </View>
-        </Modal>
+          </Modal>
+        )}
       </View>
     </SafeAreaView>
   );
@@ -244,19 +273,20 @@ const styles = StyleSheet.create({
   },
   drawerIconStyle: {
     tintColor: COLOR.WHITE,
-    width: Matrics.scale(15),
-    height: Matrics.vs(15),
     alignSelf: 'center',
   },
   headerTitle: {
     fontFamily: typography.fontFamily.Montserrat.Bold,
     color: '#fff',
     fontSize: typography.fontSizes.fs16,
+    flex: 1,
+    textAlign: 'center',
   },
   logoStyle: {
     width: Matrics.scale(160),
     height: Matrics.vs(35),
     alignSelf: 'center',
+    flex: 1,
   },
   userIconContainer: {
     width: Matrics.scale(30),
@@ -274,88 +304,19 @@ const styles = StyleSheet.create({
     marginBottom: Matrics.ms(0),
     resizeMode: 'contain',
   },
-  modalContainer: {
-    flex: 1,
-    justifyContent: 'flex-end',
-    flexDirection: 'row',
-    paddingTop: Matrics.ms(60),
-    paddingHorizontal: 10,
-  },
-  iosModalContainer: {
-    flex: 1,
-    justifyContent: 'flex-end',
-    flexDirection: 'row',
-    paddingTop: Matrics.vs(96),
-    paddingHorizontal: Matrics.ms(10),
-  },
-  modalText: {
-    fontSize: typography.fontSizes.fs11,
-    fontFamily: typography.fontFamily.Montserrat.Medium,
-    fontWeight: '500',
-    color: 'black',
-  },
-  LogoutText: {
-    fontSize: typography.fontSizes.fs11,
-    fontFamily: typography.fontFamily.Montserrat.Medium,
-    fontWeight: '500',
-    right: Matrics.ms(24),
-    color: 'black',
-  },
-  passwordLogo: {
-    width: Matrics.scale(13),
-    height: Matrics.vs(15),
-    marginRight: 10,
-    resizeMode: 'contain',
-  },
-  optionContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginTop: Matrics.ms(10),
-  },
-  separator: {
-    height: 1,
-    backgroundColor: '#ccc',
-    width: '100%',
-    marginVertical: 10,
-  },
-  title: {
-    color: COLOR.WHITE,
-    fontSize: Matrics.s(18),
-    fontWeight: 'bold',
-  },
-  messageIconContainer: {
-    position: 'relative',
-  },
-  badge: {
-    position: 'absolute',
-    top: -Matrics.vs(5),
-    right: -Matrics.s(5),
-    backgroundColor: COLOR.ERROR, // Red background for the badge
-    borderRadius: Matrics.s(10),
-    width: Matrics.s(20),
-    height: Matrics.s(20),
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  badgeText: {
-    color: COLOR.WHITE,
-    fontSize: Matrics.s(12),
-    fontWeight: 'bold',
-  },
   modalOverlay: {
     flex: 1,
     backgroundColor: 'rgba(0, 0, 0, 0.5)',
     justifyContent: 'flex-start',
     alignItems: 'flex-end',
-    paddingTop: Matrics.vs(50), // Adjust based on your header height
+    paddingTop: Matrics.vs(50),
   },
   modalContent: {
-    backgroundColor: '#fff', // Dark background like in the screenshot
+    backgroundColor: '#fff',
     width: '80%',
     maxHeight: '50%',
     borderRadius: Matrics.s(10),
     marginRight: Matrics.s(10),
-    // padding: Matrics.s(10),
   },
   modalTitle: {
     color: COLOR.WHITE,

@@ -36,7 +36,7 @@
     "checkingTimeWithServer": "Checking time with server",
     "timeZoneMatches": "The time zone matches your location:",
     "loading": "Loading",
-    "importantNotice":"Please set Phone's Date and Time to automatic to continue using the app"
+    "importantNotice": "Please set Phone's Date and Time to automatic to continue using the app"
   },
   "ChangePasswordScreen": {
     "allFieldsRequired": "All fields are requied",
@@ -89,7 +89,8 @@
     "confirmAccountRemoval": "Confirm Account Removal",
     "confirmAccountRemovalDesc": "Are you sure you want to remove the account? This action cannot be undone.",
     "no": "No",
-    "yes": "Yes"
+    "yes": "Yes",
+    "langConfig": "Configuring the language of messages from the app to me"
   },
   "ResetPassword": {
     "passwordResetSuccess": "We have emailed your password reset link!",
@@ -161,5 +162,59 @@
     "instruction_step1": "Go to Settings > Date & Time",
     "instruction_step2": "Enable 'Automatic date and time' (or 'Set time automatically')",
     "warning": "The app will not function until this is corrected."
+  },
+  "NotificationScreen": {
+    "searchPlaceholder": "Search for Keyword",
+    "filterNotifications": "Filter Notifications",
+    "filterAll": "All",
+    "filterRead": "Read",
+    "filterUnread": "Unread",
+    "filterCancel": "Cancel",
+    "filterLabel": "Filter",
+    "confirmArchiveTitle": "Confirm Archive",
+    "confirmArchiveBody": "Are you sure you want to move {{count}} selected message to the archive?",
+    "confirmArchiveBody_plural": "Are you sure you want to move {{count}} selected messages to the archive?",
+    "confirmArchiveButton": "Confirm",
+    "markAsReadLabel": "Mark as Read",
+    "markAsUnreadLabel": "Mark as Unread",
+    "archiveLabel": "Archive",
+    "selectedCount": ":count Selected",
+    "noNotifications": "No notifications",
+    "confirmMarkReadTitle": "Confirm Mark as Read",
+    "confirmMarkUnreadTitle": "Confirm Mark as Unread",
+    "confirmMarkBody": "Are you sure you want to mark {{count}} selected message as {{status}}?",
+    "read": "read",
+    "unread": "unread",
+    "closeButton": "Close",
+    "moveToArchiveButton": "Move to Archive",
+    "selectedLabel": "Selected"
+  },
+  "ArchiveScreen": {
+    "title": "Archives",
+    "searchPlaceholder": "Search for Keyword",
+    "filterNotifications": "Filter Notifications",
+    "filterAll": "All",
+    "filterRead": "Read",
+    "filterUnread": "Unread",
+    "filterCancel": "Cancel",
+    "filterLabel": "Filter",
+    "selectedCount": ":count Selected",
+    "markAsReadLabel": "Mark as Read",
+    "markAsUnreadLabel": "Mark as Unread",
+    "deleteLabel": "Delete",
+    "noArchivedMessages": "No archived messages",
+    "confirmDeleteTitle": "Confirm Delete",
+    "confirmDeleteBody": "Are you sure you want to delete {{count}} selected message?",
+    "confirmDeleteBody_plural": "Are you sure you want to delete {{count}} selected messages?",
+    "confirmDeleteButton": "Confirm",
+    "confirmRestoreTitle": "Confirm Restore",
+    "confirmRestoreBody": "Are you sure you want to restore {{count}} selected message?",
+    "confirmRestoreBody_plural": "Are you sure you want to restore {{count}} selected messages?",
+    "confirmRestoreButton": "Confirm",
+    "moveToMessageCenterButton": "Move to Message Center"
+  },
+  "CustomHeader": {
+    "MessageCenter": "Message Center",
+    "Archives": "Archives"
   }
 }

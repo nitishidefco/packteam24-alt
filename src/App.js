@@ -11,12 +11,11 @@ import i18n from './i18n/i18n';
 
 import Splash from './splash';
 import HomeDrawer from './Components/Common/HomeDrawer';
-import {Provider} from 'react-redux';
+import {Provider, useSelector} from 'react-redux';
 import {Store} from './Redux/Store';
 import Login from './Screens/Auth/Login';
 import Toast from 'react-native-toast-message';
 import {toastConfig} from './Helpers';
-import {LogBox} from 'react-native';
 import AddDailyList from './Screens/DailyList/AddDailyList';
 import EditDailyList from './Screens/DailyList/EditDailyList';
 import CreateDailyList from './Screens/DailyList/CreateDailyList';
@@ -27,25 +26,18 @@ import ChangePassword from './Screens/UserHelp/ChangePassword';
 import UserProfile from './Screens/UserHelp/UserProfile';
 import CreateAccount from './Screens/Auth/CreateAccount';
 import NotificationService from './Services/NotificationService';
+import NotificationInitializer from './Components/HomeComponent/NotificationInitializer';
 
 const Stack = createStackNavigator();
 
 const App = () => {
   const navigationRef = useRef(null);
+  // const {deviceId} = useSelector(state => state?.Network);
+
   useEffect(() => {
     const unsubscribe = monitorNetworkStatus(Store.dispatch);
     return () => unsubscribe();
   }, []);
-
-  useEffect(() => {
-    console.log('Inside useEffect', navigationRef.current);
-
-    if (navigationRef.current) {
-      console.log('Initiliziseing notification service');
-
-      NotificationService.initialize(navigationRef.current);
-    }
-  }, [navigationRef.current]);
 
   return (
     <Provider store={Store}>
@@ -104,6 +96,7 @@ const App = () => {
                 options={{headerShown: false}}
               />
             </Stack.Navigator>
+            <NotificationInitializer navigationRef={navigationRef} />
           </NavigationContainer>
           <Toast
             config={toastConfig}

@@ -11,7 +11,6 @@ import {
   AppState,
   TouchableOpacity,
   ScrollView,
-  Alert,
   RefreshControl,
 } from 'react-native';
 import {useHomeActions} from '../../Redux/Hooks';
@@ -441,7 +440,6 @@ const Home = ({navigation, route}) => {
     dispatch(fetchMessagesStart({payload: formData}));
     dispatch(fetchUnreadCountStart({payload: formData}));
   }, []);
-  // Log the state to verify
 
   return (
     <DrawerSceneWrapper>
