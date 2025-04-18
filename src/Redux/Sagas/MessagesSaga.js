@@ -19,14 +19,10 @@ import {success} from '../../Helpers/ToastMessage';
 
 function* fetchMessagesSaga({payload}) {
   try {
-    console.log('Fetch payload', payload.payload);
-
     const response = yield call(
       MessageService.GetNotifications,
       payload.payload,
     );
-    console.log('response', response.data);
-
     if (response) {
       yield put(
         fetchMessagesSuccess({
@@ -69,8 +65,6 @@ function* fetchUnreadCountSaga({payload}) {
 function* markAsReadSaga({payload}) {
   try {
     const response = yield call(MessageService.MarkAsRead, payload.payload);
-    console.log('Mark as read response', response);
-
     if (response.success) {
       const state = yield select();
       const {currentPage} = state.Messages;
