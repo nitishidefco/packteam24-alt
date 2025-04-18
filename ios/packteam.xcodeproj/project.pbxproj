@@ -21,7 +21,7 @@
 		309DC67AA6724014B7713BE7 /* Montserrat-Medium.ttf in Resources */ = {isa = PBXBuildFile; fileRef = DE9D0EA6095C4091AFD692F6 /* Montserrat-Medium.ttf */; };
 		322B75F5386445A1AD5ADB83 /* Montserrat-Light.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 660512E84F444B698562F2BB /* Montserrat-Light.ttf */; };
 		3260C16B0869125D4AAC36E4 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB81A68108700A75B9A /* PrivacyInfo.xcprivacy */; };
-		3630253F2D199123003A803E /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 3630253E2D199123003A803E /* GoogleService-Info.plist */; };
+		3630396D2DB237C7004CAE9C /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 3630396C2DB237C7004CAE9C /* GoogleService-Info.plist */; };
 		44D843E23C9840FBBA8BA1FF /* Montserrat-LightItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 8D1485A576494EA9BAF968B4 /* Montserrat-LightItalic.ttf */; };
 		5D0C3981819D450AA4D3F538 /* Montserrat-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 023E36A0F16F4DB3A3250D97 /* Montserrat-Regular.ttf */; };
 		6427281F1B5E4F3D9FBE120C /* Montserrat-ThinItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 2D702C569C0545C39FFC97BB /* Montserrat-ThinItalic.ttf */; };
@@ -70,7 +70,7 @@
 		1BF6308DF126407F866DEC41 /* Montserrat-Black.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Montserrat-Black.ttf"; path = "../src/Assets/Fonts/Montserrat-Black.ttf"; sourceTree = "<group>"; };
 		230FC14963D44A0A8DEA33CD /* RobotoSlab-Light.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "RobotoSlab-Light.ttf"; path = "../src/Assets/Fonts/RobotoSlab-Light.ttf"; sourceTree = "<group>"; };
 		2D702C569C0545C39FFC97BB /* Montserrat-ThinItalic.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Montserrat-ThinItalic.ttf"; path = "../src/Assets/Fonts/Montserrat-ThinItalic.ttf"; sourceTree = "<group>"; };
-		3630253E2D199123003A803E /* GoogleService-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
+		3630396C2DB237C7004CAE9C /* GoogleService-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		36B995B22D1A7B5400CF10C1 /* packteam.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; name = packteam.entitlements; path = packteam/packteam.entitlements; sourceTree = "<group>"; };
 		3B4392A12AC88292D35C810B /* Pods-packteam.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-packteam.debug.xcconfig"; path = "Target Support Files/Pods-packteam/Pods-packteam.debug.xcconfig"; sourceTree = "<group>"; };
 		4985B5015B5A42DBA8B7D05E /* Montserrat-SemiBoldItalic.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Montserrat-SemiBoldItalic.ttf"; path = "../src/Assets/Fonts/Montserrat-SemiBoldItalic.ttf"; sourceTree = "<group>"; };
@@ -202,7 +202,7 @@
 		83CBB9F61A601CBA00E9B192 = {
 			isa = PBXGroup;
 			children = (
-				3630253E2D199123003A803E /* GoogleService-Info.plist */,
+				3630396C2DB237C7004CAE9C /* GoogleService-Info.plist */,
 				13B07FAE1A68108700A75B9A /* packteam */,
 				832341AE1AAA6A7D00B99B32 /* Libraries */,
 				00E356EF1AD99517003FC87E /* packteamTests */,
@@ -333,7 +333,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */,
-				3630253F2D199123003A803E /* GoogleService-Info.plist in Resources */,
 				13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */,
 				3260C16B0869125D4AAC36E4 /* PrivacyInfo.xcprivacy in Resources */,
 				DF6F759BA95C445F81A539DD /* Montserrat-Black.ttf in Resources */,
@@ -346,6 +345,7 @@
 				E8E9C5D108DF4CC69D6CCD34 /* Montserrat-ExtraLightItalic.ttf in Resources */,
 				9D0B7049F817439FA261DF2E /* Montserrat-Italic-VariableFont_wght.ttf in Resources */,
 				B2CFEDF550734CF4A2EF752D /* Montserrat-Italic.ttf in Resources */,
+				3630396D2DB237C7004CAE9C /* GoogleService-Info.plist in Resources */,
 				322B75F5386445A1AD5ADB83 /* Montserrat-Light.ttf in Resources */,
 				44D843E23C9840FBBA8BA1FF /* Montserrat-LightItalic.ttf in Resources */,
 				309DC67AA6724014B7713BE7 /* Montserrat-Medium.ttf in Resources */,
@@ -614,7 +614,7 @@
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 15;
-				DEVELOPMENT_TEAM = RFCRATE6EZ;
+				DEVELOPMENT_TEAM = 7WN9486P3F;
 				ENABLE_BITCODE = NO;
 				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				INFOPLIST_FILE = packteam/Info.plist;
@@ -656,7 +656,7 @@
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 15;
-				DEVELOPMENT_TEAM = RFCRATE6EZ;
+				DEVELOPMENT_TEAM = 7WN9486P3F;
 				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				INFOPLIST_FILE = packteam/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = "Pack team";
