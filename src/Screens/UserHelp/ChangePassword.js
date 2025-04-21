@@ -9,10 +9,11 @@ import {
   TouchableOpacity,
   Image,
   Alert,
+  ActivityIndicator,
 } from 'react-native';
 import React, {useState, useEffect, useContext} from 'react';
 import {ThemeContext} from '../../Components/Provider/ThemeProvider';
-import {Matrics, typography} from '../../Config/AppStyling';
+import {COLOR, Matrics, typography} from '../../Config/AppStyling';
 import colors from '../../Config/AppStyling/colors';
 import {Images} from '../../Config';
 import {useChangePasswordActions} from '../../Redux/Hooks/useChangePasswordActions';
@@ -23,6 +24,9 @@ import {useTranslation} from 'react-i18next';
 import {SafeAreaComponent} from '../../Components/HOC';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {useSelector} from 'react-redux';
+import DrawerSceneWrapper from '../../Components/Common/DrawerSceneWrapper';
+import CustomHeader from '../../Components/Common/CustomHeader';
+import LanguageSelector from '../../Components/Common/LanguageSelector';
 
 const ChangePassword = ({navigation}) => {
   const {theme} = useContext(ThemeContext);
@@ -42,6 +46,7 @@ const ChangePassword = ({navigation}) => {
   const [passwordError, setPasswordError] = useState('');
   const {deviceId} = useSelector(state => state?.Network);
   const {globalLanguage} = useSelector(state => state?.GlobalLanguage);
+  const isConnected = useSelector(state => state?.Network?.isConnected);
   // Handle input field changes
   const handleChange = (name, value) => {
     switch (name) {
@@ -58,38 +63,45 @@ const ChangePassword = ({navigation}) => {
         console.warn(`Unhandled input name: ${name}`);
     }
   };
+  console.log('Password state', passwordState);
 
   const handlePasswordChange = () => {
-    if (!currentPassword || !newPassword || !confirmNewPassword) {
-      const errorMessage = `${t('ChangePasswordScreen.allFieldsRequired')}`;
-      errorToast(errorMessage);
-      return;
-    }
-
-    Alert.alert(
-      t('ChangePasswordScreen.confirmNewPassword'),
-      t('ChangePasswordScreen.changeConfirmation'),
-      [
-        {
-          text: t('ChangePasswordScreen.no'),
-          style: 'cancel',
-        },
-        {
-          text: t('ChangePasswordScreen.yes'),
-          onPress: () => {
-            const formData = new FormData();
-            formData.append('session_id', SessionId);
-            formData.append('device_id', deviceId);
-            formData.append('lang', globalLanguage);
-            formData.append('current_password', currentPassword);
-            formData.append('new_password', newPassword);
-            formData.append('confirm_new_password', confirmNewPassword);
-            changePasswordCall(formData);
-            navigation.replace('HomeDrawer');
+    if (isConnected) {
+      if (!currentPassword || !newPassword || !confirmNewPassword) {
+        const errorMessage = `${t('ChangePasswordScreen.allFieldsRequired')}`;
+        errorToast(errorMessage);
+        return;
+      }
+      Alert.alert(
+        t('ChangePasswordScreen.confirmNewPassword'),
+        t('ChangePasswordScreen.changeConfirmation'),
+        [
+          {
+            text: t('ChangePasswordScreen.no'),
+            style: 'cancel',
           },
-        },
-      ],
-    );
+          {
+            text: t('ChangePasswordScreen.yes'),
+            onPress: () => {
+              const formData = new FormData();
+              formData.append('session_id', SessionId);
+              formData.append('device_id', deviceId);
+              formData.append('lang', globalLanguage);
+              formData.append('current_password', currentPassword);
+              formData.append('new_password', newPassword);
+              formData.append('confirm_new_password', confirmNewPassword);
+              changePasswordCall(formData, navigation);
+            },
+          },
+        ],
+      );
+    } else {
+      Alert.alert(
+        i18n.t('Offline.NoInternet'),
+        i18n.t('Offline.FeatureNotAvailable'),
+        [{text: 'OK', onPress: () => navigation.navigate('HomeDrawer')}],
+      );
+    }
   };
 
   const handleCancel = () => {
@@ -164,133 +176,166 @@ const ChangePassword = ({navigation}) => {
   const eyeIconStyle = passwordError
     ? {transform: [{translateY: -10}]}
     : {transform: [{translateY: 3}]};
-  return (
-    <KeyboardAvoidingView
-      style={styles.keyboardAvoidingView}
-      behavior={Platform.OS === 'android' ? 'height' : 'padding'}
-      enabled>
-      <SafeAreaView style={{flex: 1}}>
-        <ScrollView
-          contentContainerStyle={{flexGrow: 1}}
-          keyboardShouldPersistTaps="handled"
-          showsVerticalScrollIndicator={false}>
-          <View style={styles.changePasswordHeader}>
-            <Text style={styles.headerTitle}>
-              {t('ChangePasswordScreen.changePasswordHeader')}
-            </Text>
-          </View>
-          <View
-            style={[
-              styles.mainBody(theme),
-              keyboardVisible && {marginBottom: 80},
-            ]}>
-            <View style={styles.mainContainerInput}>
-              {/* Current Password */}
-              <View style={styles.inputContainer}>
-                <Text style={styles.inputTitle}>
-                  {t('ChangePasswordScreen.currentPassword')}
-                </Text>
-                <TextInput
-                  style={styles.inputField}
-                  secureTextEntry={!showCurrentPassword}
-                  value={currentPassword}
-                  onChangeText={text => handleChange('currentPassword', text)}
-                />
-                <TouchableOpacity
-                  style={styles.eyeIconContainer}
-                  onPress={() => setShowCurrentPassword(!showCurrentPassword)}>
-                  <Image
-                    source={
-                      showCurrentPassword ? Images.EYE_OPEN : Images.EYE_CLOSE
-                    }
-                    style={styles.eyeIcon}
+  return passwordState?.isLoading ? (
+    <SafeAreaView style={{flex: 1}}>
+      <View
+        style={{
+          flex: 1,
+          alignItems: 'center',
+          justifyContent: 'center',
+        }}>
+        <ActivityIndicator size={'large'} color={COLOR.AUDIO_PLAYER_BG} />
+        <Text
+          style={{
+            fontFamily: typography.fontFamily.Montserrat.Medium,
+            fontSize: typography.fontSizes.fs18,
+            textAlign: 'center',
+          }}>
+          {i18n.t('Loading.PassWait')}
+        </Text>
+      </View>
+    </SafeAreaView>
+  ) : (
+    <DrawerSceneWrapper>
+      <KeyboardAvoidingView
+        style={styles.keyboardAvoidingView}
+        behavior={Platform.OS === 'android' ? 'height' : 'padding'}
+        enabled>
+        <SafeAreaView style={{flex: 1}}>
+          <CustomHeader />
+          <ScrollView
+            contentContainerStyle={{flexGrow: 1}}
+            keyboardShouldPersistTaps="handled"
+            showsVerticalScrollIndicator={false}>
+            <View style={styles.changePasswordHeader}>
+              <Text style={styles.headerTitle}>
+                {t('ChangePasswordScreen.changePasswordHeader')}
+              </Text>
+            </View>
+            <View
+              style={{
+                position: 'relative',
+                alignItems: 'flex-end',
+                paddingHorizontal: Matrics.s(10),
+                marginBottom: Matrics.vs(70),
+              }}>
+              <LanguageSelector sessionId={SessionId} />
+            </View>
+            <View
+              style={[
+                styles.mainBody(theme),
+                keyboardVisible && {marginBottom: 80},
+              ]}>
+              <View style={styles.mainContainerInput}>
+                {/* Current Password */}
+                <View style={styles.inputContainer}>
+                  <Text style={styles.inputTitle}>
+                    {t('ChangePasswordScreen.currentPassword')}
+                  </Text>
+                  <TextInput
+                    style={styles.inputField}
+                    secureTextEntry={!showCurrentPassword}
+                    value={currentPassword}
+                    onChangeText={text => handleChange('currentPassword', text)}
                   />
-                </TouchableOpacity>
+                  <TouchableOpacity
+                    style={styles.eyeIconContainer}
+                    onPress={() =>
+                      setShowCurrentPassword(!showCurrentPassword)
+                    }>
+                    <Image
+                      source={
+                        showCurrentPassword ? Images.EYE_OPEN : Images.EYE_CLOSE
+                      }
+                      style={styles.eyeIcon}
+                    />
+                  </TouchableOpacity>
+                </View>
+
+                {/* New Password */}
+                <View style={styles.inputContainer}>
+                  <Text style={styles.inputTitle}>
+                    {t('ChangePasswordScreen.newPassword')}
+                  </Text>
+                  <TextInput
+                    style={styles.inputField}
+                    secureTextEntry={!showNewPassword}
+                    value={newPassword}
+                    onChangeText={text => handleChange('newPassword', text)}
+                  />
+                  <TouchableOpacity
+                    style={styles.eyeIconContainer}
+                    onPress={() => setShowNewPassword(!showNewPassword)}>
+                    <Image
+                      source={
+                        showNewPassword ? Images.EYE_OPEN : Images.EYE_CLOSE
+                      }
+                      style={styles.eyeIcon}
+                    />
+                  </TouchableOpacity>
+                </View>
+
+                {/* Confirm New Password */}
+                <View style={styles.inputContainer}>
+                  <Text style={styles.inputTitle}>
+                    {t('ChangePasswordScreen.confirmNewPassword')}
+                  </Text>
+                  <TextInput
+                    style={[
+                      styles.inputField,
+                      passwordError ? {borderColor: 'red'} : null,
+                    ]}
+                    value={confirmNewPassword}
+                    onChangeText={text =>
+                      handleChange('confirmNewPassword', text)
+                    }
+                    secureTextEntry={!showConfirmNewPassword}
+                  />
+                  <TouchableOpacity
+                    style={styles.eyeIconContainer}
+                    onPress={() =>
+                      setShowConfirmNewPassword(!showConfirmNewPassword)
+                    }>
+                    <Image
+                      source={
+                        showConfirmNewPassword
+                          ? Images.EYE_OPEN
+                          : Images.EYE_CLOSE
+                      }
+                      style={[styles.eyeIcon, eyeIconStyle]}
+                    />
+                  </TouchableOpacity>
+                  {passwordError ? (
+                    <Text style={styles.errorText}>{passwordError}</Text>
+                  ) : null}
+                </View>
               </View>
 
-              {/* New Password */}
-              <View style={styles.inputContainer}>
-                <Text style={styles.inputTitle}>
-                  {t('ChangePasswordScreen.newPassword')}
-                </Text>
-                <TextInput
-                  style={styles.inputField}
-                  secureTextEntry={!showNewPassword}
-                  value={newPassword}
-                  onChangeText={text => handleChange('newPassword', text)}
-                />
-                <TouchableOpacity
-                  style={styles.eyeIconContainer}
-                  onPress={() => setShowNewPassword(!showNewPassword)}>
-                  <Image
-                    source={
-                      showNewPassword ? Images.EYE_OPEN : Images.EYE_CLOSE
-                    }
-                    style={styles.eyeIcon}
-                  />
-                </TouchableOpacity>
-              </View>
-
-              {/* Confirm New Password */}
-              <View style={styles.inputContainer}>
-                <Text style={styles.inputTitle}>
-                  {t('ChangePasswordScreen.confirmNewPassword')}
-                </Text>
-                <TextInput
-                  style={[
-                    styles.inputField,
-                    passwordError ? {borderColor: 'red'} : null,
-                  ]}
-                  value={confirmNewPassword}
-                  onChangeText={text =>
-                    handleChange('confirmNewPassword', text)
-                  }
-                  secureTextEntry={!showConfirmNewPassword}
-                />
-                <TouchableOpacity
-                  style={styles.eyeIconContainer}
-                  onPress={() =>
-                    setShowConfirmNewPassword(!showConfirmNewPassword)
-                  }>
-                  <Image
-                    source={
-                      showConfirmNewPassword
-                        ? Images.EYE_OPEN
-                        : Images.EYE_CLOSE
-                    }
-                    style={[styles.eyeIcon, eyeIconStyle]}
-                  />
-                </TouchableOpacity>
-                {passwordError ? (
-                  <Text style={styles.errorText}>{passwordError}</Text>
-                ) : null}
+              <View style={styles.actionButtonContainer}>
+                <View>
+                  <TouchableOpacity
+                    style={[styles.actionButtonPrimary, styles.actionButton]}
+                    onPress={() => handlePasswordChange()}>
+                    <Text style={styles.actionButtonText}>
+                      {t('ChangePasswordScreen.save')}
+                    </Text>
+                  </TouchableOpacity>
+                </View>
+                <View>
+                  <TouchableOpacity
+                    style={[styles.actionButton, styles.actionButtonSecondary]}
+                    onPress={() => handleCancel()}>
+                    <Text style={styles.actionButtonText}>
+                      {t('ChangePasswordScreen.cancel')}
+                    </Text>
+                  </TouchableOpacity>
+                </View>
               </View>
             </View>
-
-            <View style={styles.actionButtonContainer}>
-              <View>
-                <TouchableOpacity
-                  style={[styles.actionButtonPrimary, styles.actionButton]}
-                  onPress={() => handlePasswordChange()}>
-                  <Text style={styles.actionButtonText}>
-                    {t('ChangePasswordScreen.save')}
-                  </Text>
-                </TouchableOpacity>
-              </View>
-              <View>
-                <TouchableOpacity
-                  style={[styles.actionButton, styles.actionButtonSecondary]}
-                  onPress={() => handleCancel()}>
-                  <Text style={styles.actionButtonText}>
-                    {t('ChangePasswordScreen.cancel')}
-                  </Text>
-                </TouchableOpacity>
-              </View>
-            </View>
-          </View>
-        </ScrollView>
-      </SafeAreaView>
-    </KeyboardAvoidingView>
+          </ScrollView>
+        </SafeAreaView>
+      </KeyboardAvoidingView>
+    </DrawerSceneWrapper>
   );
 };
 
@@ -301,10 +346,11 @@ const styles = StyleSheet.create({
   },
   mainBody: theme => ({
     flex: 1,
-    justifyContent: 'center',
+
     backgroundColor: '#EBF0FA',
     alignContent: 'center',
     marginHorizontal: Matrics.s(15),
+    marginVertical: Matrics.s(10),
   }),
   headerTitle: {
     color: '#fff',
@@ -349,8 +395,7 @@ const styles = StyleSheet.create({
     color: colors.BLACK,
     fontFamily: typography.fontFamily.Montserrat.Medium,
     fontSize: typography.fontSizes.fs15,
-    fontStyle: 'normal',
-    height: Matrics.vs(35),
+    height: Matrics.vs(40),
   },
   actionButtonContainer: {
     flexDirection: 'row',

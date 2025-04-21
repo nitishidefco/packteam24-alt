@@ -20,11 +20,22 @@ const reducers = persistReducer(
 // Middlewares setup
 const sagaMiddleware = createSagaMiddleware();
 
+/* ---------------------------- Reactactron setup --------------------------- */
+const createEnhancers = getDefaultEnhancers => {
+  if (__DEV__) {
+    const reactotron = require('../../ReactotronConfig').default;
+    return getDefaultEnhancers().concat(reactotron.createEnhancer());
+  } else {
+    return getDefaultEnhancers();
+  }
+};
+
 // Create store ----->>>>>
 export const Store = configureStore({
   reducer: reducers,
-  middleware: (getDefaultMiddleware) =>
+  middleware: getDefaultMiddleware =>
     getDefaultMiddleware({serializableCheck: false}).concat(sagaMiddleware),
+  enhancers: createEnhancers,
 });
 
 // Persistor contains all the data from store ----->>>>>

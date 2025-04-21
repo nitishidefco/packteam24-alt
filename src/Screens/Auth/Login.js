@@ -21,9 +21,9 @@ import {
   ScrollView,
   Linking,
   Button,
+  ActivityIndicator,
 } from 'react-native';
 import {useTranslation} from 'react-i18next';
-
 import {loginStyle as styles} from './styles';
 import {FullScreenSpinner} from '../../Components/HOC';
 import {useNavigation} from '@react-navigation/native';
@@ -41,54 +41,59 @@ import FlagComponent from '../../Components/Common/FlagComponent';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as RNLocalize from 'react-native-localize';
 import {errorToast, success} from '../../Helpers/ToastMessage';
+
 import {
   initializeLanguage,
   setLanguageWithStorage,
 } from '../../Redux/Reducers/LanguageProviderSlice';
+import {useWorkHistoryActions} from '../../Redux/Hooks/useWorkHistoryActions';
+import moment from 'moment-timezone';
+import checkDeviceTime from '../../Helpers/TimeValidation';
+import Footer from '../../Components/Common/Footer';
 const languages = {
   POL: 'pl', // Polish
   GER: 'de', // German
   UK: 'en', // English
   RUS: 'ru', // Russian
-  UKA: 'uk', // Ukrainian
+  UKA: 'ua', // Ukrainian
   ZH: 'cn', //chinese
 };
+
 const Login = ({route}) => {
   // --------------- FUNCTION DECLARATION ---------------
   const navigation = useNavigation();
   const {t, i18n} = useTranslation();
-  const privacyPolicyUrl = 'https://eda.workflex360.de/api/privacy-policy';
+  const privacyPolicyUrl = 'https://eda.workflex360.de/de/datenschutzerklarung';
   const applicationInformatinoUrl =
-    'https://eda.workflex360.de/api/application-information';
+    'https://eda.workflex360.de/de/technischer-support';
+  const {getRealTimeCall, realTime, realTimeLoading} = useWorkHistoryActions();
+
   // --------------- STATE ---------------
 
   // email & password that was static
   // biuro@mhcode.pl  das4you123
 
-  const {dark, theme, toggle} = useContext(ThemeContext);
+  const {theme} = useContext(ThemeContext);
   const isConnected = useSelector(state => state?.Network?.isConnected);
-  const {deviceId, manufacturer} = useSelector(state => state?.Network);
-  const [errortext, setErrortext] = useState('');
+  const {deviceId} = useSelector(state => state?.Network);
   const passwordInputRef = createRef();
   const dispatch = useDispatch();
-  const [emailError, setEmailError] = useState('');
   const [userEmail, setUserEmail] = useState(null);
   const [userPassword, setUserPassword] = useState(null);
   const [loading, setLoading] = useState(false);
   const [keyboardVisible, setKeyboardVisible] = useState(false);
-  const [dropdownAlert, setDropdownAlert] = useState(null);
   const {state, loginCall, forgotPasswordCall} = useAuthActions();
   const {Auth} = useSelector(state => state);
   const [activeLanguage, setActiveLanguage] = useState(null);
   const {globalLanguage} = useSelector(state => state?.GlobalLanguage);
-  
+
   // --------------- LIFECYCLE ---------------
   useEffect(() => {
     if (loading && Auth.isLoginSuccess === true) {
       setLoading(false);
       const successToast = `${t('Toast.LoginSuccess')}`;
       success(successToast);
-      navigation.navigate('HomeDrawer');
+      navigation.replace('HomeDrawer');
       setUserEmail(null);
       setUserPassword(null);
     } else if (loading && Auth.isLoginSuccess === false) {
@@ -106,6 +111,7 @@ const Login = ({route}) => {
     i18n.changeLanguage(selectedLang);
     dispatch(setLanguageWithStorage(selectedLang));
   };
+
   // ---------------Getting Device info---------------
   useEffect(() => {
     const getDeviceInfo = async () => {
@@ -119,6 +125,9 @@ const Login = ({route}) => {
       );
     };
     getDeviceInfo();
+    console.log('Getting real time');
+
+    getRealTimeCall();
   }, []);
 
   // --------------- METHODS ---------------
@@ -170,7 +179,7 @@ const Login = ({route}) => {
     );
   };
   function validateInputs() {
-    if (userEmail == '' || userEmail == null) {
+    if (userEmail === '' || userEmail == null) {
       errorToast(i18n.t('Toast.EnterEmail'));
       return false;
     }
@@ -179,7 +188,9 @@ const Login = ({route}) => {
 
       return false;
     }
-    if (userPassword === '') {
+    if (userPassword === '' || userPassword === null) {
+      console.log('validate password');
+
       errorToast(i18n.t('Toast.EnterPassword'));
       return false;
     }
@@ -187,11 +198,13 @@ const Login = ({route}) => {
   }
 
   const onLoginPress = () => {
-    if (!isConnected) {
+    console.log('Real Time', realTime);
+    if (!checkDeviceTime(realTime)) {
+      return;
+    } else if (!isConnected) {
       errorToast(i18n.t('Toast.CheckInternet'));
     } else {
       if (validateInputs('Enter Email')) {
-        // changeLanguage('pl');
         loginAPI();
       }
     }
@@ -325,15 +338,28 @@ const Login = ({route}) => {
             <TouchableOpacity
               style={styles.buttonStyle}
               activeOpacity={0.5}
-              onPress={onLoginPress}>
-              <Text style={styles.buttonTextStyle}>
-                {t('Login.loginButton')}
-              </Text>
+              onPress={onLoginPress}
+              disabled={loading}>
+              {loading ? (
+                <View
+                  style={{
+                    height: '100%',
+                    width: '30%',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                  }}>
+                  <ActivityIndicator size={'large'} color={'white'} />
+                </View>
+              ) : (
+                <Text style={styles.buttonTextStyle}>
+                  {t('Login.loginButton')}
+                </Text>
+              )}
             </TouchableOpacity>
             <TouchableOpacity
               style={styles.forgotPasswordStyle}
               activeOpacity={0.5}
-              onPress={() => navigation.navigate('ForgotPass')}>
+              onPress={() => navigation.replace('ForgotPass')}>
               <Text style={styles.forgotPasswordText}>
                 {t('Login.forgotPassword')}
               </Text>
@@ -341,33 +367,13 @@ const Login = ({route}) => {
             <TouchableOpacity
               style={styles.forgotPasswordStyle}
               activeOpacity={0.5}
-              onPress={() => navigation.navigate('CreateAccount')}>
+              onPress={() => navigation.replace('CreateAccount')}>
               <Text style={styles.forgotPasswordText}>
                 {/* {t('Login.forgotPassword')} */}
                 {t('Login.ca')}
               </Text>
             </TouchableOpacity>
-            <View style={styles.FlagContainer}>
-              {Object.keys(languages).map(country => (
-                <TouchableOpacity
-                  key={country}
-                  onPress={() => handleLanguageChange(country)}
-                  style={[
-                    styles.touchable,
-                    globalLanguage &&
-                      globalLanguage !== languages[country] &&
-                      styles.inactive,
-                  ]}>
-                  <FlagComponent Country={country} />
-                </TouchableOpacity>
-              ))}
-            </View>
-            <View style={{marginBottom: Matrics.ms(20)}}>
-              <OpenURLText url={privacyPolicyUrl}>{t('Login.pp')}</OpenURLText>
-              <OpenURLText url={applicationInformatinoUrl}>
-                {t('Login.ai')}
-              </OpenURLText>
-            </View>
+            <Footer />
           </View>
         </ScrollView>
       </KeyboardAvoidingView>

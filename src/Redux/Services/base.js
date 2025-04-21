@@ -3,6 +3,7 @@ import {Constants} from '../../Config';
 import {errorToast} from '../../Helpers/ToastMessage';
 import {getSessionHandler} from '../../Utlis/SessionHandler';
 import {getLogout} from '../Reducers/AuthSlice';
+import i18n from '../../i18n/i18n';
 
 const POST = 'post';
 const GET = 'get';
@@ -10,18 +11,18 @@ const PUT = 'put';
 const PATCH = 'patch';
 const DELETE = 'delete';
 
+let alertShown = false;
 const handleResponse = response => {
   const {dispatch, SessionId, deviceId, navigation} = getSessionHandler();
 
   const contentType = response.headers.get('Content-Type');
 
-  console.log(response);
-
-  if (response.status === 403) {
+  if (response.status === 403 && !alertShown) {
+    alertShown = true;
     // Handle 403 Forbidden response
     return response.json().then(errorData => {
       Alert.alert(
-        'Session Expired',
+        i18n.t('Session.SE'),
         errorData.message || 'You have been logged out.',
         [
           {
@@ -31,7 +32,8 @@ const handleResponse = response => {
               formData.append('session_id', SessionId);
               formData.append('device_id', deviceId);
               dispatch(getLogout(formData));
-              navigation.navigate('Login');
+              navigation.replace('Login');
+              alertShown = false;
             },
           },
         ],
@@ -40,12 +42,13 @@ const handleResponse = response => {
     });
   }
 
-  if (response.status !== 200) {
-    return response.json().then(errorData => {
-      errorToast(errorData.errors.email);
-      return Promise.reject(errorData);
-    });
-  }
+  // if (response.status !== 200) {
+
+  //   return response.json().then(errorData => {
+  //     errorToast(errorData.message);
+  //     return Promise.reject(errorData);
+  //   });
+  // }
 
   if (contentType && contentType.indexOf('application/json') !== -1) {
     return response.json().then(jsonData => {

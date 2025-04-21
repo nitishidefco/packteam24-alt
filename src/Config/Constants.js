@@ -11,11 +11,14 @@ export default {
 
   IS_TESTDATA: '1',
   activeOpacity: 0.5,
-  IS_DEVELOPING_MODE: false,
+  IS_DEVELOPING_MODE: true,
   BASE_URL: {
-    DEV: 'https://eda.workflex360.de/',
-    PROD: 'https://eda.workflex360.de/',
-    IMAGEURL : 'https://das4you.mhcode.pl/storage/daily_list/attachment/'
+    // DEV: 'https://test-tracker.workflex360.de/',
+    // PROD: 'https://eda.workflex360.de/',
+    // DEV: 'https://nfc.visionvivante.com/',
+    // PROD: 'https://nfc.visionvivante.com/',
+    DEV: 'https://edapackteam.visionvivante.in/',
+    IMAGEURL: 'https://das4you.mhcode.pl/storage/daily_list/attachment/',
   },
   ENVIRONMENT: {
     DEV: 'development',
@@ -25,8 +28,8 @@ export default {
     THANKS: 'thanks',
     NORMAL: 'normal',
   },
-  USER_AGENT: Platform.OS == 'android' ? 'Android' : 'iOS',
-  DEVICE_TYPE: Platform.OS == 'android' ? 1 : 0,
+  USER_AGENT: Platform.OS === 'android' ? 'Android' : 'iOS',
+  DEVICE_TYPE: Platform.OS === 'android' ? 1 : 0,
   REPORT_MAIL: 'support@test.com',
   NO_INTERNET_MESSAGE: 'No internet connection!!',
   USER_ROLE: {

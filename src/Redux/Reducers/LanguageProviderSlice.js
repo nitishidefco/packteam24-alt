@@ -12,7 +12,7 @@ const languages = {
   GER: 'de', // German
   UK: 'en', // English
   RUS: 'ru', // Russian
-  UKA: 'uk', // Ukrainian
+  UKA: 'ua', // Ukrainian
   ZH: 'cn', //chinese
 };
 const languageProviderSlice = createSlice({
@@ -27,8 +27,6 @@ const languageProviderSlice = createSlice({
 
 export const {setGlobalLanguage} = languageProviderSlice.actions;
 export const initializeLanguage = () => async dispatch => {
-  console.log('initialzing lang');
-
   try {
     const savedLang = await AsyncStorage.getItem('language');
     if (savedLang) {
@@ -51,8 +49,6 @@ export const initializeLanguage = () => async dispatch => {
 
 // Set language with storage and i18n
 export const setLanguageWithStorage = language => async dispatch => {
-  console.log('saving language to storage');
-
   try {
     await AsyncStorage.setItem('language', language);
     dispatch(setGlobalLanguage(language));

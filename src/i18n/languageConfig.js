@@ -3,7 +3,7 @@ import en from './locales/en.json';
 import de from './locales/de.json';
 import ru from './locales/ru.json';
 import pl from './locales/pl.json';
-import uk from './locales/ua.json';
+import ua from './locales/ua.json';
 import cn from './locales/zh.json';
 // import it from './locales/it.json';
 
@@ -24,8 +24,8 @@ export const languagesResources = {
   pl: {
     translation: pl,
   },
-  uk: {
-    translation: uk,
+  ua: {
+    translation: ua,
   },
   cn: {
     translation: cn,

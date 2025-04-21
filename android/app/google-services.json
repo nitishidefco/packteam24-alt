@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "783925955475",
+    "project_id": "app-nfc-46fb1",
+    "storage_bucket": "app-nfc-46fb1.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:783925955475:android:8e3109a81dc145fcb9b666",
+        "android_client_info": {
+          "package_name": "com.packteam"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCT8TSqNm2DZ7tmju-rLUW4DziT2tpIby4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

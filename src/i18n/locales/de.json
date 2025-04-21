@@ -1,121 +1,223 @@
 {
-   "Login": {
-            "title": "Anmelden",
-            "subtitle": "Geben Sie Ihre E-Mail & Passwort ein",
-            "email": "E-Mail-Adresse",
-            "emailPlaceHolder": "E-Mail",
-            "emptyEmailError": "Bitte E-Mail-Adresse eingeben!",
-            "invalidEmailError": "Bitte gültige E-Mail-Adresse eingeben!",
-            "password": "Passwort",
-            "passwordPlaceHolder": "Passwort",
-            "forgotPassword": "Passwort vergessen?",
-            "loginButton": "Anmelden",
-            "pp": "Datenschutzerklärung",
-            "ai": "Anwendungsinformationen",
-            "ca": "Konto erstellen"
-        },
-        "CreateAccount": {
-            "title": "Konto erstellen",
-            "subt": "E-Mail & Passwort eingeben, um ein Konto zu erstellen",
-            "createAccButton": "Konto erstellen",
-            "btl": "Zurück zur Anmeldung",
-            "removeAccount": "Konto entfernen"
-        },
-        "ForgotPassword": {
-            "title": "Passwort zurücksetzen",
-            "subtitle": "Geben Sie die E-Mail-Adresse ein, mit der Sie sich anmelden - wir senden Ihnen eine Anleitung zum Zurücksetzen Ihres Passworts",
-            "email": "E-Mail-Adresse",
-            "emailPlaceHolder": "E-Mail",
-            "resetButton": "Link zum Zurücksetzen senden",
-            "backToLogin": "Zurück"
-        },
-        "HomeScreen": {
-            "nfcCardTitle": "Bereit zum Scannen von NFC-Tags",
-            "nfcCardSubtitle": "Halten Sie Ihr Gerät an einen NFC-Tag",
-            "nfcButtonText": "NFC-Scan starten"
-        },
-        "ChangePasswordScreen": {
-            "allFieldsRequired": "Alle Felder sind erforderlich",
-            "currentPassword": "Aktuelles Passwort",
-            "newPassword": "Neues Passwort",
-            "confirmNewPassword": "Neues Passwort bestätigen",
-            "save": "Speichern",
-            "cancel": "Abbrechen",
-            "changePasswordHeader": "Passwort ändern",
-            "cancelChanges": "Änderungen abbrechen",
-            "confirmationCancel": "Möchten Sie die Passwortänderung wirklich abbrechen?",
-            "no": "Nein",
-            "yes": "Ja",
-            "confirmPasswordChange": "Passwortänderung bestätigen",
-            "changeConfirmation": "Möchten Sie Ihr Passwort wirklich ändern?",
-            "passwordError": "Passwörter stimmen nicht überein"
-        },
-        "WorkStatusCard": {
-            "workStart": "Arbeit läuft",
-            "workEnd": "Arbeit beendet",
-            "breakStart": "Pause läuft",
-            "workNotStarted": "Arbeit nicht begonnen"
-        },
-        "SideMenuBar": {
-            "dashboard": "Dashboard",
-            "Logout": "Abmelden",
-            "ChangePassword": "Passwort ändern",
-            "UserProflie": "Benutzerprofil",
-            "ChangeLanguage": "Sprache ändern"
-        },
-        "UserProfileScreen": {
-            "title": "Benutzerprofil",
-            "EditPhoto": "Foto bearbeiten",
-            "SelectPhoto": "Foto auswählen",
-            "RemovePhoto": "Foto entfernen",
-            "email": "E-Mail-Adresse",
-            "emailPlaceHolder": "E-Mail",
-            "cancel": "Abbrechen",
-            "save": "Speichern",
-            "cancelTitle": "Änderungen abbrechen",
-            "cancelConfirmation": "Sind Sie sicher? Alle nicht gespeicherten Änderungen gehen verloren.",
-            "keepEditing": "Weiter bearbeiten",
-            "discardChanges": "Änderungen verwerfen",
-            "removeProfilePhoto": "Profilfoto entfernen",
-            "rusure": "Möchten Sie Ihr Profilfoto wirklich entfernen?",
-            "remove": "Entfernen",
-            "Error": "Fehler",
-            "FailedToRemove": "Profilfoto konnte nicht entfernt werden. Bitte versuchen Sie es erneut.",
-            "OK": "OK",
-            "confirmAccountRemoval": "Kontoentfernung bestätigen",
-            "confirmAccountRemovalDesc": "Sind Sie sicher, dass Sie das Konto entfernen möchten? Diese Aktion kann nicht rückgängig gemacht werden.",
-            "no": "Nein",
-            "yes": "Ja"
-        },
-        "ResetPassword": {
-            "passwordResetSuccess": "Wir haben Ihnen einen Link zum Zurücksetzen des Passworts per E-Mail gesendet!",
-            "emptyEmailValidation": "Bitte E-Mail-Adresse eingeben!",
-            "invalidEmail": "Bitte gültige E-Mail-Adresse eingeben"
-        },
-        "Toast": {
-            "LogoutSuccess": "Erfolgreich abgemeldet",
-            "AccountCreatedSuccessfull": "Konto erfolgreich erstellt",
-            "PasswordChangeSuccessfull": "Passwort erfolgreich geändert",
-            "ProfileUpdated": "Profil erfolgreich aktualisiert",
-            "PhotoRemovedSuccessfully": "Foto erfolgreich entfernt",
-            "LoginSuccess": "Anmeldung erfolgreich",
-            "WorkinProgress": "Arbeit läuft",
-            "BreakinProgress": "Pause läuft",
-            "WorkFinished": "Arbeit beendet",
-            "ErrorUpdatingProfile": "Fehler beim Aktualisieren des Profils",
-            "ErrorRemovingProfilePhoto": "Fehler beim Entfernen des Profilfotos",
-            "EnterEmail": "Bitte E-Mail-Adresse eingeben",
-            "ValidEmail": "Bitte gültige E-Mail-Adresse eingeben",
-            "EnterPassword": "Bitte Passwort eingeben",
-            "CheckInternet": "Bitte Internetverbindung überprüfen",
-            "LoginUnsuccessful": "Anmeldung fehlgeschlagen"
-        },
-        "TimeLog": {
-      "title": "Zeiterfassung",
-      "From": "Von",
-      "mode": "Modus",
-      "To": "Bis",
-      "nohistory": "Sie haben heute keine Arbeitshistorie"
-    }
-    }
-
+  "Login": {
+    "title": "Anmelden",
+    "subtitle": "Geben Sie Ihre E-Mail & Passwort ein",
+    "email": "E-Mail-Adresse",
+    "emailPlaceHolder": "E-Mail",
+    "emptyEmailError": "Bitte E-Mail-Adresse eingeben!",
+    "invalidEmailError": "Bitte gültige E-Mail-Adresse eingeben!",
+    "password": "Passwort",
+    "passwordPlaceHolder": "Passwort",
+    "forgotPassword": "Passwort vergessen?",
+    "loginButton": "Anmelden",
+    "pp": "Datenschutzerklärung",
+    "ai": "Anwendungsinformationen",
+    "ca": "Konto erstellen"
+  },
+  "CreateAccount": {
+    "title": "Konto erstellen",
+    "subt": "E-Mail & Passwort eingeben, um ein Konto zu erstellen",
+    "createAccButton": "Konto erstellen",
+    "btl": "Zurück zur Anmeldung",
+    "removeAccount": "Konto entfernen"
+  },
+  "ForgotPassword": {
+    "title": "Passwort zurücksetzen",
+    "subtitle": "Geben Sie die E-Mail-Adresse ein, mit der Sie sich anmelden - wir senden Ihnen eine Anleitung zum Zurücksetzen Ihres Passworts",
+    "email": "E-Mail-Adresse",
+    "emailPlaceHolder": "E-Mail",
+    "resetButton": "Link zum Zurücksetzen senden",
+    "backToLogin": "Zurück"
+  },
+  "HomeScreen": {
+    "nfcCardTitle": "Bereit zum Scannen von NFC-Tags",
+    "nfcCardSubtitle": "Halten Sie Ihr Gerät an einen NFC-Tag",
+    "nfcButtonText": "NFC-Scan starten",
+    "checkingTimeWithServer": "Überprüfung der Zeit mit dem Server",
+    "timeZoneMatches": "Die Zeitzone stimmt mit deinem Standort überein:",
+    "loading": "Laden",
+    "importantNotice": "Bitte stellen Sie Datum und Uhrzeit Ihres Telefons auf automatisch, um die App weiterhin zu nutzen"
+  },
+  "ChangePasswordScreen": {
+    "allFieldsRequired": "Alle Felder sind erforderlich",
+    "currentPassword": "Aktuelles Passwort",
+    "newPassword": "Neues Passwort",
+    "confirmNewPassword": "Neues Passwort bestätigen",
+    "save": "Speichern",
+    "cancel": "Abbrechen",
+    "changePasswordHeader": "Passwort ändern",
+    "cancelChanges": "Änderungen abbrechen",
+    "confirmationCancel": "Möchten Sie die Passwortänderung wirklich abbrechen?",
+    "no": "Nein",
+    "yes": "Ja",
+    "confirmPasswordChange": "Passwortänderung bestätigen",
+    "changeConfirmation": "Möchten Sie Ihr Passwort wirklich ändern?",
+    "passwordError": "Passwörter stimmen nicht überein"
+  },
+  "WorkStatusCard": {
+    "workStart": "Arbeit läuft",
+    "workEnd": "Arbeit beendet",
+    "breakStart": "Pause läuft",
+    "workNotStarted": "Arbeit nicht begonnen"
+  },
+  "SideMenuBar": {
+    "dashboard": "Dashboard",
+    "Logout": "Abmelden",
+    "ChangePassword": "Passwort ändern",
+    "UserProflie": "Benutzerprofil",
+    "ChangeLanguage": "Sprache ändern"
+  },
+  "UserProfileScreen": {
+    "title": "Benutzerprofil",
+    "EditPhoto": "Foto bearbeiten",
+    "SelectPhoto": "Foto auswählen",
+    "RemovePhoto": "Foto entfernen",
+    "email": "E-Mail-Adresse",
+    "emailPlaceHolder": "E-Mail",
+    "cancel": "Zurück",
+    "save": "Speichern",
+    "cancelTitle": "Änderungen abbrechen",
+    "cancelConfirmation": "Sind Sie sicher? Alle nicht gespeicherten Änderungen gehen verloren.",
+    "keepEditing": "Weiter bearbeiten",
+    "discardChanges": "Änderungen verwerfen",
+    "removeProfilePhoto": "Profilfoto entfernen",
+    "rusure": "Möchten Sie Ihr Profilfoto wirklich entfernen?",
+    "remove": "Entfernen",
+    "Error": "Fehler",
+    "FailedToRemove": "Profilfoto konnte nicht entfernt werden. Bitte versuchen Sie es erneut.",
+    "OK": "OK",
+    "confirmAccountRemoval": "Kontoentfernung bestätigen",
+    "confirmAccountRemovalDesc": "Sind Sie sicher, dass Sie das Konto entfernen möchten? Diese Aktion kann nicht rückgängig gemacht werden.",
+    "no": "Nein",
+    "yes": "Ja",
+    "langConfig": "Konfigurieren der Sprache der Nachrichten von der App an mich",
+     "notificationLanguage": "Wählen Sie die Sprache, in der Sie Nachrichten erhalten möchten",
+      "selectLanguage": "Sprache auswählen"
+  },
+  "ResetPassword": {
+    "passwordResetSuccess": "Wir haben Ihnen einen Link zum Zurücksetzen des Passworts per E-Mail gesendet!",
+    "emptyEmailValidation": "Bitte E-Mail-Adresse eingeben!",
+    "invalidEmail": "Bitte gültige E-Mail-Adresse eingeben"
+  },
+  "Toast": {
+    "LogoutSuccess": "Erfolgreich abgemeldet",
+    "AccountCreatedSuccessfull": "Konto erfolgreich erstellt",
+    "AccountCreatedSuccessfullSubtitle": "Wir senden weitere Informationen per E-Mail",
+    "PasswordChangeSuccessfull": "Passwort erfolgreich geändert",
+    "ProfileUpdated": "Profil erfolgreich aktualisiert",
+    "PhotoRemovedSuccessfully": "Foto erfolgreich entfernt",
+    "LoginSuccess": "Anmeldung erfolgreich",
+    "WorkinProgress": "Arbeit läuft",
+    "BreakinProgress": "Pause läuft",
+    "WorkFinished": "Arbeit beendet",
+    "ErrorUpdatingProfile": "Fehler beim Aktualisieren des Profils",
+    "ErrorRemovingProfilePhoto": "Fehler beim Entfernen des Profilfotos",
+    "EnterEmail": "Bitte E-Mail-Adresse eingeben",
+    "ValidEmail": "Bitte gültige E-Mail-Adresse eingeben",
+    "EnterPassword": "Bitte Passwort eingeben",
+    "CheckInternet": "Bitte Internetverbindung überprüfen",
+    "LoginUnsuccessful": "Anmeldung fehlgeschlagen",
+    "StartWorkFirst": "Bitte beginnen Sie zuerst mit der Arbeit",
+    "WorkNotStarted": "Arbeit nicht begonnen",
+    "Cannotendwork": "Arbeit kann nicht beendet werden, bevor sie begonnen wurde",
+    "Cannottakebreak": "Pause kann nicht gemacht werden, bevor die Arbeit begonnen wurde",
+    "Workalreadystarted": "Arbeit hat bereits begonnen",
+    "Breakalreadystarted": "Pause ist bereits aktiv",
+    "WorkAlreadyFinished": "Arbeit ist bereits beendet"
+  },
+  "TimeLog": {
+    "title": "Zeiterfassung",
+    "From": "Von",
+    "mode": "Modus",
+    "To": "Bis",
+    "nohistory": "Sie haben heute keine Arbeitshistorie",
+    "now": "Jetzt"
+  },
+  "TagModes": {
+    "break_start": "Pause",
+    "work_start": "Arbeit",
+    "work_end": "Arbeit Ende"
+  },
+  "Loading": {
+    "Wait": "Warte einen Moment",
+    "PassWait": "Stellen Sie sicher, dass Ihr Passwort sicher ist"
+  },
+  "Session": {
+    "SE": "Sitzung abgelaufen"
+  },
+  "Offline": {
+    "NoInternet": "Keine Internetverbindung",
+    "FeatureNotAvailable": "Funktion im Offline-Modus nicht verfügbar",
+    "OK": "Ok",
+    "CantLogout": "Abmeldung nicht möglich, solange Arbeit läuft",
+    "CantLogoutDescription": "Sie sind offline und können sich nicht abmelden, während eine Arbeit läuft. Beenden Sie Ihre Arbeit, um sich abzumelden.",
+    "AskToLogout": "Sind Sie sicher, dass Sie sich abmelden möchten?",
+    "ExplainLogout": "Sobald Sie sich im Offline-Modus befinden, können Sie sich erst wieder anmelden, wenn Sie eine Internetverbindung haben."
+  },
+  "Timer": {
+    "sync": "Zeit wird synchronisiert..."
+  },
+  "timeSyncError": {
+    "title": "Zeitsynchronisierungsfehler",
+    "description": "Die Zeit Ihres Geräts ist früher eingestellt als die Serverzeit, was nicht erlaubt ist. Diese Abweichung deutet darauf hin, dass die Gerätezeit manuell geändert wurde.",
+    "instructions_intro": "Um eine genaue Funktionalität und Sicherheit zu gewährleisten, aktivieren Sie bitte die automatischen Datum- und Uhrzeiteinstellungen auf Ihrem Gerät:",
+    "instruction_step1": "Gehen Sie zu Einstellungen > Datum & Uhrzeit",
+    "instruction_step2": "Aktivieren Sie 'Automatisches Datum und Uhrzeit' (oder 'Zeit automatisch einstellen')",
+    "warning": "Die App funktioniert erst, wenn dies korrigiert wurde."
+  },
+  "NotificationScreen": {
+    "searchPlaceholder": "Nach Schlüsselwort suchen",
+    "filterNotifications": "Benachrichtigungen filtern",
+    "filterAll": "Alle",
+    "filterRead": "Gelesen",
+    "filterUnread": "Ungelesen",
+    "filterCancel": "Abbrechen",
+    "filterLabel": "Filter",
+    "confirmArchiveTitle": "Archivieren bestätigen",
+    "confirmArchiveBody": "Möchten Sie {{count}} ausgewählte Nachricht in das Archiv verschieben?",
+    "confirmArchiveBody_plural": "Möchten Sie {{count}} ausgewählte Nachrichten in das Archiv verschieben?",
+    "confirmArchiveButton": "Bestätigen",
+    "markAsReadLabel": "Als gelesen markieren",
+    "markAsUnreadLabel": "Als ungelesen markieren",
+    "archiveLabel": "Archivieren",
+    "selectedCount": "{{count}} ausgewählt",
+    "noNotifications": "Keine Benachrichtigungen",
+    "confirmMarkReadTitle": "Als gelesen markieren bestätigen",
+    "confirmMarkUnreadTitle": "Als ungelesen markieren bestätigen",
+    "confirmMarkBody": "Möchten Sie {{count}} ausgewählte Nachricht als {{status}} markieren?",
+    "confirmMarkBody_plural": "Möchten Sie {{count}} ausgewählte Nachrichten als {{status}} markieren?",
+    "read": "gelesen",
+    "unread": "ungelesen",
+    "closeButton": "Schließen",
+    "moveToArchiveButton": "In das Archiv verschieben",
+    "selectedLabel": "Ausgewählt"
+  },
+  "ArchiveScreen": {
+    "title": "Archive",
+    "searchPlaceholder": "Nach Schlüsselwort suchen",
+    "filterNotifications": "Benachrichtigungen filtern",
+    "filterAll": "Alle",
+    "filterRead": "Gelesen",
+    "filterUnread": "Ungelesen",
+    "filterCancel": "Abbrechen",
+    "filterLabel": "Filter",
+    "selectedCount": ":count ausgewählt",
+    "markAsReadLabel": "Als gelesen markieren",
+    "markAsUnreadLabel": "Als ungelesen markieren",
+    "deleteLabel": "Löschen",
+    "noArchivedMessages": "Keine archivierten Nachrichten",
+    "confirmDeleteTitle": "Löschen bestätigen",
+    "confirmDeleteBody": "Möchten Sie {{count}} ausgewählte Nachricht löschen?",
+    "confirmDeleteBody_plural": "Möchten Sie {{count}} ausgewählte Nachrichten löschen?",
+    "confirmDeleteButton": "Bestätigen",
+    "confirmRestoreTitle": "Wiederherstellen bestätigen",
+    "confirmRestoreBody": "Möchten Sie {{count}} ausgewählte Nachricht wiederherstellen?",
+    "confirmRestoreBody_plural": "Möchten Sie {{count}} ausgewählte Nachrichten wiederherstellen?",
+    "confirmRestoreButton": "Bestätigen",
+    "moveToMessageCenterButton": "Zum Nachrichtencenter verschieben"
+  },
+  "CustomHeader": {
+    "MessageCenter": "Nachrichtenzentrum",
+    "Archives": "Archive"
+  }
+}

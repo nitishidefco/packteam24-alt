@@ -1,6 +1,6 @@
-import {createAsyncThunk, createSlice} from '@reduxjs/toolkit';
+import {createSlice} from '@reduxjs/toolkit';
 import {AUTH_REDUCER} from '../SliceKey';
-import {get} from 'react-native/Libraries/TurboModule/TurboModuleRegistry';
+import {errorToast} from '../../Helpers/ToastMessage';
 
 const NULL = null;
 const SUCCESS = true;
@@ -8,85 +8,127 @@ const FAIL = false;
 
 export const AuthSlice = createSlice({
   name: AUTH_REDUCER,
-  initialState: [],
+  initialState: {
+    isAuthenticated: null, // Tracks if the user is logged in
+    isLoginSuccess: NULL,
+    islogoutSuccess: NULL,
+    isForgotPasswordSuccess: NULL,
+    isAccountCreateSuccess: FAIL,
+    data: null,
+    error: null,
+    message: '',
+    loginLoading: false,
+    signUpLoading: false,
+    forgotPasswordLoading: false,
+  },
   reducers: {
+    // Login reducers
     getLogin: state => {
       console.log('reducer login state', state);
-
-      return {...state, isLoginSuccess: null, error: null, message: ''};
+      return {
+        ...state,
+        isLoginSuccess: NULL,
+        error: null,
+        message: '',
+        loginLoading: true,
+      };
     },
     loginSuccess: (state, action) => {
       console.log('login success', action.payload);
-
       return {
         ...state,
-        isLoginSuccess: true,
-        message: 'Fetch successfully',
+        isAuthenticated: SUCCESS, // Mark user as authenticated
+        isLoginSuccess: SUCCESS,
+        message: 'Login successful',
         data: action.payload,
+        loginLoading: false,
       };
     },
     loginFailure: (state, action) => {
+      console.log('login Fail', action.payload);
+      const error = action.payload.TypeError;
+      errorToast('Network Request Failed');
       return {
         ...state,
+        isAuthenticated: FAIL, // Ensure user is unauthenticated on failure
         isLoginSuccess: FAIL,
         error: action.payload,
-        message: 'Something went wrong',
+        message: 'Login failed',
+        loginLoading: false,
       };
     },
 
+    // Logout reducers
     getLogout: state => {
-      return {
-        ...state,
-        islogoutSuccess: true,
-        error: null,
-        message: '',
-      };
+      console.log('Logout state', state);
+
+      return {...state, islogoutSuccess: NULL, error: null, message: ''};
     },
-    logoutSuccess: (state, action) => {
+    logoutSuccess: state => {
       return {
         ...state,
+        isAuthenticated: FAIL, // Mark user as logged out
         islogoutSuccess: SUCCESS,
-        message: action.payload.message,
-        logoutData: action.payload,
+        message: 'Logout successful',
+        data: null,
       };
     },
     logoutFailure: (state, action) => {
-      return {...state, islogoutSuccess: FAIL, error: action.payload.message};
+      return {
+        ...state,
+        islogoutSuccess: FAIL,
+        error: action.payload.message,
+      };
     },
 
+    // Forgot Password reducers
     getForgotPassword: state => {
       return {
         ...state,
-        isForgotPasswordSuccess: null,
+        isForgotPasswordSuccess: NULL,
         error: null,
         message: '',
+        forgotPasswordLoading: true,
       };
     },
     forgotPasswordSuccess: (state, action) => {
       return {
         ...state,
-        isForgotPasswordSuccess: true,
-        message: 'Fetch successfully',
+        isForgotPasswordSuccess: SUCCESS,
+        message: 'Password reset successful',
         data: action.payload,
+        forgotPasswordLoading: false,
       };
     },
     forgotPasswordFailure: (state, action) => {
+      console.log('Action .payload password failure', action.payload);
+
       return {
         ...state,
         isForgotPasswordSuccess: FAIL,
         error: action.payload,
-        message: 'Something went wrong',
+        message: 'Password reset failed',
+        forgotPasswordLoading: false,
       };
     },
+
+    // Create Account reducers
     createAccount: state => {
-      return {...state, isAccountCreateSuccess: null, error: null, message: ''};
+      return {
+        ...state,
+        isAccountCreateSuccess: FAIL,
+        error: null,
+        message: '',
+        signUpLoading: true,
+      };
     },
     createAccountSuccess: (state, action) => {
       return {
         ...state,
-        isAccountCreateSuccess: true,
-        message: 'Fetch successfully',
+        isAccountCreateSuccess: SUCCESS,
+        message: 'Account created successfully',
         data: action.payload,
+        signUpLoading: false,
       };
     },
     createAccountFailure: (state, action) => {
@@ -94,8 +136,14 @@ export const AuthSlice = createSlice({
         ...state,
         isAccountCreateSuccess: FAIL,
         error: action.payload,
-        message: 'Something went wrong',
+        message: 'Account creation failed',
+        signUpLoading: false,
       };
+    },
+
+    // Set authentication state manually (useful for initial load)
+    setAuthState: (state, action) => {
+      state.isAuthenticated = action.payload;
     },
   },
 });
@@ -113,6 +161,7 @@ export const {
   createAccount,
   createAccountFailure,
   createAccountSuccess,
+  setAuthState,
 } = AuthSlice.actions;
-const AuthReducer = AuthSlice.reducer;
-export default AuthReducer;
+
+export default AuthSlice.reducer;

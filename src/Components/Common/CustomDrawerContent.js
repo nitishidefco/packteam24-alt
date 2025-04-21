@@ -19,11 +19,13 @@ import {toastMessage} from '../../Helpers';
 import {reduxStorage} from '../../Redux/Storage';
 import {useTranslation} from 'react-i18next';
 import {success} from '../../Helpers/ToastMessage';
-import { useSelector } from 'react-redux';
+import {useSelector} from 'react-redux';
 // import DailyListScreen from '../../screens/DailyList/DailyListScreen';
-
 const CustomDrawerContent = props => {
   const {t, i18n} = useTranslation();
+  const isConnected = useSelector(state => state?.Network?.isConnected);
+  const {localWorkHistory} = useSelector(state => state?.LocalWorkHistory);
+
   const navigation = useNavigation();
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -33,6 +35,7 @@ const CustomDrawerContent = props => {
   const [dropdownAlert, setDropdownAlert] = useState(null);
   const [isIos, setIsIos] = useState(false);
   const {deviceId} = useSelector(state => state?.Network);
+  const lastItem = localWorkHistory?.[localWorkHistory?.length - 1]?.to;
 
   useEffect(() => {
     if (Platform.OS === 'ios') {
@@ -52,14 +55,49 @@ const CustomDrawerContent = props => {
   }, [Auth?.islogoutSuccess]);
 
   function logoutApi() {
-    setLoading(true);
-    let formdata = new FormData();
-    formdata.append('session_id', SessionId);
-    formdata.append('device_id', deviceId);
-    logoutCall(formdata);
+    if (isConnected) {
+      setLoading(true);
+      let formdata = new FormData();
+      formdata.append('session_id', SessionId);
+      formdata.append('device_id', deviceId);
+      logoutCall(formdata);
+    } else {
+      if (lastItem?.length < 7) {
+        Alert.alert(
+          i18n.t('Offline.CantLogout'),
+          i18n.t('Offline.CantLogoutDescription'),
+        );
+      } else {
+        Alert.alert(
+          i18n.t('Offline.AskToLogout'),
+          i18n.t('Offline.ExplainLogout'),
+          [
+            {
+              text: i18n.t('ChangePasswordScreen.cancel'),
+              onPress: () => console.log('Cancel Pressed'),
+              style: 'cancel',
+            },
+            {
+              text: i18n.t('UserProfileScreen.OK'),
+              onPress: () => {
+                setLoading(true);
+                let formdata = new FormData();
+                formdata.append('session_id', SessionId);
+                formdata.append('device_id', deviceId);
+                logoutCall(formdata);
+              },
+            },
+          ],
+          {cancelable: false},
+        );
+      }
+    }
   }
   function handleLogoutResponse() {
-    if (loading && Auth.islogoutSuccess === true) {
+    // console.log('Auth.islogoutSuccess', Auth.islogoutSuccess);
+
+    // if (loading && Auth.islogoutSuccess === true) {
+    if (loading === true) {
       setLoading(false);
       const successToast = t('Toast.LogoutSuccess');
       success(successToast);
@@ -69,6 +107,28 @@ const CustomDrawerContent = props => {
       setLoading(false);
     }
   }
+
+  const handleChangePasswordClick = () => {
+    if (isConnected) {
+      navigation.navigate('HomeDrawer', {screen: 'ChangePassword'});
+    } else {
+      Alert.alert(
+        i18n.t('Offline.NoInternet'),
+        i18n.t('Offline.FeatureNotAvailable'),
+      );
+    }
+  };
+
+  const handleUserProfileClick = () => {
+    if (isConnected) {
+      navigation.navigate('HomeDrawer', {screen: 'UserProfile'});
+    } else {
+      Alert.alert(
+        i18n.t('Offline.NoInternet'),
+        i18n.t('Offline.FeatureNotAvailable'),
+      );
+    }
+  };
   return (
     <View style={styles.container}>
       <DrawerContentScrollView
@@ -127,7 +187,7 @@ const CustomDrawerContent = props => {
               {t('SideMenuBar.ChangePassword')}
             </Text>
           )}
-          onPress={() => navigation.replace('ChangePassword')}
+          onPress={() => handleChangePasswordClick()}
           style={[styles.drawerItem]}
           icon={() => (
             <Image
@@ -154,7 +214,7 @@ const CustomDrawerContent = props => {
               {t('SideMenuBar.UserProflie')}
             </Text>
           )}
-          onPress={() => navigation.replace('UserProfile')}
+          onPress={() => handleUserProfileClick()}
           style={[styles.drawerItem]}
           icon={() => (
             <Image
@@ -164,86 +224,6 @@ const CustomDrawerContent = props => {
             />
           )}
         />
-
-        {/* <DrawerItem {t('SideMenuBar.ChangePassword')}
-          label="Messages"
-          labelStyle={{
-            fontFamily: typography.fontFamily.Montserrat.Regular,
-            fontSize: typography.fontSizes.fs15,
-            color: colors.WHITE,
-            paddingTop: Matrics.ms(10),
-            marginHorizontal: Matrics.ms(-40),
-          }}
-          // onPress={goToHome}
-          style={styles.drawerItem}
-          icon={() => (
-            <Image
-              source={Images.MESSAGES_ICON}
-              resizeMode="contain"
-              style={[isIos ? styles.messageIconIosStyle : styles.messageIconStyle]}
-            />
-          )}
-        />
-        <DrawerItem
-          label="Daily Lists"
-          labelStyle={{
-            fontFamily: typography.fontFamily.Montserrat.Regular,
-            fontSize: typography.fontSizes.fs15,
-            color: colors.WHITE,
-            paddingTop: Matrics.ms(10),
-
-            marginHorizontal: Matrics.ms(-40),
-          }}
-           onPress={goToDailyList}
-          style={styles.drawerItem}
-          icon={() => (
-            <Image
-              source={Images.DAILY_LIST}
-              resizeMode="contain"
-              style={[isIos ? styles.messageIconIosStyle : styles.messageIconStyle]}
-            />
-          )}
-        />
-        <DrawerItem
-          label="Calender"
-          labelStyle={{
-            fontFamily: typography.fontFamily.Montserrat.Regular,
-            fontSize: typography.fontSizes.fs15,
-            color: colors.WHITE,
-            paddingTop: Matrics.ms(10),
-            marginHorizontal: Matrics.ms(-40),
-          }}
-          // onPress={goToHome}
-          style={styles.drawerItem}
-          icon={() => (
-            <Image
-              source={Images.CALENDER_ICON}
-              resizeMode="contain"
-              style={[isIos ? styles.messageIconIosStyle : styles.messageIconStyle]}
-
-            />
-          )}
-        />
-        <DrawerItem
-          label="Advances"
-          labelStyle={{
-            fontFamily: typography.fontFamily.Montserrat.Regular,
-            fontSize: typography.fontSizes.fs15,
-            color: colors.WHITE,
-            paddingTop: Matrics.ms(10),
-            marginHorizontal: Matrics.ms(-40),
-            paddingBottom: Matrics.ms(20),
-          }}
-          // onPress={goToHome}
-          style={styles.drawerItem}
-          icon={() => (
-            <Image
-              source={Images.ADVANCES}
-              resizeMode="contain"
-              style={[isIos? styles.dashBoardIconIosStyle:styles.dashBoardIconStyle]}
-            />
-          )}
-        /> */}
       </DrawerContentScrollView>
       {/* Logout */}
       <View
@@ -262,7 +242,7 @@ const CustomDrawerContent = props => {
             marginBottom: Matrics.ms(-5),
             bottom: Matrics.ms(3),
           }}
-          onPress={logoutApi}
+          onPress={() => logoutApi()}
           style={styles.drawerItem}
           icon={() => (
             <Image
@@ -284,7 +264,7 @@ const CustomDrawerContent = props => {
           fontFamily: typography.fontFamily.Montserrat.Medium,
           fontSize: typography.fontSizes.fs13,
         }}>
-        v. 2.5.25
+        TEST TRACKER v. 1.1
       </Text>
       <DropdownAlert ref={ref => setDropdownAlert(ref)} />
     </View>
@@ -311,6 +291,8 @@ const styles = StyleSheet.create({
   },
   drawerItem: {
     marginLeft: 0,
+    width: Matrics.screenWidth * 0.46,
+    // backgroundColor: 'red',
   },
   homeIconIosStyle: {
     width: Matrics.ms(20),

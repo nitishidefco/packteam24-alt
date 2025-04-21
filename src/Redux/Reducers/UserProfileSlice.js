@@ -12,6 +12,8 @@ const userProfileSlice = createSlice({
     isFetchSuccess: null,
     error: null,
     message: null,
+    isLoading: null,
+    fetchProfileLoading: null,
   },
   reducers: {
     /* --------------------------- update user profile -------------------------- */
@@ -19,16 +21,19 @@ const userProfileSlice = createSlice({
       state.isFetchSuccess = NULL;
       state.error = NULL;
       state.message = '';
+      state.isLoading = true;
     },
     updateUserProfileSuccess: (state, action) => {
       state.data = action?.payload;
       state.message = 'profile updated successfully';
       state.isFetchSuccess = SUCCESS;
+      state.isLoading = false;
     },
     updateUserProfileFail: (state, action) => {
       state.data = action?.payload;
       state.message = 'profile update failed';
       state.isFetchSuccess = FAIL;
+      state.isLoading = false;
     },
     /* -------------------------- Remove profile photo -------------------------- */
     removeUserProfilePhoto: state => {
@@ -51,16 +56,19 @@ const userProfileSlice = createSlice({
       state.isFetchSuccess = NULL;
       state.error = NULL;
       state.message = '';
+      state.fetchProfileLoading = true;
     },
     fetchUserProfileSuccess: (state, action) => {
       state.data = action?.payload;
       state.message = 'Fetch successfull';
       state.isFetchSuccess = SUCCESS;
+      state.fetchProfileLoading = false;
     },
     fetchUserProfileFail: (state, action) => {
       state.isFetchSuccess = FAIL;
       state.error = action.payload;
       state.message = 'Something went wrong';
+      state.fetchProfileLoading = false;
     },
 
     /* --------------------------- remove user account -------------------------- */

@@ -8,8 +8,11 @@ import {useScanTagActions} from '../../Redux/Hooks/useScanTagActions';
 import {useHomeActions} from '../../Redux/Hooks';
 import useSavedLanguage from '../Hooks/useSavedLanguage';
 import {addColons} from '../../Helpers/AddColonsToId';
+import {findModeByTagId} from '../../Helpers/FindModeByTagId';
+import i18n from '../../i18n/i18n';
+import reactotron from '../../../ReactotronConfig';
 
-const WorkStatusBar = ({tagMode, tag}) => {
+const WorkStatusBar = ({tagsFromLocalStorage, tag}) => {
   const {state: currentStatus, fetchWorkStatusCall} = useWorkStatusActions();
   const language = useSavedLanguage();
   const {state} = useHomeActions();
@@ -19,6 +22,11 @@ const WorkStatusBar = ({tagMode, tag}) => {
   const formattedId = addColons(tag?.id);
   const {deviceId} = useSelector(state => state?.Network);
   const {globalLanguage} = useSelector(state => state?.GlobalLanguage);
+  const tagMode = findModeByTagId(tagsFromLocalStorage, tag?.id);
+  const sessions = useSelector(state => state?.OfflineData?.sessions);
+  const {localWorkHistory} = useSelector(state => state?.LocalWorkHistory);
+  const [offlineTagMode, setOfflineTagMode] = useState(null);
+  const {state: scanTagState} = useScanTagActions();
   useEffect(() => {
     const updateWorkStatus = async () => {
       try {
@@ -26,16 +34,113 @@ const WorkStatusBar = ({tagMode, tag}) => {
         formdata.append('session_id', SessionId);
         formdata.append('device_id', deviceId);
         formdata.append('lang', globalLanguage);
+
         fetchWorkStatusCall(formdata);
       } catch (error) {
         console.error('Error updating work status', error);
       }
     };
     updateWorkStatus();
-  }, [formattedId]);
+  }, [scanTagState?.currentState]);
+  const getMostRecentTagId = sessionId => {
+    const sessionData = sessions[sessionId];
+
+    // Check if sessionData and items are present
+    if (
+      sessionData &&
+      sessionData.items &&
+      !localWorkHistory[localWorkHistory?.length - 1]?.to?.includes(':')
+    ) {
+      // Sort the items by time in descending order (latest first)
+      const sortedItems = [...sessionData.items].sort((a, b) => {
+        const timeA = new Date(a.time);
+        const timeB = new Date(b.time);
+        return timeB - timeA; // Sort in descending order
+      });
+
+      return sortedItems[0]?.tagId;
+    }
+
+    return null; // If session data or items are not available
+  };
+  const mostRecentTagId = getMostRecentTagId(SessionId);
+  // const offlineTagMode = mostRecentTagId
+  //   ? findModeByTagId(tagsFromLocalStorage, mostRecentTagId)
+  //   : localWorkHistory?.length > 0
+  //   ? 'work_end'
+  //   : mostRecentTagId;
   useEffect(() => {
-    setWorkMode(currentStatus?.currentState?.work_status_to_display);
-  }, [currentStatus, formattedId]);
+    // First, determine the offline tag mode when not connected
+    if (!isConnected) {
+      if (
+        localWorkHistory.length > 0 &&
+        localWorkHistory[localWorkHistory.length - 1]?.to?.includes(':')
+      ) {
+        console.log('Not connected setting offline mode work end');
+        setOfflineTagMode('work_end');
+      } else if (
+        localWorkHistory.length > 0 &&
+        localWorkHistory[localWorkHistory.length - 1]?.mode_raw === 'work'
+      ) {
+        console.log('Not connected setting offline mode work start');
+        setOfflineTagMode('work_start');
+      } else if (
+        localWorkHistory.length > 0 &&
+        localWorkHistory[localWorkHistory.length - 1]?.mode_raw === 'break'
+      ) {
+        console.log('Not connected setting offline mode work break');
+        setOfflineTagMode('break_start');
+      }
+    }
+
+    // Then, set the work mode based on connection status and current mode
+    if (isConnected) {
+      setWorkMode(currentStatus?.currentState?.work_status_to_display);
+    } else {
+      console.log(
+        'Local Work History inside workstatus bar====>>>>',
+        localWorkHistory,
+        offlineTagMode,
+      );
+
+      if (localWorkHistory.length > 0) {
+        switch (offlineTagMode) {
+          case 'work_start':
+            console.log('Inside workstart');
+            setWorkMode(i18n.t('Toast.WorkinProgress'));
+            break;
+          case 'break_start':
+            setWorkMode(i18n.t('Toast.BreakinProgress'));
+            break;
+          case 'work_end':
+            setWorkMode(i18n.t('Toast.WorkFinished'));
+            break;
+          default:
+            if (
+              localWorkHistory[localWorkHistory.length - 1]?.to?.includes(':')
+            ) {
+              setWorkMode(i18n.t('Toast.WorkFinished'));
+            } else {
+              setWorkMode(i18n.t('Toast.WorkNotStarted'));
+            }
+            break;
+        }
+      } else {
+        setWorkMode(i18n.t('Toast.WorkNotStarted'));
+      }
+    }
+
+    // Finally, update the status icon
+    getStatusIcon();
+  }, [
+    localWorkHistory,
+    isConnected,
+    currentStatus,
+    formattedId,
+    offlineTagMode,
+    globalLanguage,
+    i18n.language,
+  ]);
 
   // useEffect(() => {
   //   switch (tagMode) {
@@ -53,7 +158,7 @@ const WorkStatusBar = ({tagMode, tag}) => {
   //   }
   // }, [tagMode]);
   const isConnected = useSelector(state => state?.Network?.isConnected);
-  const {sessions} = useSelector(state => state.OfflineData);
+
   // const getMostRecentTagId = sessionId => {
   //   const sessionData = sessions[sessionId];
 
@@ -85,7 +190,7 @@ const WorkStatusBar = ({tagMode, tag}) => {
           // setWorkMode(currentStatus?.currentState?.work_status_to_display);
           await reduxStorage.setItem(
             'tagForOfflineValidation',
-            currentStatus?.currentState?.work_status,
+            JSON.stringify(currentStatus?.currentState?.work_status),
           );
         } catch (error) {
           console.error('Error saving tag for offline validation:', error);
@@ -96,31 +201,77 @@ const WorkStatusBar = ({tagMode, tag}) => {
   }, [currentStatus]);
 
   const getStatusIcon = () => {
-    switch (workMode) {
-      case 'Work in progress':
-        return <Hammer size={30} color="#22c55e" />;
-      case 'Break in progress':
-        return <Coffee size={30} color="#ef4444" />;
-      case 'Work finished':
-        return <House size={30} color="#3b82f6" />;
-      default:
+    // console.log('getting status icon');
+
+    if (isConnected) {
+      switch (currentStatus?.currentState?.work_status) {
+        case 'work_in_progress':
+          return <Hammer size={30} color="#22c55e" />;
+        case 'break_in_progress':
+          return <Coffee size={30} color="#ef4444" />;
+        case 'work_finished':
+          return <House size={30} color="#3b82f6" />;
+        default:
+          return <House size={30} color="#6b7280" />;
+      }
+    } else {
+      if (localWorkHistory.length > 0) {
+        if (localWorkHistory[localWorkHistory.length - 1].to.includes(':')) {
+          console.log('inside work end icon');
+          return <House size={30} color="#3b82f6" />;
+        } else if (
+          localWorkHistory[localWorkHistory.length - 1].mode_raw === 'break'
+        ) {
+          return <Coffee size={30} color="#ef4444" />;
+        } else if (
+          localWorkHistory[localWorkHistory.length - 1].mode_raw === 'work'
+        ) {
+          return <Hammer size={30} color="#22c55e" />;
+        }
+      } else if (localWorkHistory.length === 0) {
         return <House size={30} color="#6b7280" />;
+      }
     }
   };
-
   // Memoizing background color to avoid unnecessary recalculations
   const borderColor = useMemo(() => {
-    switch (workMode) {
-      case 'Work in progress':
-        return '#22c55e'; // Green for work mode
-      case 'Break in progress':
-        return '#ef4444'; // Red for break mode
-      case 'Work finished':
-        return '#3b82f6'; // Blue for work ended
-      default:
-        return '#6b7280'; // Gray for default
+    if (isConnected) {
+      switch (currentStatus?.currentState?.work_status) {
+        case 'work_in_progress':
+          return '#22c55e'; // Green for work mode
+        case 'break_in_progress':
+          return '#ef4444'; // Red for break mode
+        case 'work_finished':
+          return '#3b82f6'; // Blue for work ended
+        default:
+          return '#6b7280'; // Gray for default
+      }
+    } else {
+      if (localWorkHistory.length > 0) {
+        if (localWorkHistory[localWorkHistory.length - 1].to.includes(':')) {
+          return '#3b82f6';
+        } else if (
+          localWorkHistory[localWorkHistory.length - 1].mode_raw === 'break'
+        ) {
+          return '#ef4444';
+        } else if (
+          localWorkHistory[localWorkHistory.length - 1].mode_raw === 'work'
+        ) {
+          return '#22c55e';
+        }
+      } else if (localWorkHistory.length === 0) {
+        return '#6b7280';
+      }
     }
-  }, [workMode]);
+  }, [
+    workMode,
+    currentStatus,
+    formattedId,
+    isConnected,
+    offlineTagMode,
+    globalLanguage,
+    localWorkHistory,
+  ]);
 
   return (
     <View style={[styles.container, {borderColor}]}>
@@ -163,5 +314,4 @@ const styles = StyleSheet.create({
     color: '#111827',
   },
 });
-
 export default WorkStatusBar;

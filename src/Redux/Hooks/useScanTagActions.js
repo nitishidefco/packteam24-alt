@@ -1,5 +1,5 @@
 import {useDispatch, useSelector} from 'react-redux';
-import {getScan} from '../Reducers/ScanSlice';
+import {getScan, sendBulk} from '../Reducers/ScanSlice';
 
 export const useScanTagActions = () => {
   const dispatch = useDispatch();
@@ -8,6 +8,8 @@ export const useScanTagActions = () => {
     //
     dispatch(getScan(params));
   };
-
-  return {state, scanCall};
+  const bulkScanCall = params => {
+    dispatch(sendBulk(params));
+  };
+  return {state, scanCall, bulkScanCall};
 };
