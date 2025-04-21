@@ -18,11 +18,14 @@ import {
 import {success} from '../../Helpers/ToastMessage';
 
 function* fetchMessagesSaga({payload}) {
+  console.log('Payload', payload.payload);
+
   try {
     const response = yield call(
       MessageService.GetNotifications,
       payload.payload,
     );
+
     if (response) {
       yield put(
         fetchMessagesSuccess({

@@ -43,7 +43,9 @@ const NotificationItem = memo(({item, onLongPress, onPress, isSelected}) => {
     .replace(/<\/?[^>]+(>|$)/g, '')
     .replace(/\s+/g, ' ')
     .trim();
-  const formattedDate = moment(item.created_at).format('DD-MMM HH:mm');
+  const formattedDate = moment
+    .tz(item.created_at, 'Europe/Berlin')
+    .format('DD-MMM HH:mm');
   const truncatedTopic =
     item.topic.length > 30 ? `${item.topic.slice(0, 40)}...` : item.topic;
   const truncatedContent =
@@ -308,6 +310,8 @@ const NotificationScreen = () => {
   };
 
   const handleFilter = value => {
+    console.log('Handle filter');
+
     dispatch(setCurrentPage(1));
     setFilterType(value);
     const formData = new FormData();
@@ -380,6 +384,7 @@ const NotificationScreen = () => {
 
   const renderItem = ({item}) => {
     const isSelecteds = selectedMessages?.includes(item.id);
+
     return (
       <NotificationItem
         item={item}
@@ -484,6 +489,7 @@ const NotificationScreen = () => {
         <FlatList
           ref={flatListRef}
           data={filteredMessages}
+          extraData={filterMessages.length}
           renderItem={renderItem}
           keyExtractor={item => item.id}
           ListEmptyComponent={

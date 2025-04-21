@@ -1,7 +1,7 @@
 // src/Redux/Reducers/MessageReducer.js
 import {createSlice} from '@reduxjs/toolkit';
 import {MESSAGE_REUCER} from '../SliceKey';
-import moment from 'moment';
+import moment from 'moment-timezone';
 
 const initialState = {
   messages: [],
@@ -27,19 +27,36 @@ const messageSlice = createSlice({
     },
     fetchMessagesSuccess(state, action) {
       const {messages, total, totalPages} = action.payload;
-      const sortedMessages = [...messages].sort((a, b) =>
-        moment(b.created_at).diff(moment(a.created_at)),
+      console.log(
+        '[fetchMessagesSuccess] Received messages:',
+        messages.map(m => ({id: m.id, created_at: m.created_at})),
       );
+
+      // Sort messages by id in descending order
+      const sortedMessages = [...messages].sort((a, b) => b.id - a.id);
+
+      console.log(
+        '[fetchMessagesSuccess] Sorted messages:',
+        sortedMessages.map(m => ({id: m.id, created_at: m.created_at})),
+      );
+
       if (state.currentPage === 1) {
-        state.messages = sortedMessages;
+        state.messages = sortedMessages; // New array reference
         state.filteredMessages = sortedMessages;
       } else {
-        state.messages = [...state.messages, ...sortedMessages];
+        state.messages = [...state.messages, ...sortedMessages]; // New array reference
         state.filteredMessages = [...state.filteredMessages, ...sortedMessages];
       }
       state.totalMessages = total;
       state.totalPages = totalPages;
       state.isLoading = false;
+
+      console.log('[fetchMessagesSuccess] Updated state:', {
+        messages: state.messages.map(m => ({
+          id: m.id,
+          created_at: m.created_at,
+        })),
+      });
     },
     fetchMessagesFailure(state, action) {
       state.isLoading = false;

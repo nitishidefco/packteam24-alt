@@ -8,6 +8,8 @@ const BASE_URL = Constants.IS_DEVELOPING_MODE
 
 const MessageService = {
   GetNotifications: async params => {
+    console.log('Params', params);
+
     return fetch(`${BASE_URL}api/notifications`, {
       method: 'POST',
       body: params,

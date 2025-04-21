@@ -354,6 +354,8 @@ const ArchiveScreen = () => {
   };
 
   const handleFilter = value => {
+    console.log('Janldling fliter');
+
     dispatch(setCurrentPage(1));
     setFilterType(value);
     const formData = new FormData();
