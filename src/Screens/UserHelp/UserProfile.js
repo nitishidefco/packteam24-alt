@@ -75,21 +75,35 @@ const UserProfile = ({navigation}) => {
       await AsyncStorage.setItem(NOTIFICATION_LANGUAGE_KEY, lang);
       console.log('Notification language saved to AsyncStorage:', lang);
     } catch (error) {
-      console.error('Error saving notification language to AsyncStorage:', error);
+      console.error(
+        'Error saving notification language to AsyncStorage:',
+        error,
+      );
     }
   };
 
   const loadNotificationLanguage = async () => {
     try {
-      const savedLanguage = await AsyncStorage.getItem(NOTIFICATION_LANGUAGE_KEY);
-      console.log('Loaded notification language from AsyncStorage:', savedLanguage);
-      if (savedLanguage && languageOptions.some(option => option.value === savedLanguage)) {
+      const savedLanguage = await AsyncStorage.getItem(
+        NOTIFICATION_LANGUAGE_KEY,
+      );
+      console.log(
+        'Loaded notification language from AsyncStorage:',
+        savedLanguage,
+      );
+      if (
+        savedLanguage &&
+        languageOptions.some(option => option.value === savedLanguage)
+      ) {
         setNotificationLanguage(savedLanguage);
       } else {
         setNotificationLanguage('de');
       }
     } catch (error) {
-      console.error('Error loading notification language from AsyncStorage:', error);
+      console.error(
+        'Error loading notification language from AsyncStorage:',
+        error,
+      );
       setNotificationLanguage('de');
     }
   };
@@ -219,8 +233,12 @@ const UserProfile = ({navigation}) => {
           formData.append('email', userEmail);
           formData.append('language', notificationLanguage);
           if (image) {
-            const imageType = image.includes('.png') ? 'image/png' : 'image/jpeg';
-            const imageName = image.includes('.png') ? 'profile.png' : 'profile.jpg';
+            const imageType = image.includes('.png')
+              ? 'image/png'
+              : 'image/jpeg';
+            const imageName = image.includes('.png')
+              ? 'profile.png'
+              : 'profile.jpg';
             formData.append('photo', {
               uri: image,
               type: imageType,
@@ -408,7 +426,7 @@ const UserProfile = ({navigation}) => {
           style={{
             position: 'absolute',
             right: 0,
-            top: 200,
+            top: Platform.OS === 'ios' ? 200 : 100,
             zIndex: 10,
             alignItems: 'flex-end',
             paddingHorizontal: Matrics.s(10),
@@ -505,7 +523,9 @@ const UserProfile = ({navigation}) => {
                     style={styles.languageSelectorButton}
                     onPress={openModal}>
                     <Text style={styles.languageSelectorText}>
-                      {languageOptions.find(opt => opt.value === notificationLanguage)?.label || 'Select Language'}
+                      {languageOptions.find(
+                        opt => opt.value === notificationLanguage,
+                      )?.label || 'Select Language'}
                     </Text>
                     <Image
                       source={Images.CHEVRON_DOWN}
@@ -553,12 +573,16 @@ const UserProfile = ({navigation}) => {
             <Animated.View
               style={[
                 styles.modalContainer,
-                { transform: [{ translateY: modalTranslateY }] },
+                {transform: [{translateY: modalTranslateY}]},
               ]}>
               <View style={styles.modalHeader}>
-                <Text style={styles.modalTitle}>{t('UserProfileScreen.selectLanguage')}</Text>
+                <Text style={styles.modalTitle}>
+                  {t('UserProfileScreen.selectLanguage')}
+                </Text>
                 <TouchableOpacity onPress={closeModal}>
-                  <Text style={styles.cancelModalText}>{t('UserProfileScreen.cancel')}</Text>
+                  <Text style={styles.cancelModalText}>
+                    {t('UserProfileScreen.cancel')}
+                  </Text>
                 </TouchableOpacity>
               </View>
               <FlatList
@@ -611,11 +635,11 @@ const styles = StyleSheet.create({
     ...Platform.select({
       ios: {
         shadowColor: '#000',
-        shadowOffset: { width: 0, height: 2 },
+        shadowOffset: {width: 0, height: 2},
         shadowOpacity: 0.25,
         shadowRadius: 3.84,
       },
-      android: { elevation: 5 },
+      android: {elevation: 5},
     }),
   },
   headerTitle: {
@@ -638,11 +662,11 @@ const styles = StyleSheet.create({
     ...Platform.select({
       ios: {
         shadowColor: '#000',
-        shadowOffset: { width: 0, height: 2 },
+        shadowOffset: {width: 0, height: 2},
         shadowOpacity: 0.25,
         shadowRadius: 3.84,
       },
-      android: { elevation: 5 },
+      android: {elevation: 5},
     }),
   },
   image: {
@@ -675,7 +699,7 @@ const styles = StyleSheet.create({
     ...Platform.select({
       ios: {
         shadowColor: '#0A1931',
-        shadowOffset: { width: 0, height: 1 },
+        shadowOffset: {width: 0, height: 1},
         shadowOpacity: 0.22,
         shadowRadius: 10,
       },
@@ -706,11 +730,11 @@ const styles = StyleSheet.create({
     ...Platform.select({
       ios: {
         shadowColor: '#000',
-        shadowOffset: { width: 0, height: 1 },
+        shadowOffset: {width: 0, height: 1},
         shadowOpacity: 0.22,
         shadowRadius: 2.22,
       },
-      android: { elevation: 3 },
+      android: {elevation: 3},
     }),
   },
   saveButton: {
@@ -741,12 +765,13 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     borderRadius: Matrics.ms(8),
     paddingHorizontal: Matrics.ms(10),
-    paddingVertical: Matrics.ms(12),
+    paddingVertical: Platform.OS === 'android' ? 0 : Matrics.ms(12),
   },
   languageSelectorText: {
     fontFamily: typography.fontFamily.Montserrat.Regular,
     fontSize: typography.fontSizes.fs16,
     color: '#333',
+    // paddingBottom: Matrics.vs(5),
   },
   chevronIcon: {
     width: Matrics.ms(20),
