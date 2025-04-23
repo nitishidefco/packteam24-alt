@@ -50,13 +50,6 @@ const messageSlice = createSlice({
       state.totalMessages = total;
       state.totalPages = totalPages;
       state.isLoading = false;
-
-      console.log('[fetchMessagesSuccess] Updated state:', {
-        messages: state.messages.map(m => ({
-          id: m.id,
-          created_at: m.created_at,
-        })),
-      });
     },
     fetchMessagesFailure(state, action) {
       state.isLoading = false;

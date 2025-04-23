@@ -17,7 +17,7 @@ function* notificationSaga({payload}) {
       yield put(notificationFail(response.errors));
     }
   } catch (error) {
-    console.error('Updating password error', error.errors);
+    console.error('Notification saga error', error.errors);
     yield put(notificationFail(error.errors.current_password));
   }
 }

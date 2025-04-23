@@ -28,12 +28,19 @@ const handleResponse = response => {
           {
             text: 'OK',
             onPress: () => {
-              const formData = new FormData();
-              formData.append('session_id', SessionId);
-              formData.append('device_id', deviceId);
-              dispatch(getLogout(formData));
-              navigation.replace('Login');
-              alertShown = false;
+              try {
+                const formData = new FormData();
+                formData.append('session_id', SessionId);
+                formData.append('device_id', deviceId);
+                console.log('logging out user');
+
+                dispatch(getLogout(formData));
+                navigation.replace('Login');
+                alertShown = false;
+              } catch (error) {
+                console.error('Error logging out:', error);
+                // Handle error appropriately, e.g., show an alert to the user
+              }
             },
           },
         ],

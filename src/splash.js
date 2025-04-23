@@ -6,11 +6,10 @@ import Images from './Config/Images';
 import {reduxStorage} from './Redux/Storage';
 import {useWorkHistoryActions} from './Redux/Hooks/useWorkHistoryActions';
 import {useNotificationActions} from './Redux/Hooks/useNotificationActions';
-import { useSelector } from 'react-redux';
-import { useAuthActions } from './Redux/Hooks';
+import {useSelector} from 'react-redux';
+import {useAuthActions} from './Redux/Hooks';
 const Splash = () => {
   const {getRealTimeCall} = useWorkHistoryActions();
-  
 
   const [userToken, setuserToken] = useState(null);
   useEffect(() => {
@@ -19,7 +18,6 @@ const Splash = () => {
     );
   }, []);
 
-  
   // fetch user token initally
   useEffect(() => {
     async function getToken() {

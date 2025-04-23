@@ -29,9 +29,9 @@ function* fetchMessagesSaga({payload}) {
     if (response) {
       yield put(
         fetchMessagesSuccess({
-          messages: response.data.data,
-          total: response.data.total,
-          totalPages: response.data.last_page,
+          messages: response?.data?.data,
+          total: response?.data?.total,
+          totalPages: response?.data?.last_page,
         }),
       );
       return;

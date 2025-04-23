@@ -1,4 +1,4 @@
-// sessionHandler.js
+// sessionHandler.js with logs
 let sessionHandler = {
   dispatch: null,
   SessionId: null,
@@ -6,13 +6,20 @@ let sessionHandler = {
   navigation: null,
 };
 
-export const setSessionHandler = (dispatch, SessionId, deviceId, navigation) => {
+export const setSessionHandler = (
+  dispatch,
+  SessionId,
+  deviceId,
+  navigation,
+) => {
   sessionHandler = {
     dispatch,
     SessionId,
     deviceId,
-    navigation
+    navigation,
   };
 };
 
-export const getSessionHandler = () => sessionHandler;
+export const getSessionHandler = () => {
+  return sessionHandler;
+};

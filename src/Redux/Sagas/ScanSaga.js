@@ -30,7 +30,7 @@ function* scanSaga({payload}) {
     }
   } catch (error) {
     console.log('errir of scan', error);
-    
+
     // yield put(ScanFailure(error.message || 'Unexpected error'));
   }
 }
