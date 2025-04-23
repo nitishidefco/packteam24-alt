@@ -8,6 +8,7 @@ import {useWorkHistoryActions} from './Redux/Hooks/useWorkHistoryActions';
 import {useNotificationActions} from './Redux/Hooks/useNotificationActions';
 import {useSelector} from 'react-redux';
 import {useAuthActions} from './Redux/Hooks';
+import {COLOR} from './Config/AppStyling';
 const Splash = () => {
   const {getRealTimeCall} = useWorkHistoryActions();
 
@@ -59,7 +60,7 @@ const Splash = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#061439',
+    backgroundColor: COLOR.PURPLE,
     alignItems: 'center',
     justifyContent: 'center',
   },

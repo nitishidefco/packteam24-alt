@@ -36,7 +36,7 @@ const ResetPasswordButton = ({onForgotPasswordPress, Auth}) => {
 
 const styles = StyleSheet.create({
   buttonStyle: {
-    backgroundColor: '#061439',
+    backgroundColor: COLOR.PURPLE,
     borderWidth: 0,
     borderColor: COLOR.PRIMARY,
     minWidth: Matrics.s(250), // Minimum width

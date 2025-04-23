@@ -95,7 +95,7 @@ export const loginStyle = StyleSheet.create({
   },
   buttonStyle: {
     position: 'relative',
-    backgroundColor: '#061439',
+    backgroundColor: COLOR.PURPLE,
     borderWidth: 0,
     color: COLOR.PRIMARY,
     borderColor: COLOR.PRIMARY,

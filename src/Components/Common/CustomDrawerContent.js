@@ -11,7 +11,7 @@ import {
 import {DrawerContentScrollView, DrawerItem} from '@react-navigation/drawer';
 import {useNavigation} from '@react-navigation/native';
 import {Images} from '../../Config';
-import {Matrics, typography} from '../../Config/AppStyling';
+import {COLOR, Matrics, typography} from '../../Config/AppStyling';
 import colors from '../../Config/AppStyling/colors';
 import {useAuthActions} from '../../Redux/Hooks';
 import DropdownAlert from 'react-native-dropdownalert';
@@ -274,10 +274,10 @@ const CustomDrawerContent = props => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#061439',
+    backgroundColor: COLOR.PRIMARY,
   },
   drawerContent: {
-    backgroundColor: '#061439',
+    backgroundColor: COLOR.PRIMARY,
   },
   logoContainer: {
     alignItems: 'center',

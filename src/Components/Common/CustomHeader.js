@@ -269,7 +269,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    backgroundColor: '#061439',
+    backgroundColor: COLOR.PURPLE,
   },
   drawerIconStyle: {
     tintColor: COLOR.WHITE,

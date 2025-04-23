@@ -8,7 +8,7 @@ import {
 } from 'react-native';
 import React, {useCallback, useState} from 'react';
 import FlagComponent from './FlagComponent';
-import {Matrics, typography} from '../../Config/AppStyling';
+import {COLOR, Matrics, typography} from '../../Config/AppStyling';
 import {useDispatch, useSelector} from 'react-redux';
 import {useTranslation} from 'react-i18next';
 import {setLanguageWithStorage} from '../../Redux/Reducers/LanguageProviderSlice';
@@ -91,7 +91,7 @@ const Footer = () => {
         }}>
         <Text
           style={{
-            color: '#061439',
+            color: COLOR.PURPLE,
             fontFamily: typography.fontFamily.Montserrat.Bold,
             fontSize: typography.fontSizes.fs10,
           }}>

@@ -629,7 +629,7 @@ const styles = StyleSheet.create({
   },
   header: {
     height: 56,
-    backgroundColor: '#061439',
+    backgroundColor: COLOR.PURPLE,
     justifyContent: 'center',
     alignItems: 'center',
     ...Platform.select({
@@ -692,7 +692,7 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   button: {
-    backgroundColor: '#061439',
+    backgroundColor: COLOR.PURPLE,
     paddingHorizontal: 15,
     paddingVertical: 10,
     borderRadius: Matrics.ms(16),
@@ -738,7 +738,7 @@ const styles = StyleSheet.create({
     }),
   },
   saveButton: {
-    backgroundColor: '#061439',
+    backgroundColor: COLOR.PURPLE,
   },
   cancelButton: {
     backgroundColor: colors.SECONDARY,
@@ -799,7 +799,7 @@ const styles = StyleSheet.create({
   modalTitle: {
     fontFamily: typography.fontFamily.Montserrat.Bold,
     fontSize: typography.fontSizes.fs18,
-    color: '#061439',
+    color: COLOR.PURPLE,
   },
   cancelModalText: {
     fontFamily: typography.fontFamily.Montserrat.Regular,

@@ -359,7 +359,7 @@ const styles = StyleSheet.create({
   },
   changePasswordHeader: {
     height: 56,
-    backgroundColor: '#061439',
+    backgroundColor: COLOR.PURPLE,
     justifyContent: 'center',
     alignItems: 'center',
     ...Platform.select({

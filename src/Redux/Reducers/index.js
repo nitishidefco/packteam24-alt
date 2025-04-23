@@ -16,7 +16,7 @@ import TimeReducer from './TimeSlice';
 import NotificationReducer from './NotificationSlice';
 import MessageReducer from './MessageSlice';
 import ArchiveReducer from './ArchiveSlice';
-
+import CustomizationReducer from './CustomizationSlice';
 let appReducer = combineReducers({
   Auth: AuthReducer,
   Home: HomeReducer,
@@ -35,6 +35,7 @@ let appReducer = combineReducers({
   Notification: NotificationReducer,
   Messages: MessageReducer,
   Archive: ArchiveReducer,
+  Customization: CustomizationReducer,
 });
 
 const rootReducer = (state, action) => {

@@ -8,18 +8,23 @@ import {
   Image,
   SafeAreaView,
 } from 'react-native';
-import { Matrics, typography } from '../../Config/AppStyling';
-import { Images } from '../../Config';
-import { useNavigation } from '@react-navigation/native';
+import {COLOR, Matrics, typography} from '../../Config/AppStyling';
+import {Images} from '../../Config';
+import {useNavigation} from '@react-navigation/native';
 
-const CustomHeader3 = ({ title, imageSource, onPdfIconPress,onBackIconPress }) => {
+const CustomHeader3 = ({
+  title,
+  imageSource,
+  onPdfIconPress,
+  onBackIconPress,
+}) => {
   const navigation = useNavigation();
   const openDrawer = () => {
     onBackIconPress();
   };
 
   return (
-    <SafeAreaView style={{ backgroundColor: '#091242' }}>
+    <SafeAreaView style={{backgroundColor: '#091242'}}>
       <View style={styles.headerContainer}>
         <TouchableOpacity onPress={openDrawer}>
           <Image
@@ -33,13 +38,13 @@ const CustomHeader3 = ({ title, imageSource, onPdfIconPress,onBackIconPress }) =
             color: 'white',
             fontFamily: typography.fontFamily.Montserrat.Medium,
             fontSize: typography.fontSizes.fs15,
-            flex: 1, 
-            textAlign: 'center', 
-            marginLeft:Matrics.ms(15)
+            flex: 1,
+            textAlign: 'center',
+            marginLeft: Matrics.ms(15),
           }}>
           {title}
         </Text>
-        <TouchableOpacity onPress={onPdfIconPress}> 
+        <TouchableOpacity onPress={onPdfIconPress}>
           <Image
             source={imageSource} // Assuming this is your PDF icon image
             resizeMode={'contain'}
@@ -59,7 +64,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: '#061439',
+    backgroundColor: COLOR.PURPLE,
   },
   drawerIconStyle: {
     tintColor: 'white',

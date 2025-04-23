@@ -11,6 +11,7 @@ import ChangePassword from '../../Screens/UserHelp/ChangePassword';
 import UserProfile from '../../Screens/UserHelp/UserProfile';
 import NotificationScreen from '../../Screens/Home/NotificationScreen';
 import ArchiveScreen from '../../Screens/Home/ArchiveScreen';
+import {COLOR} from '../../Config/AppStyling';
 
 const Drawer = createDrawerNavigator();
 
@@ -26,7 +27,7 @@ const HomeDrawer = () => {
           width: '60%',
         },
         sceneContainerStyle: {
-          backgroundColor: '#061439',
+          backgroundColor: COLOR.PURPLE,
         },
       }}>
       <Drawer.Screen
