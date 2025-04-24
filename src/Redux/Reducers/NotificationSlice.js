@@ -40,6 +40,8 @@ export const {
   notificationFail,
   setNotification,
   clearNotifications,
+  setPermissionAlertShown,
+  resetPermissionAlert
 } = notificationSlice.actions;
 
 const NotificationReducer = notificationSlice.reducer;

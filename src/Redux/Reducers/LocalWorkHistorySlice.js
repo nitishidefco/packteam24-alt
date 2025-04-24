@@ -11,8 +11,6 @@ const localWorkHistorySlice = createSlice({
   initialState: initialState,
   reducers: {
     setLocalWorkHistory: (state, action) => {
-      // console.log('action**********', action.payload);
-
       state.localWorkHistory = action?.payload;
     },
   },

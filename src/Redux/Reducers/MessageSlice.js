@@ -15,6 +15,8 @@ const initialState = {
   isLoading: false,
   error: null,
   currentFilter: {type: 'all', value: ''},
+  hasShownPermissionAlert: false,
+
 };
 
 const messageSlice = createSlice({
@@ -27,18 +29,9 @@ const messageSlice = createSlice({
     },
     fetchMessagesSuccess(state, action) {
       const {messages, total, totalPages} = action.payload;
-      console.log(
-        '[fetchMessagesSuccess] Received messages:',
-        messages.map(m => ({id: m.id, created_at: m.created_at})),
-      );
 
       // Sort messages by id in descending order
       const sortedMessages = [...messages].sort((a, b) => b.id - a.id);
-
-      console.log(
-        '[fetchMessagesSuccess] Sorted messages:',
-        sortedMessages.map(m => ({id: m.id, created_at: m.created_at})),
-      );
 
       if (state.currentPage === 1) {
         state.messages = sortedMessages; // New array reference
@@ -222,6 +215,12 @@ const messageSlice = createSlice({
       state.isLoading = false;
       state.error = action.payload;
     },
+    setPermissionAlertShown(state) {
+      state.hasShownPermissionAlert = true;
+    },
+    resetPermissionAlert(state) {
+      state.hasShownPermissionAlert = false;
+    },
   },
 });
 
@@ -249,6 +248,8 @@ export const {
   multipleMarkMessages,
   multipleMarkMessagesSuccess,
   multipleMarkMessagesFailure,
+  setPermissionAlertShown,
+  resetPermissionAlert
 } = messageSlice.actions;
 
 const MessageReducer = messageSlice.reducer;

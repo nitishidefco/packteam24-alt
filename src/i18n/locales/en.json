@@ -91,8 +91,8 @@
     "no": "No",
     "yes": "Yes",
     "langConfig": "Configuring the language of messages from the app to me",
-    "notificationLanguage":"Select the langugage in which you want to recevie messages",
-    "selectLanguage":"Select Language"
+    "notificationLanguage": "Select the langugage in which you want to recevie messages",
+    "selectLanguage": "Select Language"
   },
   "ResetPassword": {
     "passwordResetSuccess": "We have emailed your password reset link!",
@@ -218,5 +218,13 @@
   "CustomHeader": {
     "MessageCenter": "Message Center",
     "Archives": "Archives"
+  },
+  "NotificationService": {
+    "permissionsDeniedTitle": "Notifications Disabled",
+    "permissionsDeniedMessage": "You won't receive notifications until enabled. Go to Settings > Notifications > EDA - Time Tracker to allow notifications.",
+    "errorTitle": "Error",
+    "errorMessage": "Failed to request notification permissions. Please enable in Settings > Notifications > EDA - Time Tracker",
+    "cancel": "Cancel",
+    "settings": "Settings"
   }
 }

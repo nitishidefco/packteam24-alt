@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
-// src/Screens/NotificationScreen.js
 import React, {memo, useEffect, useRef, useState} from 'react';
 import {
   View,
@@ -14,7 +12,11 @@ import {
   ActivityIndicator,
   Vibration,
   Animated,
+  Alert,
+  Linking,
 } from 'react-native';
+
+import messaging from '@react-native-firebase/messaging';
 import {useTranslation} from 'react-i18next';
 import CustomHeader from '../../Components/Common/CustomHeader';
 import DrawerSceneWrapper from '../../Components/Common/DrawerSceneWrapper';
@@ -35,9 +37,18 @@ import {
   moveToArchiveStart,
   multipleMarkMessages,
   searchMessagesStart,
+  setPermissionAlertShown,
+  resetPermissionAlert,
 } from '../../Redux/Reducers/MessageSlice';
 import {useFocusEffect} from '@react-navigation/native';
+import {Store} from '../../Redux/Store';
+import i18n from '../../i18n/i18n';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
 const NotificationItem = memo(({item, onLongPress, onPress, isSelected}) => {
+  const state = Store.getState();
+  const dispatch = useDispatch();
+  const globalLanguage = state.GlobalLanguage;
   // Precompute expensive operations outside render
   const cleanedContent = item.content
     .replace(/<\/?[^>]+(>|$)/g, '')
@@ -111,6 +122,7 @@ const NotificationScreen = () => {
     previewMessage,
     isLoading,
     selectedMessages,
+    hasShownPermissionAlert,
   } = useSelector(initialState => initialState.Messages);
 
   const deviceId = useSelector(state => state?.Network?.deviceId);
@@ -123,7 +135,48 @@ const NotificationScreen = () => {
   useEffect(() => {
     setIsSelectionMode(selectedMessages?.length > 0);
   }, [selectedMessages]);
+  useEffect(() => {
+    const checkPermissions = async () => {
+      try {
+        const hasShownAlert =
+          (await AsyncStorage.getItem('hasShownPermissionAlert')) === 'true';
+        // Check permission status
+        const authStatus = await messaging().hasPermission();
+        const enabled =
+          authStatus === messaging.AuthorizationStatus.AUTHORIZED ||
+          authStatus === messaging.AuthorizationStatus.PROVISIONAL;
 
+          if (!enabled && !hasShownAlert) {
+            // Show alert only if permissions are denied and alert hasn't been shown
+            Alert.alert(
+              i18n.t('NotificationService.permissionsDeniedTitle'),
+              i18n.t('NotificationService.permissionsDeniedMessage'),
+              [
+                { text: i18n.t('NotificationService.cancel'), style: 'cancel' },
+                {
+                  text: i18n.t('NotificationService.settings'),
+                  onPress: async () => {
+                    Linking.openURL('App-Prefs:NOTIFICATIONS_ID').catch(() => {
+                      console.log('[NotificationScreen] Failed to open App-Prefs:NOTIFICATIONS_ID, guiding user to Settings');
+                    });
+                    console.log('[NotificationScreen] User prompted to enable notifications in Settings');
+                    await AsyncStorage.setItem('hasShownPermissionAlert', 'true');
+                  },
+                },
+              ],
+              { cancelable: true }
+            );
+          }
+      } catch (error) {
+        console.error(
+          '[NotificationScreen] Error checking permissions:',
+          error,
+        );
+      }
+    };
+
+    checkPermissions();
+  }, [dispatch, hasShownPermissionAlert]);
   const handleLoadMore = () => {
     if (filteredMessages.length === 0) {
       console.log('Loading more');

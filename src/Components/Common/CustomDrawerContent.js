@@ -264,7 +264,7 @@ const CustomDrawerContent = props => {
           fontFamily: typography.fontFamily.Montserrat.Medium,
           fontSize: typography.fontSizes.fs13,
         }}>
-        TEST TRACKER v. 1.7
+        TEST TRACKER v. 1.8
       </Text>
       <DropdownAlert ref={ref => setDropdownAlert(ref)} />
     </View>
@@ -274,10 +274,10 @@ const CustomDrawerContent = props => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: COLOR.PRIMARY,
+    backgroundColor: COLOR.PURPLE,
   },
   drawerContent: {
-    backgroundColor: COLOR.PRIMARY,
+    backgroundColor: COLOR.PURPLE,
   },
   logoContainer: {
     alignItems: 'center',

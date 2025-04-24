@@ -44,6 +44,7 @@ import {
   fetchMessagesStart,
   fetchUnreadCountStart,
 } from '../../Redux/Reducers/MessageSlice';
+import {Store} from '../../Redux/Store';
 
 const Home = ({navigation, route}) => {
   const dispatch = useDispatch();
@@ -432,14 +433,16 @@ const Home = ({navigation, route}) => {
     setLoading(false);
   }, [Home]);
   useEffect(() => {
-    const formData = new FormData();
-    formData.append('session_id', SessionId);
-    formData.append('device_id', deviceId);
-    formData.append('lang', globalLanguage);
-    formData.append('page', 1);
-    dispatch(fetchMessagesStart({payload: formData}));
-    dispatch(fetchUnreadCountStart({payload: formData}));
-  }, []);
+    if (appState === 'active') {
+      const formData = new FormData();
+      formData.append('session_id', SessionId);
+      formData.append('device_id', deviceId);
+      formData.append('lang', globalLanguage);
+      formData.append('page', 1);
+      dispatch(fetchMessagesStart({payload: formData}));
+      dispatch(fetchUnreadCountStart({payload: formData}));
+    }
+  }, [appState]);
 
   return (
     <DrawerSceneWrapper>

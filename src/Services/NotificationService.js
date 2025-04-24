@@ -5,6 +5,7 @@ import {
   setNotification,
 } from '../Redux/Reducers/NotificationSlice';
 import {Store} from '../Redux/Store';
+import {fetchUnreadCountStart} from '../Redux/Reducers/MessageSlice';
 
 // Functional notification service
 const NotificationService = () => {
@@ -176,9 +177,15 @@ const NotificationService = () => {
         );
         await displayNotification(remoteMessage);
         Store.dispatch(setNotification(remoteMessage));
-        console.log(
-          '[NotificationService.setupForegroundHandler] Foreground notification processed and dispatched',
-        );
+        const state = Store.getState();
+        const sessionId = state.Auth.data?.data?.sesssion_id;
+        const deviceId = state.Network.deviceId;
+        const globalLanguage = state.GlobalLanguage;
+        const formData = new FormData();
+        formData.append('session_id', sessionId);
+        formData.append('device_id', deviceId);
+        formData.append('lang', globalLanguage);
+        Store.dispatch(fetchUnreadCountStart({payload: formData}));
       } catch (error) {
         console.error(
           '[NotificationService.setupForegroundHandler] Error handling foreground message:',

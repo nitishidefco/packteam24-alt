@@ -19,7 +19,6 @@ const handleResponse = response => {
 
   if (response.status === 403 && !alertShown) {
     alertShown = true;
-    // Handle 403 Forbidden response
     return response.json().then(errorData => {
       Alert.alert(
         i18n.t('Session.SE'),
