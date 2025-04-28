@@ -47,6 +47,8 @@ function* fetchMessagesSaga({payload}) {
 }
 
 function* fetchUnreadCountSaga({payload}) {
+  console.log('payload********************', payload.payload);
+
   try {
     const response = yield call(MessageService.GetUnreadCount, payload.payload);
     console.log('fetchUnreadCount response', response);
@@ -60,7 +62,10 @@ function* fetchUnreadCountSaga({payload}) {
   } catch (error) {
     console.error('Fetching unread count error', error);
     yield put(
-      fetchUnreadCountFailure(error.message || 'Failed to fetch unread count'),
+      fetchUnreadCountFailure(
+        error,
+        error.message || 'Failed to fetch unread count',
+      ),
     );
   }
 }

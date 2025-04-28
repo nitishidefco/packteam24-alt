@@ -21,12 +21,11 @@ const notificationSlice = createSlice({
       state.isLoading = false;
     },
     setNotification: (state, action) => {
-      console.log('State notifications', state.notifications, action.p);
+      console.log('State notifications', state.notifications, action.payload);
 
       state.notifications.push(action.payload);
       state.unreadCount += 1;
     },
-    // Add: Clear notifications (optional, for resetting the state)
     clearNotifications: state => {
       state.notifications = [];
       state.unreadCount = 0;
@@ -41,7 +40,7 @@ export const {
   setNotification,
   clearNotifications,
   setPermissionAlertShown,
-  resetPermissionAlert
+  resetPermissionAlert,
 } = notificationSlice.actions;
 
 const NotificationReducer = notificationSlice.reducer;

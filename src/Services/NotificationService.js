@@ -6,16 +6,9 @@ import {
 } from '../Redux/Reducers/NotificationSlice';
 import {Store} from '../Redux/Store';
 import {fetchUnreadCountStart} from '../Redux/Reducers/MessageSlice';
-
-// Functional notification service
 const NotificationService = () => {
   let navigation = null;
-
-  // Initialize the service
   const initialize = async navRef => {
-    console.log('[NotificationService.initialize] Starting initialization', {
-      navRef,
-    });
     navigation = navRef;
     await requestPermissions();
     await setupNotifee();
@@ -25,10 +18,6 @@ const NotificationService = () => {
 
     const initialNotification = await notifee.getInitialNotification();
     if (initialNotification) {
-      console.log(
-        '[NotificationService.initialize] Initial notification found:',
-        initialNotification,
-      );
       handleNotificationPress(initialNotification.notification);
     } else {
       console.log(
@@ -40,23 +29,13 @@ const NotificationService = () => {
 
   // Request permissions for notifications
   const requestPermissions = async () => {
-    console.log(
-      '[NotificationService.requestPermissions] Requesting notification permissions',
-    );
     try {
       const authStatus = await messaging().requestPermission();
       const enabled =
         authStatus === messaging.AuthorizationStatus.AUTHORIZED ||
         authStatus === messaging.AuthorizationStatus.PROVISIONAL;
 
-      console.log(
-        '[NotificationService.requestPermissions] Permission status:',
-        {authStatus, enabled},
-      );
       if (enabled) {
-        console.log(
-          '[NotificationService.requestPermissions] Permissions granted, fetching FCM token',
-        );
         await getAndSendFCMToken();
       } else {
         console.log(
@@ -96,10 +75,6 @@ const NotificationService = () => {
 
   // Send FCM token to the backend
   const sendFCMTokenToBackend = async token => {
-    console.log(
-      '[NotificationService.sendFCMTokenToBackend] Sending FCM token to backend',
-      {token},
-    );
     const state = Store.getState();
     const deviceId = state?.Network?.deviceId;
     const authState = state?.Auth;
@@ -125,15 +100,8 @@ const NotificationService = () => {
       formData.append('device_id', deviceId);
       formData.append('session_id', sessionId);
       formData.append('user_id', userId);
-      console.log(
-        '[NotificationService.sendFCMTokenToBackend] Form data prepared:',
-        formData,
-      );
 
       Store.dispatch(notification({payload: formData}));
-      console.log(
-        '[NotificationService.sendFCMTokenToBackend] Notification dispatched to store',
-      );
     } catch (error) {
       console.error(
         '[NotificationService.sendFCMTokenToBackend] Error sending FCM token to backend:',
@@ -144,9 +112,6 @@ const NotificationService = () => {
 
   // Setup Notifee channels (required for Android)
   const setupNotifee = async () => {
-    console.log(
-      '[NotificationService.setupNotifee] Setting up Notifee channel',
-    );
     try {
       await notifee.createChannel({
         id: 'default',
@@ -154,9 +119,6 @@ const NotificationService = () => {
         sound: 'default',
         importance: AndroidImportance.HIGH,
       });
-      console.log(
-        '[NotificationService.setupNotifee] Notifee channel created successfully',
-      );
     } catch (error) {
       console.error(
         '[NotificationService.setupNotifee] Error setting up Notifee channel:',
@@ -166,15 +128,8 @@ const NotificationService = () => {
   };
 
   const setupForegroundHandler = () => {
-    console.log(
-      '[NotificationService.setupForegroundHandler] Setting up foreground message handler',
-    );
     messaging().onMessage(async remoteMessage => {
       try {
-        console.log(
-          '[NotificationService.setupForegroundHandler] Foreground message received:',
-          remoteMessage,
-        );
         await displayNotification(remoteMessage);
         Store.dispatch(setNotification(remoteMessage));
         const state = Store.getState();
@@ -184,7 +139,9 @@ const NotificationService = () => {
         const formData = new FormData();
         formData.append('session_id', sessionId);
         formData.append('device_id', deviceId);
-        formData.append('lang', globalLanguage);
+        formData.append('lang', globalLanguage.globalLanguage);
+        formData.append('page', 1);
+
         Store.dispatch(fetchUnreadCountStart({payload: formData}));
       } catch (error) {
         console.error(
@@ -196,19 +153,11 @@ const NotificationService = () => {
   };
 
   const setupBackgroundHandler = () => {
-    console.log(
-      '[NotificationService.setupBackgroundHandler] Setting up background message handler',
-    );
     messaging().setBackgroundMessageHandler(async remoteMessage => {
+      console.log('Background handler called');
+
       try {
-        console.log(
-          '[NotificationService.setupBackgroundHandler] Background message received:',
-          remoteMessage,
-        );
         await displayNotification(remoteMessage);
-        console.log(
-          '[NotificationService.setupBackgroundHandler] Background notification displayed',
-        );
       } catch (error) {
         console.error(
           '[NotificationService.setupBackgroundHandler] Error handling background message:',
@@ -219,39 +168,32 @@ const NotificationService = () => {
   };
 
   const setupTapHandler = () => {
-    console.log(
-      '[NotificationService.setupTapHandler] Setting up notification tap handlers',
-    );
-
-    // Handle foreground notification taps
     notifee.onForegroundEvent(({type, detail}) => {
-      console.log(
-        '[NotificationService.setupTapHandler] Foreground event received:',
-        {type, detail},
-      );
       if (type === 1) {
+        handleNotificationPress(detail.notification);
+      }
+    });
+
+    notifee.onBackgroundEvent(async ({type, detail}) => {
+      console.log('[NotificationService.onBackgroundEvent] Background event:', {
+        type,
+        detail,
+      });
+      if (type === EventType.PRESS) {
         console.log(
-          '[NotificationService.setupTapHandler] Foreground notification tapped:',
+          '[NotificationService.onBackgroundEvent] Background notification pressed:',
           detail.notification,
         );
         handleNotificationPress(detail.notification);
       }
     });
-
     // Handle Firebase initial message (app opened from killed state)
     messaging()
       .getInitialMessage()
       .then(remoteMessage => {
         if (remoteMessage) {
-          console.log(
-            '[NotificationService.setupTapHandler] Initial message found:',
-            remoteMessage,
-          );
           handleNotificationPress(remoteMessage);
           Store.dispatch(setNotification(remoteMessage));
-          console.log(
-            '[NotificationService.setupTapHandler] Initial message processed and dispatched',
-          );
         } else {
           console.log(
             '[NotificationService.setupTapHandler] No initial message found',
@@ -261,11 +203,8 @@ const NotificationService = () => {
   };
 
   const displayNotification = async remoteMessage => {
-    console.log(
-      '[NotificationService.displayNotification] Preparing to display notification:',
-      remoteMessage,
-    );
     try {
+      console.log('Calling Display Notification');
       await notifee.displayNotification({
         title:
           remoteMessage.notification?.title ??
@@ -284,9 +223,6 @@ const NotificationService = () => {
           importance: AndroidImportance.HIGH,
         },
       });
-      console.log(
-        '[NotificationService.displayNotification] Notification displayed successfully',
-      );
     } catch (error) {
       console.error(
         '[NotificationService.displayNotification] Error displaying notification:',
@@ -296,14 +232,7 @@ const NotificationService = () => {
   };
 
   const handleNotificationPress = notification => {
-    console.log(
-      '[NotificationService.handleNotificationPress] Handling notification press:',
-      notification,
-    );
     if (navigation && navigation.isReady()) {
-      console.log(
-        '[NotificationService.handleNotificationPress] Navigation ready, navigating to NotificationScreen',
-      );
       navigation.navigate('HomeDrawer', {screen: 'NotificationScreen'});
     } else {
       console.log(

@@ -16,7 +16,6 @@ const initialState = {
   error: null,
   currentFilter: {type: 'all', value: ''},
   hasShownPermissionAlert: false,
-
 };
 
 const messageSlice = createSlice({
@@ -249,7 +248,7 @@ export const {
   multipleMarkMessagesSuccess,
   multipleMarkMessagesFailure,
   setPermissionAlertShown,
-  resetPermissionAlert
+  resetPermissionAlert,
 } = messageSlice.actions;
 
 const MessageReducer = messageSlice.reducer;

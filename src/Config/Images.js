@@ -67,4 +67,5 @@ export default {
 
   // Notification
   NOTIFICATION_ICON: require('../Assets/Icons/basil--notification-outline.png'),
+  USER_PROFILE: require('../Assets/Icons/user-profile.png'),
 };

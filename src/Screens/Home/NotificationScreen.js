@@ -46,9 +46,6 @@ import i18n from '../../i18n/i18n';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const NotificationItem = memo(({item, onLongPress, onPress, isSelected}) => {
-  const state = Store.getState();
-  const dispatch = useDispatch();
-  const globalLanguage = state.GlobalLanguage;
   // Precompute expensive operations outside render
   const cleanedContent = item.content
     .replace(/<\/?[^>]+(>|$)/g, '')
@@ -146,27 +143,50 @@ const NotificationScreen = () => {
           authStatus === messaging.AuthorizationStatus.AUTHORIZED ||
           authStatus === messaging.AuthorizationStatus.PROVISIONAL;
 
-          if (!enabled && !hasShownAlert) {
-            // Show alert only if permissions are denied and alert hasn't been shown
-            Alert.alert(
-              i18n.t('NotificationService.permissionsDeniedTitle'),
-              i18n.t('NotificationService.permissionsDeniedMessage'),
-              [
-                { text: i18n.t('NotificationService.cancel'), style: 'cancel' },
-                {
-                  text: i18n.t('NotificationService.settings'),
-                  onPress: async () => {
-                    Linking.openURL('App-Prefs:NOTIFICATIONS_ID').catch(() => {
-                      console.log('[NotificationScreen] Failed to open App-Prefs:NOTIFICATIONS_ID, guiding user to Settings');
-                    });
-                    console.log('[NotificationScreen] User prompted to enable notifications in Settings');
-                    await AsyncStorage.setItem('hasShownPermissionAlert', 'true');
-                  },
+        if (!enabled && !hasShownAlert) {
+          // Show alert only if permissions are denied and alert hasn't been shown
+          Alert.alert(
+            i18n.t('NotificationService.permissionsDeniedTitle'),
+            i18n.t('NotificationService.permissionsDeniedMessage'),
+            [
+              {text: i18n.t('NotificationService.cancel'), style: 'cancel'},
+              {
+                text: i18n.t('NotificationService.settings'),
+                onPress: async () => {
+                  try {
+                    if (Platform.OS === 'ios') {
+                      // Try iOS-specific URL, fall back to openSettings
+                      await Linking.openURL('App-Prefs:NOTIFICATIONS_ID').catch(
+                        async () => {
+                          console.log(
+                            '[NotificationScreen] Failed to open App-Prefs:NOTIFICATIONS_ID, falling back to Settings',
+                          );
+                          await Linking.openSettings();
+                        },
+                      );
+                    } else {
+                      // Android: Open app settings
+                      await Linking.openSettings();
+                    }
+                    console.log(
+                      '[NotificationScreen] User prompted to enable notifications in Settings',
+                    );
+                    await AsyncStorage.setItem(
+                      'hasShownPermissionAlert',
+                      'true',
+                    );
+                  } catch (error) {
+                    console.error(
+                      '[NotificationScreen] Error opening settings:',
+                      error,
+                    );
+                  }
                 },
-              ],
-              { cancelable: true }
-            );
-          }
+              },
+            ],
+            {cancelable: true},
+          );
+        }
       } catch (error) {
         console.error(
           '[NotificationScreen] Error checking permissions:',
@@ -229,7 +249,7 @@ const NotificationScreen = () => {
 
   const handleLongPress = id => {
     if (selectedMessages.length === 0) {
-      Vibration.vibrate(70); // Vibrate for 50ms when the first item is selected
+      Vibration.vibrate(50); // Vibrate for 50ms when the first item is selected
     }
     dispatch(toggleMessageSelection(id));
   };
@@ -300,13 +320,8 @@ const NotificationScreen = () => {
   const handleMultipleMarkMessages = () => {
     if (selectedMessages.length > 0) {
       const {allUnread, allRead} = getSelectedMessagesStatus();
-      if (allUnread) {
-        setIsMarkAsUnread(false);
-        setShowMarkReadModal(true);
-      } else if (allRead) {
-        setIsMarkAsUnread(true);
-        setShowMarkReadModal(true);
-      }
+      setIsMarkAsUnread(allRead);
+      setShowMarkReadModal(true);
     }
   };
 
@@ -516,9 +531,6 @@ const NotificationScreen = () => {
                       styles.flatListHeaderText,
                       {fontSize: typography.fontSizes.fs17},
                     ]}>
-                    {/* {t('NotificationScreen.selectedCount', {
-                      count: selectedMessages?.length,
-                    })} */}
                     {selectedMessages.length}{' '}
                     {t('NotificationScreen.selectedLabel')}
                   </Text>
@@ -531,7 +543,7 @@ const NotificationScreen = () => {
                   onPress={() => setShowOptionsModal(true)}
                   style={{flexDirection: 'row', alignItems: 'center'}}>
                   <Image
-                    source={Images.THREE_DOTS} // Assuming Images.THREE_DOTS is the three-dot icon
+                    source={Images.THREE_DOTS}
                     style={[styles.flatListHeaderIcon, {width: 25, height: 25}]}
                   />
                 </TouchableOpacity>
@@ -662,7 +674,20 @@ const NotificationScreen = () => {
           onRequestClose={() => dispatch(setPreviewMessage(null))}>
           <View style={styles.modalOverlay}>
             <View style={styles.modalContent}>
-              <Text style={styles.modalTitle}>{previewMessage?.topic}</Text>
+              <View style={styles.modalHeader}>
+                <Text style={styles.modalTitle}>{previewMessage?.topic}</Text>
+                <TouchableOpacity
+                  onPress={() => dispatch(setPreviewMessage(null))}>
+                  <Image
+                    source={Images.CLOSE}
+                    style={{
+                      width: Matrics.s(20),
+                      height: Matrics.vs(20),
+                      tintColor: COLOR.BLACK,
+                    }}
+                  />
+                </TouchableOpacity>
+              </View>
               <Text style={styles.modalDate}>
                 {previewMessage &&
                   moment(previewMessage.created_at).format(
@@ -673,18 +698,6 @@ const NotificationScreen = () => {
                 {previewMessage?.content.replace(/<\/?[^>]+(>|$)/g, '')}
               </Text>
               <View style={styles.modalButtonContainer}>
-                <TouchableOpacity
-                  style={[
-                    styles.closeButton,
-                    {
-                      backgroundColor: COLOR.LIGHT_GRAY,
-                    },
-                  ]}
-                  onPress={() => dispatch(setPreviewMessage(null))}>
-                  <Text style={styles.closeButtonText}>
-                    {t('NotificationScreen.closeButton')}
-                  </Text>
-                </TouchableOpacity>
                 <TouchableOpacity
                   style={[styles.closeButton]}
                   onPress={handlePreviewArchive}>
@@ -820,30 +833,27 @@ const NotificationScreen = () => {
             activeOpacity={1}
             onPress={() => setShowOptionsModal(false)}>
             <View style={styles.optionsModal}>
-              {(getSelectedMessagesStatus().allUnread ||
-                getSelectedMessagesStatus().allRead) && (
-                <TouchableOpacity
-                  activeOpacity={0.8}
-                  style={styles.optionItem}
-                  onPress={() => {
-                    handleMultipleMarkMessages();
-                    setShowOptionsModal(false);
-                  }}>
-                  <Image
-                    source={Images.MARK_AS_READ}
-                    style={[styles.flatListHeaderIcon, {width: 25, height: 25}]}
-                  />
-                  <Text
-                    style={[
-                      styles.flatListHeaderText,
-                      {fontSize: typography.fontSizes.fs12},
-                    ]}>
-                    {getSelectedMessagesStatus().allUnread
-                      ? t('NotificationScreen.markAsReadLabel')
-                      : t('NotificationScreen.markAsUnreadLabel')}
-                  </Text>
-                </TouchableOpacity>
-              )}
+              <TouchableOpacity
+                activeOpacity={0.8}
+                style={styles.optionItem}
+                onPress={() => {
+                  handleMultipleMarkMessages();
+                  setShowOptionsModal(false);
+                }}>
+                <Image
+                  source={Images.MARK_AS_READ}
+                  style={[styles.flatListHeaderIcon, {width: 25, height: 25}]}
+                />
+                <Text
+                  style={[
+                    styles.flatListHeaderText,
+                    {fontSize: typography.fontSizes.fs12},
+                  ]}>
+                  {getSelectedMessagesStatus().allRead
+                    ? t('NotificationScreen.markAsUnreadLabel')
+                    : t('NotificationScreen.markAsReadLabel')}
+                </Text>
+              </TouchableOpacity>
               <TouchableOpacity
                 activeOpacity={0.8}
                 style={styles.optionItem}
@@ -871,6 +881,12 @@ const styles = StyleSheet.create({
   container: {
     backgroundColor: '#FFFFFF', // White background for the screen
     flex: 1,
+  },
+  modalHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    // alignItems: 'center',
+    marginBottom: Matrics.vs(12),
   },
   searchFilterContainer: {
     flexDirection: 'row',
@@ -979,7 +995,7 @@ const styles = StyleSheet.create({
     borderTopColor: COLOR.LIGHT_GRAY,
   },
   markAllButton: {
-    backgroundColor: COLOR.PURPLE, // Purple background for the button
+    backgroundColor: COLOR.PURPLE,
     paddingVertical: Matrics.vs(10),
     paddingHorizontal: Matrics.s(20),
     borderRadius: Matrics.s(8),
@@ -997,7 +1013,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   button: {
-    backgroundColor: COLOR.PURPLE, // Purple background for pagination buttons
+    backgroundColor: COLOR.PURPLE,
     paddingVertical: Matrics.vs(8),
     paddingHorizontal: Matrics.s(15),
     borderRadius: Matrics.s(8),
@@ -1042,7 +1058,7 @@ const styles = StyleSheet.create({
   modalDate: {
     color: COLOR.GRAY,
     fontSize: Matrics.s(14),
-    marginBottom: Matrics.vs(12),
+    // marginBottom: Matrics.vs(12),
     fontFamily: typography.fontFamily.Montserrat.Medium,
     // textAlign: 'center',
   },

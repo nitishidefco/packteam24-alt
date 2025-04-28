@@ -33,6 +33,7 @@ import {
   multipleMarkMessages,
   searchArchivedMessagesStart,
 } from '../../Redux/Reducers/ArchiveSlice';
+import i18n from '../../i18n/i18n';
 
 const ArchiveItem = memo(({item, onLongPress, onPress, isSelected}) => {
   // Precompute expensive operations outside render
@@ -416,12 +417,12 @@ const ArchiveScreen = () => {
   return (
     <DrawerSceneWrapper>
       <SafeAreaView style={styles.container}>
-        <CustomHeader title={t('ArchiveScreen.title')} />
+        <CustomHeader title={i18n.t('ArchiveScreen.title')} />
         <View style={styles.headerContainer}>
           <View style={styles.searchFilterContainer}>
             <TextInput
               style={styles.searchInput}
-              placeholder={t('ArchiveScreen.searchPlaceholder')}
+              placeholder={i18n.t('ArchiveScreen.searchPlaceholder')}
               placeholderTextColor={'black'}
               onChangeText={text => {
                 console.log('TextInput onChangeText:', text);
@@ -448,7 +449,7 @@ const ArchiveScreen = () => {
                     styles.flatListHeaderText,
                     {marginLeft: Matrics.s(5)},
                   ]}>
-                  {t('ArchiveScreen.filterLabel')}
+                  {i18n.t('ArchiveScreen.filterLabel')}
                 </Text>
               </View>
             </TouchableOpacity>
@@ -483,7 +484,7 @@ const ArchiveScreen = () => {
                       {fontSize: typography.fontSizes.fs17},
                     ]}>
                     {archivedSelectedMessages.length}{' '}
-                    {t('NotificationScreen.selectedLabel')}
+                    {i18n.t('NotificationScreen.selectedLabel')}
                   </Text>
                 </TouchableOpacity>
               </View>
@@ -510,7 +511,7 @@ const ArchiveScreen = () => {
           // ListHeaderComponent={renderHeader}
           ListEmptyComponent={
             <Text style={styles.emptyText}>
-              {t('ArchiveScreen.noArchivedMessages')}
+              {i18n.t('ArchiveScreen.noArchivedMessages')}
             </Text>
           }
           contentContainerStyle={[styles.listContent]}
@@ -570,7 +571,7 @@ const ArchiveScreen = () => {
                     color: '#000',
                     marginBottom: Matrics.s(20),
                   }}>
-                  {t('ArchiveScreen.filterNotifications')}
+                  {i18n.t('ArchiveScreen.filterNotifications')}
                 </Text>
                 <TouchableOpacity
                   style={{
@@ -588,7 +589,7 @@ const ArchiveScreen = () => {
                       color: filterType === 'all' ? '#fff' : '#000',
                       fontFamily: typography.fontFamily.Montserrat.Regular,
                     }}>
-                    {t('ArchiveScreen.filterAll')}
+                    {i18n.t('ArchiveScreen.filterAll')}
                   </Text>
                 </TouchableOpacity>
                 <TouchableOpacity
@@ -608,7 +609,7 @@ const ArchiveScreen = () => {
                       color: filterType === 'read' ? '#fff' : '#000',
                       fontFamily: typography.fontFamily.Montserrat.Regular,
                     }}>
-                    {t('ArchiveScreen.filterRead')}
+                    {i18n.t('ArchiveScreen.filterRead')}
                   </Text>
                 </TouchableOpacity>
                 <TouchableOpacity
@@ -627,7 +628,7 @@ const ArchiveScreen = () => {
                       color: filterType === 'unread' ? '#fff' : '#000',
                       fontFamily: typography.fontFamily.Montserrat.Regular,
                     }}>
-                    {t('ArchiveScreen.filterUnread')}
+                    {i18n.t('ArchiveScreen.filterUnread')}
                   </Text>
                 </TouchableOpacity>
                 <TouchableOpacity
@@ -644,7 +645,7 @@ const ArchiveScreen = () => {
                       color: COLOR.PURPLE,
                       fontFamily: typography.fontFamily.Montserrat.SemiBold,
                     }}>
-                    {t('ArchiveScreen.filterCancel')}
+                    {i18n.t('ArchiveScreen.filterCancel')}
                   </Text>
                 </TouchableOpacity>
               </Animated.View>
@@ -659,26 +660,42 @@ const ArchiveScreen = () => {
           <View style={styles.modalOverlay}>
             <View style={styles.modalContent}>
               <Text style={styles.modalTitle}>
-                {t('ArchiveScreen.confirmDeleteTitle')}
+                {i18n.t('ArchiveScreen.confirmDeleteTitle')}
               </Text>
               <Text style={styles.modalBody}>
-                {t('ArchiveScreen.confirmDeleteBody', {
+                {i18n.t('ArchiveScreen.confirmDeleteBody', {
                   count: archivedSelectedMessages.length,
                 })}
               </Text>
               <View style={styles.modalButtonContainer}>
-                <TouchableOpacity
-                  style={[styles.modalButton, styles.cancelButton]}
-                  onPress={cancelDeleteMessages}>
-                  <Text style={styles.modalButtonText}>
-                    {t('ArchiveScreen.filterCancel')}
+                <TouchableOpacity style={{}} onPress={cancelDeleteMessages}>
+                  <Text
+                    style={[
+                      styles.modalButtonText,
+                      {
+                        textAlign: 'center',
+                      },
+                    ]}>
+                    {i18n.t('ArchiveScreen.filterCancel')}
                   </Text>
                 </TouchableOpacity>
                 <TouchableOpacity
-                  style={[styles.modalButton, styles.confirmButton]}
+                  style={{
+                    backgroundColor: COLOR.PURPLE,
+                    borderRadius: Matrics.s(5),
+                    alignItems: 'center',
+                    paddingVertical: Matrics.s(10),
+                  }}
                   onPress={confirmDeleteMessages}>
-                  <Text style={[styles.modalButtonText, {color: COLOR.WHITE}]}>
-                    {t('ArchiveScreen.confirmDeleteButton')}
+                  <Text
+                    style={[
+                      styles.modalButtonText,
+                      {
+                        color: COLOR.WHITE,
+                        textAlign: 'center',
+                      },
+                    ]}>
+                    {i18n.t('ArchiveScreen.confirmDeleteButton')}
                   </Text>
                 </TouchableOpacity>
               </View>
@@ -693,26 +710,44 @@ const ArchiveScreen = () => {
           <View style={styles.modalOverlay}>
             <View style={styles.modalContent}>
               <Text style={styles.modalTitle}>
-                {t('ArchiveScreen.confirmRestoreTitle')}
+                {i18n.t('ArchiveScreen.confirmRestoreTitle')}
               </Text>
               <Text style={styles.modalBody}>
-                {t('ArchiveScreen.confirmRestoreBody', {
+                {i18n.t('ArchiveScreen.confirmRestoreBody', {
                   count: archivedSelectedMessages.length,
                 })}
               </Text>
               <View style={styles.modalButtonContainer}>
-                <TouchableOpacity
-                  style={[styles.modalButton, styles.cancelButton]}
-                  onPress={cancelRestoreMessages}>
-                  <Text style={styles.modalButtonText}>
-                    {t('ArchiveScreen.filterCancel')}
+                <TouchableOpacity style={{}} onPress={cancelRestoreMessages}>
+                  <Text
+                    style={[
+                      {
+                        color: COLOR.PURPLE,
+                        textAlign: 'center',
+                        fontFamily: typography.fontFamily.Montserrat.SemiBold,
+                        fontSize: typography.fontSizes.fs16,
+                      },
+                    ]}>
+                    Cancel
                   </Text>
                 </TouchableOpacity>
                 <TouchableOpacity
-                  style={[styles.modalButton, styles.confirmButton]}
+                  style={{
+                    backgroundColor: COLOR.PURPLE,
+                    borderRadius: Matrics.s(5),
+                    alignItems: 'center',
+                    paddingVertical: Matrics.s(10),
+                  }}
                   onPress={confirmRestoreMessages}>
-                  <Text style={[styles.modalButtonText, {color: COLOR.WHITE}]}>
-                    {t('ArchiveScreen.confirmRestoreButton')}
+                  <Text
+                    style={[
+                      styles.modalButtonText,
+                      {
+                        color: COLOR.WHITE,
+                        textAlign: 'center',
+                      },
+                    ]}>
+                    {i18n.t('ArchiveScreen.confirmRestoreButton')}
                   </Text>
                 </TouchableOpacity>
               </View>
@@ -762,7 +797,7 @@ const ArchiveScreen = () => {
                     }}>
                     <Text
                       style={[styles.closeButtonText, {color: COLOR.BLACK}]}>
-                      {t('ArchiveScreen.markAsUnreadLabel')}
+                      {i18n.t('ArchiveScreen.markAsUnreadLabel')}
                     </Text>
                   </TouchableOpacity>
                 )}
@@ -770,7 +805,7 @@ const ArchiveScreen = () => {
                   style={[styles.closeButton]}
                   onPress={() => handleMoveToMessages(previewMessage.id)}>
                   <Text style={[styles.closeButtonText, {color: COLOR.WHITE}]}>
-                    {t('ArchiveScreen.moveToMessageCenterButton')}
+                    {i18n.t('ArchiveScreen.moveToMessageCenterButton')}
                   </Text>
                 </TouchableOpacity>
               </View>
@@ -812,8 +847,8 @@ const ArchiveScreen = () => {
                     {archivedMessages
                       .filter(msg => archivedSelectedMessages.includes(msg.id))
                       .every(msg => msg.read === 0)
-                      ? t('ArchiveScreen.markAsReadLabel')
-                      : t('ArchiveScreen.markAsUnreadLabel')}
+                      ? i18n.t('ArchiveScreen.markAsReadLabel')
+                      : i18n.t('ArchiveScreen.markAsUnreadLabel')}
                   </Text>
                 </TouchableOpacity>
               )}
@@ -829,7 +864,7 @@ const ArchiveScreen = () => {
                   style={[styles.flatListHeaderIcon, {width: 25, height: 25}]}
                 />
                 <Text style={styles.flatListHeaderText}>
-                  {t('ArchiveScreen.deleteLabel')}
+                  {i18n.t('ArchiveScreen.deleteLabel')}
                 </Text>
               </TouchableOpacity>
             </View>
@@ -977,46 +1012,30 @@ const styles = StyleSheet.create({
     height: Matrics.s(30),
     tintColor: COLOR.WHITE,
   },
-  modalOverlay: {
-    flex: 1,
-    backgroundColor: 'rgba(0, 0, 0, 0.6)',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
   modalContent: {
     backgroundColor: '#FFFFFF',
     width: '90%',
+    maxHeight: '80%',
     padding: Matrics.s(20),
-    borderRadius: Matrics.s(15),
+    borderRadius: Matrics.s(5),
     shadowColor: '#000',
     shadowOffset: {width: 0, height: 2},
     shadowOpacity: 0.3,
     shadowRadius: 5,
     elevation: 5,
   },
-  modalHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: Matrics.vs(12),
-  },
   modalTitle: {
     color: COLOR.BLACK,
     fontSize: Matrics.s(18),
     fontFamily: typography.fontFamily.Montserrat.Bold,
-    flex: 1,
-  },
-  modalDate: {
-    color: COLOR.GRAY,
-    fontSize: Matrics.s(14),
-    marginBottom: Matrics.vs(12),
-    fontFamily: typography.fontFamily.Montserrat.Medium,
+    width: '80%',
+    // marginBottom: Matrics.vs(8),
   },
   modalBody: {
     color: COLOR.BLACK,
     fontSize: Matrics.s(16),
-    lineHeight: Matrics.s(22),
-    marginBottom: Matrics.vs(20),
+    // lineHeight: Matrics.s(22),
+    // marginBottom: Matrics.vs(20),
     fontFamily: typography.fontFamily.Montserrat.Regular,
   },
   modalButtonContainer: {
@@ -1026,7 +1045,7 @@ const styles = StyleSheet.create({
   },
   modalButton: {
     flex: 1,
-    paddingVertical: Matrics.vs(10),
+    paddingVertical: Matrics.vs(20),
     borderRadius: Matrics.s(8),
     alignItems: 'center',
     marginHorizontal: Matrics.s(5),
@@ -1041,8 +1060,20 @@ const styles = StyleSheet.create({
     fontSize: Matrics.s(16),
     fontFamily: typography.fontFamily.Montserrat.SemiBold,
     color: COLOR.BLACK,
-    textAlign: 'center',
   },
+  modalHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    // alignItems: 'center',
+    marginBottom: Matrics.vs(12),
+  },
+  modalDate: {
+    color: COLOR.GRAY,
+    fontSize: Matrics.s(14),
+    // marginBottom: Matrics.vs(12),
+    fontFamily: typography.fontFamily.Montserrat.Medium,
+  },
+
   closeButton: {
     backgroundColor: COLOR.PURPLE,
     paddingVertical: Matrics.vs(10),
@@ -1103,6 +1134,12 @@ const styles = StyleSheet.create({
   },
   notificationBody: {
     fontFamily: typography.fontFamily.Montserrat.Regular,
+  },
+  modalOverlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0, 0, 0, 0.6)',
+    justifyContent: 'center',
+    alignItems: 'center',
   },
 });
 

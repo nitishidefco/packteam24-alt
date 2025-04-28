@@ -5,6 +5,7 @@ import Ajax from './base';
 const BASE_URL = Constants.IS_DEVELOPING_MODE
   ? Constants.BASE_URL.DEV
   : Constants.BASE_URL.PROD;
+console.log('BASE_URL', BASE_URL);
 
 export default {
   Login: async params => {

@@ -77,7 +77,7 @@ const Home = ({navigation, route}) => {
   const messageState = useSelector(state => state.Messages);
 
   // Set session handler values
-  setSessionHandler(dispatch, SessionId, deviceId, navigation);
+
   const [count, setCount] = useState(0);
 
   const handleNfcTag = async tag => {
@@ -119,6 +119,7 @@ const Home = ({navigation, route}) => {
       );
     };
     getDeviceInfo();
+    setSessionHandler(dispatch, SessionId, deviceId, navigation);
   }, []);
 
   useEffect(() => {

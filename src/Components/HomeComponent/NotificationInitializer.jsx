@@ -1,5 +1,5 @@
 import {useEffect, useRef} from 'react';
-import {useSelector} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 import NotificationService from '../../Services/NotificationService';
 import {useAuthActions} from '../../Redux/Hooks';
 import {Store} from '../../Redux/Store';
@@ -10,12 +10,18 @@ const NotificationInitializer = ({navigationRef}) => {
   const SessionId = Auth.data?.data?.sesssion_id;
   const store = Store.getState();
   const globalLanguage = store.GlobalLanguage;
-
+  const dispatch = useDispatch();
   useEffect(() => {
-    if (deviceId && SessionId && navigationRef.current && globalLanguage) {
+    if (
+      deviceId &&
+      SessionId &&
+      navigationRef.current &&
+      globalLanguage &&
+      dispatch
+    ) {
       NotificationService.initialize(navigationRef.current);
     }
-  }, [deviceId, SessionId, globalLanguage]);
+  }, [deviceId, SessionId, globalLanguage, dispatch]);
 
   return null;
 };

@@ -11,7 +11,7 @@ import i18n from './i18n/i18n';
 
 import Splash from './splash';
 import HomeDrawer from './Components/Common/HomeDrawer';
-import {Provider, useSelector} from 'react-redux';
+import {Provider, useDispatch, useSelector} from 'react-redux';
 import {Store} from './Redux/Store';
 import Login from './Screens/Auth/Login';
 import Toast from 'react-native-toast-message';

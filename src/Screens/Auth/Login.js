@@ -199,9 +199,7 @@ const Login = ({route}) => {
 
   const onLoginPress = () => {
     console.log('Real Time', realTime);
-    if (!checkDeviceTime(realTime)) {
-      return;
-    } else if (!isConnected) {
+    if (!isConnected) {
       errorToast(i18n.t('Toast.CheckInternet'));
     } else {
       if (validateInputs('Enter Email')) {

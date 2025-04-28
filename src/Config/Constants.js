@@ -13,11 +13,11 @@ export default {
   activeOpacity: 0.5,
   IS_DEVELOPING_MODE: true,
   BASE_URL: {
-    DEV: 'https://test-tracker.workflex360.de/',
+    // DEV: 'https://test-tracker.workflex360.de/',
     PROD: 'https://eda.workflex360.de/',
     // DEV: 'https://nfc.visionvivante.com/',
     // PROD: 'https://nfc.visionvivante.com/',
-    // DEV: 'https://edapackteam.visionvivante.in/',
+    DEV: 'https://edapackteam.visionvivante.in/',
     IMAGEURL: 'https://das4you.mhcode.pl/storage/daily_list/attachment/',
   },
   ENVIRONMENT: {

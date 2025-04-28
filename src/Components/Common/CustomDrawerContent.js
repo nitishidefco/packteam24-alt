@@ -218,7 +218,7 @@ const CustomDrawerContent = props => {
           style={[styles.drawerItem]}
           icon={() => (
             <Image
-              source={Images.CHANGE_PASSWORD}
+              source={Images.USER_PROFILE}
               resizeMode="contain"
               style={[isIos ? styles.homeIconIosStyle : styles.homeIconStyle]}
             />
