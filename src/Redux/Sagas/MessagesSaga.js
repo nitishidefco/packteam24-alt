@@ -18,7 +18,7 @@ import {
 import {success} from '../../Helpers/ToastMessage';
 
 function* fetchMessagesSaga({payload}) {
-  console.log('Payload', payload.payload);
+  console.log('Payload message saga', payload.payload);
 
   try {
     const response = yield call(
@@ -47,7 +47,6 @@ function* fetchMessagesSaga({payload}) {
 }
 
 function* fetchUnreadCountSaga({payload}) {
-  console.log('payload********************', payload.payload);
 
   try {
     const response = yield call(MessageService.GetUnreadCount, payload.payload);
@@ -55,6 +54,7 @@ function* fetchUnreadCountSaga({payload}) {
 
     if (response) {
       yield put(fetchUnreadCountSuccess(response.data.count));
+      yield put(fetchMessagesStart({payload: payload.payload}));
       return;
     } else if (response?.errors) {
       yield put(fetchUnreadCountFailure(response.errors));

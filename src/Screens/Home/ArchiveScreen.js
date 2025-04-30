@@ -12,6 +12,7 @@ import {
   ActivityIndicator,
   Vibration,
   Animated,
+  ScrollView,
 } from 'react-native';
 import {useTranslation} from 'react-i18next';
 import CustomHeader from '../../Components/Common/CustomHeader';
@@ -21,6 +22,8 @@ import {useFocusEffect} from '@react-navigation/native';
 import moment from 'moment';
 import {Matrics, COLOR, typography} from '../../Config/AppStyling';
 import {Images} from '../../Config';
+import {BackHandler} from 'react-native';
+
 import {
   setCurrentPage,
   markAsRead,
@@ -34,8 +37,10 @@ import {
   searchArchivedMessagesStart,
 } from '../../Redux/Reducers/ArchiveSlice';
 import i18n from '../../i18n/i18n';
+import {useTheme} from '../../Context/ThemeContext';
 
 const ArchiveItem = memo(({item, onLongPress, onPress, isSelected}) => {
+  const theme = useTheme();
   // Precompute expensive operations outside render
   const cleanedContent = item.content
     ? item.content
@@ -76,6 +81,9 @@ const ArchiveItem = memo(({item, onLongPress, onPress, isSelected}) => {
         style={[
           styles.roundElement,
           isSelected && styles.selectedRoundElement,
+          {
+            backgroundColor: theme.PRIMARY,
+          },
         ]}>
         {isSelected ? (
           <Image source={Images.TICK_ICON} style={styles.tickIcon} />
@@ -98,7 +106,16 @@ const ArchiveItem = memo(({item, onLongPress, onPress, isSelected}) => {
       </View>
       <View style={{alignItems: 'flex-end', gap: 10, height: Matrics.vs(40)}}>
         <Text style={styles.notificationDate}>{formattedDate}</Text>
-        {item.read === 0 && <View style={styles.actions} />}
+        {item.read === 0 && (
+          <View
+            style={[
+              styles.actions,
+              {
+                backgroundColor: theme.PRIMARY,
+              },
+            ]}
+          />
+        )}
       </View>
     </TouchableOpacity>
   );
@@ -106,6 +123,7 @@ const ArchiveItem = memo(({item, onLongPress, onPress, isSelected}) => {
 const ArchiveScreen = () => {
   const {t} = useTranslation();
   const dispatch = useDispatch();
+  const theme = useTheme();
   const {
     archivedMessages,
     filteredArchivedMessages,
@@ -164,7 +182,7 @@ const ArchiveScreen = () => {
     if (!isLoading) return null;
     return (
       <View style={styles.footer}>
-        <ActivityIndicator size="small" color={COLOR.PURPLE} />
+        <ActivityIndicator size="small" color={theme.PRIMARY} />
       </View>
     );
   };
@@ -402,6 +420,7 @@ const ArchiveScreen = () => {
       }),
     ]).start(() => setShowFilterModal(false));
   };
+
   const renderItem = ({item}) => {
     const isSelected = archivedSelectedMessages?.includes(item.id);
     return (
@@ -414,10 +433,70 @@ const ArchiveScreen = () => {
     );
   };
 
+  const handleBackPress = React.useCallback(() => {
+    console.log('Handle callback');
+
+    // Check if any modal is open
+    if (
+      showFilterModal ||
+      showOptionsModal ||
+      showRestoreModal ||
+      showDeleteModal
+    ) {
+      // Close all modals
+      setShowFilterModal(false);
+      setShowOptionsModal(false);
+      setShowRestoreModal(false);
+      setShowDeleteModal(false);
+      return true; // Prevent default back button behavior
+    }
+
+    // If any items are selected, clear selection
+    if (archivedSelectedMessages.length > 0) {
+      dispatch(clearArchiveSelection());
+      return true; // Prevent default back button behavior
+    }
+
+    // Clear search text if it's not empty
+    if (searchQuery.trim() !== '') {
+      console.log('Search query cleared');
+
+      setSearchQuery('');
+      return true; // Prevent default back button behavior
+    }
+
+    // If no special conditions, allow default back navigation
+    return false;
+  }, [
+    showFilterModal,
+    showOptionsModal,
+    showRestoreModal,
+    showDeleteModal,
+    archivedSelectedMessages,
+    searchQuery,
+    dispatch,
+  ]);
+
+  // Add back button event listener
+  useEffect(() => {
+    BackHandler.addEventListener('hardwareBackPress', handleBackPress);
+    return () => {
+      BackHandler.removeEventListener('hardwareBackPress', handleBackPress);
+    };
+  }, [handleBackPress]);
+
+  // Modify header back icon to use the same handler
+  const onHeaderBackPress = () => {
+    handleBackPress();
+  };
+
   return (
     <DrawerSceneWrapper>
       <SafeAreaView style={styles.container}>
-        <CustomHeader title={i18n.t('ArchiveScreen.title')} />
+        <CustomHeader
+          onBackPress={onHeaderBackPress}
+          title={i18n.t('ArchiveScreen.title')}
+        />
         <View style={styles.headerContainer}>
           <View style={styles.searchFilterContainer}>
             <TextInput
@@ -525,7 +604,12 @@ const ArchiveScreen = () => {
         />
         {showScrollToTop && (
           <TouchableOpacity
-            style={styles.scrollToTopButton}
+            style={[
+              styles.scrollToTopButton,
+              {
+                backgroundColor: theme.PRIMARY,
+              },
+            ]}
             activeOpacity={0.7}
             onPress={scrollToTop}>
             <Image source={Images.UP_ARROW} style={styles.scrollToTopIcon} />
@@ -533,7 +617,12 @@ const ArchiveScreen = () => {
         )}
         {archivedSelectedMessages.length > 0 && (
           <TouchableOpacity
-            style={styles.floatingRestoreButton}
+            style={[
+              styles.floatingRestoreButton,
+              {
+                backgroundColor: theme.PRIMARY,
+              },
+            ]}
             activeOpacity={0.7}
             onPress={handleRestoreMessages}>
             <Image source={Images.RESTORE} style={styles.floatingRestoreIcon} />
@@ -580,7 +669,7 @@ const ArchiveScreen = () => {
                     alignItems: 'center',
                     borderRadius: Matrics.s(5),
                     backgroundColor:
-                      filterType === 'all' ? COLOR.PURPLE : '#f5f5f5',
+                      filterType === 'all' ? theme.PRIMARY : '#f5f5f5',
                   }}
                   onPress={() => handleFilter('all')}>
                   <Text
@@ -599,7 +688,7 @@ const ArchiveScreen = () => {
                     alignItems: 'center',
                     borderRadius: Matrics.s(5),
                     backgroundColor:
-                      filterType === 'read' ? COLOR.PURPLE : '#f5f5f5',
+                      filterType === 'read' ? theme.PRIMARY : '#f5f5f5',
                     marginVertical: Matrics.s(10),
                   }}
                   onPress={() => handleFilter('read')}>
@@ -619,7 +708,7 @@ const ArchiveScreen = () => {
                     alignItems: 'center',
                     borderRadius: Matrics.s(5),
                     backgroundColor:
-                      filterType === 'unread' ? COLOR.PURPLE : '#f5f5f5',
+                      filterType === 'unread' ? theme.PRIMARY : '#f5f5f5',
                   }}
                   onPress={() => handleFilter('unread')}>
                   <Text
@@ -642,7 +731,7 @@ const ArchiveScreen = () => {
                   <Text
                     style={{
                       fontSize: typography.fontSizes.fs14,
-                      color: COLOR.PURPLE,
+                      color: theme.PRIMARY,
                       fontFamily: typography.fontFamily.Montserrat.SemiBold,
                     }}>
                     {i18n.t('ArchiveScreen.filterCancel')}
@@ -681,7 +770,7 @@ const ArchiveScreen = () => {
                 </TouchableOpacity>
                 <TouchableOpacity
                   style={{
-                    backgroundColor: COLOR.PURPLE,
+                    backgroundColor: theme.PRIMARY,
                     borderRadius: Matrics.s(5),
                     alignItems: 'center',
                     paddingVertical: Matrics.s(10),
@@ -722,7 +811,7 @@ const ArchiveScreen = () => {
                   <Text
                     style={[
                       {
-                        color: COLOR.PURPLE,
+                        color: theme.PRIMARY,
                         textAlign: 'center',
                         fontFamily: typography.fontFamily.Montserrat.SemiBold,
                         fontSize: typography.fontSizes.fs16,
@@ -733,7 +822,7 @@ const ArchiveScreen = () => {
                 </TouchableOpacity>
                 <TouchableOpacity
                   style={{
-                    backgroundColor: COLOR.PURPLE,
+                    backgroundColor: theme.PRIMARY,
                     borderRadius: Matrics.s(5),
                     alignItems: 'center',
                     paddingVertical: Matrics.s(10),
@@ -774,15 +863,17 @@ const ArchiveScreen = () => {
                   />
                 </TouchableOpacity>
               </View>
-              <Text style={styles.modalDate}>
-                {previewMessage &&
-                  moment(previewMessage.created_at).format(
-                    'YYYY-MM-DD HH:mm:ss',
-                  )}
-              </Text>
-              <Text style={styles.modalBody}>
-                {previewMessage?.content.replace(/<\/?[^>]+(>|$)/g, '')}
-              </Text>
+              <ScrollView>
+                <Text style={styles.modalDate}>
+                  {previewMessage &&
+                    moment(previewMessage.created_at).format(
+                      'YYYY-MM-DD HH:mm:ss',
+                    )}
+                </Text>
+                <Text style={styles.modalBody}>
+                  {previewMessage?.content.replace(/<\/?[^>]+(>|$)/g, '')}
+                </Text>
+              </ScrollView>
               <View style={styles.modalButtonContainer}>
                 {previewMessage?.read === 1 && (
                   <TouchableOpacity
@@ -802,7 +893,12 @@ const ArchiveScreen = () => {
                   </TouchableOpacity>
                 )}
                 <TouchableOpacity
-                  style={[styles.closeButton]}
+                  style={[
+                    styles.closeButton,
+                    {
+                      backgroundColor: theme.PRIMARY,
+                    },
+                  ]}
                   onPress={() => handleMoveToMessages(previewMessage.id)}>
                   <Text style={[styles.closeButtonText, {color: COLOR.WHITE}]}>
                     {i18n.t('ArchiveScreen.moveToMessageCenterButton')}
@@ -952,7 +1048,6 @@ const styles = StyleSheet.create({
     marginTop: Matrics.vs(4),
   },
   actions: {
-    backgroundColor: COLOR.PURPLE,
     width: Matrics.s(7),
     height: Matrics.vs(7),
     marginRight: Matrics.s(10),
@@ -974,7 +1069,6 @@ const styles = StyleSheet.create({
     bottom: Matrics.vs(20),
     left: '50%',
     transform: [{translateX: -25}],
-    backgroundColor: COLOR.PURPLE,
     borderRadius: Matrics.s(25),
     width: Matrics.s(50),
     height: Matrics.s(50),
@@ -995,7 +1089,6 @@ const styles = StyleSheet.create({
     position: 'absolute',
     bottom: Matrics.vs(20),
     right: Matrics.s(20),
-    backgroundColor: COLOR.PURPLE,
     borderRadius: Matrics.s(30),
     width: Matrics.s(60),
     height: Matrics.s(60),
@@ -1075,7 +1168,6 @@ const styles = StyleSheet.create({
   },
 
   closeButton: {
-    backgroundColor: COLOR.PURPLE,
     paddingVertical: Matrics.vs(10),
     paddingHorizontal: Matrics.s(20),
     borderRadius: Matrics.s(8),

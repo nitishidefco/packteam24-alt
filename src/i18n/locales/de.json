@@ -123,7 +123,8 @@
     "Cannottakebreak": "Pause kann nicht gemacht werden, bevor die Arbeit begonnen wurde",
     "Workalreadystarted": "Arbeit hat bereits begonnen",
     "Breakalreadystarted": "Pause ist bereits aktiv",
-    "WorkAlreadyFinished": "Arbeit ist bereits beendet"
+    "WorkAlreadyFinished": "Arbeit ist bereits beendet",
+    "MessageDeletedSuccessfully": "Nachricht erfolgreich gelöscht!"
   },
   "TimeLog": {
     "title": "Zeiterfassung",
@@ -166,7 +167,7 @@
     "warning": "Die App funktioniert erst, wenn dies korrigiert wurde."
   },
   "NotificationScreen": {
-    "searchPlaceholder": "Nach Schlüsselwort suchen",
+    "searchPlaceholder": "Suche",
     "filterNotifications": "Benachrichtigungen filtern",
     "filterAll": "Alle",
     "filterRead": "Gelesen",
@@ -194,7 +195,7 @@
   },
   "ArchiveScreen": {
     "title": "Archive",
-    "searchPlaceholder": "Nach Schlüsselwort suchen",
+    "searchPlaceholder": "Suche",
     "filterNotifications": "Benachrichtigungen filtern",
     "filterAll": "Alle",
     "filterRead": "Gelesen",

@@ -3,14 +3,18 @@ import {CUSTOMIZATION_REDUCER} from '../SliceKey';
 
 const initialState = {
   isLoading: false,
-  customizationData: [],
+  customizationData: {
+    app_name: '',
+    app_logo: '',
+    app_main_color: '',
+  }, // Initialize with expected structure
   error: [],
 };
 
 const customizationSlice = createSlice({
   name: CUSTOMIZATION_REDUCER,
   initialState,
-  reducer: {
+  reducers: {
     changeAppColor(state) {
       state.isLoading = true;
     },

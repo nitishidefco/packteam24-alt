@@ -123,7 +123,8 @@
     "Cannotendwork": "Cannot end work before starting it",
     "Cannottakebreak": "Cannot take break before starting work",
     "Workalreadystarted": "Work is already started",
-    "Breakalreadystarted": "Break is already active"
+    "Breakalreadystarted": "Break is already active",
+    "MessageDeletedSuccessfully": "Message deleted successfully!"
   },
   "TimeLog": {
     "title": "Time Log",
@@ -166,7 +167,7 @@
     "warning": "The app will not function until this is corrected."
   },
   "NotificationScreen": {
-    "searchPlaceholder": "Search for Keyword",
+    "searchPlaceholder": "Search",
     "filterNotifications": "Filter Notifications",
     "filterAll": "All",
     "filterRead": "Read",
@@ -174,7 +175,7 @@
     "filterCancel": "Cancel",
     "filterLabel": "Filter",
     "confirmArchiveTitle": "Confirm Archive",
-    "confirmArchiveBody": "Are you sure you want to move {{count}} selected message to the archive?",
+    "confirmArchiveBody": "Are you sure you want to move this message to the archive?",
     "confirmArchiveBody_plural": "Are you sure you want to move {{count}} selected messages to the archive?",
     "confirmArchiveButton": "Confirm",
     "markAsReadLabel": "Mark as Read",
@@ -193,7 +194,7 @@
   },
   "ArchiveScreen": {
     "title": "Archives",
-    "searchPlaceholder": "Search for Keyword",
+    "searchPlaceholder": "Search",
     "filterNotifications": "Filter Notifications",
     "filterAll": "All",
     "filterRead": "Read",

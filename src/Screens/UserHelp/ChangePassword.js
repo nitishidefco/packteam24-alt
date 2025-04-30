@@ -10,6 +10,7 @@ import {
   Image,
   Alert,
   ActivityIndicator,
+  Platform,
 } from 'react-native';
 import React, {useState, useEffect, useContext} from 'react';
 import {ThemeContext} from '../../Components/Provider/ThemeProvider';
@@ -27,9 +28,10 @@ import {useSelector} from 'react-redux';
 import DrawerSceneWrapper from '../../Components/Common/DrawerSceneWrapper';
 import CustomHeader from '../../Components/Common/CustomHeader';
 import LanguageSelector from '../../Components/Common/LanguageSelector';
+import {useTheme} from '../../Context/ThemeContext';
 
 const ChangePassword = ({navigation}) => {
-  const {theme} = useContext(ThemeContext);
+  const theme = useTheme();
   const {passwordState, changePasswordCall} = useChangePasswordActions();
   // const lang = useSavedLanguage();
   const {state} = useHomeActions();
@@ -207,7 +209,13 @@ const ChangePassword = ({navigation}) => {
             contentContainerStyle={{flexGrow: 1}}
             keyboardShouldPersistTaps="handled"
             showsVerticalScrollIndicator={false}>
-            <View style={styles.changePasswordHeader}>
+            <View
+              style={[
+                styles.changePasswordHeader,
+                {
+                  backgroundColor: theme.PRIMARY,
+                },
+              ]}>
               <Text style={styles.headerTitle}>
                 {t('ChangePasswordScreen.changePasswordHeader')}
               </Text>
@@ -359,7 +367,6 @@ const styles = StyleSheet.create({
   },
   changePasswordHeader: {
     height: 56,
-    backgroundColor: COLOR.PURPLE,
     justifyContent: 'center',
     alignItems: 'center',
     ...Platform.select({

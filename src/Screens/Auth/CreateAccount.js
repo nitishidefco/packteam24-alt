@@ -46,6 +46,8 @@ import {
   setLanguageWithStorage,
 } from '../../Redux/Reducers/LanguageProviderSlice';
 import Footer from '../../Components/Common/Footer';
+import {useTheme} from '../../Context/ThemeContext';
+import AppLogo from '../../Components/AppLogo';
 const languages = {
   POL: 'pl', // Polish
   GER: 'de', // German
@@ -60,7 +62,7 @@ const CreateAccount = () => {
   const privacyPolicyUrl = 'https://eda.workflex360.de/de/datenschutzerklarung';
   const applicationInformatinoUrl =
     'https://eda.workflex360.de/de/technischer-support';
-  const {dark, theme, toggle} = useContext(ThemeContext);
+  const {dark, toggle} = useContext(ThemeContext);
   const isConnected = useSelector(state => state?.Network?.isConnected);
   const passwordInputRef = createRef();
   const dispatch = useDispatch();
@@ -74,7 +76,7 @@ const CreateAccount = () => {
   const [activeLanguage, setActiveLanguage] = useState(null);
   const {globalLanguage} = useSelector(state => state?.GlobalLanguage);
   console.log('Auth', Auth.isAccountCreateSuccess);
-
+  const theme = useTheme();
   useEffect(() => {
     dispatch(initializeLanguage());
   }, []);
@@ -203,15 +205,7 @@ const CreateAccount = () => {
                 styles.loginlogoContainer,
                 Platform.OS === 'ios' && styles.androidLogoConatiner,
               ]}>
-              <Image
-                source={Images.NEW_APP_LOGO}
-                style={{
-                  resizeMode: 'contain',
-                  alignSelf: 'center',
-                  height: Matrics.ms(68),
-                  width: Matrics.ms(290),
-                }}
-              />
+              <AppLogo style={{height: Matrics.vs(68)}} />
             </View>
             <Text style={styles.loginText}>{t('CreateAccount.title')}</Text>
             <Text style={styles.loginText2}>{t('CreateAccount.subt')}</Text>
@@ -280,7 +274,10 @@ const CreateAccount = () => {
             <TouchableOpacity
               style={[
                 styles.buttonStyle,
-                {opacity: Auth.signUpLoading ? 0.5 : 1},
+                {
+                  opacity: Auth.signUpLoading ? 0.5 : 1,
+                  backgroundColor: theme.PRIMARY,
+                },
               ]}
               // activeOpacity={0.5}
               disabled={Auth.signUpLoading}

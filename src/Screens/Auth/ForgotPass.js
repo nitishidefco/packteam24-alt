@@ -34,6 +34,7 @@ import useSavedLanguage from '../../Components/Hooks/useSavedLanguage';
 import {errorToast, success} from '../../Helpers/ToastMessage';
 import Footer from '../../Components/Common/Footer';
 import ResetPasswordButton from '../../Components/Common/ForgotPasswordButton';
+import AppLogo from '../../Components/AppLogo';
 const ForgotPass = () => {
   const navigation = useNavigation();
   const {t, i18n} = useTranslation();
@@ -177,13 +178,9 @@ const ForgotPass = () => {
                 styles.loginlogoContainer,
                 Platform.OS === 'ios' && styles.androidLogoConatiner,
               ]}>
-              <Image
-                source={Images.NEW_APP_LOGO}
+              <AppLogo
                 style={{
-                  resizeMode: 'contain',
-                  alignSelf: 'center',
                   height: Matrics.ms(68),
-                  width: Matrics.ms(290),
                 }}
               />
             </View>

@@ -119,7 +119,8 @@
     "Cannottakebreak": "Не можна зробити перерву до початку роботи",
     "Workalreadystarted": "Робота вже розпочата",
     "Breakalreadystarted": "Перерва вже активна",
-    "WorkAlreadyFinished": "Робота вже завершена"
+    "WorkAlreadyFinished": "Робота вже завершена",
+    "MessageDeletedSuccessfully": "Повідомлення успішно видалено!"
   },
   "TimeLog": {
     "title": "Журнал часу",
@@ -162,7 +163,7 @@
     "warning": "Додаток не працюватиме, доки це не буде виправлено."
   },
   "NotificationScreen": {
-    "searchPlaceholder": "Пошук за ключовим словом",
+    "searchPlaceholder": "Пошук",
     "filterNotifications": "Фільтрувати повідомлення",
     "filterAll": "Усі",
     "filterRead": "Прочитані",
@@ -190,7 +191,7 @@
   },
   "ArchiveScreen": {
     "title": "Архів",
-    "searchPlaceholder": "Пошук за ключовим словом",
+    "searchPlaceholder": "Пошук",
     "filterNotifications": "Фільтрувати сповіщення",
     "filterAll": "Усі",
     "filterRead": "Прочитані",

@@ -50,6 +50,8 @@ import {useWorkHistoryActions} from '../../Redux/Hooks/useWorkHistoryActions';
 import moment from 'moment-timezone';
 import checkDeviceTime from '../../Helpers/TimeValidation';
 import Footer from '../../Components/Common/Footer';
+import {useTheme} from '../../Context/ThemeContext';
+import AppLogo from '../../Components/AppLogo';
 const languages = {
   POL: 'pl', // Polish
   GER: 'de', // German
@@ -67,13 +69,12 @@ const Login = ({route}) => {
   const applicationInformatinoUrl =
     'https://eda.workflex360.de/de/technischer-support';
   const {getRealTimeCall, realTime, realTimeLoading} = useWorkHistoryActions();
-
+  const theme = useTheme();
   // --------------- STATE ---------------
 
   // email & password that was static
   // biuro@mhcode.pl  das4you123
 
-  const {theme} = useContext(ThemeContext);
   const isConnected = useSelector(state => state?.Network?.isConnected);
   const {deviceId} = useSelector(state => state?.Network);
   const passwordInputRef = createRef();
@@ -259,7 +260,8 @@ const Login = ({route}) => {
                 styles.loginlogoContainer,
                 Platform.OS === 'ios' && styles.androidLogoConatiner,
               ]}>
-              <Image
+              <AppLogo style={{height: Matrics.ms(68)}} />
+              {/* <Image
                 source={Images.NEW_APP_LOGO}
                 style={{
                   resizeMode: 'contain',
@@ -267,7 +269,7 @@ const Login = ({route}) => {
                   height: Matrics.ms(68),
                   width: Matrics.ms(290),
                 }}
-              />
+              /> */}
             </View>
             <Text style={styles.loginText}>{t('Login.title')}</Text>
             <Text style={styles.loginText2}>{t('Login.subtitle')}</Text>
@@ -334,7 +336,12 @@ const Login = ({route}) => {
               />
             </View>
             <TouchableOpacity
-              style={styles.buttonStyle}
+              style={[
+                styles.buttonStyle,
+                {
+                  backgroundColor: theme.PRIMARY,
+                },
+              ]}
               activeOpacity={0.5}
               onPress={onLoginPress}
               disabled={loading}>

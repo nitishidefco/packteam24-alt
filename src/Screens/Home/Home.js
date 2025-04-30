@@ -1,5 +1,6 @@
 import React, {useEffect, useState, useCallback} from 'react';
 import {useTranslation} from 'react-i18next';
+import {useFocusEffect} from '@react-navigation/native';
 
 import {
   SafeAreaView,
@@ -230,6 +231,20 @@ const Home = ({navigation, route}) => {
     dashboardApi();
   }, []);
 
+  useFocusEffect(
+    useCallback(() => {
+      if (appState === 'active') {
+        const formData = new FormData();
+        formData.append('session_id', SessionId);
+        formData.append('device_id', deviceId);
+        formData.append('lang', globalLanguage);
+        formData.append('page', 1);
+        dispatch(fetchMessagesStart({payload: formData}));
+        dispatch(fetchUnreadCountStart({payload: formData}));
+      }
+    }, [appState, SessionId, deviceId, globalLanguage, dispatch])
+  );
+
   // Adds colons to a string for better readability
   function addColons(number) {
     return number.replace(/(.{2})(?=.)/g, '$1:');
@@ -433,17 +448,6 @@ const Home = ({navigation, route}) => {
     }
     setLoading(false);
   }, [Home]);
-  useEffect(() => {
-    if (appState === 'active') {
-      const formData = new FormData();
-      formData.append('session_id', SessionId);
-      formData.append('device_id', deviceId);
-      formData.append('lang', globalLanguage);
-      formData.append('page', 1);
-      dispatch(fetchMessagesStart({payload: formData}));
-      dispatch(fetchUnreadCountStart({payload: formData}));
-    }
-  }, [appState]);
 
   return (
     <DrawerSceneWrapper>

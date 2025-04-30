@@ -91,8 +91,8 @@
     "no": "否",
     "yes": "是",
     "langConfig": "配置从应用程序发送给我的消息语言",
-     "notificationLanguage": "选择您希望接收消息的语言",
-      "selectLanguage": "选择语言"
+    "notificationLanguage": "选择您希望接收消息的语言",
+    "selectLanguage": "选择语言"
   },
   "ResetPassword": {
     "passwordResetSuccess": "我们已通过电子邮件发送了您的密码重置链接！",
@@ -123,7 +123,8 @@
     "Cannottakebreak": "无法在开始工作前休息",
     "Workalreadystarted": "工作已开始",
     "Breakalreadystarted": "休息已激活",
-    "WorkAlreadyFinished": "工作已完成"
+    "WorkAlreadyFinished": "工作已完成",
+    "MessageDeletedSuccessfully": "消息删除成功！"
   },
   "TimeLog": {
     "title": "时间记录",
@@ -166,7 +167,7 @@
     "warning": "在更正此问题之前，应用将无法运行。"
   },
   "NotificationScreen": {
-    "searchPlaceholder": "搜索关键字",
+    "searchPlaceholder": "搜索",
     "filterNotifications": "过滤通知",
     "filterAll": "全部",
     "filterRead": "已读",
@@ -194,7 +195,7 @@
   },
   "ArchiveScreen": {
     "title": "归档",
-    "searchPlaceholder": "搜索关键字",
+    "searchPlaceholder": "搜索",
     "filterNotifications": "过滤通知",
     "filterAll": "全部",
     "filterRead": "已读",

@@ -21,9 +21,12 @@ import {clearMessageSelection} from '../../Redux/Reducers/MessageSlice';
 import {reduxStorage} from '../../Redux/Storage';
 import {clearArchiveSelection} from '../../Redux/Reducers/ArchiveSlice';
 import i18n from '../../i18n/i18n';
+import {useTheme} from '../../Context/ThemeContext';
+import AppLogo from '../AppLogo';
 
 const CustomHeader = ({
   onUserPress,
+  onBackPress,
   title = i18n.t('CustomHeader.MessageCenter'),
 }) => {
   const navigation = useNavigation();
@@ -40,7 +43,7 @@ const CustomHeader = ({
   const unreadCount = useSelector(state => state.Messages?.unreadCount || 0);
   const messages = useSelector(state => state.Messages?.messages || []);
   const [modalVisible, setModalVisible] = useState(false);
-
+  const theme = useTheme();
   const openDrawer = () => {
     navigation.openDrawer();
   };
@@ -92,15 +95,26 @@ const CustomHeader = ({
 
   return (
     <SafeAreaView style={{backgroundColor: '#091242'}}>
-      <View style={[styles.headerContainer]}>
+      <View
+        style={[
+          styles.headerContainer,
+          {
+            backgroundColor: theme.PRIMARY,
+          },
+        ]}>
         <TouchableOpacity
           onPress={() => {
             if (isNotificationScreen) {
               dispatch(clearMessageSelection());
+              onBackPress();
               navigation.goBack();
             } else if (isArchiveScreen) {
+              console.log('Inside onpress');
               dispatch(clearArchiveSelection());
-              navigation.navigate('HomeDrawer', {screen: 'NotificationScreen'});
+              onBackPress();
+              navigation.navigate('HomeDrawer', {
+                screen: 'NotificationScreen',
+              });
             } else {
               navigation.openDrawer();
             }
@@ -147,11 +161,7 @@ const CustomHeader = ({
             {t('CustomHeader.Archives')}
           </Text>
         ) : (
-          <Image
-            source={Images.NEW_APP_LOGO}
-            resizeMode={'contain'}
-            style={styles.logoStyle}
-          />
+          <AppLogo style={styles.logoStyle} />
         )}
         {!isArchiveScreen && (
           <TouchableOpacity
@@ -179,15 +189,17 @@ const CustomHeader = ({
                   position: 'absolute',
                   backgroundColor: 'red',
                   padding: Matrics.s(1),
-                  borderRadius: Matrics.s(5),
+                  width: Matrics.s(20),
+                  borderRadius: Matrics.s(7),
                   top: -3,
                   right: -3,
                 }}>
                 <Text
                   style={{
                     color: 'white',
-                    fontFamily: typography.fontFamily.Montserrat.Medium,
+                    fontFamily: typography.fontFamily.Montserrat.SemiBold,
                     fontSize: typography.fontSizes.fs10,
+                    textAlign: 'center',
                   }}>
                   {unreadCount > 99 ? '99+' : unreadCount}
                 </Text>
@@ -269,7 +281,6 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    backgroundColor: COLOR.PURPLE,
   },
   drawerIconStyle: {
     tintColor: COLOR.WHITE,

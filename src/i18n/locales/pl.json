@@ -123,7 +123,8 @@
     "Cannottakebreak": "Nie można zrobić przerwy przed rozpoczęciem pracy",
     "Workalreadystarted": "Praca już się rozpoczęła",
     "Breakalreadystarted": "Przerwa jest już aktywna",
-    "WorkAlreadyFinished": "Praca już się zakończyła"
+    "WorkAlreadyFinished": "Praca już się zakończyła",
+    "MessageDeletedSuccessfully": "Wiadomość została pomyślnie usunięta!"
   },
   "TimeLog": {
     "title": "Dziennik czasu",
@@ -166,7 +167,7 @@
     "warning": "Aplikacja nie będzie działać, dopóki to nie zostanie poprawione."
   },
   "NotificationScreen": {
-    "searchPlaceholder": "Szukaj według słowa kluczowego",
+    "searchPlaceholder": "Szukaj",
     "filterNotifications": "Filtruj powiadomienia",
     "filterAll": "Wszystkie",
     "filterRead": "Przeczytane",
@@ -194,7 +195,7 @@
   },
   "ArchiveScreen": {
     "title": "Archiwum",
-    "searchPlaceholder": "Wyszukaj słowo kluczowe",
+    "searchPlaceholder": "Szukaj",
     "filterNotifications": "Filtruj powiadomienia",
     "filterAll": "Wszystkie",
     "filterRead": "Przeczytane",

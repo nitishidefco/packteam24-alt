@@ -119,7 +119,8 @@
     "Cannottakebreak": "Невозможно сделать перерыв до начала работы",
     "Workalreadystarted": "Работа уже начата",
     "Breakalreadystarted": "Перерыв уже активен",
-    "WorkAlreadyFinished": "Работа уже завершена"
+    "WorkAlreadyFinished": "Работа уже завершена",
+    "MessageDeletedSuccessfully": "Сообщение успешно удалено!"
   },
   "TimeLog": {
     "title": "Журнал времени",
@@ -162,7 +163,7 @@
     "warning": "Приложение не будет работать, пока это не будет исправлено."
   },
   "NotificationScreen": {
-    "searchPlaceholder": "Поиск по ключевому слову",
+    "searchPlaceholder": "Поиск",
     "filterNotifications": "Фильтровать уведомления",
     "filterAll": "Все",
     "filterRead": "Прочитанные",
@@ -190,7 +191,7 @@
   },
   "ArchiveScreen": {
     "title": "Архив",
-    "searchPlaceholder": "Поиск по ключевому слову",
+    "searchPlaceholder": "Поиск",
     "filterNotifications": "Фильтровать уведомления",
     "filterAll": "Все",
     "filterRead": "Прочитанные",

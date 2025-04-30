@@ -20,6 +20,7 @@ import {
 import {} from '../Reducers/ArchiveSlice';
 import {success} from '../../Helpers/ToastMessage';
 import {fetchUnreadCountSuccess} from '../Reducers/MessageSlice';
+import i18n from '../../i18n/i18n';
 
 function* fetchArchivedMessagesSaga({payload}) {
   try {
@@ -29,7 +30,6 @@ function* fetchArchivedMessagesSaga({payload}) {
     );
 
     if (response && response.message === 'OK') {
-
       yield put(
         fetchArchivedMessagesSuccess({
           messages: response.data.data,
@@ -118,7 +118,6 @@ function* moveToMessagesSaga({payload}) {
 }
 
 function* deleteMessagesSaga({payload}) {
-  console.log('delete payload', payload.payload);
 
   try {
     const response = yield call(
@@ -129,7 +128,8 @@ function* deleteMessagesSaga({payload}) {
 
     if (response.success) {
       yield put(deleteMessagesSuccess(payload.messageIds));
-      success('Message deleted successfully');
+      const successMessage = i18n.t('Toast.MessageDeletedSuccessfully');
+      success(successMessage);
       const state = yield select();
       const {currentPage} = state.Archive;
       const {deviceId} = state.Network;

@@ -1,30 +1,38 @@
 import messaging from '@react-native-firebase/messaging';
-import notifee, {AndroidImportance, EventType} from '@notifee/react-native';
+import notifee, {AndroidImportance} from '@notifee/react-native';
 import {
   notification,
   setNotification,
 } from '../Redux/Reducers/NotificationSlice';
 import {Store} from '../Redux/Store';
 import {fetchUnreadCountStart} from '../Redux/Reducers/MessageSlice';
+
 const NotificationService = () => {
   let navigation = null;
+  console.log('Inside notification service');
+
   const initialize = async navRef => {
     navigation = navRef;
     await requestPermissions();
-    await setupNotifee();
-    setupForegroundHandler();
-    setupBackgroundHandler();
+    await setupNotifee(); // Added for Notifee channel setup
+    let unsubscribeForeground; // Store unsubscribe function
+    unsubscribeForeground = setupForegroundHandler();
+    // setupBackgroundHandler();
     setupTapHandler();
 
-    const initialNotification = await notifee.getInitialNotification();
+    const initialNotification = await messaging().getInitialMessage();
     if (initialNotification) {
-      handleNotificationPress(initialNotification.notification);
-    } else {
-      console.log(
-        '[NotificationService.initialize] No initial notification found',
-      );
+      handleNotificationPress(initialNotification);
     }
     console.log('[NotificationService.initialize] Initialization complete');
+    return () => {
+      if (unsubscribeForeground) {
+        unsubscribeForeground(); // Clean up listener
+        console.log(
+          '[NotificationService.initialize] Cleaned up foreground handler',
+        );
+      }
+    };
   };
 
   // Request permissions for notifications
@@ -52,19 +60,9 @@ const NotificationService = () => {
 
   // Retrieve FCM token and send it to the backend
   const getAndSendFCMToken = async () => {
-    console.log(
-      '[NotificationService.getAndSendFCMToken] Retrieving FCM token',
-    );
     try {
       const token = await messaging().getToken();
-      console.log(
-        '[NotificationService.getAndSendFCMToken] FCM token retrieved:',
-        token,
-      );
       await sendFCMTokenToBackend(token);
-      console.log(
-        '[NotificationService.getAndSendFCMToken] FCM token sent to backend',
-      );
     } catch (error) {
       console.error(
         '[NotificationService.getAndSendFCMToken] Error retrieving FCM token:',
@@ -81,7 +79,6 @@ const NotificationService = () => {
     const sessionId = authState?.data?.data?.sesssion_id;
     const userId = authState?.data?.data?.user_id;
 
-    // Validate the required fields
     if (!deviceId || !sessionId || !userId) {
       console.error(
         '[NotificationService.sendFCMTokenToBackend] Missing required fields:',
@@ -110,7 +107,7 @@ const NotificationService = () => {
     }
   };
 
-  // Setup Notifee channels (required for Android)
+  // Setup Notifee channel for Android
   const setupNotifee = async () => {
     try {
       await notifee.createChannel({
@@ -127,22 +124,45 @@ const NotificationService = () => {
     }
   };
 
+  // Handle foreground notifications
   const setupForegroundHandler = () => {
-    messaging().onMessage(async remoteMessage => {
+    console.log(
+      '[NotificationService.setupForegroundHandler] Setting up foreground message handler',
+    );
+    const unsubscribe = messaging().onMessage(async remoteMessage => {
       try {
-        await displayNotification(remoteMessage);
-        Store.dispatch(setNotification(remoteMessage));
-        const state = Store.getState();
-        const sessionId = state.Auth.data?.data?.sesssion_id;
-        const deviceId = state.Network.deviceId;
-        const globalLanguage = state.GlobalLanguage;
-        const formData = new FormData();
-        formData.append('session_id', sessionId);
-        formData.append('device_id', deviceId);
-        formData.append('lang', globalLanguage.globalLanguage);
-        formData.append('page', 1);
-
-        Store.dispatch(fetchUnreadCountStart({payload: formData}));
+        console.log(
+          '[NotificationService.setupForegroundHandler] Foreground message received:',
+          remoteMessage,
+        );
+        await notifee.displayNotification({
+          title: remoteMessage.notification?.title ?? 'New Notification',
+          body: remoteMessage.notification?.body ?? 'You have a new message',
+          data: remoteMessage.data || {},
+          android: {
+            channelId: 'default',
+            pressAction: {
+              id: 'default',
+            },
+            importance: AndroidImportance.HIGH,
+          },
+          ios: {
+            sound: 'default',
+            badgeCount: 1,
+          },
+        });
+        // await displayNotification(remoteMessage);
+        // // Store.dispatch(setNotification(remoteMessage));
+        // const state = Store.getState();
+        // const sessionId = state.Auth.data?.data?.sesssion_id;
+        // const deviceId = state.Network.deviceId;
+        // const globalLanguage = state.GlobalLanguage;
+        // const formData = new FormData();
+        // formData.append('session_id', sessionId);
+        // formData.append('device_id', deviceId);
+        // formData.append('lang', globalLanguage.globalLanguage);
+        // formData.append('page', 1);
+        // Store.dispatch(fetchUnreadCountStart({payload: formData}));
       } catch (error) {
         console.error(
           '[NotificationService.setupForegroundHandler] Error handling foreground message:',
@@ -150,48 +170,44 @@ const NotificationService = () => {
         );
       }
     });
+    return unsubscribe;
   };
 
-  const setupBackgroundHandler = () => {
-    messaging().setBackgroundMessageHandler(async remoteMessage => {
-      console.log('Background handler called');
+  // // Handle background notifications
+  // const setupBackgroundHandler = () => {
+  //   messaging().setBackgroundMessageHandler(async remoteMessage => {
+  //     console.log('[NotificationService.setupBackgroundHandler] Background message received:', remoteMessage);
+  //     try {
+  //       Store.dispatch(setNotification(remoteMessage));
+  //     } catch (error) {
+  //       console.error('[NotificationService.setupBackgroundHandler] Error handling background message:', error);
+  //     }
+  //   });
+  // };
 
-      try {
-        await displayNotification(remoteMessage);
-      } catch (error) {
-        console.error(
-          '[NotificationService.setupBackgroundHandler] Error handling background message:',
-          error,
-        );
-      }
-    });
-  };
-
+  // Handle notification taps (foreground, background, killed)
   const setupTapHandler = () => {
-    notifee.onForegroundEvent(({type, detail}) => {
-      if (type === 1) {
-        handleNotificationPress(detail.notification);
+    // Handle tap in foreground/background
+    messaging().onNotificationOpenedApp(remoteMessage => {
+      console.log(
+        '[NotificationService.setupTapHandler] Notification opened:',
+        remoteMessage,
+      );
+      if (remoteMessage) {
+        handleNotificationPress(remoteMessage);
+        Store.dispatch(setNotification(remoteMessage));
       }
     });
 
-    notifee.onBackgroundEvent(async ({type, detail}) => {
-      console.log('[NotificationService.onBackgroundEvent] Background event:', {
-        type,
-        detail,
-      });
-      if (type === EventType.PRESS) {
-        console.log(
-          '[NotificationService.onBackgroundEvent] Background notification pressed:',
-          detail.notification,
-        );
-        handleNotificationPress(detail.notification);
-      }
-    });
-    // Handle Firebase initial message (app opened from killed state)
+    // Handle tap from killed state
     messaging()
       .getInitialMessage()
       .then(remoteMessage => {
         if (remoteMessage) {
+          console.log(
+            '[NotificationService.setupTapHandler] Initial message from killed state:',
+            remoteMessage,
+          );
           handleNotificationPress(remoteMessage);
           Store.dispatch(setNotification(remoteMessage));
         } else {
@@ -202,27 +218,17 @@ const NotificationService = () => {
       });
   };
 
+  // Display local notification using Notifee (for foreground only)
   const displayNotification = async remoteMessage => {
     try {
-      console.log('Calling Display Notification');
-      await notifee.displayNotification({
-        title:
-          remoteMessage.notification?.title ??
-          remoteMessage.data?.title ??
-          'New Notification',
-        body:
-          remoteMessage.notification?.body ??
-          remoteMessage.data?.body ??
-          'You have a new message',
-        data: remoteMessage.data || {},
-        android: {
-          channelId: 'default',
-          pressAction: {
-            id: 'default',
-          },
-          importance: AndroidImportance.HIGH,
-        },
-      });
+      console.log(
+        '[NotificationService.displayNotification] Displaying foreground notification:',
+        remoteMessage,
+      );
+
+      console.log(
+        '[NotificationService.displayNotification] Notification displayed successfully',
+      );
     } catch (error) {
       console.error(
         '[NotificationService.displayNotification] Error displaying notification:',
@@ -231,8 +237,12 @@ const NotificationService = () => {
     }
   };
 
-  const handleNotificationPress = notification => {
+  // Navigate to NotificationScreen on tap
+  const handleNotificationPress = remoteMessage => {
     if (navigation && navigation.isReady()) {
+      console.log(
+        '[NotificationService.handleNotificationPress] Navigating to NotificationScreen',
+      );
       navigation.navigate('HomeDrawer', {screen: 'NotificationScreen'});
     } else {
       console.log(
@@ -244,5 +254,4 @@ const NotificationService = () => {
   return {initialize};
 };
 
-// Export a singleton instance
 export default NotificationService();

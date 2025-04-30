@@ -10,18 +10,24 @@ import {
 import {useTranslation} from 'react-i18next';
 import {COLOR, Matrics, typography} from '../../Config/AppStyling';
 import {useSelector} from 'react-redux';
+import {useTheme} from '../../Context/ThemeContext';
 
 const {width: screenWidth} = Dimensions.get('window');
 
 const ResetPasswordButton = ({onForgotPasswordPress, Auth}) => {
   console.log('From the button', Auth);
-
+  const theme = useTheme();
   const {t} = useTranslation();
   const buttonText = t('ForgotPassword.resetButton');
 
   return (
     <TouchableOpacity
-      style={styles.buttonStyle}
+      style={[
+        styles.buttonStyle,
+        {
+          backgroundColor: theme.PRIMARY,
+        },
+      ]}
       activeOpacity={0.5}
       onPress={onForgotPasswordPress}>
       <Text

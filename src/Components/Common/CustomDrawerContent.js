@@ -20,12 +20,15 @@ import {reduxStorage} from '../../Redux/Storage';
 import {useTranslation} from 'react-i18next';
 import {success} from '../../Helpers/ToastMessage';
 import {useSelector} from 'react-redux';
+import {useTheme} from '../../Context/ThemeContext';
+import AppLogo from '../AppLogo';
+
 // import DailyListScreen from '../../screens/DailyList/DailyListScreen';
 const CustomDrawerContent = props => {
   const {t, i18n} = useTranslation();
   const isConnected = useSelector(state => state?.Network?.isConnected);
   const {localWorkHistory} = useSelector(state => state?.LocalWorkHistory);
-
+  const theme = useTheme();
   const navigation = useNavigation();
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -130,18 +133,25 @@ const CustomDrawerContent = props => {
     }
   };
   return (
-    <View style={styles.container}>
+    <View
+      style={[
+        styles.container,
+        {
+          backgroundColor: theme.PRIMARY,
+        },
+      ]}>
       <DrawerContentScrollView
         {...props}
-        style={styles.drawerContent}
+        style={[
+          styles.drawerContent,
+          {
+            backgroundColor: theme.PRIMARY,
+          },
+        ]}
         scrollEnabled={false}>
         {/* Application Logo */}
         <View style={styles.logoContainer}>
-          <Image
-            source={Images.NEW_APP_LOGO}
-            resizeMode="contain"
-            style={styles.logoStyle}
-          />
+          <AppLogo style={styles.logoStyle} />
         </View>
         {/* Drawer Items */}
         <DrawerItem
@@ -274,7 +284,6 @@ const CustomDrawerContent = props => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: COLOR.PURPLE,
   },
   drawerContent: {
     backgroundColor: COLOR.PURPLE,

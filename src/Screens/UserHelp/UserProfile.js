@@ -17,26 +17,28 @@ import {
   Animated,
 } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import {launchImageLibrary} from 'react-native-image-picker';
-import React, {useEffect, useState, useRef} from 'react';
+import { launchImageLibrary } from 'react-native-image-picker';
+import React, { useEffect, useState, useRef } from 'react';
 import useSavedLanguage from '../../Components/Hooks/useSavedLanguage';
-import {loginStyle} from '../Auth/styles';
-import {COLOR, Matrics, typography} from '../../Config/AppStyling';
-import {useTranslation} from 'react-i18next';
-import {Images, setHeader} from '../../Config';
-import {SafeAreaProvider, SafeAreaView} from 'react-native-safe-area-context';
+import { loginStyle } from '../Auth/styles';
+import { COLOR, Matrics, typography } from '../../Config/AppStyling';
+import { useTranslation } from 'react-i18next';
+import { Images, setHeader } from '../../Config';
+import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
 import colors from '../../Config/AppStyling/colors';
-import {useUserProfileActions} from '../../Redux/Hooks/useUserProfileActions';
-import {useHomeActions} from '../../Redux/Hooks';
-import {useSelector} from 'react-redux';
-import {Validator} from '../../Helpers';
-import {errorToast} from '../../Helpers/ToastMessage';
+import { useUserProfileActions } from '../../Redux/Hooks/useUserProfileActions';
+import { useHomeActions } from '../../Redux/Hooks';
+import { useSelector } from 'react-redux';
+import { Validator } from '../../Helpers';
+import { errorToast } from '../../Helpers/ToastMessage';
 import DrawerSceneWrapper from '../../Components/Common/DrawerSceneWrapper';
 import CustomHeader from '../../Components/Common/CustomHeader';
 import LanguageSelector from '../../Components/Common/LanguageSelector';
+import { useTheme } from '../../Context/ThemeContext';
 
-const UserProfile = ({navigation}) => {
-  const {t, i18n} = useTranslation();
+const UserProfile = ({ navigation }) => {
+  const theme = useTheme();
+  const { t, i18n } = useTranslation();
   const isConnected = useSelector(state => state?.Network?.isConnected);
   const language = useSavedLanguage();
   const {
@@ -46,71 +48,71 @@ const UserProfile = ({navigation}) => {
     removeUserProfilePhotoCall,
     removeAccountCall,
   } = useUserProfileActions();
-  const {state} = useHomeActions();
-  const {Auth} = state;
+  const { state } = useHomeActions();
+  const { Auth } = state;
   const SessionId = Auth.data?.data?.sesssion_id;
   const [counter, setCounter] = useState(0);
 
   const [userEmail, setUserEmail] = useState(null);
   const [image, setImage] = useState(null);
-  const {deviceId} = useSelector(state => state?.Network);
-  const {globalLanguage} = useSelector(state => state?.GlobalLanguage);
+  const { deviceId } = useSelector(state => state?.Network);
+  const { globalLanguage } = useSelector(state => state?.GlobalLanguage);
   const [error, setError] = useState(null);
   const [notificationLanguage, setNotificationLanguage] = useState('de');
   const [isLanguageModalVisible, setIsLanguageModalVisible] = useState(false);
   const modalAnimation = useRef(new Animated.Value(0)).current;
 
   const languageOptions = [
-    {label: 'English', value: 'en'},
-    {label: 'Polish', value: 'pl'},
-    {label: 'German', value: 'de'},
-    {label: 'Russian', value: 'ru'},
-    {label: 'Ukrainian', value: 'ua'},
-    {label: 'Chinese', value: 'zh'},
+    { label: 'English', value: 'en' },
+    { label: 'Polish', value: 'pl' },
+    { label: 'German', value: 'de' },
+    { label: 'Russian', value: 'ru' },
+    { label: 'Ukrainian', value: 'ua' },
+    { label: 'Chinese', value: 'zh' || 'cn' },
   ];
   const NOTIFICATION_LANGUAGE_KEY = 'notificationLanguage';
 
-  const saveNotificationLanguage = async lang => {
-    try {
-      await AsyncStorage.setItem(NOTIFICATION_LANGUAGE_KEY, lang);
-      console.log('Notification language saved to AsyncStorage:', lang);
-    } catch (error) {
-      console.error(
-        'Error saving notification language to AsyncStorage:',
-        error,
-      );
-    }
-  };
+  // const saveNotificationLanguage = async lang => {
+  //   try {
+  //     await AsyncStorage.setItem(NOTIFICATION_LANGUAGE_KEY, lang);
+  //     console.log('Notification language saved to AsyncStorage:', lang);
+  //   } catch (error) {
+  //     console.error(
+  //       'Error saving notification language to AsyncStorage:',
+  //       error,
+  //     );
+  //   }
+  // };
 
-  const loadNotificationLanguage = async () => {
-    try {
-      const savedLanguage = await AsyncStorage.getItem(
-        NOTIFICATION_LANGUAGE_KEY,
-      );
-      console.log(
-        'Loaded notification language from AsyncStorage:',
-        savedLanguage,
-      );
-      if (
-        savedLanguage &&
-        languageOptions.some(option => option.value === savedLanguage)
-      ) {
-        setNotificationLanguage(savedLanguage);
-      } else {
-        setNotificationLanguage('de');
-      }
-    } catch (error) {
-      console.error(
-        'Error loading notification language from AsyncStorage:',
-        error,
-      );
-      setNotificationLanguage('de');
-    }
-  };
+  // const loadNotificationLanguage = async () => {
+  //   try {
+  //     const savedLanguage = await AsyncStorage.getItem(
+  //       NOTIFICATION_LANGUAGE_KEY,
+  //     );
+  //     console.log(
+  //       'Loaded notification language from AsyncStorage:',
+  //       savedLanguage,
+  //     );
+  //     if (
+  //       savedLanguage &&
+  //       languageOptions.some(option => option.value === savedLanguage)
+  //     ) {
+  //       setNotificationLanguage(savedLanguage);
+  //     } else {
+  //       setNotificationLanguage('de');
+  //     }
+  //   } catch (error) {
+  //     console.error(
+  //       'Error loading notification language from AsyncStorage:',
+  //       error,
+  //     );
+  //     setNotificationLanguage('de');
+  //   }
+  // };
 
-  useEffect(() => {
-    loadNotificationLanguage();
-  }, []);
+  // useEffect(() => {
+  //   loadNotificationLanguage();
+  // }, []);
 
   const requestAndroidPermission = async () => {
     try {
@@ -167,7 +169,8 @@ const UserProfile = ({navigation}) => {
       } else if (response.assets && response.assets.length > 0) {
         setImage(response.assets[0].uri);
       }
-    } catch (error) {}
+    } catch (error) {
+    }
   };
 
   useEffect(() => {
@@ -186,7 +189,6 @@ const UserProfile = ({navigation}) => {
   useEffect(() => {
     try {
       const photoData = profileState?.data?.photo;
-
       setError(null);
 
       if (typeof photoData === 'object' && photoData !== null) {
@@ -203,6 +205,7 @@ const UserProfile = ({navigation}) => {
       }
 
       setUserEmail(profileState?.data?.email || null);
+      setNotificationLanguage(profileState?.data?.lang === 'cn' ? 'zh' : profileState?.data?.lang)
     } catch (error) {
       console.error('Error processing profile data:', error);
       setError('Error loading profile data');
@@ -256,7 +259,7 @@ const UserProfile = ({navigation}) => {
       Alert.alert(
         i18n.t('Offline.NoInternet'),
         i18n.t('Offline.FeatureNotAvailable'),
-        [{text: 'OK', onPress: () => navigation.navigate('HomeDrawer')}],
+        [{ text: 'OK', onPress: () => navigation.navigate('HomeDrawer') }],
       );
     }
   };
@@ -308,7 +311,7 @@ const UserProfile = ({navigation}) => {
                 Alert.alert(
                   t('UserProfileScreen.Error'),
                   t('UserProfileScreen.FailedToRemove'),
-                  [{text: t('UserProfileScreen.OK')}],
+                  [{ text: t('UserProfileScreen.OK') }],
                 );
                 console.error('Error removing profile photo:', error);
               }
@@ -320,7 +323,7 @@ const UserProfile = ({navigation}) => {
       Alert.alert(
         i18n.t('Offline.NoInternet'),
         i18n.t('Offline.FeatureNotAvailable'),
-        [{text: 'OK', onPress: () => navigation.navigate('HomeDrawer')}],
+        [{ text: 'OK', onPress: () => navigation.navigate('HomeDrawer') }],
       );
     }
   };
@@ -345,7 +348,7 @@ const UserProfile = ({navigation}) => {
           },
         },
       ],
-      {cancelable: true},
+      { cancelable: true },
     );
   };
 
@@ -378,15 +381,14 @@ const UserProfile = ({navigation}) => {
     outputRange: [300, 0],
   });
 
-  const renderLanguageItem = ({item}) => (
+  const renderLanguageItem = ({ item }) => (
     <TouchableOpacity
       style={[
         styles.languageItem,
-        notificationLanguage === item.value && styles.selectedLanguageItem,
+        notificationLanguage === item.value && styles.selectedLanguageItem && { backgroundColor: theme.PRIMARY },
       ]}
       onPress={() => {
         setNotificationLanguage(item.value);
-        saveNotificationLanguage(item.value);
         closeModal();
       }}>
       <Text
@@ -402,7 +404,7 @@ const UserProfile = ({navigation}) => {
   return profileState?.fetchProfileLoading ? (
     <SafeAreaProvider>
       <SafeAreaView style={[styles.loadingContainer, styles.horizontal]}>
-        <View style={{alignItems: 'center', marginTop: 10}}>
+        <View style={{ alignItems: 'center', marginTop: 10 }}>
           <ActivityIndicator size="large" color={COLOR.AUDIO_PLAYER_BG} />
           <Text
             style={{
@@ -419,7 +421,13 @@ const UserProfile = ({navigation}) => {
     <DrawerSceneWrapper>
       <SafeAreaView style={styles.safeArea}>
         <CustomHeader />
-        <View style={styles.header}>
+        <View
+          style={[
+            styles.header,
+            {
+              backgroundColor: theme.PRIMARY,
+            },
+          ]}>
           <Text style={styles.headerTitle}>{t('UserProfileScreen.title')}</Text>
         </View>
         <View
@@ -439,7 +447,7 @@ const UserProfile = ({navigation}) => {
           behavior={Platform.OS === 'android' ? 'height' : 'padding'}
           enabled>
           <ScrollView
-            contentContainerStyle={{flexGrow: 1}}
+            contentContainerStyle={{ flexGrow: 1 }}
             keyboardShouldPersistTaps="handled"
             showsVerticalScrollIndicator={false}>
             <View style={styles.mainContainer}>
@@ -448,7 +456,7 @@ const UserProfile = ({navigation}) => {
                   <View style={styles.imageContainer}>
                     {image ? (
                       <Image
-                        source={{uri: image}}
+                        source={{ uri: image }}
                         style={styles.image}
                         resizeMode="cover"
                         onError={() => setError('Failed to load image')}
@@ -464,7 +472,9 @@ const UserProfile = ({navigation}) => {
                     )}
                   </View>
                   <View style={styles.imageActionButton}>
-                    <TouchableOpacity onPress={pickImage} style={styles.button}>
+                    <TouchableOpacity onPress={pickImage} style={[styles.button, {
+                      backgroundColor: theme.PRIMARY
+                    }]}>
                       <Text style={styles.buttonText}>
                         {image
                           ? t('UserProfileScreen.EditPhoto')
@@ -474,7 +484,12 @@ const UserProfile = ({navigation}) => {
                     {image && (
                       <TouchableOpacity
                         onPress={() => handleRemoveProfilePhoto()}
-                        style={styles.button}>
+                        style={[
+                          styles.button,
+                          {
+                            backgroundColor: theme.PRIMARY,
+                          },
+                        ]}>
                         <Text style={styles.buttonText}>
                           {t('UserProfileScreen.RemovePhoto')}
                         </Text>
@@ -544,7 +559,13 @@ const UserProfile = ({navigation}) => {
                     </Text>
                   </TouchableOpacity>
                   <TouchableOpacity
-                    style={[styles.actionButton, styles.saveButton]}
+                    style={[
+                      styles.actionButton,
+                      styles.saveButton,
+                      {
+                        backgroundColor: theme.PRIMARY,
+                      },
+                    ]}
                     onPress={handleSave}>
                     <Text style={styles.saveButtonText}>
                       {t('UserProfileScreen.save')}
@@ -573,14 +594,20 @@ const UserProfile = ({navigation}) => {
             <Animated.View
               style={[
                 styles.modalContainer,
-                {transform: [{translateY: modalTranslateY}]},
+                { transform: [{ translateY: modalTranslateY }] },
               ]}>
               <View style={styles.modalHeader}>
-                <Text style={styles.modalTitle}>
+                <Text
+                  style={[
+                    styles.modalTitle,
+
+                  ]}>
                   {t('UserProfileScreen.selectLanguage')}
                 </Text>
                 <TouchableOpacity onPress={closeModal}>
-                  <Text style={styles.cancelModalText}>
+                  <Text style={[styles.cancelModalText, {
+                    color: theme.PRIMARY
+                  }]}>
                     {t('UserProfileScreen.cancel')}
                   </Text>
                 </TouchableOpacity>
@@ -629,17 +656,17 @@ const styles = StyleSheet.create({
   },
   header: {
     height: 56,
-    backgroundColor: COLOR.PURPLE,
+
     justifyContent: 'center',
     alignItems: 'center',
     ...Platform.select({
       ios: {
         shadowColor: '#000',
-        shadowOffset: {width: 0, height: 2},
+        shadowOffset: { width: 0, height: 2 },
         shadowOpacity: 0.25,
         shadowRadius: 3.84,
       },
-      android: {elevation: 5},
+      android: { elevation: 5 },
     }),
   },
   headerTitle: {
@@ -662,11 +689,11 @@ const styles = StyleSheet.create({
     ...Platform.select({
       ios: {
         shadowColor: '#000',
-        shadowOffset: {width: 0, height: 2},
+        shadowOffset: { width: 0, height: 2 },
         shadowOpacity: 0.25,
         shadowRadius: 3.84,
       },
-      android: {elevation: 5},
+      android: { elevation: 5 },
     }),
   },
   image: {
@@ -699,7 +726,7 @@ const styles = StyleSheet.create({
     ...Platform.select({
       ios: {
         shadowColor: '#0A1931',
-        shadowOffset: {width: 0, height: 1},
+        shadowOffset: { width: 0, height: 1 },
         shadowOpacity: 0.22,
         shadowRadius: 10,
       },
@@ -730,11 +757,11 @@ const styles = StyleSheet.create({
     ...Platform.select({
       ios: {
         shadowColor: '#000',
-        shadowOffset: {width: 0, height: 1},
+        shadowOffset: { width: 0, height: 1 },
         shadowOpacity: 0.22,
         shadowRadius: 2.22,
       },
-      android: {elevation: 3},
+      android: { elevation: 3 },
     }),
   },
   saveButton: {

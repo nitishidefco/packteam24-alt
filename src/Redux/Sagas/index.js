@@ -11,6 +11,7 @@ import fetchWorkHistoryFromServer from './WorkHistorySaga';
 import notificationSagaExport from './NotificationSaga';
 import messageSaga from './MessagesSaga';
 import archiveSaga from './ArchiveSaga';
+import customizationSaga from './CustomizationSaga';
 
 //Main Root Saga
 const rootSaga = function* rootSaga() {
@@ -27,6 +28,7 @@ const rootSaga = function* rootSaga() {
     notificationSagaExport(),
     messageSaga(),
     archiveSaga(),
+    customizationSaga(),
   ]);
 };
 export default rootSaga;

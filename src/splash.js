@@ -6,19 +6,27 @@ import Images from './Config/Images';
 import {reduxStorage} from './Redux/Storage';
 import {useWorkHistoryActions} from './Redux/Hooks/useWorkHistoryActions';
 import {useNotificationActions} from './Redux/Hooks/useNotificationActions';
-import {useSelector} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 import {useAuthActions} from './Redux/Hooks';
 import {COLOR} from './Config/AppStyling';
+import {changeAppColor} from './Redux/Reducers/CustomizationSlice';
+import {useTheme} from './Context/ThemeContext';
+
 const Splash = () => {
   const {getRealTimeCall} = useWorkHistoryActions();
-
+  const dispatch = useDispatch();
   const [userToken, setuserToken] = useState(null);
+  const {isLoading} = useSelector(state => state.Customization);
+
+  const theme = useTheme();
   useEffect(() => {
     PermissionsAndroid.request(
       PermissionsAndroid.PERMISSIONS.POST_NOTIFICATIONS,
     );
   }, []);
-
+  useEffect(() => {
+    dispatch(changeAppColor());
+  }, []);
   // fetch user token initally
   useEffect(() => {
     async function getToken() {
@@ -47,7 +55,13 @@ const Splash = () => {
   }, [navigation, userToken]);
 
   return (
-    <View style={styles.container}>
+    <View
+      style={[
+        styles.container,
+        {
+          backgroundColor: COLOR.PURPLE,
+        },
+      ]}>
       <Image
         source={Images.NEW_APP_LOGO}
         style={styles.image}
@@ -60,7 +74,6 @@ const Splash = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: COLOR.PURPLE,
     alignItems: 'center',
     justifyContent: 'center',
   },

@@ -1,5 +1,5 @@
-import {createSlice} from '@reduxjs/toolkit';
-import {NOTIFICATION_REDUCER} from '../SliceKey';
+import { createSlice } from '@reduxjs/toolkit';
+import { NOTIFICATION_REDUCER } from '../SliceKey';
 
 const notificationSlice = createSlice({
   name: NOTIFICATION_REDUCER,
@@ -21,8 +21,6 @@ const notificationSlice = createSlice({
       state.isLoading = false;
     },
     setNotification: (state, action) => {
-      console.log('State notifications', state.notifications, action.payload);
-
       state.notifications.push(action.payload);
       state.unreadCount += 1;
     },

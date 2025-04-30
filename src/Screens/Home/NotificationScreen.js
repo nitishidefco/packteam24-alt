@@ -14,6 +14,8 @@ import {
   Animated,
   Alert,
   Linking,
+  ScrollView,
+  Platform,
 } from 'react-native';
 
 import messaging from '@react-native-firebase/messaging';
@@ -24,6 +26,7 @@ import {useDispatch, useSelector} from 'react-redux';
 import moment from 'moment';
 import {Matrics, COLOR, typography} from '../../Config/AppStyling';
 import {Images} from '../../Config';
+
 import {
   filterMessages,
   setCurrentPage,
@@ -44,6 +47,8 @@ import {useFocusEffect} from '@react-navigation/native';
 import {Store} from '../../Redux/Store';
 import i18n from '../../i18n/i18n';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import {useTheme} from '../../Context/ThemeContext';
+import {BackHandler} from 'react-native';
 
 const NotificationItem = memo(({item, onLongPress, onPress, isSelected}) => {
   // Precompute expensive operations outside render
@@ -60,7 +65,7 @@ const NotificationItem = memo(({item, onLongPress, onPress, isSelected}) => {
     cleanedContent.length > 30
       ? `${cleanedContent.slice(0, 70)}...`
       : cleanedContent;
-
+  const theme = useTheme();
   return (
     <TouchableOpacity
       onLongPress={() => onLongPress(item.id)}
@@ -78,6 +83,9 @@ const NotificationItem = memo(({item, onLongPress, onPress, isSelected}) => {
         style={[
           styles.roundElement,
           isSelected && styles.selectedRoundElement,
+          {
+            backgroundColor: theme.PRIMARY,
+          },
         ]}>
         {isSelected ? (
           <Image source={Images.TICK_ICON} style={styles.tickIcon} />
@@ -102,13 +110,24 @@ const NotificationItem = memo(({item, onLongPress, onPress, isSelected}) => {
       </View>
       <View style={{alignItems: 'flex-end', gap: 10, height: Matrics.vs(40)}}>
         <Text style={styles.notificationDate}>{formattedDate}</Text>
-        {item.read === 0 && <View style={styles.actions} />}
+        {item.read === 0 && (
+          <View
+            style={[
+              styles.actions,
+              {
+                backgroundColor: theme.PRIMARY,
+              },
+            ]}
+          />
+        )}
       </View>
     </TouchableOpacity>
   );
 });
 const NotificationScreen = () => {
   const {t} = useTranslation();
+  const theme = useTheme();
+
   const dispatch = useDispatch();
   const {
     messages,
@@ -228,7 +247,7 @@ const NotificationScreen = () => {
     }
     return (
       <View style={styles.footer}>
-        <ActivityIndicator size="small" color={COLOR.PURPLE} />
+        <ActivityIndicator size="small" color={theme.PRIMARY} />
       </View>
     );
   };
@@ -358,7 +377,7 @@ const NotificationScreen = () => {
   };
 
   const handleSearch = () => {
-    if (searchQuery) {
+    if (searchQuery.trim()) {
       const formData = new FormData();
       formData.append('device_id', deviceId);
       formData.append('session_id', sessionId);
@@ -449,7 +468,17 @@ const NotificationScreen = () => {
       }),
     ]).start(() => setShowFilterModal(false));
   };
-
+  useEffect(() => {
+    if (searchQuery.trim() === '') {
+      dispatch(setCurrentPage(1));
+      const formData = new FormData();
+      formData.append('page', '1');
+      formData.append('device_id', deviceId);
+      formData.append('session_id', sessionId);
+      formData.append('lang', globalLanguage);
+      dispatch(fetchMessagesStart({payload: formData}));
+    }
+  }, [searchQuery, deviceId, sessionId, globalLanguage, dispatch]); // Reset results when searchQuery is cleared
   const renderItem = ({item}) => {
     const isSelecteds = selectedMessages?.includes(item.id);
 
@@ -462,22 +491,72 @@ const NotificationScreen = () => {
       />
     );
   };
+
+  const handleBackPress = React.useCallback(() => {
+    // Check if any modal is open
+    if (
+      showFilterModal ||
+      showArchiveModal ||
+      showMarkReadModal ||
+      showOptionsModal
+    ) {
+      // Close all modals
+      setShowFilterModal(false);
+      setShowArchiveModal(false);
+      setShowMarkReadModal(false);
+      setShowOptionsModal(false);
+      return true; // Prevent default back button behavior
+    }
+
+    // If any items are selected, clear selection
+    if (selectedMessages.length > 0) {
+      dispatch(clearMessageSelection());
+      return true; // Prevent default back button behavior
+    }
+
+    // Clear search text if it's not empty
+    if (searchQuery.trim() !== '') {
+      setSearchQuery('');
+      return true; // Prevent default back button behavior
+    }
+
+    // If no special conditions, allow default back navigation
+    return false;
+  }, [
+    showFilterModal,
+    showArchiveModal,
+    showMarkReadModal,
+    showOptionsModal,
+    selectedMessages,
+    searchQuery,
+    dispatch,
+  ]);
+
+  // Add back button event listener
+  useEffect(() => {
+    BackHandler.addEventListener('hardwareBackPress', handleBackPress);
+    return () => {
+      BackHandler.removeEventListener('hardwareBackPress', handleBackPress);
+    };
+  }, [handleBackPress]);
+
+  const onHeaderBackPress = () => {
+    handleBackPress();
+  };
+
   return (
     <DrawerSceneWrapper>
       <SafeAreaView style={styles.container}>
-        <CustomHeader />
+        <CustomHeader onBackPress={onHeaderBackPress} />
         <View style={styles.headerContainer}>
           <View style={styles.searchFilterContainer}>
             <TextInput
               style={styles.searchInput}
               placeholder={t('NotificationScreen.searchPlaceholder')}
               placeholderTextColor={'black'}
-              onChangeText={text => {
-                console.log('TextInput onChangeText:', text);
-                setSearchQuery(text);
-              }}
+              onChangeText={setSearchQuery} // Update to setSearchQuery
               onSubmitEditing={handleSearch}
-              value={searchQuery}
+              value={searchQuery} // Update to searchQuery
               returnKeyType="search"
             />
             <TouchableOpacity style={styles.filterPicker} onPress={openModal}>
@@ -575,7 +654,12 @@ const NotificationScreen = () => {
         />
         {showScrollToTop && (
           <TouchableOpacity
-            style={styles.scrollToTopButton}
+            style={[
+              styles.scrollToTopButton,
+              {
+                backgroundColor: theme.PRIMARY,
+              },
+            ]}
             activeOpacity={0.7}
             onPress={scrollToTop}>
             <Image source={Images.UP_ARROW} style={styles.scrollToTopIcon} />
@@ -593,9 +677,11 @@ const NotificationScreen = () => {
                 {t('NotificationScreen.confirmArchiveTitle')}
               </Text>
               <Text style={styles.modalBody}>
-                {t('NotificationScreen.confirmArchiveBody', {
-                  count: selectedMessages.length,
-                })}
+                {selectedMessages.length >= 1
+                  ? t('NotificationScreen.confirmArchiveBody_plural', {
+                      count: selectedMessages.length,
+                    })
+                  : t('NotificationScreen.confirmArchiveBody')}
               </Text>
               <View style={{gap: 10}}>
                 <TouchableOpacity style={{}} onPress={cancelArchive}>
@@ -605,7 +691,7 @@ const NotificationScreen = () => {
                 </TouchableOpacity>
                 <TouchableOpacity
                   style={{
-                    backgroundColor: COLOR.PURPLE,
+                    backgroundColor: theme.PRIMARY,
                     paddingVertical: Matrics.vs(10),
                     borderRadius: Matrics.s(5),
                   }}
@@ -650,7 +736,7 @@ const NotificationScreen = () => {
                 </TouchableOpacity>
                 <TouchableOpacity
                   style={{
-                    backgroundColor: COLOR.PURPLE,
+                    backgroundColor: theme.PRIMARY,
                     paddingVertical: Matrics.vs(10),
                     borderRadius: Matrics.s(5),
                   }}
@@ -688,18 +774,25 @@ const NotificationScreen = () => {
                   />
                 </TouchableOpacity>
               </View>
-              <Text style={styles.modalDate}>
-                {previewMessage &&
-                  moment(previewMessage.created_at).format(
-                    'YYYY-MM-DD HH:mm:ss',
-                  )}
-              </Text>
-              <Text style={styles.modalBody}>
-                {previewMessage?.content.replace(/<\/?[^>]+(>|$)/g, '')}
-              </Text>
+              <ScrollView>
+                <Text style={styles.modalDate}>
+                  {previewMessage &&
+                    moment(previewMessage.created_at).format(
+                      'YYYY-MM-DD HH:mm:ss',
+                    )}
+                </Text>
+                <Text style={styles.modalBody}>
+                  {previewMessage?.content.replace(/<\/?[^>]+(>|$)/g, '')}
+                </Text>
+              </ScrollView>
               <View style={styles.modalButtonContainer}>
                 <TouchableOpacity
-                  style={[styles.closeButton]}
+                  style={[
+                    styles.closeButton,
+                    {
+                      backgroundColor: theme.PRIMARY,
+                    },
+                  ]}
                   onPress={handlePreviewArchive}>
                   <Text style={[styles.closeButtonText, {color: COLOR.WHITE}]}>
                     {t('NotificationScreen.moveToArchiveButton')}
@@ -751,7 +844,7 @@ const NotificationScreen = () => {
                     alignItems: 'center',
                     borderRadius: Matrics.s(5),
                     backgroundColor:
-                      filterType === 'all' ? COLOR.PURPLE : '#f5f5f5',
+                      filterType === 'all' ? theme.PRIMARY : '#f5f5f5',
                   }}
                   onPress={() => handleFilter('all')}>
                   <Text
@@ -770,7 +863,7 @@ const NotificationScreen = () => {
                     alignItems: 'center',
                     borderRadius: Matrics.s(5),
                     backgroundColor:
-                      filterType === 'read' ? COLOR.PURPLE : '#f5f5f5',
+                      filterType === 'read' ? theme.PRIMARY : '#f5f5f5',
                     marginVertical: Matrics.s(10),
                   }}
                   onPress={() => handleFilter('read')}>
@@ -790,7 +883,7 @@ const NotificationScreen = () => {
                     alignItems: 'center',
                     borderRadius: Matrics.s(5),
                     backgroundColor:
-                      filterType === 'unread' ? COLOR.PURPLE : '#f5f5f5',
+                      filterType === 'unread' ? theme.PRIMARY : '#f5f5f5',
                   }}
                   onPress={() => handleFilter('unread')}>
                   <Text
@@ -813,7 +906,7 @@ const NotificationScreen = () => {
                   <Text
                     style={{
                       fontSize: typography.fontSizes.fs14,
-                      color: COLOR.PURPLE,
+                      color: theme.PRIMARY,
                       fontFamily: typography.fontFamily.Montserrat.SemiBold,
                     }}>
                     {t('NotificationScreen.filterCancel')}
@@ -969,17 +1062,10 @@ const styles = StyleSheet.create({
   actions: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: COLOR.PURPLE,
     width: Matrics.s(7),
     height: Matrics.vs(7),
     marginRight: Matrics.s(10),
     borderRadius: Matrics.s(20),
-  },
-  actionIcon: {
-    width: Matrics.s(20),
-    height: Matrics.s(20),
-    marginLeft: Matrics.s(15),
-    tintColor: COLOR.PURPLE, // Purple color for icons
   },
   emptyText: {
     color: COLOR.GRAY,
@@ -1112,7 +1198,6 @@ const styles = StyleSheet.create({
     width: Matrics.s(40),
     height: Matrics.s(40),
     borderRadius: Matrics.s(20),
-    backgroundColor: COLOR.PURPLE,
     justifyContent: 'center',
     alignItems: 'center',
     marginRight: Matrics.s(10),
@@ -1154,9 +1239,6 @@ const styles = StyleSheet.create({
   },
   cancelButton: {
     backgroundColor: COLOR.LIGHT_GRAY,
-  },
-  confirmButton: {
-    backgroundColor: COLOR.PURPLE,
   },
   modalButtonText: {
     fontSize: Matrics.s(16),

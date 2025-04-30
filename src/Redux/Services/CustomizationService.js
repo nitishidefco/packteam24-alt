@@ -6,13 +6,9 @@ const BASE_URL = Constants.IS_DEVELOPING_MODE
   : Constants.BASE_URL.PROD;
 
 export default {
-  GetCustomization: async params => {
-    let header = {
-      Accept: 'multipart/form-data',
-    };
-    return fetch(`${BASE_URL}api/customization`, {
-      method: 'POST',
-      body: params,
+  GetCustomization: async () => {
+    return fetch(`${BASE_URL}api/app-personalization-data`, {
+      method: 'GET',
     })
       .then(response => Ajax.handleResponse(response))
       .then(data => {
