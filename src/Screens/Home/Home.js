@@ -242,7 +242,7 @@ const Home = ({navigation, route}) => {
         dispatch(fetchMessagesStart({payload: formData}));
         dispatch(fetchUnreadCountStart({payload: formData}));
       }
-    }, [appState, SessionId, deviceId, globalLanguage, dispatch])
+    }, [appState, SessionId, deviceId, globalLanguage, dispatch]),
   );
 
   // Adds colons to a string for better readability

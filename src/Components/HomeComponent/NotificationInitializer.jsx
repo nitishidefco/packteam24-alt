@@ -19,6 +19,8 @@ const NotificationInitializer = ({navigationRef}) => {
       globalLanguage &&
       dispatch
     ) {
+      console.log('Calleing notification service');
+
       NotificationService.initialize(navigationRef.current);
     }
   }, [deviceId, SessionId, globalLanguage, dispatch]);

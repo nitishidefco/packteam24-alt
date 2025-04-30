@@ -6,7 +6,8 @@ import {
 } from '../Redux/Reducers/NotificationSlice';
 import {Store} from '../Redux/Store';
 import {fetchUnreadCountStart} from '../Redux/Reducers/MessageSlice';
-
+import {MMKV} from 'react-native-mmkv';
+const storage = new MMKV();
 const NotificationService = () => {
   let navigation = null;
   console.log('Inside notification service');
@@ -61,13 +62,28 @@ const NotificationService = () => {
   // Retrieve FCM token and send it to the backend
   const getAndSendFCMToken = async () => {
     try {
-      const token = await messaging().getToken();
-      await sendFCMTokenToBackend(token);
+      let fcmToken = storage.getString('fcm_token');
+      if (!fcmToken) {
+        fcmToken = await messaging().getToken();
+        if (fcmToken) {
+          storage.set('fcm_token', fcmToken);
+          console.log('New FCM Token:', fcmToken);
+        } else {
+          console.log('Failed to fetch FCM token');
+          return;
+        }
+      }
+
+      // Handle token refresh
+      messaging().onTokenRefresh(async newToken => {
+        console.log('FCM Token Refreshed:', newToken);
+        storage.set('fcm_token', newToken);
+        await sendFCMTokenToBackend(newToken);
+      });
+
+      await sendFCMTokenToBackend(fcmToken);
     } catch (error) {
-      console.error(
-        '[NotificationService.getAndSendFCMToken] Error retrieving FCM token:',
-        error,
-      );
+      console.error('[NotificationService.getAndSendFCMToken] Error:', error);
     }
   };
 
@@ -135,6 +151,15 @@ const NotificationService = () => {
           '[NotificationService.setupForegroundHandler] Foreground message received:',
           remoteMessage,
         );
+        const messageId = remoteMessage.messageId;
+        const storedMessageId = storage.getString('lastMessageId');
+        if (storedMessageId === messageId) {
+          console.log(
+            '[NotificationService.setupForegroundHandler] Duplicate message ignored',
+          );
+          return;
+        }
+        storage.set('lastMessageId', messageId);
         await notifee.displayNotification({
           title: remoteMessage.notification?.title ?? 'New Notification',
           body: remoteMessage.notification?.body ?? 'You have a new message',
@@ -153,16 +178,16 @@ const NotificationService = () => {
         });
         // await displayNotification(remoteMessage);
         // // Store.dispatch(setNotification(remoteMessage));
-        // const state = Store.getState();
-        // const sessionId = state.Auth.data?.data?.sesssion_id;
-        // const deviceId = state.Network.deviceId;
-        // const globalLanguage = state.GlobalLanguage;
-        // const formData = new FormData();
-        // formData.append('session_id', sessionId);
-        // formData.append('device_id', deviceId);
-        // formData.append('lang', globalLanguage.globalLanguage);
-        // formData.append('page', 1);
-        // Store.dispatch(fetchUnreadCountStart({payload: formData}));
+        const state = Store.getState();
+        const sessionId = state.Auth.data?.data?.sesssion_id;
+        const deviceId = state.Network.deviceId;
+        const globalLanguage = state.GlobalLanguage;
+        const formData = new FormData();
+        formData.append('session_id', sessionId);
+        formData.append('device_id', deviceId);
+        formData.append('lang', globalLanguage.globalLanguage);
+        formData.append('page', 1);
+        Store.dispatch(fetchUnreadCountStart({payload: formData}));
       } catch (error) {
         console.error(
           '[NotificationService.setupForegroundHandler] Error handling foreground message:',

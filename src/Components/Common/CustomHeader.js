@@ -189,7 +189,8 @@ const CustomHeader = ({
                   position: 'absolute',
                   backgroundColor: 'red',
                   padding: Matrics.s(1),
-                  width: Matrics.s(20),
+                  paddingHorizontal: Matrics.s(2),
+                  // width: Matrics.s(22),
                   borderRadius: Matrics.s(7),
                   top: -3,
                   right: -3,
@@ -197,7 +198,7 @@ const CustomHeader = ({
                 <Text
                   style={{
                     color: 'white',
-                    fontFamily: typography.fontFamily.Montserrat.SemiBold,
+                    fontFamily: typography.fontFamily.Montserrat.Medium,
                     fontSize: typography.fontSizes.fs10,
                     textAlign: 'center',
                   }}>

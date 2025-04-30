@@ -12,6 +12,7 @@ export default {
   IS_TESTDATA: '1',
   activeOpacity: 0.5,
   IS_DEVELOPING_MODE: true,
+  KEY_APP_TOKEN: 'fcm_token',
   BASE_URL: {
     // DEV: 'https://test-tracker.workflex360.de/',
     PROD: 'https://eda.workflex360.de/',
