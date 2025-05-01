@@ -46,6 +46,7 @@ import {
   fetchUnreadCountStart,
 } from '../../Redux/Reducers/MessageSlice';
 import {Store} from '../../Redux/Store';
+import {useTheme} from '../../Context/ThemeContext';
 
 const Home = ({navigation, route}) => {
   const dispatch = useDispatch();
@@ -448,7 +449,7 @@ const Home = ({navigation, route}) => {
     }
     setLoading(false);
   }, [Home]);
-
+  const theme = useTheme();
   return (
     <DrawerSceneWrapper>
       <SafeAreaView style={{backgroundColor: '#EBF0FA', flex: 1}}>
@@ -523,7 +524,12 @@ const Home = ({navigation, route}) => {
 
                 {Platform.OS === 'ios' && (
                   <TouchableOpacity
-                    style={styles.scanButton}
+                    style={[
+                      styles.scanButton,
+                      {
+                        backgroundColor: theme.PRIMARY,
+                      },
+                    ]}
                     onPress={() => initNfcScan()}>
                     <Text style={styles.buttonText}>
                       {t('HomeScreen.nfcButtonText')}

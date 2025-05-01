@@ -303,6 +303,7 @@ const NotificationScreen = () => {
     if (previewMessage) {
       setArchiveMessageId(previewMessage.id);
       setShowArchiveModal(true);
+      dispatch(setPreviewMessage(null));
     }
   };
 

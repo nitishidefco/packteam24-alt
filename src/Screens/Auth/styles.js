@@ -1,5 +1,5 @@
-import { StyleSheet } from 'react-native';
-import { AppStyle, COLOR, Matrics, typography } from '../../Config/AppStyling';
+import {StyleSheet} from 'react-native';
+import {AppStyle, COLOR, Matrics, typography} from '../../Config/AppStyling';
 import colors from '../../Config/AppStyling/colors';
 
 export const loginStyle = StyleSheet.create({
@@ -34,7 +34,7 @@ export const loginStyle = StyleSheet.create({
   keyboardAvoidingView: {
     flex: 1,
     backgroundColor: '#EBF0FA',
-    paddingHorizontal: Matrics.ms(10)
+    paddingHorizontal: Matrics.ms(10),
   },
   container: theme => {
     return [AppStyle.wrapper, {backgroundColor: theme.backgroundColor}];
@@ -59,6 +59,7 @@ export const loginStyle = StyleSheet.create({
   loginlogoContainer: {
     marginTop: Matrics.ms(50),
     marginBottom: Matrics.ms(55),
+    alignItems: 'center'
   },
   androidLogoConatiner: {
     marginTop: Matrics.ms(100),
@@ -124,7 +125,7 @@ export const loginStyle = StyleSheet.create({
     fontFamily: typography.fontFamily.Montserrat.Bold,
     fontSize: typography.fontSizes.fs15,
     maxWidth: '100%',
-    textAlign:'center'
+    textAlign: 'center',
   },
   inputStyle: {
     flex: 1,
@@ -221,7 +222,7 @@ export const registerStyle = StyleSheet.create({
     flex: 1,
   },
   container: theme => {
-    return [AppStyle.wrapper, { backgroundColor: theme.backgroundColor }];
+    return [AppStyle.wrapper, {backgroundColor: theme.backgroundColor}];
   },
   reactLogoContainer: {
     alignItems: 'center',
@@ -282,7 +283,7 @@ export const registerStyle = StyleSheet.create({
     fontFamily: typography.fontFamily.RobotoSlab.Regular,
     paddingLeft: Matrics.ms(15),
     paddingRight: Matrics.ms(15),
-    marginBottom: Matrics.ms(10)
+    marginBottom: Matrics.ms(10),
   },
   registerTextStyle: theme => {
     return {
