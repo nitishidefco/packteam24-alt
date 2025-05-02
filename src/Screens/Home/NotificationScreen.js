@@ -267,8 +267,8 @@ const NotificationScreen = () => {
   const backdropOpacity = useRef(new Animated.Value(0)).current;
 
   const handleLongPress = id => {
-    if (selectedMessages.length === 0) {
-      Vibration.vibrate(50); // Vibrate for 50ms when the first item is selected
+    if (selectedMessages.length === 0 && Platform.OS === 'android') {
+      Vibration.vibrate(10);
     }
     dispatch(toggleMessageSelection(id));
   };

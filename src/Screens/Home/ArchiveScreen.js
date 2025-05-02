@@ -13,6 +13,7 @@ import {
   Vibration,
   Animated,
   ScrollView,
+  Platform,
 } from 'react-native';
 import {useTranslation} from 'react-i18next';
 import CustomHeader from '../../Components/Common/CustomHeader';
@@ -202,7 +203,7 @@ const ArchiveScreen = () => {
   const backdropOpacity = useRef(new Animated.Value(0)).current;
 
   const handleLongPress = id => {
-    if (archivedSelectedMessages.length === 0) {
+    if (archivedSelectedMessages.length === 0 && Platform.OS === 'android') {
       Vibration.vibrate(70);
     }
     dispatch(toggleArchiveSelection(id));

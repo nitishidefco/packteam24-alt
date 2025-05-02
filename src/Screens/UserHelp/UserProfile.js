@@ -466,9 +466,12 @@ const UserProfile = ({navigation}) => {
                     ) : (
                       <View style={styles.placeholderContainer}>
                         <View style={styles.placeholder}>
-                          <Text style={styles.placeholderText}>
-                            {error || 'Dummy avatar will be added if no photo'}
-                          </Text>
+                          <Image
+                            source={Images.USER_PROFILE}
+                            style={styles.image}
+                            resizeMode="contain"
+                            onError={() => setError('Failed to load image')}
+                          />
                         </View>
                       </View>
                     )}
@@ -806,7 +809,6 @@ const styles = StyleSheet.create({
     fontSize: typography.fontSizes.fs16,
     color: '#333',
     // paddingBottom: Matrics.vs(5),
-    backgroundColor: 'red',
   },
   chevronIcon: {
     width: Matrics.ms(20),
