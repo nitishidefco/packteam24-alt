@@ -7,7 +7,7 @@ const initialState = {
     app_name: '',
     app_logo: '',
     app_main_color: '',
-  }, // Initialize with expected structure
+  },
   error: [],
 };
 

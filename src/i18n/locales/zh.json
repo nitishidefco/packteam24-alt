@@ -175,7 +175,7 @@
     "filterCancel": "取消",
     "filterLabel": "筛选",
     "confirmArchiveTitle": "确认归档",
-    "confirmArchiveBody": "您确定要将{{count}}条选中的消息移到档案吗？",
+    "confirmArchiveBody": "您确定要将这条消息移到档案吗？",
     "confirmArchiveBody_plural": "您确定要将{{count}}条选中的消息移到档案吗？",
     "confirmArchiveButton": "确认",
     "markAsReadLabel": "标记为已读",
@@ -220,5 +220,13 @@
   "CustomHeader": {
     "MessageCenter": "消息中心",
     "Archives": "档案"
-  }
+  },
+  "languageOptions": [
+    {"label": "英语", "value": "en"},
+    {"label": "波兰语", "value": "pl"},
+    {"label": "德语", "value": "de"},
+    {"label": "俄语", "value": "ru"},
+    {"label": "乌克兰语", "value": "ua"},
+    {"label": "中文", "value": "zh"}
+  ]
 }

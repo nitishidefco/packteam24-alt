@@ -113,6 +113,7 @@ const NotificationService = () => {
       formData.append('device_id', deviceId);
       formData.append('session_id', sessionId);
       formData.append('user_id', userId);
+      console.log('Sending FCM token to backend:');
 
       Store.dispatch(notification({payload: formData}));
     } catch (error) {
@@ -187,6 +188,8 @@ const NotificationService = () => {
         formData.append('device_id', deviceId);
         formData.append('lang', globalLanguage.globalLanguage);
         formData.append('page', 1);
+        console.log('Fetching uread count');
+
         Store.dispatch(fetchUnreadCountStart({payload: formData}));
       } catch (error) {
         console.error(
@@ -279,4 +282,4 @@ const NotificationService = () => {
   return {initialize};
 };
 
-export default NotificationService();
+export default NotificationService;

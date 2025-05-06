@@ -4,6 +4,7 @@ let sessionHandler = {
   SessionId: null,
   deviceId: null,
   navigation: null,
+  globalLanguage: null,
 };
 
 export const setSessionHandler = (
@@ -11,12 +12,14 @@ export const setSessionHandler = (
   SessionId,
   deviceId,
   navigation,
+  globalLanguage,
 ) => {
   sessionHandler = {
     dispatch,
     SessionId,
     deviceId,
     navigation,
+    globalLanguage,
   };
 };
 

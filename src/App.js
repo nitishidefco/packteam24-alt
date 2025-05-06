@@ -25,10 +25,20 @@ import ForgotPass from './Screens/Auth/ForgotPass';
 import CreateAccount from './Screens/Auth/CreateAccount';
 // import NotificationService from './Services/NotificationService';
 import NotificationInitializer from './Components/HomeComponent/NotificationInitializer';
-import {ThemeProvider} from './Context/ThemeContext';
+import {ThemeProvider, useTheme} from './Context/ThemeContext';
+import {Platform, StatusBar} from 'react-native';
 
 const Stack = createStackNavigator();
-
+const StatusBarWithTheme = () => {
+  const theme = useTheme(); // Access theme from ThemeProvider
+  return (
+    <StatusBar
+      backgroundColor={theme.PRIMARY} // Use theme color or fallback
+      barStyle={'light-content'} // Use theme style or fallback
+      // translucent={Platform.OS === 'android'} // Translucent for Android edge-to-edge
+    />
+  );
+};
 const App = () => {
   const navigationRef = useRef(null);
   // const {deviceId} = useSelector(state => state?.Network);
@@ -43,6 +53,7 @@ const App = () => {
       <SafeAreaProvider>
         <I18nextProvider i18n={i18n}>
           <ThemeProvider>
+            <StatusBarWithTheme />
             <NavigationContainer ref={navigationRef}>
               <Stack.Navigator>
                 <Stack.Screen

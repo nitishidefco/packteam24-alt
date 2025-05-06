@@ -1,5 +1,4 @@
 import {
-  changeAppColor,
   changeAppColorFailure,
   changeAppColorSuccess,
 } from '../Reducers/CustomizationSlice';

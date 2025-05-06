@@ -88,7 +88,7 @@
     "OK": "OK",
     "langConfig": "Налаштування мови повідомлень від додатка до мене",
     "notificationLanguage": "Виберіть мову, якою ви хочете отримувати повідомлення",
-      "selectLanguage": "Вибрати мову"
+    "selectLanguage": "Вибрати мову"
   },
   "ResetPassword": {
     "passwordResetSuccess": "Ми надіслали вам посилання для скидання пароля!",
@@ -171,7 +171,7 @@
     "filterCancel": "Скасувати",
     "filterLabel": "Фільтр",
     "confirmArchiveTitle": "Підтвердити архівування",
-    "confirmArchiveBody": "Ви впевнені, що хочете перемістити {{count}} вибране повідомлення до архіву?",
+    "confirmArchiveBody": "Ви впевнені, що хочете перемістити це повідомлення до архіву?",
     "confirmArchiveBody_plural": "Ви впевнені, що хочете перемістити {{count}} вибраних повідомлень до архіву?",
     "confirmArchiveButton": "Підтвердити",
     "markAsReadLabel": "Позначити як прочитане",
@@ -216,5 +216,13 @@
   "CustomHeader": {
     "MessageCenter": "Центр повідомлень",
     "Archives": "Архіви"
-  }
+  },
+  "languageOptions": [
+    {"label": "Англійська", "value": "en"},
+    {"label": "Польська", "value": "pl"},
+    {"label": "Німецька", "value": "de"},
+    {"label": "Російська", "value": "ru"},
+    {"label": "Українська", "value": "ua"},
+    {"label": "Китайська", "value": "zh"}
+  ]
 }

@@ -1,8 +1,10 @@
 import {useEffect, useRef} from 'react';
 import {useDispatch, useSelector} from 'react-redux';
-import NotificationService from '../../Services/NotificationService';
+import NotificationServiceFactory from '../../Services/NotificationService';
 import {useAuthActions} from '../../Redux/Hooks';
 import {Store} from '../../Redux/Store';
+import {setSessionHandler} from '../../Utlis/SessionHandler';
+
 const NotificationInitializer = ({navigationRef}) => {
   const deviceId = useSelector(state => state.Network?.deviceId);
   const {state} = useAuthActions();
@@ -19,9 +21,15 @@ const NotificationInitializer = ({navigationRef}) => {
       globalLanguage &&
       dispatch
     ) {
-      console.log('Calleing notification service');
-
-      NotificationService.initialize(navigationRef.current);
+      setSessionHandler(
+        dispatch,
+        SessionId,
+        deviceId,
+        navigationRef.current,
+        globalLanguage,
+      );
+      const notificationService = NotificationServiceFactory();
+      notificationService.initialize(navigationRef.current);
     }
   }, [deviceId, SessionId, globalLanguage, dispatch]);
 
