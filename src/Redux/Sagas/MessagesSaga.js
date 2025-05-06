@@ -16,6 +16,7 @@ import {
   searchMessagesSuccess,
 } from '../Reducers/MessageSlice';
 import {success} from '../../Helpers/ToastMessage';
+import i18n from '../../i18n/i18n';
 
 function* fetchMessagesSaga({payload}) {
   console.log('Payload message saga', payload.payload);
@@ -47,7 +48,6 @@ function* fetchMessagesSaga({payload}) {
 }
 
 function* fetchUnreadCountSaga({payload}) {
-
   try {
     const response = yield call(MessageService.GetUnreadCount, payload.payload);
     console.log('fetchUnreadCount response', response);
@@ -124,7 +124,8 @@ function* moveToArchiveSaga({payload}) {
     console.log('Move to archive response', response);
 
     if (response.success) {
-      success('Messaged Archived Successfully');
+      const successResponse = i18n.t('Toast.MessageArchivedSuccessfully');
+      success(successResponse);
       const state = yield select();
       const {currentPage, selectedMessages} = state.Messages;
       console.log('Selected Messages', selectedMessages);

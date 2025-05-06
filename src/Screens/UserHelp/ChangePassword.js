@@ -226,6 +226,7 @@ const ChangePassword = ({navigation}) => {
                 alignItems: 'flex-end',
                 paddingHorizontal: Matrics.s(10),
                 marginBottom: Matrics.vs(70),
+                marginTop: Matrics.vs(-10),
               }}>
               <LanguageSelector sessionId={SessionId} />
             </View>

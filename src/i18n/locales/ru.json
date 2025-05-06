@@ -120,7 +120,8 @@
     "Workalreadystarted": "Работа уже начата",
     "Breakalreadystarted": "Перерыв уже активен",
     "WorkAlreadyFinished": "Работа уже завершена",
-    "MessageDeletedSuccessfully": "Сообщение успешно удалено!"
+    "MessageDeletedSuccessfully": "Сообщение успешно удалено!",
+    "MessageArchivedSuccessfully": "Сообщение успешно заархивировано!",
   },
   "TimeLog": {
     "title": "Журнал времени",

@@ -124,7 +124,8 @@
     "Workalreadystarted": "Praca już się rozpoczęła",
     "Breakalreadystarted": "Przerwa jest już aktywna",
     "WorkAlreadyFinished": "Praca już się zakończyła",
-    "MessageDeletedSuccessfully": "Wiadomość została pomyślnie usunięta!"
+    "MessageDeletedSuccessfully": "Wiadomość została pomyślnie usunięta!",
+    "MessageArchivedSuccessfully": "Wiadomość została pomyślnie zarchiwizowana!"
   },
   "TimeLog": {
     "title": "Dziennik czasu",

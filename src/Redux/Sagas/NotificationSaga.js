@@ -5,10 +5,12 @@ import {
   notificationFail,
   notificationSuccess,
 } from '../Reducers/NotificationSlice';
+import i18n from '../../i18n/i18n';
 
 function* notificationSaga({payload}) {
   try {
     const response = yield call(API.SendToken, payload.payload);
+    console.log('response from notification saga', response);
 
     if (response) {
       yield put(notificationSuccess(response?.message));
@@ -17,9 +19,12 @@ function* notificationSaga({payload}) {
       yield put(notificationFail(response.errors));
     }
   } catch (error) {
-    console.log(error);
-
-    console.error('Notification saga error', error);
+    console.error('Notification saga error:', {
+      message: error.message,
+      stack: error.stack,
+      response: error.response ? error.response.data : 'No response data',
+      config: error.config || 'No config data',
+    });
     yield put(notificationFail(error));
   }
 }

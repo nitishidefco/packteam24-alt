@@ -124,7 +124,8 @@
     "Workalreadystarted": "工作已开始",
     "Breakalreadystarted": "休息已激活",
     "WorkAlreadyFinished": "工作已完成",
-    "MessageDeletedSuccessfully": "消息删除成功！"
+    "MessageDeletedSuccessfully": "消息删除成功！",
+    "MessageArchivedSuccessfully": "消息归档成功！"
   },
   "TimeLog": {
     "title": "时间记录",

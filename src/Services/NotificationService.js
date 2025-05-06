@@ -94,6 +94,7 @@ const NotificationService = () => {
     const authState = state?.Auth;
     const sessionId = authState?.data?.data?.sesssion_id;
     const userId = authState?.data?.data?.user_id;
+    const globalLanguage = state.GlobalLanguage;
 
     if (!deviceId || !sessionId || !userId) {
       console.error(
@@ -103,7 +104,7 @@ const NotificationService = () => {
           sessionId,
           userId,
         },
-      );
+      );  ``
       return;
     }
 
@@ -113,6 +114,7 @@ const NotificationService = () => {
       formData.append('device_id', deviceId);
       formData.append('session_id', sessionId);
       formData.append('user_id', userId);
+      formData.append('lang', globalLanguage.globalLanguage);
       console.log('Sending FCM token to backend:');
 
       Store.dispatch(notification({payload: formData}));

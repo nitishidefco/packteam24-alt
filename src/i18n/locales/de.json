@@ -124,7 +124,8 @@
     "Workalreadystarted": "Arbeit hat bereits begonnen",
     "Breakalreadystarted": "Pause ist bereits aktiv",
     "WorkAlreadyFinished": "Arbeit ist bereits beendet",
-    "MessageDeletedSuccessfully": "Nachricht erfolgreich gelöscht!"
+    "MessageDeletedSuccessfully": "Nachricht erfolgreich gelöscht!",
+    "MessageArchivedSuccessfully": "Nachricht erfolgreich archiviert!",
   },
   "TimeLog": {
     "title": "Zeiterfassung",

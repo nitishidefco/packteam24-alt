@@ -385,7 +385,7 @@ const UserProfile = ({navigation}) => {
       onPress={() => {
         setNotificationLanguage(item.value);
         // saveNotificationLanguage(item.value);
-        i18n.changeLanguage(item.value);
+        // i18n.changeLanguage(item.value);
         closeModal();
       }}>
       <Text
@@ -661,7 +661,6 @@ const styles = StyleSheet.create({
   },
   header: {
     height: 56,
-
     justifyContent: 'center',
     alignItems: 'center',
     ...Platform.select({
@@ -671,7 +670,7 @@ const styles = StyleSheet.create({
         shadowOpacity: 0.25,
         shadowRadius: 3.84,
       },
-      android: {elevation: 5},
+      // android: {elevation: 5},
     }),
   },
   headerTitle: {

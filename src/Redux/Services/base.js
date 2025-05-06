@@ -1,6 +1,5 @@
 import {Alert} from 'react-native';
 import {Constants} from '../../Config';
-import {errorToast} from '../../Helpers/ToastMessage';
 import {getSessionHandler} from '../../Utlis/SessionHandler';
 import {getLogout} from '../Reducers/AuthSlice';
 import i18n from '../../i18n/i18n';
@@ -15,8 +14,8 @@ let alertShown = false;
 const handleResponse = response => {
   const {dispatch, SessionId, deviceId, navigation, globalLanguage} =
     getSessionHandler();
+  console.log('Global language:**********************', globalLanguage);
 
-  i18n.changeLanguage(globalLanguage);
   const contentType = response.headers.get('Content-Type');
 
   if (response.status === 403 && !alertShown) {
@@ -35,7 +34,6 @@ const handleResponse = response => {
                 const formData = new FormData();
                 formData.append('session_id', SessionId);
                 formData.append('device_id', deviceId);
-                console.log('logging out user');
 
                 dispatch(getLogout(formData));
                 navigation.reset({

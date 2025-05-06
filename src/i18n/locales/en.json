@@ -124,7 +124,8 @@
     "Cannottakebreak": "Cannot take break before starting work",
     "Workalreadystarted": "Work is already started",
     "Breakalreadystarted": "Break is already active",
-    "MessageDeletedSuccessfully": "Message deleted successfully!"
+    "MessageDeletedSuccessfully": "Message deleted successfully!",
+    "MessageArchivedSuccessfully": "Message archived successfully!"
   },
   "TimeLog": {
     "title": "Time Log",

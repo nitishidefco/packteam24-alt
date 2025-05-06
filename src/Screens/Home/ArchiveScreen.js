@@ -818,7 +818,7 @@ const ArchiveScreen = () => {
                         fontSize: typography.fontSizes.fs16,
                       },
                     ]}>
-                    Cancel
+                    {i18n.t('ChangePasswordScreen.cancel')}
                   </Text>
                 </TouchableOpacity>
                 <TouchableOpacity

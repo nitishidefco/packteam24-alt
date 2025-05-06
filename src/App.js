@@ -35,10 +35,7 @@ const StatusBarWithTheme = () => {
   return (
     <>
       {Platform.OS === 'ios' ? (
-        <SafeAreaView
-          style={{ backgroundColor: theme.PRIMARY }}
-          edges={['top']} 
-        >
+        <SafeAreaView style={{backgroundColor: theme.PRIMARY}} edges={['top']}>
           <StatusBar
             barStyle={theme.barStyle || 'light-content'} // Dynamic or fallback style
           />
@@ -47,7 +44,7 @@ const StatusBarWithTheme = () => {
         <StatusBar
           backgroundColor={theme.PRIMARY} // Set status bar color on Android
           barStyle={theme.barStyle || 'light-content'} // Dynamic or fallback style
-          translucent={true} // Allow content to extend under status bar
+          // translucent={true} // Allow content to extend under status bar
         />
       )}
     </>
