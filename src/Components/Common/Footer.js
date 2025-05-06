@@ -95,7 +95,7 @@ const Footer = () => {
             fontFamily: typography.fontFamily.Montserrat.Bold,
             fontSize: typography.fontSizes.fs10,
           }}>
-          TEST-TRACKER v1.1
+          TEST-TRACKER v1.10
         </Text>
       </View>
     </>
