@@ -59,6 +59,7 @@ export const loginStyle = StyleSheet.create({
   loginlogoContainer: {
     marginTop: Matrics.ms(50),
     marginBottom: Matrics.ms(55),
+    justifyContent: 'center',
     alignItems: 'center'
   },
   androidLogoConatiner: {

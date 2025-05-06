@@ -13,12 +13,16 @@ const DELETE = 'delete';
 
 let alertShown = false;
 const handleResponse = response => {
-  const {dispatch, SessionId, deviceId, navigation} = getSessionHandler();
+  const {dispatch, SessionId, deviceId, navigation, globalLanguage} =
+    getSessionHandler();
 
+  i18n.changeLanguage(globalLanguage);
   const contentType = response.headers.get('Content-Type');
 
   if (response.status === 403 && !alertShown) {
     alertShown = true;
+    console.log('Alert is shown', response);
+
     return response.json().then(errorData => {
       Alert.alert(
         i18n.t('Session.SE'),
@@ -34,7 +38,10 @@ const handleResponse = response => {
                 console.log('logging out user');
 
                 dispatch(getLogout(formData));
-                navigation.replace('Login');
+                navigation.reset({
+                  index: 0,
+                  routes: [{name: 'Login'}],
+                });
                 alertShown = false;
               } catch (error) {
                 console.error('Error logging out:', error);

@@ -91,8 +91,8 @@
     "no": "Nein",
     "yes": "Ja",
     "langConfig": "Konfigurieren der Sprache der Nachrichten von der App an mich",
-     "notificationLanguage": "Wählen Sie die Sprache, in der Sie Nachrichten erhalten möchten",
-      "selectLanguage": "Sprache auswählen"
+    "notificationLanguage": "Wählen Sie die Sprache, in der Sie Nachrichten erhalten möchten",
+    "selectLanguage": "Sprache auswählen"
   },
   "ResetPassword": {
     "passwordResetSuccess": "Wir haben Ihnen einen Link zum Zurücksetzen des Passworts per E-Mail gesendet!",
@@ -175,7 +175,7 @@
     "filterCancel": "Abbrechen",
     "filterLabel": "Filter",
     "confirmArchiveTitle": "Archivieren bestätigen",
-    "confirmArchiveBody": "Möchten Sie {{count}} ausgewählte Nachricht in das Archiv verschieben?",
+    "confirmArchiveBody": "Möchten Sie diese Nachricht in das Archiv verschieben?",
     "confirmArchiveBody_plural": "Möchten Sie {{count}} ausgewählte Nachrichten in das Archiv verschieben?",
     "confirmArchiveButton": "Bestätigen",
     "markAsReadLabel": "Als gelesen markieren",
@@ -194,7 +194,7 @@
     "selectedLabel": "Ausgewählt"
   },
   "ArchiveScreen": {
-    "title": "Archive",
+    "title": "Archiv",
     "searchPlaceholder": "Suche",
     "filterNotifications": "Benachrichtigungen filtern",
     "filterAll": "Alle",
@@ -220,5 +220,13 @@
   "CustomHeader": {
     "MessageCenter": "Nachrichtenzentrum",
     "Archives": "Archive"
-  }
+  },
+  "languageOptions": [
+    {"label": "Englisch", "value": "en"},
+    {"label": "Polnisch", "value": "pl"},
+    {"label": "Deutsch", "value": "de"},
+    {"label": "Russisch", "value": "ru"},
+    {"label": "Ukrainisch", "value": "ua"},
+    {"label": "Chinesisch", "value": "zh"}
+  ]
 }

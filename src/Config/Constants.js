@@ -14,11 +14,11 @@ export default {
   IS_DEVELOPING_MODE: true,
   KEY_APP_TOKEN: 'fcm_token',
   BASE_URL: {
-    DEV: 'https://test-tracker.workflex360.de/',
+    // DEV: 'https://test-tracker.workflex360.de/',
+    DEV: 'https://edapackteam.visionvivante.in/',
     PROD: 'https://eda.workflex360.de/',
     // DEV: 'https://nfc.visionvivante.com/',
     // PROD: 'https://nfc.visionvivante.com/',
-    // DEV: 'https://edapackteam.visionvivante.in/',
     IMAGEURL: 'https://das4you.mhcode.pl/storage/daily_list/attachment/',
   },
   ENVIRONMENT: {

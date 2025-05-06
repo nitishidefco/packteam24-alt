@@ -260,7 +260,9 @@ const Login = ({route}) => {
                 styles.loginlogoContainer,
                 Platform.OS === 'ios' && styles.androidLogoConatiner,
               ]}>
-              <AppLogo style={{height: Matrics.ms(68)}} />
+              <AppLogo
+                style={{height: Matrics.ms(68), width: Matrics.ms(68)}}
+              />
               {/* <Image
                 source={Images.NEW_APP_LOGO}
                 style={{

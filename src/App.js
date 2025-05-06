@@ -19,16 +19,40 @@ import {toastConfig} from './Helpers';
 import AddDailyList from './Screens/DailyList/AddDailyList';
 import EditDailyList from './Screens/DailyList/EditDailyList';
 import CreateDailyList from './Screens/DailyList/CreateDailyList';
-import {SafeAreaProvider} from 'react-native-safe-area-context';
+import {SafeAreaProvider, SafeAreaView} from 'react-native-safe-area-context';
 import {monitorNetworkStatus} from './Utlis/NetworkUtils';
 import ForgotPass from './Screens/Auth/ForgotPass';
 import CreateAccount from './Screens/Auth/CreateAccount';
 // import NotificationService from './Services/NotificationService';
 import NotificationInitializer from './Components/HomeComponent/NotificationInitializer';
-import {ThemeProvider} from './Context/ThemeContext';
+import {ThemeProvider, useTheme} from './Context/ThemeContext';
+import {Platform, StatusBar} from 'react-native';
 
 const Stack = createStackNavigator();
+const StatusBarWithTheme = () => {
+  const theme = useTheme(); // Access theme from ThemeProvider
 
+  return (
+    <>
+      {Platform.OS === 'ios' ? (
+        <SafeAreaView
+          style={{ backgroundColor: theme.PRIMARY }}
+          edges={['top']} 
+        >
+          <StatusBar
+            barStyle={theme.barStyle || 'light-content'} // Dynamic or fallback style
+          />
+        </SafeAreaView>
+      ) : (
+        <StatusBar
+          backgroundColor={theme.PRIMARY} // Set status bar color on Android
+          barStyle={theme.barStyle || 'light-content'} // Dynamic or fallback style
+          translucent={true} // Allow content to extend under status bar
+        />
+      )}
+    </>
+  );
+};
 const App = () => {
   const navigationRef = useRef(null);
   // const {deviceId} = useSelector(state => state?.Network);
@@ -43,6 +67,7 @@ const App = () => {
       <SafeAreaProvider>
         <I18nextProvider i18n={i18n}>
           <ThemeProvider>
+            <StatusBarWithTheme />
             <NavigationContainer ref={navigationRef}>
               <Stack.Navigator>
                 <Stack.Screen

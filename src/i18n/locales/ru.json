@@ -87,8 +87,8 @@
     "FailedToRemove": "Не удалось удалить фото профиля. Попробуйте еще раз.",
     "OK": "OK",
     "langConfig": "Настройка языка сообщений от приложения ко мне",
-        "notificationLanguage": "Выберите язык, на котором вы хотите получать сообщения",
-      "selectLanguage": "Выбрать язык"
+    "notificationLanguage": "Выберите язык, на котором вы хотите получать сообщения",
+    "selectLanguage": "Выбрать язык"
   },
   "ResetPassword": {
     "passwordResetSuccess": "Мы отправили вам ссылку для сброса пароля!",
@@ -171,7 +171,7 @@
     "filterCancel": "Отмена",
     "filterLabel": "Фильтр",
     "confirmArchiveTitle": "Подтвердить архивирование",
-    "confirmArchiveBody": "Вы уверены, что хотите переместить {{count}} выбранное сообщение в архив?",
+    "confirmArchiveBody": "Вы уверены, что хотите переместить это сообщение в архив?",
     "confirmArchiveBody_plural": "Вы уверены, что хотите переместить {{count}} выбранных сообщений в архив?",
     "confirmArchiveButton": "Подтвердить",
     "markAsReadLabel": "Отметить как прочитанное",
@@ -215,5 +215,13 @@
   "CustomHeader": {
     "MessageCenter": "Центр сообщений",
     "Archives": "Архивы"
-  }
+  },
+  "languageOptions": [
+    {"label": "Английский", "value": "en"},
+    {"label": "Польский", "value": "pl"},
+    {"label": "Немецкий", "value": "de"},
+    {"label": "Русский", "value": "ru"},
+    {"label": "Украинский", "value": "ua"},
+    {"label": "Китайский", "value": "zh"}
+  ]
 }

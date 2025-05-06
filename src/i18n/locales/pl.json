@@ -92,7 +92,7 @@
     "yes": "Tak",
     "langConfig": "Konfigurowanie języka wiadomości z aplikacji do mnie",
     "notificationLanguage": "Wybierz język, w którym chcesz otrzymywać wiadomości",
-      "selectLanguage": "Wybierz język"
+    "selectLanguage": "Wybierz język"
   },
   "ResetPassword": {
     "passwordResetSuccess": "Wysłaliśmy Ci link do resetowania hasła!",
@@ -175,7 +175,7 @@
     "filterCancel": "Anuluj",
     "filterLabel": "Filtr",
     "confirmArchiveTitle": "Potwierdź archiwizację",
-    "confirmArchiveBody": "Czy na pewno chcesz przenieść {{count}} wybraną wiadomość do archiwum?",
+    "confirmArchiveBody": "Czy na pewno chcesz przenieść tę wiadomość do archiwum?",
     "confirmArchiveBody_plural": "Czy na pewno chcesz przenieść {{count}} wybranych wiadomości do archiwum?",
     "confirmArchiveButton": "Potwierdź",
     "markAsReadLabel": "Oznacz jako przeczytane",
@@ -220,5 +220,13 @@
   "CustomHeader": {
     "MessageCenter": "Centrum wiadomości",
     "Archives": "Archiwa"
-  }
+  },
+  "languageOptions": [
+    {"label": "Angielski", "value": "en"},
+    {"label": "Polski", "value": "pl"},
+    {"label": "Niemiecki", "value": "de"},
+    {"label": "Rosyjski", "value": "ru"},
+    {"label": "Ukraiński", "value": "ua"},
+    {"label": "Chiński", "value": "zh"}
+  ]
 }

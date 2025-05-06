@@ -59,11 +59,11 @@ const Splash = () => {
       style={[
         styles.container,
         {
-          backgroundColor: COLOR.PURPLE,
+          backgroundColor: theme.PRIMARY,
         },
       ]}>
       <Image
-        source={Images.NEW_APP_LOGO}
+        source={{uri: theme.LOGO}}
         style={styles.image}
         resizeMode="contain"
       />

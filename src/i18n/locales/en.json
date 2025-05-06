@@ -227,5 +227,13 @@
     "errorMessage": "Failed to request notification permissions. Please enable in Settings > Notifications > EDA - Time Tracker",
     "cancel": "Cancel",
     "settings": "Settings"
-  }
+  },
+  "languageOptions": [
+    {"label": "English", "value": "en"},
+    {"label": "Polish", "value": "pl"},
+    {"label": "German", "value": "de"},
+    {"label": "Russian", "value": "ru"},
+    {"label": "Ukrainian", "value": "ua"},
+    {"label": "Chinese", "value": "zh"}
+  ]
 }

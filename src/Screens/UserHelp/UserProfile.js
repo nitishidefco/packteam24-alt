@@ -39,6 +39,7 @@ import {useTheme} from '../../Context/ThemeContext';
 const UserProfile = ({navigation}) => {
   const theme = useTheme();
   const {t, i18n} = useTranslation();
+  const languageOptions = t('languageOptions', {returnObjects: true});
   const isConnected = useSelector(state => state?.Network?.isConnected);
   const language = useSavedLanguage();
   const {
@@ -62,14 +63,6 @@ const UserProfile = ({navigation}) => {
   const [isLanguageModalVisible, setIsLanguageModalVisible] = useState(false);
   const modalAnimation = useRef(new Animated.Value(0)).current;
 
-  const languageOptions = [
-    {label: 'English', value: 'en'},
-    {label: 'Polish', value: 'pl'},
-    {label: 'German', value: 'de'},
-    {label: 'Russian', value: 'ru'},
-    {label: 'Ukrainian', value: 'ua'},
-    {label: 'Chinese', value: 'zh' || 'cn'},
-  ];
   const NOTIFICATION_LANGUAGE_KEY = 'notificationLanguage';
 
   // const saveNotificationLanguage = async lang => {
@@ -391,6 +384,8 @@ const UserProfile = ({navigation}) => {
       ]}
       onPress={() => {
         setNotificationLanguage(item.value);
+        // saveNotificationLanguage(item.value);
+        i18n.changeLanguage(item.value);
         closeModal();
       }}>
       <Text
@@ -436,7 +431,7 @@ const UserProfile = ({navigation}) => {
           style={{
             position: 'absolute',
             right: 0,
-            top: Platform.OS === 'ios' ? 200 : 100,
+            top: Platform.OS === 'ios' ? 150 : 100,
             zIndex: 10,
             alignItems: 'flex-end',
             paddingHorizontal: Matrics.s(10),
