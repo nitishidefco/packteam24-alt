@@ -7,6 +7,8 @@ const BASE_URL = Constants.IS_DEVELOPING_MODE
 
 export default {
   Profile: async params => {
+    console.log('params in profile service', params);
+
     return fetch(`${BASE_URL}api/profile`, {
       method: 'POST',
       body: params,
