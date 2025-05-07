@@ -247,7 +247,11 @@ const Login = ({route}) => {
         behavior={Platform.OS === 'android' ? 'height' : 'padding'}
         enabled>
         <ScrollView
-          contentContainerStyle={{flexGrow: 1}}
+          contentContainerStyle={{
+            flexGrow: 1,
+            paddingBottom:
+              Platform.OS === 'ios' ? Matrics.vs(20) : Matrics.vs(0),
+          }}
           keyboardShouldPersistTaps="handled"
           showsVerticalScrollIndicator={false}>
           <View
@@ -261,7 +265,10 @@ const Login = ({route}) => {
                 Platform.OS === 'ios' && styles.androidLogoConatiner,
               ]}>
               <AppLogo
-                style={{height: Matrics.ms(68), width: Matrics.ms(68)}}
+                style={{
+                  height: Matrics.ms(68),
+                  width: Matrics.screenWidth * 0.9,
+                }}
               />
               {/* <Image
                 source={Images.NEW_APP_LOGO}

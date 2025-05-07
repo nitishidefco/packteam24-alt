@@ -199,12 +199,12 @@ const ChangePassword = ({navigation}) => {
     </SafeAreaView>
   ) : (
     <DrawerSceneWrapper>
-      <KeyboardAvoidingView
-        style={styles.keyboardAvoidingView}
-        behavior={Platform.OS === 'android' ? 'height' : 'padding'}
-        enabled>
-        <SafeAreaView style={{flex: 1}}>
-          <CustomHeader />
+      <SafeAreaView style={{flex: 1}}>
+        <CustomHeader />
+        <KeyboardAvoidingView
+          style={styles.keyboardAvoidingView}
+          behavior={Platform.OS === 'android' ? 'height' : 'padding'}
+          enabled>
           <ScrollView
             contentContainerStyle={{flexGrow: 1}}
             keyboardShouldPersistTaps="handled"
@@ -226,7 +226,8 @@ const ChangePassword = ({navigation}) => {
                 alignItems: 'flex-end',
                 paddingHorizontal: Matrics.s(10),
                 marginBottom: Matrics.vs(70),
-                marginTop: Matrics.vs(-10),
+                marginTop:
+                  Platform.OS === 'android' ? Matrics.vs(-10) : Matrics.vs(10),
               }}>
               <LanguageSelector sessionId={SessionId} />
             </View>
@@ -342,8 +343,8 @@ const ChangePassword = ({navigation}) => {
               </View>
             </View>
           </ScrollView>
-        </SafeAreaView>
-      </KeyboardAvoidingView>
+        </KeyboardAvoidingView>
+      </SafeAreaView>
     </DrawerSceneWrapper>
   );
 };
@@ -352,6 +353,8 @@ const styles = StyleSheet.create({
   keyboardAvoidingView: {
     flex: 1,
     backgroundColor: '#EBF0FA',
+    // backgroundColor:'red'
+    paddingTop: 0,
   },
   mainBody: theme => ({
     flex: 1,

@@ -439,14 +439,15 @@ const UserProfile = ({navigation}) => {
           }}>
           <LanguageSelector sessionId={SessionId} />
         </View>
-        <KeyboardAvoidingView
-          style={styles.keyboardAvoidingView}
-          behavior={Platform.OS === 'android' ? 'height' : 'padding'}
-          enabled>
-          <ScrollView
-            contentContainerStyle={{flexGrow: 1}}
-            keyboardShouldPersistTaps="handled"
-            showsVerticalScrollIndicator={false}>
+
+        <ScrollView
+          contentContainerStyle={{flexGrow: 1}}
+          keyboardShouldPersistTaps="handled"
+          showsVerticalScrollIndicator={false}>
+          <KeyboardAvoidingView
+            style={styles.keyboardAvoidingView}
+            behavior={Platform.OS === 'android' ? 'height' : 'padding'}
+            enabled>
             <View style={styles.mainContainer}>
               <View>
                 <View style={styles.container}>
@@ -588,8 +589,9 @@ const UserProfile = ({navigation}) => {
                 </View>
               </View>
             </View>
-          </ScrollView>
-        </KeyboardAvoidingView>
+          </KeyboardAvoidingView>
+        </ScrollView>
+
         <Modal
           visible={isLanguageModalVisible}
           transparent
@@ -651,7 +653,7 @@ const styles = StyleSheet.create({
   },
   mainContainer: {
     flex: 1,
-    justifyContent: 'space-between',
+    justifyContent: 'space-evenly',
   },
   errorText: {
     color: '#ff6b6b',
@@ -663,15 +665,15 @@ const styles = StyleSheet.create({
     height: 56,
     justifyContent: 'center',
     alignItems: 'center',
-    ...Platform.select({
-      ios: {
-        shadowColor: '#000',
-        shadowOffset: {width: 0, height: 2},
-        shadowOpacity: 0.25,
-        shadowRadius: 3.84,
-      },
-      // android: {elevation: 5},
-    }),
+    // ...Platform.select({
+    //   ios: {
+    //     shadowColor: '#000',
+    //     shadowOffset: {width: 0, height: 2},
+    //     shadowOpacity: 0.25,
+    //     shadowRadius: 3.84,
+    //   },
+    //   // android: {elevation: 5},
+    // }),
   },
   headerTitle: {
     color: '#fff',
@@ -833,25 +835,25 @@ const styles = StyleSheet.create({
     color: COLOR.PURPLE,
   },
   cancelModalText: {
-    fontFamily: typography.fontFamily.Montserrat.Regular,
+    fontFamily: typography.fontFamily.Montserrat.Medium,
     fontSize: typography.fontSizes.fs16,
-    color: colors.PRIMARY,
   },
   languageList: {
     flexGrow: 0,
+    marginTop: 10,
   },
   languageItem: {
     paddingVertical: Matrics.ms(12),
     paddingHorizontal: Matrics.ms(10),
-    borderBottomWidth: 1,
     borderBottomColor: '#eee',
+    borderRadius: Matrics.ms(5),
   },
   selectedLanguageItem: {
     backgroundColor: COLOR.PRIMARY,
   },
   languageItemText: {
     fontFamily: typography.fontFamily.Montserrat.Regular,
-    fontSize: typography.fontSizes.fs16,
+    fontSize: typography.fontSizes.fs15,
     color: '#333',
   },
   selectedLanguageText: {

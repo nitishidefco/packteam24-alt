@@ -181,6 +181,7 @@ const ForgotPass = () => {
               <AppLogo
                 style={{
                   height: Matrics.ms(68),
+                  width: Matrics.screenWidth * 0.9
                 }}
               />
             </View>

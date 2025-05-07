@@ -192,7 +192,11 @@ const CreateAccount = () => {
         behavior={Platform.OS === 'android' ? 'height' : 'padding'}
         enabled>
         <ScrollView
-          contentContainerStyle={{flexGrow: 1}}
+          contentContainerStyle={{
+            flexGrow: 1,
+            paddingBottom:
+              Platform.OS === 'ios' ? Matrics.vs(20) : Matrics.vs(0),
+          }}
           keyboardShouldPersistTaps="handled"
           showsVerticalScrollIndicator={false}>
           <View
@@ -205,7 +209,12 @@ const CreateAccount = () => {
                 styles.loginlogoContainer,
                 Platform.OS === 'ios' && styles.androidLogoConatiner,
               ]}>
-              <AppLogo style={{height: Matrics.vs(68)}} />
+              <AppLogo
+                style={{
+                  height: Matrics.vs(68),
+                  width: Matrics.screenWidth * 0.9,
+                }}
+              />
             </View>
             <Text style={styles.loginText}>{t('CreateAccount.title')}</Text>
             <Text style={styles.loginText2}>{t('CreateAccount.subt')}</Text>

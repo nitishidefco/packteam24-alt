@@ -527,7 +527,10 @@ const ArchiveScreen = () => {
                 <Text
                   style={[
                     styles.flatListHeaderText,
-                    {marginLeft: Matrics.s(5)},
+                    {
+                      marginLeft: Matrics.s(5),
+                      fontSize: typography.fontSizes.fs14,
+                    },
                   ]}>
                   {i18n.t('ArchiveScreen.filterLabel')}
                 </Text>
@@ -986,18 +989,20 @@ const styles = StyleSheet.create({
     flex: 2,
     height: Matrics.vs(40),
     fontFamily: typography.fontFamily.Montserrat.Medium,
-    borderColor: COLOR.LIGHT_GRAY,
+    borderColor: COLOR.GRAY1,
+    borderWidth: 1,
     borderRadius: Matrics.s(8),
     paddingHorizontal: Matrics.s(10),
     backgroundColor: '#FFFFFF',
     color: COLOR.BLACK,
     marginRight: Matrics.s(10),
+    fontSize: typography.fontSizes.fs14,
   },
   filterPicker: {
     flex: 1,
     backgroundColor: '#FFFFFF',
     borderWidth: 1,
-    borderColor: COLOR.LIGHT_GRAY,
+    borderColor: COLOR.GRAY1,
     borderRadius: Matrics.s(8),
     color: COLOR.BLACK,
     alignItems: 'center',
