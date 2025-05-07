@@ -192,7 +192,8 @@
     "unread": "nieprzeczytana",
     "closeButton": "Zamknij",
     "moveToArchiveButton": "Przenieś do archiwum",
-    "selectedLabel": "Wybrane"
+    "selectedLabel": "Wybrane",
+    "selectAllLabel": "Zaznacz wszystko"
   },
   "ArchiveScreen": {
     "title": "Archiwum",

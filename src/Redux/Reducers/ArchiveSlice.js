@@ -201,6 +201,9 @@ const archiveSlice = createSlice({
       state.isLoading = false;
       state.error = action.payload;
     },
+    selectAllArchivedMessages(state, action) {
+      state.archivedSelectedMessages = [...action.payload];
+    },
   },
 });
 
@@ -226,6 +229,7 @@ export const {
   searchArchivedMessagesStart,
   searchArchivedMessagesSuccess,
   searchArchivedMessagesFailure,
+  selectAllArchivedMessages,
 } = archiveSlice.actions;
 
 const ArchiveReducer = archiveSlice.reducer;

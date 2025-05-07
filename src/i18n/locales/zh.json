@@ -192,7 +192,8 @@
     "unread": "未读",
     "closeButton": "关闭",
     "moveToArchiveButton": "移到档案",
-    "selectedLabel": "已选择"
+    "selectedLabel": "已选择",
+    "selectAllLabel": "全选"
   },
   "ArchiveScreen": {
     "title": "归档",

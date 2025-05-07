@@ -234,12 +234,13 @@ const Home = ({navigation, route}) => {
 
   useFocusEffect(
     useCallback(() => {
-      if (appState === 'active') {
+      if (appState === 'active' && SessionId) {
         const formData = new FormData();
         formData.append('session_id', SessionId);
         formData.append('device_id', deviceId);
         formData.append('lang', globalLanguage);
         formData.append('page', 1);
+        console.log('Calling for messages and unread count');
         dispatch(fetchMessagesStart({payload: formData}));
         dispatch(fetchUnreadCountStart({payload: formData}));
       }
@@ -458,7 +459,8 @@ const Home = ({navigation, route}) => {
           style={{backgroundColor: '#EBF0FA', flex: 1}}
           refreshControl={
             <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-          }>
+          }
+          showsVerticalScrollIndicator={false}>
           <View
             style={[
               Platform.OS === 'android'

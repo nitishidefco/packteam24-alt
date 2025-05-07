@@ -61,6 +61,9 @@ const messageSlice = createSlice({
       state.isLoading = false;
       state.error = action.payload;
     },
+    selectAllMessages(state, action) {
+      state.selectedMessages = [...action.payload]; // Set selectedMessages to the array of IDs
+    },
     multipleMarkMessages(state) {
       state.isLoading = true;
       state.error = null;
@@ -249,6 +252,7 @@ export const {
   multipleMarkMessagesFailure,
   setPermissionAlertShown,
   resetPermissionAlert,
+  selectAllMessages,
 } = messageSlice.actions;
 
 const MessageReducer = messageSlice.reducer;

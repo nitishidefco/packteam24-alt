@@ -188,7 +188,8 @@
     "unread": "непрочитанное",
     "closeButton": "Закрыть",
     "moveToArchiveButton": "Переместить в архив",
-    "selectedLabel": "Выбрано"
+    "selectedLabel": "Выбрано",
+    "selectAllLabel": "Выбрать все"
   },
   "ArchiveScreen": {
     "title": "Архив",

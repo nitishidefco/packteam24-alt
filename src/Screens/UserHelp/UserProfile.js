@@ -431,7 +431,7 @@ const UserProfile = ({navigation}) => {
           style={{
             position: 'absolute',
             right: 0,
-            top: Platform.OS === 'ios' ? 150 : 100,
+            top: Platform.OS === 'ios' ? 190 : 100,
             zIndex: 10,
             alignItems: 'flex-end',
             paddingHorizontal: Matrics.s(10),

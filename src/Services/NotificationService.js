@@ -104,7 +104,7 @@ const NotificationService = () => {
           sessionId,
           userId,
         },
-      );  ``
+      );
       return;
     }
 

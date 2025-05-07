@@ -15,29 +15,27 @@ let alertShown = false;
 const handleResponse = response => {
   const {dispatch, SessionId, deviceId, navigation, globalLanguage} =
     getSessionHandler();
-  
-  console.log('Global language:', globalLanguage);
-  console.log('Current i18n language:', i18n.language);
-  console.log('Available i18n languages:', i18n.languages);
-  console.log('i18n initialized:', i18n.isInitialized);
-  console.log('Session.SE translation:', i18n.t('Session.SE'));
-
   const contentType = response.headers.get('Content-Type');
 
   if (response.status === 403 && !alertShown) {
     alertShown = true;
     console.log('Alert is shown', response);
 
-    // Force language to match globalLanguage before showing alert
-    if (globalLanguage && globalLanguage.globalLanguage && i18n.language !== globalLanguage.globalLanguage) {
-      console.log(`Changing i18n language from ${i18n.language} to ${globalLanguage.globalLanguage}`);
+    if (
+      globalLanguage &&
+      globalLanguage.globalLanguage &&
+      i18n.language !== globalLanguage.globalLanguage
+    ) {
+      console.log(
+        `Changing i18n language from ${i18n.language} to ${globalLanguage.globalLanguage}`,
+      );
       i18n.changeLanguage(globalLanguage.globalLanguage);
     }
 
     return response.json().then(errorData => {
       // Double-check the translation after potential language change
       console.log('Final Session.SE translation:', i18n.t('Session.SE'));
-      
+
       Alert.alert(
         i18n.t('Session.SE'),
         errorData.message || 'You have been logged out.',
@@ -87,7 +85,9 @@ const debugI18n = () => {
     availableLanguages: i18n.languages,
     sessionExpiredText: i18n.t('Session.SE'),
     defaultLanguage: i18n.options.fallbackLng,
-    detectedLanguage: i18n.options.detection ? i18n.options.detection.order : 'Not configured'
+    detectedLanguage: i18n.options.detection
+      ? i18n.options.detection.order
+      : 'Not configured',
   };
 };
 

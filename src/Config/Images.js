@@ -54,6 +54,7 @@ export default {
   MARK_AS_READ: require('../Assets/Icons/mark-as-read.png'),
   RESTORE: require('../Assets/Icons/restore.png'),
   THREE_DOTS: require('../Assets/Icons/three-dots.png'),
+  SELECT_ALL: require('../Assets/Icons/select-all.png'),
   /* ------------------------------ Country Flags ----------------------------- */
   RUS: require('../Assets/Flags/russian.png'),
   UK: require('../Assets/Flags/english.png'),

@@ -36,6 +36,7 @@ import {
   clearArchiveSelection,
   multipleMarkMessages,
   searchArchivedMessagesStart,
+  selectAllArchivedMessages,
 } from '../../Redux/Reducers/ArchiveSlice';
 import i18n from '../../i18n/i18n';
 import {useTheme} from '../../Context/ThemeContext';
@@ -578,7 +579,7 @@ const ArchiveScreen = () => {
                   onPress={() => setShowOptionsModal(true)}
                   style={{flexDirection: 'row', alignItems: 'center'}}>
                   <Image
-                    source={Images.THREE_DOTS} // Assuming Images.THREE_DOTS is the three-dot icon
+                    source={Images.THREE_DOTS}
                     style={[styles.flatListHeaderIcon, {width: 25, height: 25}]}
                   />
                 </TouchableOpacity>
@@ -922,6 +923,29 @@ const ArchiveScreen = () => {
             activeOpacity={1}
             onPress={() => setShowOptionsModal(false)}>
             <View style={styles.optionsModal}>
+              <TouchableOpacity
+                activeOpacity={0.8}
+                style={styles.optionItem}
+                onPress={() => {
+                  // Handle Select All
+                  const allMessageIds = filteredArchivedMessages.map(
+                    item => item.id,
+                  );
+                  dispatch(selectAllArchivedMessages(allMessageIds));
+                  setShowOptionsModal(false);
+                }}>
+                <Image
+                  source={Images.SELECT_ALL}
+                  style={[styles.flatListHeaderIcon, {width: 25, height: 25}]}
+                />
+                <Text
+                  style={[
+                    styles.flatListHeaderText,
+                    {fontSize: typography.fontSizes.fs12},
+                  ]}>
+                  {t('NotificationScreen.selectAllLabel')}
+                </Text>
+              </TouchableOpacity>
               {(archivedMessages
                 .filter(msg => archivedSelectedMessages.includes(msg.id))
                 .every(msg => msg.read === 0) ||

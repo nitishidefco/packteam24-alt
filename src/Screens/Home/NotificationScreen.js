@@ -42,6 +42,7 @@ import {
   searchMessagesStart,
   setPermissionAlertShown,
   resetPermissionAlert,
+  selectAllMessages,
 } from '../../Redux/Reducers/MessageSlice';
 import {useFocusEffect} from '@react-navigation/native';
 import {Store} from '../../Redux/Store';
@@ -930,6 +931,27 @@ const NotificationScreen = () => {
             activeOpacity={1}
             onPress={() => setShowOptionsModal(false)}>
             <View style={styles.optionsModal}>
+              <TouchableOpacity
+                activeOpacity={0.8}
+                style={styles.optionItem}
+                onPress={() => {
+                  // Handle Select All
+                  const allMessageIds = filteredMessages.map(item => item.id);
+                  dispatch(selectAllMessages(allMessageIds));
+                  setShowOptionsModal(false);
+                }}>
+                <Image
+                  source={Images.SELECT_ALL}
+                  style={[styles.flatListHeaderIcon, {width: 25, height: 25}]}
+                />
+                <Text
+                  style={[
+                    styles.flatListHeaderText,
+                    {fontSize: typography.fontSizes.fs12},
+                  ]}>
+                  {t('NotificationScreen.selectAllLabel')}
+                </Text>
+              </TouchableOpacity>
               <TouchableOpacity
                 activeOpacity={0.8}
                 style={styles.optionItem}

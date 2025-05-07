@@ -32,10 +32,10 @@ const AUTH_SCREENS = ['Login', 'CreateAccount', 'ForgotPass', 'ResetPassword'];
 
 const DynamicStatusBar = ({currentScreen}) => {
   const theme = useTheme();
-  
+
   // Check if current screen is an auth screen
   const isAuthScreen = AUTH_SCREENS.includes(currentScreen);
-  
+
   if (isAuthScreen) {
     // Use transparent status bar for auth screens
     return (
