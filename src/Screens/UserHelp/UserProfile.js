@@ -542,7 +542,8 @@ const UserProfile = ({navigation}) => {
                   </Text>
                   <TouchableOpacity
                     style={styles.languageSelectorButton}
-                    onPress={openModal}>
+                    onPress={openModal}
+                    activeOpacity={0.7}>
                     <Text style={styles.languageSelectorText}>
                       {languageOptions.find(
                         opt => opt.value === notificationLanguage,
@@ -799,6 +800,8 @@ const styles = StyleSheet.create({
     borderRadius: Matrics.ms(8),
     paddingHorizontal: Matrics.ms(10),
     paddingVertical: Platform.OS === 'android' ? 0 : Matrics.ms(3),
+    width: '100%',
+    height: Matrics.vs(50),
   },
   languageSelectorText: {
     fontFamily: typography.fontFamily.Montserrat.Regular,

@@ -406,6 +406,8 @@ const NotificationScreen = () => {
     const formData = new FormData();
     formData.append('device_id', deviceId);
     formData.append('session_id', sessionId);
+    formData.append('keyword', searchQuery);
+
     if (value === 'read') {
       formData.append('status', 1);
     } else if (value === 'unread') {
@@ -478,6 +480,9 @@ const NotificationScreen = () => {
       formData.append('device_id', deviceId);
       formData.append('session_id', sessionId);
       formData.append('lang', globalLanguage);
+      if (filterType) {
+        formData.append('status', filterType === 'read' ? 1 : 0);
+      }
       dispatch(fetchMessagesStart({payload: formData}));
     }
   }, [searchQuery, deviceId, sessionId, globalLanguage, dispatch]); // Reset results when searchQuery is cleared

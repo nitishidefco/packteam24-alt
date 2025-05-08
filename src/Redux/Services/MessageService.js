@@ -23,6 +23,7 @@ const MessageService = {
       });
   },
   SearchKeyword: async params => {
+    console.log('Params for search keyword', params);
     return fetch(`${BASE_URL}api/notifications`, {
       method: 'POST',
       body: params,

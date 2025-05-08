@@ -19,7 +19,6 @@ import {success} from '../../Helpers/ToastMessage';
 import i18n from '../../i18n/i18n';
 
 function* fetchMessagesSaga({payload}) {
-  console.log('Payload message saga', payload.payload);
 
   try {
     const response = yield call(
