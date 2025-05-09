@@ -313,7 +313,7 @@ const CustomDrawerContent = props => {
           fontFamily: typography.fontFamily.Montserrat.Medium,
           fontSize: typography.fontSizes.fs13,
         }}>
-        TEST TRACKER v. 1.10
+        TEST TRACKER v. 1.11
       </Text>
       <DropdownAlert ref={ref => setDropdownAlert(ref)} />
     </View>
