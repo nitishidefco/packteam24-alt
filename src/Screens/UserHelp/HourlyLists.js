@@ -1,5 +1,11 @@
-import {SafeAreaView, StyleSheet, Text, View} from 'react-native';
-import React from 'react';
+import {
+  ActivityIndicator,
+  SafeAreaView,
+  StyleSheet,
+  Text,
+  View,
+} from 'react-native';
+import React, {useState} from 'react';
 import DrawerSceneWrapper from '../../Components/Common/DrawerSceneWrapper';
 import CustomHeader from '../../Components/Common/CustomHeader';
 import {useTheme} from '../../Context/ThemeContext';
@@ -18,7 +24,7 @@ const HourlyLists = ({navigation}) => {
   const {Auth} = state;
   const SessionId = Auth.data?.data?.sesssion_id;
   const {globalLanguage} = useSelector(state => state?.GlobalLanguage);
-
+  const [isLoading, setIsLoading] = useState(true);
   const url = `${BASE_URL}worker/hourly-list/index?mobile_session_id=${SessionId}&lang=${globalLanguage}`;
   return (
     <DrawerSceneWrapper>
@@ -33,7 +39,17 @@ const HourlyLists = ({navigation}) => {
           ]}>
           <Text style={styles.headerTitle}>{t('HourlyList.title')}</Text>
         </View>
-        <WebView source={{uri: url}} style={{flex: 1}} />
+        {isLoading && (
+          <View style={styles.loaderContainer}>
+            <ActivityIndicator size="large" color={theme.PRIMARY} />
+          </View>
+        )}
+        <WebView
+          source={{uri: url}}
+          style={{flex: 1}}
+          onLoadStart={() => setIsLoading(true)} // Show loader when loading starts
+          onLoadEnd={() => setIsLoading(false)}
+        />
       </SafeAreaView>
     </DrawerSceneWrapper>
   );
@@ -53,6 +69,15 @@ const styles = StyleSheet.create({
     color: '#fff',
     fontSize: typography.fontSizes.fs15,
     fontFamily: typography.fontFamily.Montserrat.Medium,
+  },
+  loaderContainer: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
 });
 

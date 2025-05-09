@@ -223,6 +223,9 @@
     "MessageCenter": "消息中心",
     "Archives": "档案"
   },
+  "HourlyList": {
+    "title": "按小时列表"
+  },
   "languageOptions": [
     {"label": "英语", "value": "en"},
     {"label": "波兰语", "value": "pl"},

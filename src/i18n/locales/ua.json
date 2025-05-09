@@ -121,7 +121,7 @@
     "Breakalreadystarted": "Перерва вже активна",
     "WorkAlreadyFinished": "Робота вже завершена",
     "MessageDeletedSuccessfully": "Повідомлення успішно видалено!",
-    "MessageArchivedSuccessfully": "Повідомлення успішно заархівовано!",
+    "MessageArchivedSuccessfully": "Повідомлення успішно заархівовано!"
   },
   "TimeLog": {
     "title": "Журнал часу",
@@ -218,6 +218,9 @@
   "CustomHeader": {
     "MessageCenter": "Центр повідомлень",
     "Archives": "Архіви"
+  },
+  "HourlyList": {
+    "title": "Погодинні Списки"
   },
   "languageOptions": [
     {"label": "Англійська", "value": "en"},

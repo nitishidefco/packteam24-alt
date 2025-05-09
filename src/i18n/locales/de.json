@@ -125,7 +125,7 @@
     "Breakalreadystarted": "Pause ist bereits aktiv",
     "WorkAlreadyFinished": "Arbeit ist bereits beendet",
     "MessageDeletedSuccessfully": "Nachricht erfolgreich gelöscht!",
-    "MessageArchivedSuccessfully": "Nachricht erfolgreich archiviert!",
+    "MessageArchivedSuccessfully": "Nachricht erfolgreich archiviert!"
   },
   "TimeLog": {
     "title": "Zeiterfassung",
@@ -222,6 +222,9 @@
   "CustomHeader": {
     "MessageCenter": "Nachrichtenzentrum",
     "Archives": "Archive"
+  },
+  "HourlyList": {
+    "title": "Stündliche Listen"
   },
   "languageOptions": [
     {"label": "Englisch", "value": "en"},

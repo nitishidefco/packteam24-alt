@@ -223,6 +223,9 @@
     "MessageCenter": "Centrum wiadomości",
     "Archives": "Archiwa"
   },
+  "HourlyList": {
+    "title": "Godzinowe Listy"
+  },
   "languageOptions": [
     {"label": "Angielski", "value": "en"},
     {"label": "Polski", "value": "pl"},
