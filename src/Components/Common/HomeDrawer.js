@@ -12,6 +12,7 @@ import UserProfile from '../../Screens/UserHelp/UserProfile';
 import NotificationScreen from '../../Screens/Home/NotificationScreen';
 import ArchiveScreen from '../../Screens/Home/ArchiveScreen';
 import {COLOR} from '../../Config/AppStyling';
+import HourlyLists from '../../Screens/UserHelp/HourlyLists';
 
 const Drawer = createDrawerNavigator();
 
@@ -68,6 +69,13 @@ const HomeDrawer = () => {
       <Drawer.Screen
         name="ArchiveScreen"
         component={ArchiveScreen}
+        options={{
+          headerShown: false,
+        }}
+      />
+      <Drawer.Screen
+        name="HourlyLists"
+        component={HourlyLists}
         options={{
           headerShown: false,
         }}

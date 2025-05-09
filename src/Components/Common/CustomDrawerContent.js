@@ -132,6 +132,19 @@ const CustomDrawerContent = props => {
       );
     }
   };
+
+  const handleHourlyListClick = () => {
+    console.log('clicked');
+
+    if (isConnected) {
+      navigation.navigate('HomeDrawer', {screen: 'HourlyLists'});
+    } else {
+      Alert.alert(
+        i18n.t('Offline.NoInternet'),
+        i18n.t('Offline.FeatureNotAvailable'),
+      );
+    }
+  };
   return (
     <View
       style={[
@@ -229,6 +242,32 @@ const CustomDrawerContent = props => {
           icon={() => (
             <Image
               source={Images.USER_PROFILE}
+              resizeMode="contain"
+              style={[isIos ? styles.homeIconIosStyle : styles.homeIconStyle]}
+            />
+          )}
+        />
+        <DrawerItem
+          label={() => (
+            <Text
+              style={{
+                fontFamily: typography.fontFamily.Montserrat.Regular,
+                fontSize: typography.fontSizes.fs15,
+                color: colors.WHITE,
+                marginHorizontal: Matrics.ms(-45),
+                flexWrap: 'wrap',
+              }}
+              numberOfLines={2} // Optional: Limits the number of lines to 2
+              ellipsizeMode="tail" // Optional: Adds ellipsis if the text overflows
+            >
+              {t('SideMenuBar.HourlyList')}
+            </Text>
+          )}
+          onPress={() => handleHourlyListClick()}
+          style={[styles.drawerItem]}
+          icon={() => (
+            <Image
+              source={Images.HOURLY_LIST}
               resizeMode="contain"
               style={[isIos ? styles.homeIconIosStyle : styles.homeIconStyle]}
             />

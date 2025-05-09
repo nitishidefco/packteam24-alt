@@ -65,7 +65,8 @@
     "Logout": "Logout",
     "ChangePassword": "Change Password",
     "UserProflie": "User Profile",
-    "ChangeLanguage": "Change Language"
+    "ChangeLanguage": "Change Language",
+    "HourlyList": "Hourly Lists"
   },
   "UserProfileScreen": {
     "title": "User Profile",
@@ -229,6 +230,9 @@
     "errorMessage": "Failed to request notification permissions. Please enable in Settings > Notifications > EDA - Time Tracker",
     "cancel": "Cancel",
     "settings": "Settings"
+  },
+  "HourlyList": {
+    "title": "Hourly Lists"
   },
   "languageOptions": [
     {"label": "English", "value": "en"},
