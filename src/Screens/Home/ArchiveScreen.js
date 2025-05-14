@@ -227,6 +227,11 @@ const ArchiveScreen = () => {
           formData.append('lang', globalLanguage);
           formData.append('updater', '1');
           formData.append('read', '1');
+          if (filterType === 'read') {
+            formData.append('status', 1);
+          } else if (filterType === 'unread') {
+            formData.append('status', 0);
+          }
           dispatch(markAsRead({payload: formData}));
         }
       }
@@ -248,6 +253,14 @@ const ArchiveScreen = () => {
         formData.append('lang', globalLanguage);
         formData.append('updater', '1');
         formData.append(allUnread ? 'read' : 'unread', '1');
+        if (filterType === 'read') {
+          formData.append('status', 1);
+        } else if (filterType === 'unread') {
+          formData.append('status', 0);
+        }
+        if (searchQuery.trim() !== '') {
+          formData.append('keyword', searchQuery);
+        }
         dispatch(
           multipleMarkMessages({
             payload: formData,
@@ -360,9 +373,15 @@ const ArchiveScreen = () => {
       formData.append('lang', globalLanguage);
       formData.append('archived', '1');
       formData.append('keyword', searchQuery);
+      if (filterType === 'read') {
+        formData.append('status', 1);
+      } else if (filterType === 'unread') {
+        formData.append('status', 0);
+      }
       dispatch(
         searchArchivedMessagesStart({payload: formData, keyword: searchQuery}),
       );
+      dispatch(clearArchiveSelection());
     } else {
       dispatch(setCurrentPage(1));
       const formData = new FormData();
@@ -373,9 +392,28 @@ const ArchiveScreen = () => {
       dispatch(fetchArchivedMessagesStart({payload: formData}));
     }
   };
-
+  useEffect(() => {
+    if (searchQuery.trim() === '') {
+      dispatch(clearArchiveSelection());
+      dispatch(setCurrentPage(1));
+      const formData = new FormData();
+      formData.append('page', '1');
+      formData.append('device_id', deviceId);
+      formData.append('session_id', sessionId);
+      formData.append('lang', globalLanguage);
+      if (filterType === 'read') {
+        formData.append('status', 1);
+      } else if (filterType === 'unread') {
+        formData.append('status', 0);
+      }
+      console.log(
+        '[NotificationScreen] fetchMessagesStart called from searchQuery useEffect',
+      );
+      dispatch(fetchArchivedMessagesStart({payload: formData}));
+    }
+  }, [searchQuery, deviceId, sessionId, globalLanguage, dispatch]);
   const handleFilter = value => {
-    console.log('Janldling fliter');
+    dispatch(clearArchiveSelection());
 
     dispatch(setCurrentPage(1));
     setFilterType(value);
@@ -1234,7 +1272,7 @@ const styles = StyleSheet.create({
   optionsModal: {
     position: 'absolute',
     top: Matrics.vs(170), // Adjust based on header height (CustomHeader + searchFilterContainer height)
-    right: Matrics.s(20), // Align with the three-dot icon’s position
+    right: Matrics.s(20), // Align with the three-dot icon's position
     backgroundColor: '#FFFFFF',
     borderRadius: Matrics.s(8),
     paddingVertical: Matrics.vs(10),

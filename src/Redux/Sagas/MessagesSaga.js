@@ -19,7 +19,6 @@ import {success} from '../../Helpers/ToastMessage';
 import i18n from '../../i18n/i18n';
 
 function* fetchMessagesSaga({payload}) {
-
   try {
     const response = yield call(
       MessageService.GetNotifications,
@@ -86,6 +85,13 @@ function* markAsReadSaga({payload}) {
       formData.append('session_id', sessionId);
       formData.append('lang', globalLanguage);
 
+      const statusPart = payload.payload._parts?.find(
+        part => part[0] === 'status',
+      );
+      if (statusPart) {
+        formData.append('status', statusPart[1]);
+      }
+
       // Dispatch fetchMessagesStart to refetch messages
       yield put(fetchMessagesStart({payload: formData}));
     }
@@ -120,7 +126,7 @@ function* searchMessagesSaga({payload}) {
 function* moveToArchiveSaga({payload}) {
   try {
     const response = yield call(MessageService.MoveToArchives, payload.payload);
-    console.log('Move to archive response', response);
+    console.log('Move to archive response', payload.payload);
 
     if (response.success) {
       const successResponse = i18n.t('Toast.MessageArchivedSuccessfully');
@@ -141,6 +147,13 @@ function* moveToArchiveSaga({payload}) {
       formData.append('session_id', sessionId);
       formData.append('lang', globalLanguage);
 
+      const statusPart = payload.payload._parts?.find(
+        part => part[0] === 'status',
+      );
+      if (statusPart) {
+        formData.append('status', statusPart[1]);
+      }
+
       yield put(fetchMessagesStart({payload: formData}));
     } else {
       yield put(
@@ -154,6 +167,7 @@ function* moveToArchiveSaga({payload}) {
     );
   }
 }
+
 function* multipleMarkMessagesSaga({payload}) {
   try {
     const response = yield call(
@@ -183,6 +197,29 @@ function* multipleMarkMessagesSaga({payload}) {
       formData.append('session_id', sessionId);
       formData.append('lang', globalLanguage);
 
+      const statusPart = payload.payload._parts?.find(
+        part => part[0] === 'status',
+      );
+      if (statusPart) {
+        formData.append('status', statusPart[1]);
+      }
+
+      const keywordPart = payload.payload._parts?.find(
+        part => part[0] === 'keyword',
+      );
+      if (keywordPart) {
+        formData.append('keyword', keywordPart[1]);
+      }
+
+      console.log(
+        '[MessagesSaga] fetchMessagesStart called from multipleMarkMessagesSaga:',
+        {
+          page: currentPage,
+          status: statusPart?.[1],
+          keyword: keywordPart?.[1] || 'none',
+        },
+      );
+
       yield put(fetchMessagesStart({payload: formData}));
     } else {
       yield put(
@@ -198,6 +235,7 @@ function* multipleMarkMessagesSaga({payload}) {
     );
   }
 }
+
 export default function* messageSaga() {
   yield all([
     takeEvery(`${MESSAGE_REUCER}/fetchMessagesStart`, fetchMessagesSaga),

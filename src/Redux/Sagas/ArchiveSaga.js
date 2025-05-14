@@ -104,6 +104,13 @@ function* moveToMessagesSaga({payload}) {
       formData.append('session_id', sessionId);
       formData.append('lang', globalLanguage);
 
+      const statusPart = payload.payload._parts?.find(
+        part => part[0] === 'status',
+      );
+      if (statusPart) {
+        formData.append('status', statusPart[1]);
+      }
+
       yield put(fetchArchivedMessagesStart({payload: formData}));
     } else {
       yield put(
@@ -118,7 +125,6 @@ function* moveToMessagesSaga({payload}) {
 }
 
 function* deleteMessagesSaga({payload}) {
-
   try {
     const response = yield call(
       MessageService.PermanentlyDelete,
@@ -143,6 +149,13 @@ function* deleteMessagesSaga({payload}) {
       formData.append('session_id', sessionId);
       formData.append('lang', globalLanguage);
 
+      const statusPart = payload.payload._parts?.find(
+        part => part[0] === 'status',
+      );
+      if (statusPart) {
+        formData.append('status', statusPart[1]);
+      }
+
       yield put(fetchArchivedMessagesStart({payload: formData}));
     } else {
       yield put(
@@ -155,6 +168,7 @@ function* deleteMessagesSaga({payload}) {
     );
   }
 }
+
 function* multipleMarkMessagesSaga({payload}) {
   try {
     const response = yield call(
@@ -175,6 +189,43 @@ function* multipleMarkMessagesSaga({payload}) {
       const {archivedMessages} = state.Archive;
       const unreadCount = archivedMessages.filter(msg => msg.read === 0).length;
       yield put(fetchUnreadCountSuccess(unreadCount));
+
+      const {currentPage} = state.Archive;
+      const {deviceId} = state.Network;
+      const authState = state.Auth;
+      const sessionId = authState?.data?.data?.sesssion_id;
+      const globalLanguage = state.GlobalLanguage?.globalLanguage || 'en';
+
+      const formData = new FormData();
+      formData.append('page', currentPage.toString());
+      formData.append('device_id', deviceId);
+      formData.append('session_id', sessionId);
+      formData.append('lang', globalLanguage);
+
+      const statusPart = payload.payload._parts?.find(
+        part => part[0] === 'status',
+      );
+      if (statusPart) {
+        formData.append('status', statusPart[1]);
+      }
+
+      const keywordPart = payload.payload._parts?.find(
+        part => part[0] === 'keyword',
+      );
+      if (keywordPart) {
+        formData.append('keyword', keywordPart[1]);
+      }
+
+      console.log(
+        '[ArchiveSaga] fetchArchivedMessagesStart called from multipleMarkMessagesSaga:',
+        {
+          page: currentPage,
+          status: statusPart?.[1],
+          keyword: keywordPart?.[1] || 'none',
+        },
+      );
+
+      yield put(fetchArchivedMessagesStart({payload: formData}));
     } else {
       yield put(
         multipleMarkMessagesFailure(
@@ -188,6 +239,7 @@ function* multipleMarkMessagesSaga({payload}) {
     );
   }
 }
+
 function* markAsReadSaga({payload}) {
   try {
     const response = yield call(
@@ -212,6 +264,13 @@ function* markAsReadSaga({payload}) {
       formData.append('session_id', sessionId);
       formData.append('lang', globalLanguage);
 
+      const statusPart = payload.payload._parts?.find(
+        part => part[0] === 'status',
+      );
+      if (statusPart) {
+        formData.append('status', statusPart[1]);
+      }
+
       yield put(fetchArchivedMessagesStart({payload: formData}));
     } else {
       yield put(
@@ -226,6 +285,7 @@ function* markAsReadSaga({payload}) {
     );
   }
 }
+
 function* markAsUnreadSaga({payload}) {
   try {
     const response = yield call(

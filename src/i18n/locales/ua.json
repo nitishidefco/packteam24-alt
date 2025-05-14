@@ -65,7 +65,11 @@
     "Logout": "Вийти",
     "ChangePassword": "Змінити пароль",
     "UserProflie": "Профіль користувача",
-    "ChangeLanguage": "Змінити мову"
+    "ChangeLanguage": "Змінити мову",
+    "UserHelp": "Довідка користувача",
+    "HourlyList": "Погодинні Списки",
+    "SickLeaves": "Болезни",
+    "Vacations": "Відпустки"
   },
   "UserProfileScreen": {
     "title": "Профіль користувача",
@@ -219,8 +223,10 @@
     "MessageCenter": "Центр повідомлень",
     "Archives": "Архіви"
   },
-  "HourlyList": {
-    "title": "Погодинні Списки"
+  "UserHelp": {
+    "hourlyLists": "Погодинні Списки",
+    "vacations": "Відпустки",
+    "sickLeaves": "Болезни"
   },
   "languageOptions": [
     {"label": "Англійська", "value": "en"},

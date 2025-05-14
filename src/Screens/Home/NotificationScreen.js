@@ -148,6 +148,7 @@ const NotificationScreen = () => {
   const globalLanguage = useSelector(
     state => state?.GlobalLanguage?.globalLanguage || 'en',
   );
+  console.log('Filtered Messages Length', filteredMessages.length);
 
   useEffect(() => {
     setIsSelectionMode(selectedMessages?.length > 0);
@@ -220,7 +221,6 @@ const NotificationScreen = () => {
   const handleLoadMore = () => {
     if (filteredMessages.length === 0) {
       console.log('Loading more');
-
       return;
     }
     if (currentPage < totalPages && !isLoading) {
@@ -236,6 +236,14 @@ const NotificationScreen = () => {
       } else if (filterType === 'unread') {
         formData.append('status', 0);
       }
+      console.log(
+        '[NotificationScreen] fetchMessagesStart called from handleLoadMore:',
+        {
+          page: nextPage,
+          filterType,
+          isLoading,
+        },
+      );
       dispatch(fetchMessagesStart({payload: formData}));
     }
   };
@@ -287,6 +295,11 @@ const NotificationScreen = () => {
           formData.append('device_id', deviceId);
           formData.append('session_id', sessionId);
           formData.append('lang', globalLanguage);
+          if (filterType === 'read') {
+            formData.append('status', 1);
+          } else if (filterType === 'unread') {
+            formData.append('status', 0);
+          }
           dispatch(markAsRead({payload: formData}));
         }
       }
@@ -318,6 +331,11 @@ const NotificationScreen = () => {
     formData.append('device_id', deviceId);
     formData.append('session_id', sessionId);
     formData.append('lang', globalLanguage);
+    if (filterType === 'read') {
+      formData.append('status', 1);
+    } else if (filterType === 'unread') {
+      formData.append('status', 0);
+    }
     dispatch(moveToArchiveStart({payload: formData}));
     setShowArchiveModal(false);
     setArchiveMessageId(null);
@@ -341,6 +359,12 @@ const NotificationScreen = () => {
   const handleMultipleMarkMessages = () => {
     if (selectedMessages.length > 0) {
       const {allUnread, allRead} = getSelectedMessagesStatus();
+      console.log('[NotificationScreen] Mark messages action triggered:', {
+        selectedCount: selectedMessages.length,
+        allUnread,
+        allRead,
+        action: allRead ? 'mark as unread' : 'mark as read',
+      });
       setIsMarkAsUnread(allRead);
       setShowMarkReadModal(true);
     }
@@ -354,6 +378,21 @@ const NotificationScreen = () => {
     formData.append('lang', globalLanguage);
     formData.append('updater', '1');
     formData.append(isMarkAsUnread ? 'unread' : 'read', '1');
+    if (filterType === 'read') {
+      formData.append('status', 1);
+    } else if (filterType === 'unread') {
+      formData.append('status', 0);
+    }
+    if (searchQuery.trim() !== '') {
+      formData.append('keyword', searchQuery);
+    }
+
+    console.log('[NotificationScreen] Dispatching multipleMarkMessages:', {
+      action: isMarkAsUnread ? 'mark as unread' : 'mark as read',
+      messageIds: selectedMessages,
+      filterType,
+      searchQuery: searchQuery.trim() || 'none',
+    });
 
     dispatch(
       multipleMarkMessages({
@@ -386,6 +425,12 @@ const NotificationScreen = () => {
       formData.append('lang', globalLanguage);
       formData.append('archived', '0');
       formData.append('keyword', searchQuery);
+      if (filterType === 'read') {
+        formData.append('status', 1);
+      } else if (filterType === 'unread') {
+        formData.append('status', 0);
+      }
+      dispatch(clearMessageSelection());
       dispatch(searchMessagesStart({payload: formData, keyword: searchQuery}));
     } else {
       dispatch(setCurrentPage(1));
@@ -394,13 +439,19 @@ const NotificationScreen = () => {
       formData.append('device_id', deviceId);
       formData.append('session_id', sessionId);
       formData.append('lang', globalLanguage);
+      console.log(
+        '[NotificationScreen] fetchMessagesStart called from handleSearch (empty search):',
+        {
+          page: 1,
+          filterType: 'none',
+        },
+      );
       dispatch(fetchMessagesStart({payload: formData}));
     }
   };
 
   const handleFilter = value => {
-    console.log('Handle filter');
-
+    dispatch(clearMessageSelection());
     dispatch(setCurrentPage(1));
     setFilterType(value);
     const formData = new FormData();
@@ -413,31 +464,35 @@ const NotificationScreen = () => {
     } else if (value === 'unread') {
       formData.append('status', 0);
     }
+    console.log(
+      '[NotificationScreen] fetchMessagesStart called from handleFilter:',
+      {
+        filterType: value,
+        searchQuery: searchQuery || 'none',
+      },
+    );
     dispatch(fetchMessagesStart({payload: formData}));
     setShowFilterModal(false);
   };
 
-  const handlePageChange = newPage => {
-    if (newPage >= 1 && newPage <= totalPages) {
-      dispatch(setCurrentPage(newPage));
-      const formData = new FormData();
-      formData.append('page', newPage.toString());
-      formData.append('device_id', deviceId);
-      formData.append('session_id', sessionId);
-      formData.append('lang', globalLanguage);
-      dispatch(fetchMessagesStart({payload: formData}));
-    }
-  };
   useFocusEffect(
     React.useCallback(() => {
       setSearchQuery('');
-
       dispatch(setCurrentPage(1));
       const formData = new FormData();
       formData.append('page', '1');
       formData.append('device_id', deviceId);
       formData.append('session_id', sessionId);
       formData.append('lang', globalLanguage);
+      console.log(
+        '[NotificationScreen] fetchMessagesStart called from useFocusEffect:',
+        {
+          page: 1,
+          deviceId,
+          sessionId,
+          globalLanguage,
+        },
+      );
       dispatch(fetchMessagesStart({payload: formData}));
     }, [deviceId, sessionId, globalLanguage, dispatch]),
   );
@@ -480,12 +535,22 @@ const NotificationScreen = () => {
       formData.append('device_id', deviceId);
       formData.append('session_id', sessionId);
       formData.append('lang', globalLanguage);
-      if (filterType) {
-        formData.append('status', filterType === 'read' ? 1 : 0);
+      if (filterType === 'read') {
+        formData.append('status', 1);
+      } else if (filterType === 'unread') {
+        formData.append('status', 0);
       }
+      console.log(
+        '[NotificationScreen] fetchMessagesStart called from searchQuery useEffect:',
+        {
+          page: 1,
+          filterType,
+          searchQuery: 'empty',
+        },
+      );
       dispatch(fetchMessagesStart({payload: formData}));
     }
-  }, [searchQuery, deviceId, sessionId, globalLanguage, dispatch]); // Reset results when searchQuery is cleared
+  }, [searchQuery, deviceId, sessionId, globalLanguage, dispatch]);
   const renderItem = ({item}) => {
     const isSelecteds = selectedMessages?.includes(item.id);
 
@@ -500,34 +565,28 @@ const NotificationScreen = () => {
   };
 
   const handleBackPress = React.useCallback(() => {
-    // Check if any modal is open
     if (
       showFilterModal ||
       showArchiveModal ||
       showMarkReadModal ||
       showOptionsModal
     ) {
-      // Close all modals
       setShowFilterModal(false);
       setShowArchiveModal(false);
       setShowMarkReadModal(false);
       setShowOptionsModal(false);
-      return true; // Prevent default back button behavior
+      return true;
     }
 
-    // If any items are selected, clear selection
     if (selectedMessages.length > 0) {
       dispatch(clearMessageSelection());
-      return true; // Prevent default back button behavior
+      return true;
     }
 
-    // Clear search text if it's not empty
     if (searchQuery.trim() !== '') {
       setSearchQuery('');
-      return true; // Prevent default back button behavior
+      return true;
     }
-
-    // If no special conditions, allow default back navigation
     return false;
   }, [
     showFilterModal,
@@ -561,9 +620,9 @@ const NotificationScreen = () => {
               style={styles.searchInput}
               placeholder={t('NotificationScreen.searchPlaceholder')}
               placeholderTextColor={'black'}
-              onChangeText={setSearchQuery} // Update to setSearchQuery
+              onChangeText={setSearchQuery}
               onSubmitEditing={handleSearch}
-              value={searchQuery} // Update to searchQuery
+              value={searchQuery}
               returnKeyType="search"
             />
             <TouchableOpacity style={styles.filterPicker} onPress={openModal}>
@@ -1285,7 +1344,7 @@ const styles = StyleSheet.create({
   optionsModal: {
     position: 'absolute',
     top: Matrics.vs(170), // Adjust based on header height (CustomHeader + searchFilterContainer height)
-    right: Matrics.s(20), // Align with the three-dot icon’s position
+    right: Matrics.s(20), // Align with the three-dot icon's position
     backgroundColor: '#FFFFFF',
     borderRadius: Matrics.s(8),
     paddingVertical: Matrics.vs(10),

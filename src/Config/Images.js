@@ -70,4 +70,6 @@ export default {
   NOTIFICATION_ICON: require('../Assets/Icons/basil--notification-outline.png'),
   USER_PROFILE: require('../Assets/Icons/user-profile.png'),
   HOURLY_LIST: require('../Assets/Icons/hourly-list.png'),
+  SICK_LEAVES: require('../Assets/Icons/sick-leaves.png'),
+  VACATIONS: require('../Assets/Icons/vacations.png'),
 };

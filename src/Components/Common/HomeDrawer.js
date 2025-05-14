@@ -13,7 +13,8 @@ import NotificationScreen from '../../Screens/Home/NotificationScreen';
 import ArchiveScreen from '../../Screens/Home/ArchiveScreen';
 import {COLOR} from '../../Config/AppStyling';
 import HourlyLists from '../../Screens/UserHelp/HourlyLists';
-
+import SickLeaves from '../../Screens/UserHelp/SickLeaves';
+import Vacations from '../../Screens/UserHelp/Vacations';
 const Drawer = createDrawerNavigator();
 
 const HomeDrawer = () => {
@@ -80,7 +81,20 @@ const HomeDrawer = () => {
           headerShown: false,
         }}
       />
-      {/* Add more drawer screens here */}
+      <Drawer.Screen
+        name="SickLeaves"
+        component={SickLeaves}
+        options={{
+          headerShown: false,
+        }}
+      />
+      <Drawer.Screen
+        name="Vacations"
+        component={Vacations}
+        options={{
+          headerShown: false,
+        }}
+      />
     </Drawer.Navigator>
   );
 };

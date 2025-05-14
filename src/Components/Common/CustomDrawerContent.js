@@ -134,10 +134,28 @@ const CustomDrawerContent = props => {
   };
 
   const handleHourlyListClick = () => {
-    console.log('clicked');
-
     if (isConnected) {
       navigation.navigate('HomeDrawer', {screen: 'HourlyLists'});
+    } else {
+      Alert.alert(
+        i18n.t('Offline.NoInternet'),
+        i18n.t('Offline.FeatureNotAvailable'),
+      );
+    }
+  };
+  const handleVacationClick = () => {
+    if (isConnected) {
+      navigation.navigate('HomeDrawer', {screen: 'Vacations'});
+    } else {
+      Alert.alert(
+        i18n.t('Offline.NoInternet'),
+        i18n.t('Offline.FeatureNotAvailable'),
+      );
+    }
+  };
+  const handleSickLeaveClick = () => {
+    if (isConnected) {
+      navigation.navigate('HomeDrawer', {screen: 'SickLeaves'});
     } else {
       Alert.alert(
         i18n.t('Offline.NoInternet'),
@@ -268,6 +286,58 @@ const CustomDrawerContent = props => {
           icon={() => (
             <Image
               source={Images.HOURLY_LIST}
+              resizeMode="contain"
+              style={[isIos ? styles.homeIconIosStyle : styles.homeIconStyle]}
+            />
+          )}
+        />
+        <DrawerItem
+          label={() => (
+            <Text
+              style={{
+                fontFamily: typography.fontFamily.Montserrat.Regular,
+                fontSize: typography.fontSizes.fs15,
+                color: colors.WHITE,
+                marginHorizontal: Matrics.ms(-45),
+                flexWrap: 'wrap',
+              }}
+              numberOfLines={2} // Optional: Limits the number of lines to 2
+              ellipsizeMode="tail" // Optional: Adds ellipsis if the text overflows
+            >
+              {t('SideMenuBar.Vacations')}
+            </Text>
+          )}
+          onPress={() => handleVacationClick()}
+          style={[styles.drawerItem]}
+          icon={() => (
+            <Image
+              source={Images.VACATIONS}
+              resizeMode="contain"
+              style={[isIos ? styles.homeIconIosStyle : styles.homeIconStyle]}
+            />
+          )}
+        />
+        <DrawerItem
+          label={() => (
+            <Text
+              style={{
+                fontFamily: typography.fontFamily.Montserrat.Regular,
+                fontSize: typography.fontSizes.fs15,
+                color: colors.WHITE,
+                marginHorizontal: Matrics.ms(-45),
+                flexWrap: 'wrap',
+              }}
+              numberOfLines={2} // Optional: Limits the number of lines to 2
+              ellipsizeMode="tail" // Optional: Adds ellipsis if the text overflows
+            >
+              {t('SideMenuBar.SickLeaves')}
+            </Text>
+          )}
+          onPress={() => handleSickLeaveClick()}
+          style={[styles.drawerItem]}
+          icon={() => (
+            <Image
+              source={Images.SICK_LEAVES}
               resizeMode="contain"
               style={[isIos ? styles.homeIconIosStyle : styles.homeIconStyle]}
             />

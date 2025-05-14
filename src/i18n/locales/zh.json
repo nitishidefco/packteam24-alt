@@ -65,7 +65,11 @@
     "Logout": "登出",
     "ChangePassword": "更改密码",
     "UserProflie": "用户资料",
-    "ChangeLanguage": "更改语言"
+    "ChangeLanguage": "更改语言",
+    "UserHelp": "用户帮助",
+    "HourlyList": "按小时列表",
+    "Vacations": "假期",
+    "SickLeaves": "病假"
   },
   "UserProfileScreen": {
     "title": "用户资料",
@@ -223,8 +227,10 @@
     "MessageCenter": "消息中心",
     "Archives": "档案"
   },
-  "HourlyList": {
-    "title": "按小时列表"
+  "UserHelp": {
+    "hourlyLists": "按小时列表",
+    "vacations": "假期",
+    "sickLeaves": "病假"
   },
   "languageOptions": [
     {"label": "英语", "value": "en"},

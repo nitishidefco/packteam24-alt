@@ -65,7 +65,10 @@
     "Logout": "Wyloguj się",
     "ChangePassword": "Zmień hasło",
     "UserProflie": "Profil użytkownika",
-    "ChangeLanguage": "Zmień język"
+    "ChangeLanguage": "Zmień język",
+    "HourlyList": "Godzinowe Listy",
+    "SickLeaves": "Krankie",
+    "Vacations": "Urlopy"
   },
   "UserProfileScreen": {
     "title": "Profil użytkownika",
@@ -223,8 +226,10 @@
     "MessageCenter": "Centrum wiadomości",
     "Archives": "Archiwa"
   },
-  "HourlyList": {
-    "title": "Godzinowe Listy"
+  "UserHelp": {
+    "hourlyLists": "Godzinowe Listy",
+    "vacations": "Urlopy",
+    "sickLeaves": "Krankie"
   },
   "languageOptions": [
     {"label": "Angielski", "value": "en"},

@@ -66,7 +66,9 @@
     "ChangePassword": "Change Password",
     "UserProflie": "User Profile",
     "ChangeLanguage": "Change Language",
-    "HourlyList": "Hourly Lists"
+    "HourlyList": "Hourly Lists",
+    "SickLeaves": "Sick Leaves",
+    "Vacations": "Vacations"
   },
   "UserProfileScreen": {
     "title": "User Profile",
@@ -231,8 +233,11 @@
     "cancel": "Cancel",
     "settings": "Settings"
   },
-  "HourlyList": {
-    "title": "Hourly Lists"
+  "UserHelp": {
+    "hourlyLists": "Hourly Lists",
+    "shared": "Shared",
+    "vacations": "Vacations",
+    "sickLeaves": "Sick Leaves"
   },
   "languageOptions": [
     {"label": "English", "value": "en"},

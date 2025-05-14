@@ -65,7 +65,11 @@
     "Logout": "Выйти",
     "ChangePassword": "Изменить пароль",
     "UserProflie": "Профиль пользователя",
-    "ChangeLanguage": "Изменить язык"
+    "ChangeLanguage": "Изменить язык",
+    "UserHelp": "Помощь пользователя",
+    "HourlyList": "Почасовые Списки",
+    "SickLeaves": "Болезни",
+    "Vacations": "Отпуска"  
   },
   "UserProfileScreen": {
     "title": "Профиль пользователя",
@@ -220,6 +224,11 @@
   },
   "HourlyList": {
     "title": "Почасовые Списки"
+  },
+  "UserHelp": {
+    "hourlyLists": "Почасовые Списки",
+    "vacations": "Отпуска",
+    "sickLeaves": "Болезни"
   },
   "languageOptions": [
     {"label": "Английский", "value": "en"},

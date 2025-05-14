@@ -17,7 +17,7 @@ import {useAuthActions} from '../../Redux/Hooks';
 import {useSelector} from 'react-redux';
 import {useFocusEffect} from '@react-navigation/native';
 
-const HourlyLists = ({navigation}) => {
+const SickLeaves = ({navigation}) => {
   const BASE_URL = Constants.IS_DEVELOPING_MODE
     ? Constants.BASE_URL.DEV
     : Constants.BASE_URL.PROD;
@@ -32,7 +32,7 @@ const HourlyLists = ({navigation}) => {
   useFocusEffect(
     React.useCallback(() => {
       setUrl(
-        `${BASE_URL}worker/hourly-list/shared?mobile_session_id=${SessionId}&lang=${globalLanguage}`,
+        `${BASE_URL}worker/sickleave?mobile_session_id=${SessionId}&lang=${globalLanguage}`,
       );
     }, [BASE_URL, SessionId, globalLanguage]),
   );
@@ -47,7 +47,7 @@ const HourlyLists = ({navigation}) => {
               backgroundColor: theme.PRIMARY,
             },
           ]}>
-          <Text style={styles.headerTitle}>{t('UserHelp.hourlyLists')}</Text>
+          <Text style={styles.headerTitle}>{t('UserHelp.sickLeaves')}</Text>
         </View>
         {isLoading && (
           <View style={styles.loaderContainer}>
@@ -91,4 +91,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default HourlyLists;
+export default SickLeaves;
