@@ -110,7 +110,12 @@ function* moveToMessagesSaga({payload}) {
       if (statusPart) {
         formData.append('status', statusPart[1]);
       }
-
+      const keywordPart = payload.payload._parts?.find(
+        part => part[0] === 'keyword',
+      );
+      if (keywordPart) {
+        formData.append('keyword', keywordPart[1]);
+      }
       yield put(fetchArchivedMessagesStart({payload: formData}));
     } else {
       yield put(
@@ -125,6 +130,7 @@ function* moveToMessagesSaga({payload}) {
 }
 
 function* deleteMessagesSaga({payload}) {
+  console.log('delete payload', payload.payload);
   try {
     const response = yield call(
       MessageService.PermanentlyDelete,
@@ -155,7 +161,12 @@ function* deleteMessagesSaga({payload}) {
       if (statusPart) {
         formData.append('status', statusPart[1]);
       }
-
+      const keywordPart = payload.payload._parts?.find(
+        part => part[0] === 'keyword',
+      );
+      if (keywordPart) {
+        formData.append('keyword', keywordPart[1]);
+      }
       yield put(fetchArchivedMessagesStart({payload: formData}));
     } else {
       yield put(
@@ -271,6 +282,12 @@ function* markAsReadSaga({payload}) {
         formData.append('status', statusPart[1]);
       }
 
+      const keywordPart = payload.payload._parts?.find(
+        part => part[0] === 'keyword',
+      );
+      if (keywordPart) {
+        formData.append('keyword', keywordPart[1]);
+      }
       yield put(fetchArchivedMessagesStart({payload: formData}));
     } else {
       yield put(

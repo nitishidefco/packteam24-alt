@@ -29,11 +29,10 @@ const messageSlice = createSlice({
     fetchMessagesSuccess(state, action) {
       const {messages, total, totalPages} = action.payload;
 
-      // Sort messages by id in descending order
       const sortedMessages = [...messages].sort((a, b) => b.id - a.id);
 
       if (state.currentPage === 1) {
-        state.messages = sortedMessages; // New array reference
+        state.messages = sortedMessages;
         state.filteredMessages = sortedMessages;
       } else {
         state.messages = [...state.messages, ...sortedMessages]; // New array reference

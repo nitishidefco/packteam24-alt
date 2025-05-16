@@ -154,7 +154,17 @@ const ArchiveScreen = () => {
       formData.append('device_id', deviceId);
       formData.append('session_id', sessionId);
       formData.append('lang', globalLanguage);
+      if (filterType === 'read') {
+        formData.append('status', 1);
+      } else if (filterType === 'unread') {
+        formData.append('status', 0);
+      }
+      if (searchQuery.trim() !== '') {
+        formData.append('keyword', searchQuery);
+      }
       dispatch(fetchArchivedMessagesStart({payload: formData}));
+
+      // Cleanup function to reset filter and search when screen loses focus
     }, [deviceId, sessionId, globalLanguage, dispatch]),
   );
 
@@ -202,6 +212,32 @@ const ArchiveScreen = () => {
   const flatListRef = useRef(null);
   const slideAnim = useRef(new Animated.Value(300)).current;
   const backdropOpacity = useRef(new Animated.Value(0)).current;
+  const progressAnim = useRef(new Animated.Value(0)).current;
+
+  useEffect(() => {
+    if (isLoading) {
+      // Reset progress when loading starts
+      progressAnim.setValue(0);
+      // Animate to 1 over 2 seconds
+      Animated.timing(progressAnim, {
+        toValue: 1,
+        duration: 2000,
+        useNativeDriver: false,
+      }).start();
+    } else {
+      // Complete the animation when loading ends
+      Animated.timing(progressAnim, {
+        toValue: 1,
+        duration: 300,
+        useNativeDriver: false,
+      }).start(() => {
+        // Reset after a short delay
+        setTimeout(() => {
+          progressAnim.setValue(0);
+        }, 200);
+      });
+    }
+  }, [isLoading, progressAnim]);
 
   const handleLongPress = id => {
     if (archivedSelectedMessages.length === 0 && Platform.OS === 'android') {
@@ -284,6 +320,14 @@ const ArchiveScreen = () => {
     formData.append('device_id', deviceId);
     formData.append('session_id', sessionId);
     formData.append('lang', globalLanguage);
+    if (filterType === 'read') {
+      formData.append('status', 1);
+    } else if (filterType === 'unread') {
+      formData.append('status', 0);
+    }
+    if (searchQuery.trim() !== '') {
+      formData.append('keyword', searchQuery);
+    }
     dispatch(
       deleteMessagesStart({
         payload: formData,
@@ -319,6 +363,14 @@ const ArchiveScreen = () => {
     formData.append('session_id', sessionId);
     formData.append('lang', globalLanguage);
     formData.append('restore', '1');
+    if (filterType === 'read') {
+      formData.append('status', 1);
+    } else if (filterType === 'unread') {
+      formData.append('status', 0);
+    }
+    if (searchQuery.trim() !== '') {
+      formData.append('keyword', searchQuery);
+    }
     dispatch(
       moveToMessagesStart({
         payload: formData,
@@ -339,6 +391,14 @@ const ArchiveScreen = () => {
     formData.append('session_id', sessionId);
     formData.append('lang', globalLanguage);
     formData.append('restore', '1');
+    if (filterType === 'read') {
+      formData.append('status', 1);
+    } else if (filterType === 'unread') {
+      formData.append('status', 0);
+    }
+    if (searchQuery.trim() !== '') {
+      formData.append('keyword', searchQuery);
+    }
     dispatch(moveToMessagesStart({payload: formData, messageIds: [messageId]}));
     setPreviewMessage(null);
   };
@@ -351,6 +411,14 @@ const ArchiveScreen = () => {
     formData.append('lang', globalLanguage);
     formData.append('updater', '1');
     formData.append('unread', '1');
+    if (filterType === 'read') {
+      formData.append('status', 1);
+    } else if (filterType === 'unread') {
+      formData.append('status', 0);
+    }
+    if (searchQuery.trim() !== '') {
+      formData.append('keyword', searchQuery);
+    }
     dispatch(markAsUnread({payload: formData, messageId}));
   };
 
@@ -575,6 +643,20 @@ const ArchiveScreen = () => {
                 </Text>
               </View>
             </TouchableOpacity>
+            {isLoading && (
+              <Animated.View
+                style={[
+                  styles.progressBar,
+                  {
+                    width: progressAnim.interpolate({
+                      inputRange: [0, 1],
+                      outputRange: ['0%', '100%'],
+                    }),
+                    backgroundColor: theme.PRIMARY,
+                  },
+                ]}
+              />
+            )}
           </View>
           {archivedSelectedMessages?.length > 0 && (
             <View
@@ -1300,6 +1382,13 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(0, 0, 0, 0.6)',
     justifyContent: 'center',
     alignItems: 'center',
+  },
+  progressBar: {
+    height: 2,
+    position: 'absolute',
+    top: Matrics.vs(65),
+    left: 0,
+    right: 0,
   },
 });
 

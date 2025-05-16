@@ -241,7 +241,7 @@ const NotificationScreen = () => {
         {
           page: nextPage,
           filterType,
-          isLoading,
+          searchQuery: searchQuery || 'none',
         },
       );
       dispatch(fetchMessagesStart({payload: formData}));
@@ -274,6 +274,32 @@ const NotificationScreen = () => {
   const flatListRef = useRef(null);
   const slideAnim = useRef(new Animated.Value(300)).current;
   const backdropOpacity = useRef(new Animated.Value(0)).current;
+  const progressAnim = useRef(new Animated.Value(0)).current;
+
+  useEffect(() => {
+    if (isLoading) {
+      // Reset progress when loading starts
+      progressAnim.setValue(0);
+      // Animate to 1 over 2 seconds
+      Animated.timing(progressAnim, {
+        toValue: 1,
+        duration: 2000,
+        useNativeDriver: false,
+      }).start();
+    } else {
+      // Complete the animation when loading ends
+      Animated.timing(progressAnim, {
+        toValue: 1,
+        duration: 300,
+        useNativeDriver: false,
+      }).start(() => {
+        // Reset after a short delay
+        setTimeout(() => {
+          progressAnim.setValue(0);
+        }, 200);
+      });
+    }
+  }, [isLoading]);
 
   const handleLongPress = id => {
     if (selectedMessages.length === 0 && Platform.OS === 'android') {
@@ -335,6 +361,9 @@ const NotificationScreen = () => {
       formData.append('status', 1);
     } else if (filterType === 'unread') {
       formData.append('status', 0);
+    }
+    if (searchQuery) {
+      formData.append('keyword', searchQuery);
     }
     dispatch(moveToArchiveStart({payload: formData}));
     setShowArchiveModal(false);
@@ -431,6 +460,13 @@ const NotificationScreen = () => {
         formData.append('status', 0);
       }
       dispatch(clearMessageSelection());
+      console.log(
+        '[NotificationScreen] fetchMessagesStart called from handleSearch (with query):',
+        {
+          searchQuery,
+          filterType,
+        },
+      );
       dispatch(searchMessagesStart({payload: formData, keyword: searchQuery}));
     } else {
       dispatch(setCurrentPage(1));
@@ -464,13 +500,6 @@ const NotificationScreen = () => {
     } else if (value === 'unread') {
       formData.append('status', 0);
     }
-    console.log(
-      '[NotificationScreen] fetchMessagesStart called from handleFilter:',
-      {
-        filterType: value,
-        searchQuery: searchQuery || 'none',
-      },
-    );
     dispatch(fetchMessagesStart({payload: formData}));
     setShowFilterModal(false);
   };
@@ -484,13 +513,20 @@ const NotificationScreen = () => {
       formData.append('device_id', deviceId);
       formData.append('session_id', sessionId);
       formData.append('lang', globalLanguage);
+      if (filterType === 'read') {
+        formData.append('status', 1);
+      } else if (filterType === 'unread') {
+        formData.append('status', 0);
+      }
+      if (searchQuery.trim() !== '') {
+        formData.append('keyword', searchQuery);
+      }
       console.log(
         '[NotificationScreen] fetchMessagesStart called from useFocusEffect:',
         {
           page: 1,
-          deviceId,
-          sessionId,
-          globalLanguage,
+          filterType,
+          searchQuery: searchQuery || 'none',
         },
       );
       dispatch(fetchMessagesStart({payload: formData}));
@@ -649,6 +685,20 @@ const NotificationScreen = () => {
                 </Text>
               </View>
             </TouchableOpacity>
+            {isLoading && (
+              <Animated.View
+                style={[
+                  styles.progressBar,
+                  {
+                    width: progressAnim.interpolate({
+                      inputRange: [0, 1],
+                      outputRange: ['0%', '100%'],
+                    }),
+                    backgroundColor: theme.PRIMARY,
+                  },
+                ]}
+              />
+            )}
           </View>
           {selectedMessages?.length > 0 && (
             <View
@@ -1360,6 +1410,13 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingVertical: Matrics.vs(5),
     gap: 5,
+  },
+  progressBar: {
+    height: 2,
+    position: 'absolute',
+    top: Matrics.vs(65), // Position it below the search container
+    left: 0,
+    right: 0,
   },
 });
 
