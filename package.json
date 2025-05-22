@@ -15,7 +15,7 @@
     "type": "modules",
     "jsSrcsDir": "spec",
     "android": {
-      "javaPackageName": "com.packteam"
+      "javaPackageName": "com.packteam24"
     }
   },
   "dependencies": {

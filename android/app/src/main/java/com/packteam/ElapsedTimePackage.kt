@@ -1,4 +1,4 @@
-package com.packteam
+package com.packteam24
 
 import com.facebook.react.TurboReactPackage
 import com.facebook.react.bridge.ModuleHolder

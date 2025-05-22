@@ -149,6 +149,8 @@ const ArchiveScreen = () => {
   useFocusEffect(
     React.useCallback(() => {
       dispatch(setCurrentPage(1));
+      setSearchQuery('');
+      setFilterType('all');
       const formData = new FormData();
       formData.append('page', '1');
       formData.append('device_id', deviceId);
@@ -267,6 +269,9 @@ const ArchiveScreen = () => {
             formData.append('status', 1);
           } else if (filterType === 'unread') {
             formData.append('status', 0);
+          }
+          if (searchQuery.trim() !== '') {
+            formData.append('keyword', searchQuery);
           }
           dispatch(markAsRead({payload: formData}));
         }
@@ -493,6 +498,9 @@ const ArchiveScreen = () => {
       formData.append('status', 1);
     } else if (value === 'unread') {
       formData.append('status', 0);
+    }
+    if (searchQuery.trim() !== '') {
+      formData.append('keyword', searchQuery);
     }
     dispatch(fetchArchivedMessagesStart({payload: formData}));
     setShowFilterModal(false);

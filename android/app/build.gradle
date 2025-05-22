@@ -82,13 +82,13 @@ android {
     buildToolsVersion rootProject.ext.buildToolsVersion
     compileSdk rootProject.ext.compileSdkVersion
 
-    namespace "com.packteam"
+    namespace "com.packteam24"
     defaultConfig {
-        applicationId "com.packteam"
+        applicationId "com.packteam24"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 24
-        versionName "1.10"
+        versionCode 1
+        versionName "1.0"
     }
     signingConfigs {
         debug {

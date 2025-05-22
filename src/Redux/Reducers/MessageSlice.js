@@ -1,7 +1,6 @@
 // src/Redux/Reducers/MessageReducer.js
 import {createSlice} from '@reduxjs/toolkit';
 import {MESSAGE_REUCER} from '../SliceKey';
-import moment from 'moment-timezone';
 
 const initialState = {
   messages: [],
@@ -16,6 +15,8 @@ const initialState = {
   error: null,
   currentFilter: {type: 'all', value: ''},
   hasShownPermissionAlert: false,
+  searchQuery: '',
+  filterType: 'all',
 };
 
 const messageSlice = createSlice({
@@ -162,6 +163,8 @@ const messageSlice = createSlice({
       state.previewMessage = null;
     },
     markAsRead(state, action) {
+      console.log('mark as read', action.payload);
+
       const messageId = action.payload;
       state.messages = state.messages.map(message =>
         message.id === messageId ? {...message, read: 1} : message,
@@ -222,6 +225,13 @@ const messageSlice = createSlice({
     resetPermissionAlert(state) {
       state.hasShownPermissionAlert = false;
     },
+    setSearchQuery(state, action) {
+      console.log('set search query', action.payload);
+      state.searchQuery = action.payload;
+    },
+    setFilterType(state, action) {
+      state.filterType = action.payload;
+    },
   },
 });
 
@@ -252,6 +262,8 @@ export const {
   setPermissionAlertShown,
   resetPermissionAlert,
   selectAllMessages,
+  setSearchQuery,
+  setFilterType,
 } = messageSlice.actions;
 
 const MessageReducer = messageSlice.reducer;

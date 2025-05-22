@@ -1,4 +1,4 @@
-import React, {memo, useEffect, useRef, useState} from 'react';
+import React, {memo, useEffect, useRef, useState, useContext} from 'react';
 import {
   View,
   Text,
@@ -30,9 +30,7 @@ import {Images} from '../../Config';
 import {
   filterMessages,
   setCurrentPage,
-  archiveMessage,
   markAsRead,
-  markAsUnread,
   setPreviewMessage,
   fetchMessagesStart,
   toggleMessageSelection,
@@ -40,12 +38,11 @@ import {
   moveToArchiveStart,
   multipleMarkMessages,
   searchMessagesStart,
-  setPermissionAlertShown,
-  resetPermissionAlert,
   selectAllMessages,
+  setFilterType,
+  setSearchQuery,
 } from '../../Redux/Reducers/MessageSlice';
 import {useFocusEffect} from '@react-navigation/native';
-import {Store} from '../../Redux/Store';
 import i18n from '../../i18n/i18n';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {useTheme} from '../../Context/ThemeContext';
@@ -135,11 +132,12 @@ const NotificationScreen = () => {
     filteredMessages,
     currentPage,
     totalPages,
-    unreadCount,
     previewMessage,
     isLoading,
     selectedMessages,
     hasShownPermissionAlert,
+    searchQuery,
+    filterType,
   } = useSelector(initialState => initialState.Messages);
 
   const deviceId = useSelector(state => state?.Network?.deviceId);
@@ -148,7 +146,6 @@ const NotificationScreen = () => {
   const globalLanguage = useSelector(
     state => state?.GlobalLanguage?.globalLanguage || 'en',
   );
-  console.log('Filtered Messages Length', filteredMessages.length);
 
   useEffect(() => {
     setIsSelectionMode(selectedMessages?.length > 0);
@@ -241,7 +238,7 @@ const NotificationScreen = () => {
         {
           page: nextPage,
           filterType,
-          searchQuery: searchQuery || 'none',
+          searchQuery: searchQuery,
         },
       );
       dispatch(fetchMessagesStart({payload: formData}));
@@ -260,8 +257,6 @@ const NotificationScreen = () => {
       </View>
     );
   };
-  const [searchQuery, setSearchQuery] = useState('');
-  const [filterType, setFilterType] = useState('all');
   const [showScrollToTop, setShowScrollToTop] = useState(false);
   const scrollThreshold = Matrics.screenHeight * 1.2;
   const [isSelectionMode, setIsSelectionMode] = useState(false);
@@ -325,6 +320,9 @@ const NotificationScreen = () => {
             formData.append('status', 1);
           } else if (filterType === 'unread') {
             formData.append('status', 0);
+          }
+          if (searchQuery?.trim() !== '') {
+            formData.append('keyword', searchQuery);
           }
           dispatch(markAsRead({payload: formData}));
         }
@@ -412,7 +410,7 @@ const NotificationScreen = () => {
     } else if (filterType === 'unread') {
       formData.append('status', 0);
     }
-    if (searchQuery.trim() !== '') {
+    if (searchQuery?.trim() !== '') {
       formData.append('keyword', searchQuery);
     }
 
@@ -420,7 +418,7 @@ const NotificationScreen = () => {
       action: isMarkAsUnread ? 'mark as unread' : 'mark as read',
       messageIds: selectedMessages,
       filterType,
-      searchQuery: searchQuery.trim() || 'none',
+      searchQuery: searchQuery?.trim(),
     });
 
     dispatch(
@@ -447,7 +445,7 @@ const NotificationScreen = () => {
   };
 
   const handleSearch = () => {
-    if (searchQuery.trim()) {
+    if (searchQuery?.trim()) {
       const formData = new FormData();
       formData.append('device_id', deviceId);
       formData.append('session_id', sessionId);
@@ -460,13 +458,6 @@ const NotificationScreen = () => {
         formData.append('status', 0);
       }
       dispatch(clearMessageSelection());
-      console.log(
-        '[NotificationScreen] fetchMessagesStart called from handleSearch (with query):',
-        {
-          searchQuery,
-          filterType,
-        },
-      );
       dispatch(searchMessagesStart({payload: formData, keyword: searchQuery}));
     } else {
       dispatch(setCurrentPage(1));
@@ -475,13 +466,6 @@ const NotificationScreen = () => {
       formData.append('device_id', deviceId);
       formData.append('session_id', sessionId);
       formData.append('lang', globalLanguage);
-      console.log(
-        '[NotificationScreen] fetchMessagesStart called from handleSearch (empty search):',
-        {
-          page: 1,
-          filterType: 'none',
-        },
-      );
       dispatch(fetchMessagesStart({payload: formData}));
     }
   };
@@ -489,7 +473,7 @@ const NotificationScreen = () => {
   const handleFilter = value => {
     dispatch(clearMessageSelection());
     dispatch(setCurrentPage(1));
-    setFilterType(value);
+    dispatch(setFilterType(value));
     const formData = new FormData();
     formData.append('device_id', deviceId);
     formData.append('session_id', sessionId);
@@ -506,8 +490,9 @@ const NotificationScreen = () => {
 
   useFocusEffect(
     React.useCallback(() => {
-      setSearchQuery('');
+      dispatch(setSearchQuery(''));
       dispatch(setCurrentPage(1));
+      dispatch(setFilterType('all'));
       const formData = new FormData();
       formData.append('page', '1');
       formData.append('device_id', deviceId);
@@ -518,7 +503,7 @@ const NotificationScreen = () => {
       } else if (filterType === 'unread') {
         formData.append('status', 0);
       }
-      if (searchQuery.trim() !== '') {
+      if (searchQuery?.trim() !== '') {
         formData.append('keyword', searchQuery);
       }
       console.log(
@@ -526,7 +511,7 @@ const NotificationScreen = () => {
         {
           page: 1,
           filterType,
-          searchQuery: searchQuery || 'none',
+          searchQuery: searchQuery,
         },
       );
       dispatch(fetchMessagesStart({payload: formData}));
@@ -564,7 +549,7 @@ const NotificationScreen = () => {
     ]).start(() => setShowFilterModal(false));
   };
   useEffect(() => {
-    if (searchQuery.trim() === '') {
+    if (searchQuery?.trim() === '') {
       dispatch(setCurrentPage(1));
       const formData = new FormData();
       formData.append('page', '1');
@@ -619,8 +604,8 @@ const NotificationScreen = () => {
       return true;
     }
 
-    if (searchQuery.trim() !== '') {
-      setSearchQuery('');
+    if (searchQuery?.trim() !== '') {
+      dispatch(setSearchQuery(''));
       return true;
     }
     return false;
@@ -656,7 +641,7 @@ const NotificationScreen = () => {
               style={styles.searchInput}
               placeholder={t('NotificationScreen.searchPlaceholder')}
               placeholderTextColor={'black'}
-              onChangeText={setSearchQuery}
+              onChangeText={text => dispatch(setSearchQuery(text))}
               onSubmitEditing={handleSearch}
               value={searchQuery}
               returnKeyType="search"

@@ -1,4 +1,4 @@
-import React, {useEffect, useState, useCallback} from 'react';
+import React, {useEffect, useState, useCallback, useContext} from 'react';
 import {useTranslation} from 'react-i18next';
 import {useFocusEffect} from '@react-navigation/native';
 
@@ -50,11 +50,10 @@ import {useTheme} from '../../Context/ThemeContext';
 
 const Home = ({navigation, route}) => {
   const dispatch = useDispatch();
-
+  const {searchQuery, filterType} = useSelector(state => state.Messages);
   useNfcStatus();
   const {t, i18n} = useTranslation();
   const {sessions, bulkSessions} = useSelector(state => state?.OfflineData);
-
   // Current time from the server time
   const realTime = useSelector(state => state.TrueTime.currentTime);
 
@@ -240,6 +239,14 @@ const Home = ({navigation, route}) => {
         formData.append('device_id', deviceId);
         formData.append('lang', globalLanguage);
         formData.append('page', 1);
+        if (filterType === 'read') {
+          formData.append('status', 1);
+        } else if (filterType === 'unread') {
+          formData.append('status', 0);
+        }
+        if (searchQuery?.trim() !== '') {
+          formData.append('keyword', searchQuery);
+        }
         console.log('Calling for messages and unread count');
         dispatch(fetchMessagesStart({payload: formData}));
         dispatch(fetchUnreadCountStart({payload: formData}));

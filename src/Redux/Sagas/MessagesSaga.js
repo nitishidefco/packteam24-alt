@@ -91,7 +91,12 @@ function* markAsReadSaga({payload}) {
       if (statusPart) {
         formData.append('status', statusPart[1]);
       }
-
+      const keywordPart = payload.payload._parts?.find(
+        part => part[0] === 'keyword',
+      );
+      if (keywordPart) {
+        formData.append('keyword', keywordPart[1]);
+      }
       // Dispatch fetchMessagesStart to refetch messages
       yield put(fetchMessagesStart({payload: formData}));
     }

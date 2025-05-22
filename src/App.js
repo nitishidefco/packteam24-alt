@@ -24,7 +24,6 @@ import CreateDailyList from './Screens/DailyList/CreateDailyList';
 import NotificationInitializer from './Components/HomeComponent/NotificationInitializer';
 import {ThemeProvider, useTheme} from './Context/ThemeContext';
 import {Platform, StatusBar} from 'react-native';
-
 const Stack = createStackNavigator();
 
 // List of auth screens that should have transparent status bars
@@ -126,77 +125,77 @@ const App = () => {
     <Provider store={Store}>
       <SafeAreaProvider>
         <I18nextProvider i18n={i18n}>
-          <ThemeProvider>
-            <DynamicStatusBar currentScreen={currentRoute} />
-            <NavigationContainer
-              ref={navigationRef}
-              onStateChange={handleNavigationStateChange}
-              onReady={() => {
-                const initialState = navigationRef.current?.getRootState();
-                const initialRoute = getActiveRouteName(initialState);
-                if (initialRoute) {
-                  setCurrentRoute(initialRoute);
-                } else {
-                  setCurrentRoute('Splash');
-                }
-              }}>
-              <Stack.Navigator>
-                <Stack.Screen
-                  name="Splash"
-                  component={Splash}
-                  options={{headerShown: false}}
-                />
-                <Stack.Screen
-                  name="Login"
-                  component={Login}
-                  options={{headerShown: false}}
-                />
-                <Stack.Screen
-                  name="ForgotPass"
-                  component={ForgotPass}
-                  options={{headerShown: false}}
-                />
-                <Stack.Screen
-                  name="CreateAccount"
-                  component={CreateAccount}
-                  options={{headerShown: false}}
-                />
-                <Stack.Screen
-                  name="HomeDrawer"
-                  component={HomeDrawer}
-                  options={{headerShown: false}}
-                />
-                <Stack.Screen
-                  name="AddDailyList"
-                  component={AddDailyList}
-                  options={{headerShown: false}}
-                />
-                <Stack.Screen
-                  name="EditDailyList"
-                  component={EditDailyList}
-                  options={{headerShown: false}}
-                />
-                <Stack.Screen
-                  name="CreateDailyList"
-                  component={CreateDailyList}
-                  options={{headerShown: false}}
-                />
-                {/* Add ResetPassword screen if it's not already in your navigator */}
-                {/* <Stack.Screen
+            <ThemeProvider>
+              <DynamicStatusBar currentScreen={currentRoute} />
+              <NavigationContainer
+                ref={navigationRef}
+                onStateChange={handleNavigationStateChange}
+                onReady={() => {
+                  const initialState = navigationRef.current?.getRootState();
+                  const initialRoute = getActiveRouteName(initialState);
+                  if (initialRoute) {
+                    setCurrentRoute(initialRoute);
+                  } else {
+                    setCurrentRoute('Splash');
+                  }
+                }}>
+                <Stack.Navigator>
+                  <Stack.Screen
+                    name="Splash"
+                    component={Splash}
+                    options={{headerShown: false}}
+                  />
+                  <Stack.Screen
+                    name="Login"
+                    component={Login}
+                    options={{headerShown: false}}
+                  />
+                  <Stack.Screen
+                    name="ForgotPass"
+                    component={ForgotPass}
+                    options={{headerShown: false}}
+                  />
+                  <Stack.Screen
+                    name="CreateAccount"
+                    component={CreateAccount}
+                    options={{headerShown: false}}
+                  />
+                  <Stack.Screen
+                    name="HomeDrawer"
+                    component={HomeDrawer}
+                    options={{headerShown: false}}
+                  />
+                  <Stack.Screen
+                    name="AddDailyList"
+                    component={AddDailyList}
+                    options={{headerShown: false}}
+                  />
+                  <Stack.Screen
+                    name="EditDailyList"
+                    component={EditDailyList}
+                    options={{headerShown: false}}
+                  />
+                  <Stack.Screen
+                    name="CreateDailyList"
+                    component={CreateDailyList}
+                    options={{headerShown: false}}
+                  />
+                  {/* Add ResetPassword screen if it's not already in your navigator */}
+                  {/* <Stack.Screen
                   name="ResetPassword"
                   component={ResetPassword}
                   options={{headerShown: false}}
                 /> */}
-              </Stack.Navigator>
-              <NotificationInitializer navigationRef={navigationRef} />
-            </NavigationContainer>
-            <Toast
-              config={toastConfig}
-              position="top"
-              topOffset={0}
-              autoHide={true}
-            />
-          </ThemeProvider>
+                </Stack.Navigator>
+                <NotificationInitializer navigationRef={navigationRef} />
+              </NavigationContainer>
+              <Toast
+                config={toastConfig}
+                position="top"
+                topOffset={0}
+                autoHide={true}
+              />
+            </ThemeProvider>
         </I18nextProvider>
       </SafeAreaProvider>
     </Provider>

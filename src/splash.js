@@ -67,6 +67,11 @@ const Splash = () => {
         style={styles.image}
         resizeMode="contain"
       />
+      <Image
+        source={Images.NEW_APP_LOGO}
+        style={styles.image}
+        resizeMode="contain"
+      />
     </View>
   );
 };

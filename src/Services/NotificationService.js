@@ -10,8 +10,6 @@ import {MMKV} from 'react-native-mmkv';
 const storage = new MMKV();
 const NotificationService = () => {
   let navigation = null;
-  console.log('Inside notification service');
-
   const initialize = async navRef => {
     navigation = navRef;
     await requestPermissions();
@@ -115,7 +113,7 @@ const NotificationService = () => {
       formData.append('session_id', sessionId);
       formData.append('user_id', userId);
       formData.append('lang', globalLanguage.globalLanguage);
-      console.log('Sending FCM token to backend:');
+      console.log('Sending FCM token to backend:', token);
 
       Store.dispatch(notification({payload: formData}));
     } catch (error) {
@@ -185,11 +183,21 @@ const NotificationService = () => {
         const sessionId = state.Auth.data?.data?.sesssion_id;
         const deviceId = state.Network.deviceId;
         const globalLanguage = state.GlobalLanguage;
+        const {searchQuery, filterType} = state.Messages;
         const formData = new FormData();
         formData.append('session_id', sessionId);
         formData.append('device_id', deviceId);
         formData.append('lang', globalLanguage.globalLanguage);
         formData.append('page', 1);
+
+        if (filterType === 'read') {
+          formData.append('status', 1);
+        } else if (filterType === 'unread') {
+          formData.append('status', 0);
+        }
+        if (searchQuery.trim() !== '') {
+          formData.append('keyword', searchQuery);
+        }
         console.log('Fetching uread count');
 
         Store.dispatch(fetchUnreadCountStart({payload: formData}));
